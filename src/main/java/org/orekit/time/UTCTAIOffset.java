@@ -1,4 +1,4 @@
-/* Copyright 2002-2015 CS Systèmes d'Information
+/* Copyright 2002-2016 CS Systèmes d'Information
  * Licensed to CS Systèmes d'Information (CS) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -170,7 +170,7 @@ class UTCTAIOffset implements TimeStamped, Serializable {
      */
     public double getOffset(final DateComponents date, final TimeComponents time) {
         final int    days     = date.getMJD() - mjdRef;
-        final double fraction = time.getSecondsInDay();
+        final double fraction = time.getSecondsInUTCDay();
         return offset + days * (slopeUTC * Constants.JULIAN_DAY) + fraction * slopeUTC;
     }
 

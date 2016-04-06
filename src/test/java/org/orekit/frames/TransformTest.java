@@ -1,4 +1,4 @@
-/* Copyright 2002-2015 CS Systèmes d'Information
+/* Copyright 2002-2016 CS Systèmes d'Information
  * Licensed to CS Systèmes d'Information (CS) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -20,13 +20,16 @@ package org.orekit.frames;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.math3.geometry.euclidean.threed.FieldVector3D;
 import org.apache.commons.math3.geometry.euclidean.threed.Line;
 import org.apache.commons.math3.geometry.euclidean.threed.Rotation;
+import org.apache.commons.math3.geometry.euclidean.threed.RotationConvention;
 import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
 import org.apache.commons.math3.linear.MatrixUtils;
 import org.apache.commons.math3.linear.RealMatrix;
 import org.apache.commons.math3.random.RandomGenerator;
 import org.apache.commons.math3.random.Well19937a;
+import org.apache.commons.math3.util.Decimal64;
 import org.apache.commons.math3.util.FastMath;
 import org.junit.Assert;
 import org.junit.Test;
@@ -34,7 +37,9 @@ import org.orekit.errors.OrekitException;
 import org.orekit.time.AbsoluteDate;
 import org.orekit.utils.CartesianDerivativesFilter;
 import org.orekit.utils.Constants;
+import org.orekit.utils.FieldPVCoordinates;
 import org.orekit.utils.PVCoordinates;
+import org.orekit.utils.TimeStampedFieldPVCoordinates;
 import org.orekit.utils.TimeStampedPVCoordinates;
 
 public class TransformTest {
@@ -56,7 +61,8 @@ public class TransformTest {
         Transform transform =
             new Transform(AbsoluteDate.J2000_EPOCH,
                           new Transform(AbsoluteDate.J2000_EPOCH,
-                                        new Rotation(Vector3D.PLUS_K, 0.5 * FastMath.PI)),
+                                        new Rotation(Vector3D.PLUS_K, 0.5 * FastMath.PI,
+                                                     RotationConvention.VECTOR_OPERATOR)),
                           new Transform(AbsoluteDate.J2000_EPOCH, Vector3D.PLUS_I));
         Vector3D u = transform.transformPosition(new Vector3D(1.0, 1.0, 1.0));
         Vector3D v = new Vector3D(0.0, 1.0, 1.0);
@@ -157,21 +163,26 @@ public class TransformTest {
             // check the composition
             for (int j = 0; j < 10; ++j) {
                 Vector3D a = randomVector(1.0, random);
+                FieldVector3D<Decimal64> aF = new FieldVector3D<Decimal64>(Decimal64.ONE, a);
                 Vector3D b = randomVector(1.0e3, random);
                 PVCoordinates c = new PVCoordinates(randomVector(1.0e3, random), randomVector(1.0, random), randomVector(1.0e-3, random));
-                Vector3D      aRef = a;
-                Vector3D      bRef = b;
-                PVCoordinates cRef = c;
+                Vector3D                 aRef  = a;
+                FieldVector3D<Decimal64> aFRef = aF;
+                Vector3D                 bRef  = b;
+                PVCoordinates            cRef  = c;
                 for (int k = 0; k < n; ++k) {
-                    aRef = transforms[k].transformVector(aRef);
-                    bRef = transforms[k].transformPosition(bRef);
-                    cRef = transforms[k].transformPVCoordinates(cRef);
+                    aRef  = transforms[k].transformVector(aRef);
+                    aFRef = transforms[k].transformVector(aFRef);
+                    bRef  = transforms[k].transformPosition(bRef);
+                    cRef  = transforms[k].transformPVCoordinates(cRef);
                 }
 
                 Vector3D aCombined = combined.transformVector(a);
+                FieldVector3D<Decimal64> aFCombined = combined.transformVector(aF);
                 Vector3D bCombined = combined.transformPosition(b);
                 PVCoordinates cCombined = combined.transformPVCoordinates(c);
                 checkVector(aRef, aCombined, 3.0e-15);
+                checkVector(aFRef.toVector3D(), aFCombined.toVector3D(), 3.0e-15);
                 checkVector(bRef, bCombined, 5.0e-15);
                 checkVector(cRef.getPosition(),     cCombined.getPosition(),     1.0e-14);
                 checkVector(cRef.getVelocity(),     cCombined.getVelocity(),     1.0e-14);
@@ -251,7 +262,7 @@ public class TransformTest {
 
         // rotation transform test
         PVCoordinates pointP3 = new PVCoordinates(Vector3D.PLUS_J, new Vector3D(-2, 1, 0), new Vector3D(-4, -3, -1));
-        Rotation R = new Rotation(Vector3D.PLUS_K, FastMath.PI/2);
+        Rotation R = new Rotation(Vector3D.PLUS_K, FastMath.PI/2, RotationConvention.VECTOR_OPERATOR);
         Transform R1toR3 = new Transform(AbsoluteDate.J2000_EPOCH, R, new Vector3D(0, 0, -2), new Vector3D(1, 0, 0));
         PVCoordinates result2 = R1toR3.transformPVCoordinates(pointP1);
         checkVector(pointP3.getPosition(),     result2.getPosition(),     1.0e-15);
@@ -276,7 +287,7 @@ public class TransformTest {
 
         // combine 2 rotation tranform
         PVCoordinates pointP5 = new PVCoordinates(new Vector3D(-1, 0, 0), new Vector3D(-1, 0, 3), new Vector3D(8, 0, 6));
-        Rotation R2 = new Rotation( new Vector3D(0,0,1), FastMath.PI );
+        Rotation R2 = new Rotation( new Vector3D(0,0,1), FastMath.PI, RotationConvention.VECTOR_OPERATOR);
         Transform R1toR5 = new Transform(AbsoluteDate.J2000_EPOCH, R2, new Vector3D(0, -3, 0));
         Transform R3toR5 = new Transform (AbsoluteDate.J2000_EPOCH, R3toR1, R1toR5);
         PVCoordinates combResult = R3toR5.transformPVCoordinates(pointP3);
@@ -329,7 +340,7 @@ public class TransformTest {
             // Random instant rotation
 
             Rotation instantRot    = randomRotation(rnd);
-            Vector3D normAxis = instantRot.getAxis();
+            Vector3D normAxis = instantRot.getAxis(RotationConvention.VECTOR_OPERATOR);
             double w  = FastMath.abs(instantRot.getAngle())/Constants.JULIAN_DAY;
 
             // random rotation
@@ -390,6 +401,25 @@ public class TransformTest {
             Vector3D result  = pvTwo.getPosition().add(new Vector3D(dt, pvTwo.getVelocity()));
             checkVector(good, result, 1.0e-15);
 
+            FieldPVCoordinates<Decimal64> fieldPVOne =
+                            new FieldPVCoordinates<Decimal64>(new FieldVector3D<Decimal64>(Decimal64.ONE, pvOne.getPosition()),
+                                                              new FieldVector3D<Decimal64>(Decimal64.ONE, pvOne.getVelocity()),
+                                                              new FieldVector3D<Decimal64>(Decimal64.ONE, pvOne.getAcceleration()));
+            FieldPVCoordinates<Decimal64> fieldPVTwo = tr.transformPVCoordinates(fieldPVOne);
+            FieldVector3D<Decimal64> fieldResult  =
+                            fieldPVTwo.getPosition().add(new FieldVector3D<Decimal64>(dt, fieldPVTwo.getVelocity()));
+            checkVector(good, fieldResult.toVector3D(), 1.0e-15);
+
+            TimeStampedFieldPVCoordinates<Decimal64> fieldTPVOne =
+                            new TimeStampedFieldPVCoordinates<Decimal64>(tr.getDate(),
+                                            new FieldVector3D<Decimal64>(Decimal64.ONE, pvOne.getPosition()),
+                                            new FieldVector3D<Decimal64>(Decimal64.ONE, pvOne.getVelocity()),
+                                            new FieldVector3D<Decimal64>(Decimal64.ONE, pvOne.getAcceleration()));
+            TimeStampedFieldPVCoordinates<Decimal64> fieldTPVTwo = tr.transformPVCoordinates(fieldTPVOne);
+            FieldVector3D<Decimal64> fieldTResult  =
+                            fieldTPVTwo.getPosition().add(new FieldVector3D<Decimal64>(dt, fieldTPVTwo.getVelocity()));
+            checkVector(good, fieldTResult.toVector3D(), 1.0e-15);
+
             // test inverse
             Vector3D resultvel = tr.getInverse().
             transformPVCoordinates(pvTwo).getVelocity();
@@ -405,7 +435,7 @@ public class TransformTest {
         for (int i = 0; i < 10; ++i) {
 
             Rotation r    = randomRotation(rnd);
-            Vector3D axis = r.getAxis();
+            Vector3D axis = r.getAxis(RotationConvention.VECTOR_OPERATOR);
             double angle  = r.getAngle();
 
             Transform transform = new Transform(AbsoluteDate.J2000_EPOCH, r);
@@ -733,7 +763,8 @@ public class TransformTest {
         Transform t   = new Transform(date,
                                       new Transform(date, Vector3D.MINUS_I, Vector3D.MINUS_J, Vector3D.ZERO),
                                       new Transform(date,
-                                                    new Rotation(Vector3D.PLUS_K, alpha0),
+                                                    new Rotation(Vector3D.PLUS_K, alpha0,
+                                                                 RotationConvention.VECTOR_OPERATOR),
                                                     new Vector3D(omega, Vector3D.MINUS_K)));
 
         for (double dt = -10.0; dt < 10.0; dt += 0.125) {
@@ -938,7 +969,8 @@ public class TransformTest {
                                            new Vector3D(omega * sin, -omega * cos, 0),
                                            new Vector3D(omega * omega * cos, omega * omega * sin, 0)),
                              new Transform(date,
-                                           new Rotation(Vector3D.PLUS_K, FastMath.PI - omega * dt),
+                                           new Rotation(Vector3D.PLUS_K, FastMath.PI - omega * dt,
+                                                        RotationConvention.VECTOR_OPERATOR),
                                            new Vector3D(omega, Vector3D.PLUS_K)));
     }
 

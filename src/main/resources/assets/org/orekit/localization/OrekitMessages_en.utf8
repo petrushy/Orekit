@@ -4,6 +4,9 @@ INTERNAL_ERROR = internal error, contact maintenance at {0}
 # altitude ({0} m) is below the {1} m allowed threshold
 ALTITUDE_BELOW_ALLOWED_THRESHOLD = altitude ({0} m) is below the {1} m allowed threshold
 
+# point is inside ellipsoid
+POINT_INSIDE_ELLIPSOID = point is inside ellipsoid
+
 # trajectory inside the Brillouin sphere (r = {0})
 TRAJECTORY_INSIDE_BRILLOUIN_SPHERE = trajectory inside the Brillouin sphere (r = {0})
 
@@ -334,9 +337,6 @@ DSST_ECC_NO_NUMERICAL_AVERAGING_METHOD = The current orbit has an eccentricity (
 # unsupported sp3 file version {0}
 SP3_UNSUPPORTED_VERSION = unsupported sp3 file version {0}
 
-# unsupported time system {0}
-SP3_UNSUPPORTED_TIMESYSTEM = unsupported time system {0}
-
 # unexpected end of file in sp3 file (after line {0})
 SP3_UNEXPECTED_END_OF_FILE = unexpected end of sp3 file (after line {0})
 
@@ -377,7 +377,7 @@ UNABLE_TO_COMPUTE_HYPERBOLIC_ECCENTRIC_ANOMALY = unable to compute hyperbolic ec
 UNABLE_TO_COMPUTE_DSST_MEAN_PARAMETERS = unable to compute mean orbit from osculating orbit after {0} iterations
 
 # derivation order {0} is out of range
-OUT_OF_RANGE_DERIVATION_ORDER = <MISSING TRANSLATION>
+OUT_OF_RANGE_DERIVATION_ORDER = derivation order {0} is out of range
 
 # out of range latitude: {0}, [{1}, {2}]
 OUT_OF_RANGE_LATITUDE = out of range latitude: {0}, [{1}, {2}]

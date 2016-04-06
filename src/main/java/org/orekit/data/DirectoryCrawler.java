@@ -1,4 +1,4 @@
-/* Copyright 2002-2015 CS Systèmes d'Information
+/* Copyright 2002-2016 CS Systèmes d'Information
  * Licensed to CS Systèmes d'Information (CS) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -21,6 +21,8 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.text.ParseException;
+import java.util.Arrays;
+import java.util.Comparator;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.zip.GZIPInputStream;
@@ -94,6 +96,12 @@ public class DirectoryCrawler implements DataProvider {
 
         // search in current directory
         final File[] list = directory.listFiles();
+        Arrays.sort(list, new Comparator<File>() {
+            @Override
+            public int compare(final File o1, final File o2) {
+                return o1.compareTo(o2);
+            }
+        });
 
         OrekitException delayedException = null;
         boolean loaded = false;

@@ -1,4 +1,4 @@
-/* Copyright 2002-2015 CS Systèmes d'Information
+/* Copyright 2002-2016 CS Systèmes d'Information
  * Licensed to CS Systèmes d'Information (CS) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -39,6 +39,16 @@ public class TAIScale implements TimeScale {
 
     /** {@inheritDoc} */
     public double offsetToTAI(final DateComponents date, final TimeComponents time) {
+        return 0;
+    }
+
+    /** {@inheritDoc} */
+    public boolean insideLeap(final AbsoluteDate date) {
+        return false;
+    }
+
+    /** {@inheritDoc} */
+    public double getLeap(final AbsoluteDate date) {
         return 0;
     }
 

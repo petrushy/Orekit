@@ -1,4 +1,4 @@
-/* Copyright 2002-2015 CS Systèmes d'Information
+/* Copyright 2002-2016 CS Systèmes d'Information
  * Licensed to CS Systèmes d'Information (CS) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -275,14 +275,6 @@ public class ODMMetaData {
      */
     void setFrameEpoch(final AbsoluteDate frameEpoch) {
         this.frameEpoch = frameEpoch;
-    }
-
-    /** Set epoch of reference frame for MET and MRT Time systems, if not intrinsic to the definition of the
-     * reference frame.
-     * @param offset the offset between the frame epoch and the initial date
-     * */
-    void setFrameEpoch(final double offset) {
-        this.frameEpoch = odmFile.getMissionReferenceDate().shiftedBy(offset);
     }
 
     /** Get the meta-data comment.

@@ -1,4 +1,4 @@
-/* Copyright 2002-2015 CS Systèmes d'Information
+/* Copyright 2002-2016 CS Systèmes d'Information
  * Licensed to CS Systèmes d'Information (CS) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -302,7 +302,7 @@ public class SecularAndHarmonicTest {
 
         // compute angle between Sun and spacecraft in the equatorial plane
         final Vector3D position = orbit.getPVCoordinates().getPosition();
-        final double time       = orbit.getDate().getComponents(TimeScalesFactory.getUTC()).getTime().getSecondsInDay();
+        final double time       = orbit.getDate().getComponents(TimeScalesFactory.getUTC()).getTime().getSecondsInUTCDay();
         final double theta      = gmst.value(orbit.getDate()).getValue();
         final double sunAlpha   = theta + FastMath.PI * (1 - time / (Constants.JULIAN_DAY * 0.5));
         final double dAlpha     = MathUtils.normalizeAngle(position.getAlpha() - sunAlpha, 0);

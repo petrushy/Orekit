@@ -1,12 +1,12 @@
-/*
- * Licensed to the Apache Software Foundation (ASF) under one or more
+/* Copyright 2002-2016 CS Systèmes d'Information
+ * Licensed to CS Systèmes d'Information (CS) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
- * The ASF licenses this file to You under the Apache License, Version 2.0
+ * CS licenses this file to You under the Apache License, Version 2.0
  * (the "License"); you may not use this file except in compliance with
  * the License.  You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *   http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -82,7 +82,7 @@
  * non-cartesian representation. This choice is a pragmatic one. These parameters
  * are really used in many places in algorithms, for computation related to
  * period (setting a convergence threshold or a search interval) or geometry
- * (computing swath or lightning). A side-effect of this choice is that all orbits
+ * (computing swath or lighting). A side-effect of this choice is that all orbits
  * do include a value for μ, the acceleration coefficient of the central body.
  * This value is only used for the representation of the parameters and for conversion
  * purposes, it is <em>not</em> always the same as the value used for propagation (but

@@ -1,3 +1,19 @@
+/* Copyright 2002-2016 CS Systèmes d'Information
+ * Licensed to CS Systèmes d'Information (CS) under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * CS licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package org.orekit.propagation.events;
 
 import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
@@ -9,11 +25,13 @@ import org.junit.Before;
 import org.junit.Test;
 import org.orekit.Utils;
 import org.orekit.errors.OrekitException;
+import org.orekit.errors.PropagationException;
 import org.orekit.frames.FramesFactory;
 import org.orekit.orbits.EquinoctialOrbit;
 import org.orekit.orbits.Orbit;
 import org.orekit.propagation.SpacecraftState;
 import org.orekit.propagation.events.handlers.ContinueOnEvent;
+import org.orekit.propagation.events.handlers.EventHandler;
 import org.orekit.propagation.numerical.NumericalPropagator;
 import org.orekit.time.AbsoluteDate;
 import org.orekit.time.TimeScalesFactory;
@@ -33,7 +51,8 @@ public class DateDetectorTest {
 
     @Test
     public void testSimpleTimer() throws OrekitException {
-    	EventDetector dateDetector = new DateDetector(maxCheck, threshold, iniDate.shiftedBy(2.0*dt));
+        DateDetector dateDetector = new DateDetector(maxCheck, threshold, iniDate.shiftedBy(2.0*dt));
+    	Assert.assertEquals(2 * dt, dateDetector.getDate().durationFrom(iniDate), 1.0e-10);
         propagator.addEventDetector(dateDetector);
         final SpacecraftState finalState = propagator.propagate(iniDate.shiftedBy(100.*dt));
 
@@ -43,8 +62,10 @@ public class DateDetectorTest {
     @Test
     public void testEmbeddedTimer() throws OrekitException {
     	dateDetector = new DateDetector(maxCheck, threshold);
+        Assert.assertNull(dateDetector.getDate());
     	EventDetector nodeDetector = new NodeDetector(iniOrbit, iniOrbit.getFrame()).
     	        withHandler(new ContinueOnEvent<NodeDetector>() {
+                    private static final long serialVersionUID = 1L;
     	            public Action eventOccurred(SpacecraftState s, NodeDetector nd, boolean increasing)
     	                throws OrekitException {
     	                if (increasing) {
@@ -66,6 +87,7 @@ public class DateDetectorTest {
     public void testAutoEmbeddedTimer() throws OrekitException {
         dateDetector = new DateDetector(maxCheck, threshold, iniDate.shiftedBy(-dt)).
                 withHandler(new ContinueOnEvent<DateDetector>() {
+                    private static final long serialVersionUID = 1L;
                     public Action eventOccurred(SpacecraftState s, DateDetector dd,  boolean increasing)
                             throws OrekitException {
                         AbsoluteDate nextDate = s.getDate().shiftedBy(-dt);
@@ -84,6 +106,7 @@ public class DateDetectorTest {
     public void testExceptionTimer() throws OrekitException {
         dateDetector = new DateDetector(maxCheck, threshold, iniDate.shiftedBy(dt)).
                 withHandler(new ContinueOnEvent<DateDetector>() {
+                    private static final long serialVersionUID = 1L;
                     public Action eventOccurred(SpacecraftState s, DateDetector dd, boolean increasing)
                         throws OrekitException {
                         double step = (evtno % 2 == 0) ? 2.*maxCheck : maxCheck/2.;
@@ -95,6 +118,43 @@ public class DateDetectorTest {
                 });
         propagator.addEventDetector(dateDetector);
         propagator.propagate(iniDate.shiftedBy(100.*dt));
+    }
+
+    /**
+     * Check that a generic event handler can be used with an event detector.
+     *
+     * @throws PropagationException on error.
+     */
+    @Test
+    public void testGenericHandler() throws PropagationException {
+        //setup
+        dateDetector = new DateDetector(maxCheck, threshold, iniDate.shiftedBy(dt));
+        // generic event handler that works with all detectors.
+        EventHandler<EventDetector> handler = new EventHandler<EventDetector>() {
+            @Override
+            public Action eventOccurred(SpacecraftState s,
+                                        EventDetector detector,
+                                        boolean increasing)
+                    throws OrekitException {
+                Assert.assertSame(dateDetector, detector);
+                return Action.STOP;
+            }
+
+            @Override
+            public SpacecraftState resetState(EventDetector detector,
+                                              SpacecraftState oldState)
+                    throws OrekitException {
+                throw new RuntimeException("Should not be called");
+            }
+        };
+
+        //action
+        dateDetector = dateDetector.withHandler(handler);
+        propagator.addEventDetector(dateDetector);
+        SpacecraftState finalState = propagator.propagate(iniDate.shiftedBy(100 * dt));
+
+        //verify
+        Assert.assertEquals(dt, finalState.getDate().durationFrom(iniDate), threshold);
     }
 
     @Before

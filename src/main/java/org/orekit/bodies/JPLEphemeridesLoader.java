@@ -1,4 +1,4 @@
-/* Copyright 2002-2015 CS Systèmes d'Information
+/* Copyright 2002-2016 CS Systèmes d'Information
  * Licensed to CS Systèmes d'Information (CS) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -734,7 +734,7 @@ public class JPLEphemeridesLoader implements CelestialBodyLoader {
         final long l3 = ((long) record[offset + 5]) & 0xffl;
         final long l2 = ((long) record[offset + 6]) & 0xffl;
         final long l1 = ((long) record[offset + 7]) & 0xffl;
-        long l;
+        final long l;
         if (bigEndian) {
             l = (l8 << 56) | (l7 << 48) | (l6 << 40) | (l5 << 32) |
                 (l4 << 24) | (l3 << 16) | (l2 <<  8) | l1;
@@ -995,7 +995,7 @@ public class JPLEphemeridesLoader implements CelestialBodyLoader {
                 }
 
                 // build the position-velocity model for current chunk
-                entries.add(new PosVelChebyshev(chunkStart, duration, xCoeffs, yCoeffs, zCoeffs));
+                entries.add(new PosVelChebyshev(chunkStart, timeScale, duration, xCoeffs, yCoeffs, zCoeffs));
 
             }
 

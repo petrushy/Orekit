@@ -1,4 +1,4 @@
-/* Copyright 2002-2015 CS Systèmes d'Information
+/* Copyright 2002-2016 CS Systèmes d'Information
  * Licensed to CS Systèmes d'Information (CS) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -119,6 +119,12 @@ public class OPMParser extends ODMParser implements OrbitFileParser {
     @Override
     public OPMFile parse(final String fileName) throws OrekitException {
         return (OPMFile) super.parse(fileName);
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public OPMFile parse(final InputStream stream) throws OrekitException {
+        return (OPMFile) super.parse(stream);
     }
 
     /** {@inheritDoc} */

@@ -1,4 +1,4 @@
-/* Copyright 2002-2015 CS Systèmes d'Information
+/* Copyright 2002-2016 CS Systèmes d'Information
  * Licensed to CS Systèmes d'Information (CS) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -16,30 +16,33 @@
  */
 package org.orekit.propagation.semianalytical.dsst.utilities;
 
-/** Interpolation grid where points are evenly spaced between the start and the end of the integration step.
+import org.apache.commons.math3.util.FastMath;
+
+/** Interpolation grid where points obey a maximum time gap.
  * <p>
  * The grid is adapted to the step considered,
- * meaning that for short steps, the grid will be dense,
- * while for long steps the points will be far away one from each other
+ * meaning that for short steps, the grid will have numerous points.
  * </p>
  *
- * @author Nicolas Bernard
+ * @author Luc Maisonobe
+ * @since 7.1
  */
-public class VariableStepInterpolationGrid implements InterpolationGrid {
+public class MaxGapInterpolationGrid implements InterpolationGrid {
 
-    /** number of points in the grid per step. */
-    private int pointsPerStep;
+    /** Maximum time gap. */
+    private final double maxGap;
 
     /** Constructor.
-     * @param pointsPerStep number of points in the grid per step
+     * @param maxGap maximum time gap between interpolation points
      */
-    public VariableStepInterpolationGrid(final int pointsPerStep) {
-        this.pointsPerStep = pointsPerStep;
+    public MaxGapInterpolationGrid(final double maxGap) {
+        this.maxGap = maxGap;
     }
 
     /** {@inheritDoc} */
     @Override
     public double[] getGridPoints(final double stepStart, final double stepEnd) {
+        final int pointsPerStep = FastMath.max(2, (int) FastMath.ceil(FastMath.abs(stepEnd - stepStart) / maxGap));
         final double[] grid = new double[pointsPerStep];
 
         final double stepSize = (stepEnd - stepStart) / (pointsPerStep - 1);

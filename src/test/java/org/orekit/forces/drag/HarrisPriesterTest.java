@@ -1,4 +1,4 @@
-/* Copyright 2002-2015 CS Systèmes d'Information
+/* Copyright 2002-2016 CS Systèmes d'Information
  * Licensed to CS Systèmes d'Information (CS) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -90,9 +90,9 @@ public class HarrisPriesterTest {
         // COMPUTE DENSITY KG/M3 RHO
         final double rho6 = hp6.getDensity(date, pos, earthFrame);
 
-        final double c2Psi2 = 0.021637889734841487;
+        final double c2Psi2 = 0.02163787;
 
-        Assert.assertEquals(c2Psi2, (rho6-rho2)/(rho4-rho2) - 1., 1.e-14);
+        Assert.assertEquals(c2Psi2, (rho6-rho2)/(rho4-rho2) - 1., 1.e-8);
 
     }
 
@@ -194,9 +194,9 @@ public class HarrisPriesterTest {
         final HarrisPriester hp2 = new HarrisPriester(sun, earth, userTab, 2);
         final double rho2 = hp2.getDensity(date, pos, earthFrame);
 
-        final double c2Psi2 = 0.021637889734841487;
+        final double c2Psi2 = 0.02163787;
 
-        Assert.assertEquals(c2Psi2, (rho6-rho2)/(rho-rho2) - 1., 1.e-14);
+        Assert.assertEquals(c2Psi2, (rho6-rho2)/(rho-rho2) - 1., 1.0e-8);
 
     }
 

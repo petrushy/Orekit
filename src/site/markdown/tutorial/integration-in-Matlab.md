@@ -1,4 +1,4 @@
-<!--- Copyright 2002-2015 CS Systèmes d'Information
+<!--- Copyright 2002-2016 CS Systèmes d'Information
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
   You may obtain a copy of the License at
@@ -12,8 +12,7 @@
   limitations under the License.
 -->
 
-Integration in Matlab
-=====================
+# Integration in Matlab
 
 Matlab is a commercial tool for technical computation, with easy access to graphical
 plot routines. It can access Java libraries and convert the results to Matlab objects.
@@ -24,7 +23,7 @@ javaaddpath to set the paths. Note that as of Matlab version 7.5.0 this needs to
 from the script to the Matlab prompt.
 
     %
-    % /* Copyright 2002-2015 CS Systèmes d'Information
+    % /* Copyright 2002-2016 CS Systèmes d'Information
     %  * Licensed to CS Systèmes d'Information (CS) under one or more
     %  * contributor license agreements.  See the NOTICE file distributed with
     %  * this work for additional information regarding copyright ownership.

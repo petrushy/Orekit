@@ -1,4 +1,4 @@
-/* Copyright 2002-2015 CS Systèmes d'Information
+/* Copyright 2002-2016 CS Systèmes d'Information
  * Licensed to CS Systèmes d'Information (CS) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -16,14 +16,17 @@
  */
 package org.orekit.propagation.semianalytical.dsst.forces;
 
+import java.util.List;
+
+import org.apache.commons.math3.util.FastMath;
 import org.orekit.attitudes.AttitudeProvider;
 import org.orekit.errors.OrekitException;
+import org.orekit.errors.OrekitInternalError;
 import org.orekit.forces.gravity.potential.UnnormalizedSphericalHarmonicsProvider;
 import org.orekit.frames.Frame;
 import org.orekit.propagation.SpacecraftState;
 import org.orekit.propagation.events.EventDetector;
 import org.orekit.propagation.semianalytical.dsst.utilities.AuxiliaryElements;
-import org.orekit.time.AbsoluteDate;
 
 /** Central body gravitational contribution to the
  *  {@link org.orekit.propagation.semianalytical.dsst.DSSTPropagator DSSTPropagator}.
@@ -36,36 +39,37 @@ import org.orekit.time.AbsoluteDate;
  *  </p>
  *
  *   @author Pascal Parraud
+ *   @deprecated as of 7.2, replaced by {@link DSSTZonal} and {@link DSSTTesseral}
  */
+@Deprecated
 public class DSSTCentralBody implements DSSTForceModel {
 
     /** Zonal harmonics contribution. */
-    private final ZonalContribution    zonal;
+    private final DSSTZonal    zonal;
 
     /** Tesseral harmonics contribution. */
-    private final TesseralContribution tesseral;
+    private final DSSTTesseral tesseral;
 
     /** DSST Central body constructor.
+     * <p>
+     * This constructor limits the zonal short periods to degree 12,
+     * the tesseral short periods to degree and order 8,
+     * and the tesseral m-dailies to degree and order 12.
+     * </p>
      * @param centralBodyFrame rotating body frame
      * @param centralBodyRotationRate central body rotation rate (rad/s)
      * @param provider provider for spherical harmonics
      * @param mDailiesOnly if true only M-dailies tesseral harmonics are taken into account for short periodics
+     * @deprecated since 7.1, replaced with {@link #DSSTCentralBody(Frame, double,
+     * UnnormalizedSphericalHarmonicsProvider, int, int, int, int, int)}
      */
+    @Deprecated
     public DSSTCentralBody(final Frame centralBodyFrame,
                            final double centralBodyRotationRate,
                            final UnnormalizedSphericalHarmonicsProvider provider,
                            final boolean mDailiesOnly) {
-
-        // Zonal harmonics contribution
-        this.zonal = new ZonalContribution(provider);
-
-        // Tesseral harmonics contribution (only if order > 0)
-        this.tesseral = (provider.getMaxOrder() == 0) ?
-                        null : new TesseralContribution(centralBodyFrame,
-                                                        centralBodyRotationRate,
-                                                        provider,
-                                                        mDailiesOnly);
-
+        this(centralBodyFrame, centralBodyRotationRate, provider,
+             12, mDailiesOnly ? -1 : 8, mDailiesOnly ? -1 : 8, 12, 12);
     }
 
     /** DSST Central body constructor.
@@ -75,24 +79,87 @@ public class DSSTCentralBody implements DSSTForceModel {
      * @param centralBodyFrame rotating body frame
      * @param centralBodyRotationRate central body rotation rate (rad/s)
      * @param provider provider for spherical harmonics
+     * @deprecated since 7.1, replaced with {@link #DSSTCentralBody(Frame, double,
+     * UnnormalizedSphericalHarmonicsProvider, int, int, int, int, int)}
      */
+    @Deprecated
     public DSSTCentralBody(final Frame centralBodyFrame,
                            final double centralBodyRotationRate,
                            final UnnormalizedSphericalHarmonicsProvider provider) {
         this(centralBodyFrame, centralBodyRotationRate, provider, false);
     }
 
+    /** DSST Central body constructor.
+     * @param centralBodyFrame rotating body frame
+     * @param centralBodyRotationRate central body rotation rate (rad/s)
+     * @param provider provider for spherical harmonics
+     * @param maxDegreeZonalSP maximal degree to consider for short periodics zonal harmonics potential
+     *  (the real degree used may be smaller if the provider does not provide enough terms)
+     * @param maxDegreeTesseralSP maximal degree to consider for short periodics tesseral harmonics potential
+     *  (the real degree used may be smaller if the provider does not provide enough terms)
+     * @param maxOrderTesseralSP maximal order to consider for short periodics tesseral harmonics potential
+     *  (the real order used may be smaller if the provider does not provide enough terms)
+     * @param maxDegreeMdailyTesseralSP maximal degree to consider for short periodics m-daily tesseral harmonics potential
+     *  (the real degree used may be smaller if the provider does not provide enough terms)
+     * @param maxOrderMdailyTesseralSP maximal order to consider for short periodics m-daily tesseral harmonics potential
+     *  (the real order used may be smaller if the provider does not provide enough terms)
+     * @since 7.1
+     */
+    public DSSTCentralBody(final Frame centralBodyFrame,
+                           final double centralBodyRotationRate,
+                           final UnnormalizedSphericalHarmonicsProvider provider,
+                           final int maxDegreeZonalSP,
+                           final int maxDegreeTesseralSP, final int maxOrderTesseralSP,
+                           final int maxDegreeMdailyTesseralSP, final int maxOrderMdailyTesseralSP) {
+        try {
+
+            // Zonal harmonics contribution
+            final int maxDegreeZonalShortPeriodics = FastMath.min(provider.getMaxDegree(), maxDegreeZonalSP);
+            final int maxEccPowZonalShortPeriodics = FastMath.min(maxDegreeZonalShortPeriodics - 1, 4);
+            this.zonal = new DSSTZonal(provider,
+                                       maxDegreeZonalShortPeriodics,
+                                       maxEccPowZonalShortPeriodics,
+                                       2 * maxDegreeZonalShortPeriodics + 1);
+
+            // Tesseral harmonics contribution (only if order > 0)
+            final int maxDegreeTesseralShortPeriodics       = FastMath.min(provider.getMaxDegree(), maxDegreeTesseralSP);
+            final int maxOrderTesseralShortPeriodics        = FastMath.min(provider.getMaxOrder(), maxOrderTesseralSP);
+            final int maxEccPowTesseralShortPeriodics       = FastMath.min(maxDegreeTesseralShortPeriodics - 1, 4);
+            final int maxFrequencyShortPeriodics            = FastMath.min(maxDegreeTesseralShortPeriodics +
+                                                                           maxEccPowTesseralShortPeriodics,
+                                                                           12);
+            final int maxDegreeMdailyTesseralShortPeriodics = FastMath.min(provider.getMaxDegree(), maxDegreeMdailyTesseralSP);
+            final int maxOrderMdailyTesseralShortPeriodics  = FastMath.min(provider.getMaxOrder(), maxOrderMdailyTesseralSP);
+            final int maxEccPowMdailyTesseralShortPeriodics = FastMath.min(maxDegreeMdailyTesseralShortPeriodics - 2, 4);
+            this.tesseral = (provider.getMaxOrder() == 0) ?
+                            null : new DSSTTesseral(centralBodyFrame,
+                                                    centralBodyRotationRate,
+                                                    provider,
+                                                    maxDegreeTesseralShortPeriodics, maxOrderTesseralShortPeriodics,
+                                                    maxEccPowTesseralShortPeriodics, maxFrequencyShortPeriodics,
+                                                    maxDegreeMdailyTesseralShortPeriodics,
+                                                    maxOrderMdailyTesseralShortPeriodics,
+                                                    maxEccPowMdailyTesseralShortPeriodics);
+        } catch (OrekitException oe) {
+            // this should never happen
+            throw new OrekitInternalError(oe);
+        }
+    }
+
     /** {@inheritDoc} */
-    public void initialize(final AuxiliaryElements aux, final boolean meanOnly)
+    public List<ShortPeriodTerms> initialize(final AuxiliaryElements aux, final boolean meanOnly)
         throws OrekitException {
 
         // Initialize zonal contribution
-        zonal.initialize(aux, meanOnly);
+        final List<ShortPeriodTerms> list = zonal.initialize(aux, meanOnly);
 
         // Initialize tesseral contribution if needed
         if (tesseral != null) {
-            tesseral.initialize(aux, meanOnly);
+            list.addAll(tesseral.initialize(aux, meanOnly));
         }
+
+        return list;
+
     }
 
     /** {@inheritDoc} */
@@ -106,6 +173,7 @@ public class DSSTCentralBody implements DSSTForceModel {
         if (tesseral != null) {
             tesseral.initializeStep(aux);
         }
+
     }
 
     /** {@inheritDoc} */
@@ -124,24 +192,7 @@ public class DSSTCentralBody implements DSSTForceModel {
         }
 
         return meanElementRate;
-    }
 
-    /** {@inheritDoc} */
-    public double[] getShortPeriodicVariations(final AbsoluteDate date, final double[] meanElements)
-        throws OrekitException {
-
-        // Get zonal harmonics contribution to short periodic variations
-        final double[] shortPeriodics = zonal.getShortPeriodicVariations(date, meanElements);
-
-        // Get tesseral resonant harmonics contribution to short periodic variations
-        if (tesseral != null) {
-            final double[] tesseralShort = tesseral.getShortPeriodicVariations(date, meanElements);
-            for (int i = 0; i < 6; i++) {
-                shortPeriodics[i] += tesseralShort[i];
-            }
-        }
-
-        return shortPeriodics;
     }
 
     /** {@inheritDoc} */
@@ -150,21 +201,12 @@ public class DSSTCentralBody implements DSSTForceModel {
     }
 
     /** {@inheritDoc} */
-    public void computeShortPeriodicsCoefficients(final SpacecraftState state) throws OrekitException {
+    public void updateShortPeriodTerms(final SpacecraftState ... state)
+        throws OrekitException {
         //relay the call to the Zonal and Tesseral contributions
-        zonal.computeShortPeriodicsCoefficients(state);
+        zonal.updateShortPeriodTerms(state);
         if (tesseral != null) {
-            tesseral.computeShortPeriodicsCoefficients(state);
-        }
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public void resetShortPeriodicsCoefficients() {
-      //relay the call to the Zonal and Tesseral contributions
-        zonal.resetShortPeriodicsCoefficients();
-        if (tesseral != null) {
-            tesseral.resetShortPeriodicsCoefficients();
+            tesseral.updateShortPeriodTerms(state);
         }
     }
 

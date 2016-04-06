@@ -1,4 +1,4 @@
-/* Copyright 2002-2015 CS Systèmes d'Information
+/* Copyright 2002-2016 CS Systèmes d'Information
  * Licensed to CS Systèmes d'Information (CS) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -20,6 +20,7 @@ package org.orekit.frames;
 import java.util.ArrayList;
 
 import org.apache.commons.math3.geometry.euclidean.threed.Rotation;
+import org.apache.commons.math3.geometry.euclidean.threed.RotationConvention;
 import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
 import org.apache.commons.math3.util.FastMath;
 import org.apache.commons.math3.util.MathUtils;
@@ -172,10 +173,10 @@ public class ITRFEquinoxProviderTest {
         // time scales checks
         AbsoluteDate date = new AbsoluteDate(new DateComponents(2007, 4, 5), TimeComponents.H12, utc);
         Assert.assertEquals(0.50075444444444,
-                            date.getComponents(tt).getTime().getSecondsInDay() / Constants.JULIAN_DAY,
+                            date.getComponents(tt).getTime().getSecondsInUTCDay() / Constants.JULIAN_DAY,
                             5.0e-15);
         Assert.assertEquals(0.499999165813831,
-                            date.getComponents(ut1).getTime().getSecondsInDay() / Constants.JULIAN_DAY,
+                            date.getComponents(ut1).getTime().getSecondsInUTCDay() / Constants.JULIAN_DAY,
                             1.0e-15);
 
         // sidereal time check
@@ -251,7 +252,7 @@ public class ITRFEquinoxProviderTest {
         for (double dt = 0; dt < Constants.JULIAN_YEAR; dt += Constants.JULIAN_DAY / 4) {
             AbsoluteDate date = t0.shiftedBy(dt);
             Transform t = FramesFactory.getNonInterpolatingTransform(frame1, frame2, date);
-            Vector3D a = t.getRotation().getAxis();
+            Vector3D a = t.getRotation().getAxis(RotationConvention.VECTOR_OPERATOR);
             double delta = FastMath.copySign(radToMicroAS(t.getRotation().getAngle()), a.getZ());
             Assert.assertEquals(0.0, delta, toleranceMicroAS);
         }

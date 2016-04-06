@@ -4,6 +4,9 @@ INTERNAL_ERROR = Εσωτερικό σφάλμα, επικοινωνήστε μ�
 # altitude ({0} m) is below the {1} m allowed threshold
 ALTITUDE_BELOW_ALLOWED_THRESHOLD = το υψόμετρο ({0} m) είναι κάτω του {1} επιτρεπόμενου ορίου m 
 
+# point is inside ellipsoid
+POINT_INSIDE_ELLIPSOID = <MISSING TRANSLATION>
+
 # trajectory inside the Brillouin sphere (r = {0})
 TRAJECTORY_INSIDE_BRILLOUIN_SPHERE = τροχιά στο εσωτερικό της σφαίρας Brillouin (r = {0})
 
@@ -265,7 +268,7 @@ SINGULAR_JACOBIAN_FOR_ORBIT_TYPE = Ο πίνακας Jacobian για τον τύ
 # state Jacobian has not been initialized yet
 STATE_JACOBIAN_NOT_INITIALIZED = Η Jacobian κατάσταση δεν έχει ακόμη αρχικοποιηθεί
 
-# state  is a {0}x{1} matrix, it should be either a 6x6 or a 7x7 matrix
+# state Jacobian is a {0}x{1} matrix, it should be either a 6x6 or a 7x7 matrix
 STATE_JACOBIAN_NEITHER_6X6_NOR_7X7 = Η κατάσταση είναι ένας {0}x{1} πίνακας, θα πρέπει να είναι είτε ένας 6x6 είτε ένας 7x7 πίνακας
 
 # state Jacobian has {0} rows but parameters Jacobian has {1} rows
@@ -274,7 +277,7 @@ STATE_AND_PARAMETERS_JACOBIANS_ROWS_MISMATCH = Η Jacobian κατάσταση έ
 # finite differences steps for force models derivatives not initialized
 STEPS_NOT_INITIALIZED_FOR_FINITE_DIFFERENCES = τα πεπερασμένα βήματα για παράγωγα μοντέλα ισχύος δεν έχουν αρχικοποιηθεί
 
-# initial  matrix has {0} columns, but {1} parameters have been selected
+# initial Jacobian matrix has {0} columns, but {1} parameters have been selected
 INITIAL_MATRIX_AND_PARAMETERS_NUMBER_MISMATCH = Ο αρχικός πίνακας έχει {0} στήλες, αλλά {1} παράμετροι έχουν επιλεχθεί
 
 # orbit should be either elliptic with a > 0 and e < 1 or hyperbolic with a < 0 and e > 1, a = {0}, e = {1}
@@ -333,9 +336,6 @@ DSST_ECC_NO_NUMERICAL_AVERAGING_METHOD = Η τρέχουσα τροχιά έχε
 
 # unsupported sp3 file version {0}
 SP3_UNSUPPORTED_VERSION = μη υποστηριζόμενη έκδοση του αρχείου sp3 {0}
-
-# unsupported time system {0}
-SP3_UNSUPPORTED_TIMESYSTEM = μη υποστηριζόμενη ώρα συστήματος {0}
 
 # unexpected end of file in sp3 file (after line {0})
 SP3_UNEXPECTED_END_OF_FILE = μη αναμενόμενο τέλος αρχείου στο αρχείο sp3 (μετά από τη γραμμή {0})

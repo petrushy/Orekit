@@ -1,4 +1,4 @@
-/* Copyright 2002-2015 CS Systèmes d'Information
+/* Copyright 2002-2016 CS Systèmes d'Information
  * Licensed to CS Systèmes d'Information (CS) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -34,8 +34,11 @@ import org.orekit.utils.PVCoordinatesProvider;
  * {@link #withHandler(EventHandler)} after construction.</p>
  * @see org.orekit.propagation.Propagator#addEventDetector(EventDetector)
  * @see CircularFieldOfViewDetector
+ * @see FootprintOverlapDetector
  * @author V&eacute;ronique Pommier-Maurussane
+ * @deprecated as of 7.1, replaced with {@link FieldOfViewDetector}
  */
+@Deprecated
 public class DihedralFieldOfViewDetector extends AbstractDetector<DihedralFieldOfViewDetector> {
 
     /** Serializable UID. */
@@ -104,7 +107,7 @@ public class DihedralFieldOfViewDetector extends AbstractDetector<DihedralFieldO
      * @since 6.1
      */
     private DihedralFieldOfViewDetector(final double maxCheck, final double threshold,
-                                        final int maxIter, final EventHandler<DihedralFieldOfViewDetector> handler,
+                                        final int maxIter, final EventHandler<? super DihedralFieldOfViewDetector> handler,
                                         final PVCoordinatesProvider pvTarget, final Vector3D center,
                                         final Vector3D axis1, final double halfAperture1,
                                         final Vector3D axis2, final double halfAperture2) {
@@ -128,7 +131,7 @@ public class DihedralFieldOfViewDetector extends AbstractDetector<DihedralFieldO
     @Override
     protected DihedralFieldOfViewDetector create(final double newMaxCheck, final double newThreshold,
                                                  final int newMaxIter,
-                                                 final EventHandler<DihedralFieldOfViewDetector> newHandler) {
+                                                 final EventHandler<? super DihedralFieldOfViewDetector> newHandler) {
         return new DihedralFieldOfViewDetector(newMaxCheck, newThreshold, newMaxIter, newHandler,
                                                targetPVProvider, center,
                                                axis1, halfAperture1,
@@ -195,7 +198,7 @@ public class DihedralFieldOfViewDetector extends AbstractDetector<DihedralFieldO
 
         // g function value is distance to the FOV boundary, computed as a dihedral angle.
         // It is positive inside the FOV, and negative outside.
-        return FastMath.min(halfAperture1 - FastMath.abs(angle1) ,  halfAperture2 - FastMath.abs(angle2));
+        return FastMath.min(halfAperture1 - FastMath.abs(angle1),  halfAperture2 - FastMath.abs(angle2));
     }
 
 }

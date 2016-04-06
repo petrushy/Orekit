@@ -1,4 +1,4 @@
-/* Copyright 2002-2015 CS Systèmes d'Information
+/* Copyright 2002-2016 CS Systèmes d'Information
  * Licensed to CS Systèmes d'Information (CS) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -393,7 +393,7 @@ public class KeplerianOrbit extends Orbit {
 
         // perform two iterations, each consisting of one Halley step and one Newton-Raphson step
         for (int j = 0; j < 2; ++j) {
-            double f;
+            final double f;
             double fd;
             final double fdd  = e * FastMath.sin(E);
             final double fddd = e * FastMath.cos(E);

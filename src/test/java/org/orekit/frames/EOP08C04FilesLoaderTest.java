@@ -1,4 +1,4 @@
-/* Copyright 2002-2015 CS Systèmes d'Information
+/* Copyright 2002-2016 CS Systèmes d'Information
  * Licensed to CS Systèmes d'Information (CS) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -17,7 +17,6 @@
 package org.orekit.frames;
 
 
-import java.text.ParseException;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
@@ -45,7 +44,7 @@ public class EOP08C04FilesLoaderTest extends AbstractFilesLoaderTest {
     }
 
     @Test
-    public void testStartDate() throws OrekitException, ParseException {
+    public void testStartDate() throws OrekitException {
         setRoot("regular-data");
         IERSConventions.NutationCorrectionConverter converter =
                 IERSConventions.IERS_2010.getNutationCorrectionConverter();
@@ -56,7 +55,7 @@ public class EOP08C04FilesLoaderTest extends AbstractFilesLoaderTest {
     }
 
     @Test
-    public void testEndDate() throws OrekitException, ParseException {
+    public void testEndDate() throws OrekitException {
         setRoot("regular-data");
         IERSConventions.NutationCorrectionConverter converter =
                 IERSConventions.IERS_2010.getNutationCorrectionConverter();
@@ -67,7 +66,7 @@ public class EOP08C04FilesLoaderTest extends AbstractFilesLoaderTest {
     }
 
     @Test
-    public void testContent() throws OrekitException, ParseException {
+    public void testContent() throws OrekitException {
         setRoot("regular-data");
         IERSConventions.NutationCorrectionConverter converter =
                 IERSConventions.IERS_2010.getNutationCorrectionConverter();

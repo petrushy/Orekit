@@ -1,4 +1,4 @@
-/* Copyright 2002-2015 CS Systèmes d'Information
+/* Copyright 2002-2016 CS Systèmes d'Information
  * Licensed to CS Systèmes d'Information (CS) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -21,7 +21,7 @@ import java.io.Serializable;
 import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
 import org.orekit.time.AbsoluteDate;
 
-/** Interface for IAU pole and primer meridian orientations.
+/** Interface for IAU pole and prime meridian orientations.
  * <p>
  * This interface defines methods compliant with the report of the
  * IAU/IAG Working Group on Cartographic Coordinates and Rotational

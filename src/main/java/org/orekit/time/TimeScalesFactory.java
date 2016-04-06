@@ -1,4 +1,4 @@
-/* Copyright 2002-2015 CS Systèmes d'Information
+/* Copyright 2002-2016 CS Systèmes d'Information
  * Licensed to CS Systèmes d'Information (CS) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -60,6 +60,12 @@ public class TimeScalesFactory implements Serializable {
 
     /** Galileo System Time scale. */
     private static GalileoScale gst = null;
+
+    /** GLObal NAvigation Satellite System scale. */
+    private static GLONASSScale glonass = null;
+
+    /** Quasi-Zenith Satellite System scale. */
+    private static QZSSScale qzss = null;
 
     /** Global Positioning System scale. */
     private static GPSScale gps = null;
@@ -328,6 +334,37 @@ public class TimeScalesFactory implements Serializable {
             }
 
             return gst;
+
+        }
+    }
+
+    /** Get the GLObal NAvigation Satellite System time scale.
+     * @return  GLObal NAvigation Satellite System time scale
+     * @exception OrekitException if UTC time scale cannot be retrieved
+     */
+    public static GLONASSScale getGLONASS() throws OrekitException {
+        synchronized (TimeScalesFactory.class) {
+
+            if (glonass == null) {
+                glonass = new GLONASSScale(getUTC());
+            }
+
+            return glonass;
+
+        }
+    }
+
+    /** Get the Quasi-Zenith Satellite System time scale.
+     * @return  Quasi-Zenith Satellite System time scale
+     */
+    public static QZSSScale getQZSS() {
+        synchronized (TimeScalesFactory.class) {
+
+            if (qzss == null) {
+                qzss = new QZSSScale();
+            }
+
+            return qzss;
 
         }
     }

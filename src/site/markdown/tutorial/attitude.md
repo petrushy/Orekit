@@ -1,4 +1,4 @@
-<!--- Copyright 2002-2015 CS Systèmes d'Information
+<!--- Copyright 2002-2016 CS Systèmes d'Information
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
   You may obtain a copy of the License at
@@ -12,15 +12,13 @@
   limitations under the License.
 -->
 
-Attitude
-=========
+# Attitude
 
 This tutorial emphasizes a specific usage of the attitude package
 described in the [attitudes section](../architecture/attitudes.html) of
 the library architecture documentation.
 
-Attitudes Sequence
-------------------
+## Attitudes Sequence
 
 `AttitudesSequence` enables easy switching between attitude laws on
 event occurrences when propagating some `SpacecraftState`.

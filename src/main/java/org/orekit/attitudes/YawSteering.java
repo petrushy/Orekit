@@ -1,4 +1,4 @@
-/* Copyright 2002-2015 CS Systèmes d'Information
+/* Copyright 2002-2016 CS Systèmes d'Information
  * Licensed to CS Systèmes d'Information (CS) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -32,7 +32,7 @@ import org.orekit.utils.TimeStampedPVCoordinates;
  * <p>
  * Yaw steering is mainly used for low Earth orbiting satellites with no
  * missions-related constraints on yaw angle. It sets the yaw angle in
- * such a way the solar arrays have maximal lightning without changing the
+ * such a way the solar arrays have maximal lighting without changing the
  * roll and pitch.
  * </p>
  * <p>

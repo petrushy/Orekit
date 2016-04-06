@@ -1,4 +1,4 @@
-/* Copyright 2002-2015 CS Systèmes d'Information
+/* Copyright 2002-2016 CS Systèmes d'Information
  * Licensed to CS Systèmes d'Information (CS) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -82,8 +82,8 @@ public class ElevationDetectorTest {
         // Earth and frame
         double ae =  6378137.0; // equatorial radius in meter
         double f  =  1.0 / 298.257223563; // flattening
-        Frame ITRF2005 = FramesFactory.getITRF(IERSConventions.IERS_2010, true); // terrestrial frame at an arbitrary date
-        BodyShape earth = new OneAxisEllipsoid(ae, f, ITRF2005);
+        Frame itrf = FramesFactory.getITRF(IERSConventions.IERS_2010, true); // terrestrial frame at an arbitrary date
+        BodyShape earth = new OneAxisEllipsoid(ae, f, itrf);
         GeodeticPoint point = new GeodeticPoint(FastMath.toRadians(48.833),
                                                 FastMath.toRadians(2.333),
                                                 0.0);
@@ -93,6 +93,10 @@ public class ElevationDetectorTest {
                 new ElevationDetector(topo).
                 withConstantElevation(FastMath.toRadians(5.0)).
                 withHandler(checking);
+        Assert.assertNull(detector.getElevationMask());
+        Assert.assertNull(detector.getRefractionModel());
+        Assert.assertSame(topo, detector.getTopocentricFrame());
+        Assert.assertEquals(FastMath.toRadians(5.0), detector.getMinElevation(), 1.0e-15);
 
         AbsoluteDate startDate = new AbsoluteDate(2003, 9, 15, 12, 0, 0, utc);
         propagator.resetInitialState(propagator.propagate(startDate));
@@ -164,8 +168,8 @@ public class ElevationDetectorTest {
         // Earth and frame
         double ae =  6378137.0; // equatorial radius in meter
         double f  =  1.0 / 298.257223563; // flattening
-        Frame ITRF2005 = FramesFactory.getITRF(IERSConventions.IERS_2010, true); // terrestrial frame at an arbitrary date
-        BodyShape earth = new OneAxisEllipsoid(ae, f, ITRF2005);
+        Frame itrf = FramesFactory.getITRF(IERSConventions.IERS_2010, true); // terrestrial frame at an arbitrary date
+        BodyShape earth = new OneAxisEllipsoid(ae, f, itrf);
         GeodeticPoint point = new GeodeticPoint(FastMath.toRadians(48.833),
                                                 FastMath.toRadians(2.333),
                                                 0.0);
@@ -186,6 +190,7 @@ public class ElevationDetectorTest {
         ElevationDetector detector = new ElevationDetector(topo)
                                             .withElevationMask(mask)
                                             .withHandler(new StopOnIncreasing<ElevationDetector>());
+        Assert.assertSame(mask, detector.getElevationMask());
 
         AbsoluteDate startDate = new AbsoluteDate(2003, 9, 15, 20, 0, 0, utc);
         propagator.resetInitialState(propagator.propagate(startDate));
@@ -213,8 +218,8 @@ public class ElevationDetectorTest {
         // Earth and frame
         double ae =  6378137.0; // equatorial radius in meter
         double f  =  1.0 / 298.257223563; // flattening
-        Frame ITRF2005 = FramesFactory.getITRF(IERSConventions.IERS_2010, true); // terrestrial frame at an arbitrary date
-        BodyShape earth = new OneAxisEllipsoid(ae, f, ITRF2005);
+        Frame itrf = FramesFactory.getITRF(IERSConventions.IERS_2010, true); // terrestrial frame at an arbitrary date
+        BodyShape earth = new OneAxisEllipsoid(ae, f, itrf);
         GeodeticPoint point = new GeodeticPoint(FastMath.toRadians(48.833),
                                                 FastMath.toRadians(2.333),
                                                 0.0);
@@ -223,6 +228,7 @@ public class ElevationDetectorTest {
         ElevationDetector detector = new ElevationDetector(topo)
                                             .withRefraction(refractionModel)
                                             .withHandler(new StopOnIncreasing<ElevationDetector>());
+        Assert.assertSame(refractionModel, detector.getRefractionModel());
 
         AbsoluteDate startDate = new AbsoluteDate(2003, 9, 15, 20, 0, 0, utc);
         propagator.resetInitialState(propagator.propagate(startDate));
@@ -253,8 +259,8 @@ public class ElevationDetectorTest {
         // Earth and frame
         double ae =  6378137.0; // equatorial radius in meter
         double f  =  1.0 / 298.257223563; // flattening
-        Frame ITRF2005 = FramesFactory.getITRF(IERSConventions.IERS_2010, true); // terrestrial frame at an arbitrary date
-        BodyShape earth = new OneAxisEllipsoid(ae, f, ITRF2005);
+        Frame itrf = FramesFactory.getITRF(IERSConventions.IERS_2010, true); // terrestrial frame at an arbitrary date
+        BodyShape earth = new OneAxisEllipsoid(ae, f, itrf);
 
         // Station
         final double longitude = FastMath.toRadians(-147.5);
@@ -350,8 +356,8 @@ public class ElevationDetectorTest {
         // Earth and frame
         double ae =  6378137.0; // equatorial radius in meter
         double f  =  1.0 / 298.257223563; // flattening
-        Frame ITRF2005 = FramesFactory.getITRF(IERSConventions.IERS_2010, true); // terrestrial frame at an arbitrary date
-        BodyShape earth = new OneAxisEllipsoid(ae, f, ITRF2005);
+        Frame itrf = FramesFactory.getITRF(IERSConventions.IERS_2010, true); // terrestrial frame at an arbitrary date
+        BodyShape earth = new OneAxisEllipsoid(ae, f, itrf);
         GeodeticPoint point = new GeodeticPoint(FastMath.toRadians(48.833),
                                                 FastMath.toRadians(2.333),
                                                 0.0);

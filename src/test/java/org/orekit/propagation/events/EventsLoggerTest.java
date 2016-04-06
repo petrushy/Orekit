@@ -1,4 +1,4 @@
-/* Copyright 2002-2015 CS Systèmes d'Information
+/* Copyright 2002-2016 CS Systèmes d'Information
  * Licensed to CS Systèmes d'Information (CS) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -51,7 +51,12 @@ public class EventsLoggerTest {
     @Test
     public void testLogUmbra() throws OrekitException {
         EventsLogger logger = new EventsLogger();
-        propagator.addEventDetector(logger.monitorDetector(umbraDetector));
+        @SuppressWarnings("unchecked")
+        EventDetector monitored = ((AbstractDetector<EventDetector>) logger.monitorDetector(umbraDetector)).
+                withMaxIter(200);
+        Assert.assertEquals(100, umbraDetector.getMaxIterationCount());
+        Assert.assertEquals(200, monitored.getMaxIterationCount());
+        propagator.addEventDetector(monitored);
         propagator.addEventDetector(penumbraDetector);
         count = 0;
         propagator.propagate(iniDate.shiftedBy(16215)).getDate();

@@ -1,4 +1,4 @@
-/* Copyright 2002-2015 CS Systèmes d'Information
+/* Copyright 2002-2016 CS Systèmes d'Information
  * Licensed to CS Systèmes d'Information (CS) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -19,6 +19,7 @@ package org.orekit.propagation.conversion;
 import org.apache.commons.math3.ode.AbstractIntegrator;
 import org.apache.commons.math3.ode.nonstiff.MidpointIntegrator;
 import org.orekit.orbits.Orbit;
+import org.orekit.orbits.OrbitType;
 
 /** Builder for MidpointIntegrator.
  * @author Pascal Parraud
@@ -38,7 +39,7 @@ public class MidpointIntegratorBuilder implements FirstOrderIntegratorBuilder {
     }
 
     /** {@inheritDoc} */
-    public AbstractIntegrator buildIntegrator(final Orbit orbit) {
+    public AbstractIntegrator buildIntegrator(final Orbit orbit, final OrbitType orbitType) {
         return new MidpointIntegrator(step);
     }
 

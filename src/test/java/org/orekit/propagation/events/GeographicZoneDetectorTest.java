@@ -1,4 +1,4 @@
-/* Copyright 2002-2015 CS Systèmes d'Information
+/* Copyright 2002-2016 CS Systèmes d'Information
  * Licensed to CS Systèmes d'Information (CS) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -114,8 +114,8 @@ public class GeographicZoneDetectorTest {
         ObjectOutputStream    oos = new ObjectOutputStream(bos);
         oos.writeObject(d);
 
-        Assert.assertTrue(bos.size() > 1950);
-        Assert.assertTrue(bos.size() < 2050);
+        Assert.assertTrue(bos.size() > 2100);
+        Assert.assertTrue(bos.size() < 2200);
 
         ByteArrayInputStream  bis = new ByteArrayInputStream(bos.toByteArray());
         ObjectInputStream     ois = new ObjectInputStream(bis);

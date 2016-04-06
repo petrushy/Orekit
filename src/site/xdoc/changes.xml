@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<!-- Copyright 2002-2015 CS Systèmes d'Information
+<!-- Copyright 2002-2016 CS Systèmes d'Information
   Licensed to CS Systèmes d'Information (CS) under one or more
   contributor license agreements.  See the NOTICE file distributed with
   this work for additional information regarding copyright ownership.
@@ -20,7 +20,241 @@
     <title>Orekit Changes</title>
   </properties>
   <body>
-    <release version="7.1" date="TBD" description="TBD">
+    <release version="7.2" date="TBC"
+             description="Version 7.2 is a minor release of Orekit. It introduces several new
+             features and bug fixes. The most important features introduced in version 7.2
+             are handling of GLONASS and QZSS time scales, support for local time zones
+             according to ISO-8601 standard, and finer tuning of short period terms in
+             DSST propagator. Version 7.2 depends on version 3.6.1 of Apache Commons Math,
+             which also fixes a bug related to close events detection.">
+      <action dev="luc" type="add">
+        Added GLONASS and QZSS time scales. These time scales my be used in SP3-c files.
+      </action>
+      <action dev="luc" type="add">
+        Added parsing and displaying of local time according to ISO-8601 standard.
+      </action>
+      <action dev="luc" type="fix">
+        Added some protections against malformed SP3 files.
+      </action>
+      <action dev="luc" type="fix">
+        Fixed Newcomb operators generation in DSST for high degree gravity fields.
+        Fixes issue #237
+      </action>
+      <action dev="luc" type="update">
+        Improved tuning of DSST tesseral force models. Users can now tune max degree,
+        max eccentricity power and max frequency in mean longitude for short
+        period terms, as well as for m-daily terms.
+      </action>
+      <action dev="luc" type="update">
+        Improved tuning of DSST zonal force models. Users can now tune max degree,
+        max eccentricity power and max frequency in true longitude for short
+        period terms.
+      </action>
+      <action dev="luc" type="fix">
+        Fixed wrong continuous maneuver handling in backward propagation.
+        Fixes issue #236
+      </action>
+    </release>
+    <release version="7.1" date="2016-02-07"
+             description="Version 7.1 is a minor release of Orekit. It introduces several new
+             features and bug fixes. The most important features introduced in version 7.1
+             are a lot of new event detectors (field of view based detectors supporting any FoV
+             shape, either on ground targetting spacecraft or on spacecraft and targetting
+             ground defined zones with any shape, extremum elevation detector, anomaly,
+             latitude argument, or longitude argument crossing detectors, either true, mean
+             or eccentric, latitude and longitude extremum detectors, latitude and longitude
+             crossing detectors), new event filtering capability based on user-provided
+             predicate function, ability to customize DSST interpolation grid for short period
+             elements, ability to retrieve DSS short periodic coefficients, removed some arbitrary
+             limitations in DSST tesseral and zonal contribution, ability to set short period
+             degree/order to smaller values than mean elements in DSST, vastly improved
+             frames transforms efficiency for various Earth frames, three different types of
+             solar radiation pressure coefficients, new tabulated attitudes related to Local
+             Orbital Frame, smooth attitude transitions in attitudes sequences, with derivatives
+             continuity at both endpoint, ground zone sampling either in tiles or grid with fixed
+             or track-based orientation, derivatives handling in geodetic points, parsing of TLE
+             with non-unclassified modifiers, support for officiel WMM coefficients from NOAA,
+             support for tai-utc.dat file from USNO, tropospheric refraction model following
+             Recommendation ITU-R P.834-7, geoid model based on gravity field, and use of the new
+             Apache Commons Math rotation API with either Frame transform convention or vector
+             operator convention. Numerous bugs were also fixed.
+             Version 7.1 depends on version 3.6 of Apache Commons Math.">
+      <action dev="thierry" type="add">
+        Added tropospheric refraction correction angle following Recommendation ITU-R P.834-7.
+      </action>
+      <action dev="luc" type="add">
+        Added a way to configure max degree/order for short periods separately
+        from the mean elements settings in DSST tutorial.
+      </action>
+      <action dev="luc" type="fix">
+        Fixed limitation to degree 12 on zonal short periods, degree/order 8 on
+        tesseral short periods, and degree/order 12 for tesseral m-dailies in DSST.
+      </action>
+      <action dev="luc" type="fix">
+        Fixed wrong orbit type in propagator conversion. The type specified by
+        user was ignored when computing variable stepsize integrator tolerances.
+      </action>
+      <action dev="luc" type="add">
+        Set up three different implementations of radiation pressure coefficients,
+        using either a single reflection coefficient, or a pair of absorption
+        and specular reflection coefficients using the classical convention about
+        specular reflection, or a pair of absorption and specular reflection
+        coefficients using the legacy convention from the 1995 CNES book.
+        Fixes issue #170
+      </action>
+      <action dev="luc" type="fix">
+        Fixed wrong latitude normalization in FieldGeodeticPoint.
+      </action>
+      <action dev="luc" type="fix">
+        Fixed blanks handling in CCSDS ODM files.
+        Fixes issue #232
+      </action>
+      <action dev="luc" type="fix">
+        Fixed FramesFactory.getNonInterpolatingTransform working only
+        in one direction.
+        Fixes issue #231
+      </action>
+      <action dev="evan" type="add">
+        Added Field of View based event detector for ground based sensors.
+      </action>
+      <action dev="luc" type="add">
+        Added a getFootprint method to FieldOfView for projecting Field Of View
+        to ground, taking limb of ellipsoid into account (including flatness) if
+        Field Of View skims over horizon.
+      </action>
+      <action dev="luc" type="add">
+        Added a pointOnLimb method to Ellipsoid for computing points that lie
+        on the limb as seen from an external observer.
+      </action>
+      <action dev="luc" type="add">
+        Added an isInside predicate method to Ellipsoid for checking points location.
+      </action>
+      <action dev="evan" type="fix">
+        Support parsing lowercase values in CCSDS orbit data messages.
+        Fixes issue #230
+      </action>
+      <action dev="luc" type="add">
+        Added a generic FieldOfViewDetector that can handle any Field Of View shape.
+        The DihedralFieldOfViewDetector is deprecated, but the CircularFieldOfViewDetector
+        which corresponds to a common case that can be computed more accurately and faster
+        than the new generic detector is preserved.
+      </action>
+      <action dev="luc" type="add">
+        Added a FieldOfView class to model Fields Of View with any shape.
+      </action>
+      <action dev="luc" type="add">
+        Added a FootprintOverlapDetector which is triggered when a sensor
+        Field Of View (any shape, even split in non-connected parts or
+        containing holes) overlaps a geographic zone, which can be non-convex,
+        split in different sub-zones, have holes, contain the pole...
+        Fixes issue #216
+      </action>
+      <action dev="luc" type="fix" due-to="Carlos Casas">
+        Added a protection against low altitudes in JB2006 model.
+        Fixes issue #214
+      </action>
+      <action dev="luc" type="fix" due-to="Petrus Hyvönen">
+        Enlarged access to SGP4 and DeepSDP4 propagators.
+        Fixes issue #207
+      </action>
+      <action dev="luc" type="fix">
+        Fixed covariance matrices units when read from CCSDS ODM files. The
+        data returned at API level are now consistent with SI units, instead of being
+        kilometer-based.
+        Fixes issue #217
+      </action>
+      <action dev="luc" type="fix">
+        Fixed DSST ephemeris generation.
+        Fixes issue #222
+      </action>
+      <action dev="luc" type="update">
+        Vastly improved DSS short period terms interpolation.
+      </action>
+      <action dev="luc" type="fix">
+        Use new Rotation API from Apache Commons Math 3.6.
+        This API allows to use both vector operator convention and frames
+        transform convention naturally. This is useful when axis/angles are
+        involved, or when composing rotations. This probably fixes one of
+        the oldest stumbling blocks for Orekit users.
+      </action>
+      <action dev="luc" type="fix">
+        Fixed state partial derivatives in drag force model.
+        Fixes issue #229
+      </action>
+      <action dev="evan" type="fix">
+        Fixed incorrect density in DTM2000 when the input position is not in ECI
+        or ECEF.
+        Fixes issue #228
+      </action>
+      <action dev="evan" type="add">
+        Added capability to use a single EventHandler with multiple types of
+        EventDetectors.
+      </action>
+      <action dev="luc" type="add" >
+        Added a way to customize interpolation grid in DSST, either using a fixed number
+        of points or a maximum time gap between points, for each mean elements integration
+        step.
+      </action>
+      <action dev="luc" type="add" >
+        Added TabulatedLofOffset for attitudes defined by tabulating rotations between Local Orbital Frame
+        and spacecraft frame.
+        Fixes issue #227
+      </action>
+      <action dev="luc" type="fix" >
+        Fixed wrong ephemeris generation for analytical propagators with maneuvers.
+        Fixes issue #224.
+      </action>
+       <action dev="luc" type="fix" >
+        Fixed date offset by one second for TLE built from their components,
+        if a leap second was introduced earlier in the same year.
+        Fixes issue #225.
+      </action>
+      <action dev="luc" type="fix" >
+        Allow parsing TLE with non-unclassified modifier.
+      </action>
+      <action dev="luc" type="add" >
+        As a side effect of fixing issue #223, KeplerianPropagator and
+        Eckstein-Hechler propagator are now serializable.
+      </action>
+      <action dev="luc" type="fix" >
+        Fixed missing additional states handling in ephemeris propagators
+        created from analytical propagators.
+      </action>
+      <action dev="luc" type="fix" >
+        Fixed NPE and serialization issues in ephemeris propagators created
+        from analytical propagators.
+        Fixes issue #223.
+      </action>
+      <action dev="luc" type="fix" >
+        Fixed time scale issues in JPL ephemerides and IAU pole models.
+        The time used for internal computation should be TDB, not TT.
+      </action>
+      <action dev="luc" type="fix" >
+        Fixed an issue with backward propagation on analytical propagator.
+        During first step, the analytical interpolator wrongly considered the
+        propagation was forward.
+      </action>
+      <action dev="luc" type="add" >
+        Added a way to retrieve short period coefficients from DSST as
+        spacecraft state additional parameters. This is mainly intended
+        for test and validation purposes.
+      </action>
+      <action dev="luc" type="fix" >
+        Prevent small overshoots of step limits in event detection.
+        Fixes issue #218.
+      </action>
+      <action dev="luc" type="fix" >
+        Handle string conversion of dates properly for dates less than 1 millisecond
+        before midnight (they should not appear as second 60.0 of previous minute but
+        should rather wrap around to next minute).
+        Partly fixes issue #218.
+      </action>
+      <action dev="luc" type="fix" >
+        Enforce Lexicographical order in DirectoryCrawler, to ensure reproducible
+        loading. Before this changes, some tests could fail in one computer while
+        succeeding in another computer as we use a mix of DE-4xx files, some having
+        a different EMRAT (81.30056907419062 for DE-431, 81.30056 for DE-405 and DE-406).
+      </action>
       <action dev="luc" type="add" >
         Added EventEnablingPredicateFilter to filter event based on an user-provided
         enabling predicate function. This allow for example to dynamically turn some

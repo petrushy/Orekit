@@ -1,4 +1,4 @@
-/* Copyright 2002-2015 CS Systèmes d'Information
+/* Copyright 2002-2016 CS Systèmes d'Information
  * Licensed to CS Systèmes d'Information (CS) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -23,7 +23,6 @@ import java.text.ParseException;
 import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.orekit.Utils;
 import org.orekit.data.DataProvidersManager;
@@ -147,22 +146,16 @@ public class JPLEphemeridesLoaderTest {
     public void testDerivative405() throws OrekitException, ParseException {
         Utils.setDataRoot("regular-data/de405-ephemerides");
         checkDerivative(JPLEphemeridesLoader.DEFAULT_DE_SUPPORTED_NAMES,
-                        new AbsoluteDate(1969, 6, 25, TimeScalesFactory.getTT()));
+                        new AbsoluteDate(1969, 6, 25, TimeScalesFactory.getTT()),
+                        691200.0);
     }
 
     @Test
     public void testDerivative406() throws OrekitException, ParseException {
         Utils.setDataRoot("regular-data:regular-data/de406-ephemerides");
         checkDerivative(JPLEphemeridesLoader.DEFAULT_DE_SUPPORTED_NAMES,
-                        new AbsoluteDate(2964, 9, 26, TimeScalesFactory.getTT()));
-    }
-
-    @Test
-    @Ignore
-    public void testDerivative414() throws OrekitException, ParseException {
-        Utils.setDataRoot("regular-data/de414-ephemerides");
-        checkDerivative(JPLEphemeridesLoader.DEFAULT_DE_SUPPORTED_NAMES,
-                        new AbsoluteDate(1950, 1, 12, TimeScalesFactory.getTT()));
+                        new AbsoluteDate(2964, 9, 26, TimeScalesFactory.getTT()),
+                        1382400.0);
     }
 
     @Test
@@ -230,8 +223,8 @@ public class JPLEphemeridesLoaderTest {
             Vector3D pInpopTCBBig    = bodysInpopTCBBig.getPVCoordinates(date, eme2000).getPosition();
             Assert.assertTrue(pDE405.distance(pInpopTDBBig) >  650.0);
             Assert.assertTrue(pDE405.distance(pInpopTDBBig) < 1050.0);
-            Assert.assertTrue(pDE405.distance(pInpopTCBBig) > 1350.0);
-            Assert.assertTrue(pDE405.distance(pInpopTCBBig) < 1900.0);
+            Assert.assertTrue(pDE405.distance(pInpopTCBBig) > 1000.0);
+            Assert.assertTrue(pDE405.distance(pInpopTCBBig) < 2000.0);
         }
 
     }
@@ -269,7 +262,8 @@ public class JPLEphemeridesLoaderTest {
 
     }
 
-    private void checkDerivative(String supportedNames, AbsoluteDate date) throws OrekitException, ParseException {
+    private void checkDerivative(String supportedNames, AbsoluteDate date, double maxChunkDuration)
+        throws OrekitException, ParseException {
         JPLEphemeridesLoader loader =
             new JPLEphemeridesLoader(supportedNames, JPLEphemeridesLoader.EphemerisType.MERCURY);
         CelestialBody body = loader.loadCelestialBody(CelestialBodyFactory.MERCURY);
@@ -293,7 +287,8 @@ public class JPLEphemeridesLoaderTest {
         Vector3D estimatedV = new Vector3D(-3 * c, d4, 32 * c, d3, -168 * c, d2, 672 * c, d1);
 
         Vector3D loadedV = body.getPVCoordinates(date, eme2000).getVelocity();
-        Assert.assertEquals(0, loadedV.subtract(estimatedV).getNorm(), 5.0e-11 * loadedV.getNorm());
+        Assert.assertEquals(0, loadedV.subtract(estimatedV).getNorm(), 3.5e-10 * loadedV.getNorm());
+        Assert.assertEquals(maxChunkDuration, loader.getMaxChunksDuration(), 1.0e-10);
     }
 
     @Before

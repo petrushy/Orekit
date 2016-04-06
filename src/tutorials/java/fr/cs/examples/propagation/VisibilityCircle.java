@@ -1,4 +1,4 @@
-/* Copyright 2002-2015 CS Systèmes d'Information
+/* Copyright 2002-2016 CS Systèmes d'Information
  * Licensed to CS Systèmes d'Information (CS) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -97,7 +97,7 @@ public class VisibilityCircle {
         // read input parameters
         KeyValueFileParser<ParameterKey> parser =
                 new KeyValueFileParser<ParameterKey>(ParameterKey.class);
-        parser.parseInput(new FileInputStream(input));
+        parser.parseInput(input.getAbsolutePath(), new FileInputStream(input));
 
         double minElevation = parser.getAngle(ParameterKey.MIN_ELEVATION);
         double radius       = Constants.WGS84_EARTH_EQUATORIAL_RADIUS +

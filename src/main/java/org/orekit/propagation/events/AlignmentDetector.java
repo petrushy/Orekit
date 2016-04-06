@@ -1,4 +1,4 @@
-/* Copyright 2002-2015 CS Systèmes d'Information
+/* Copyright 2002-2016 CS Systèmes d'Information
  * Licensed to CS Systèmes d'Information (CS) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -98,7 +98,7 @@ public class AlignmentDetector extends AbstractDetector<AlignmentDetector> {
      * @param alignAngle the alignment angle (rad)
      */
     private AlignmentDetector(final double maxCheck, final double threshold,
-                              final int maxIter, final EventHandler<AlignmentDetector> handler,
+                              final int maxIter, final EventHandler<? super AlignmentDetector> handler,
                               final PVCoordinatesProvider body,
                               final double alignAngle) {
         super(maxCheck, threshold, maxIter, handler);
@@ -111,7 +111,7 @@ public class AlignmentDetector extends AbstractDetector<AlignmentDetector> {
     /** {@inheritDoc} */
     @Override
     protected AlignmentDetector create(final double newMaxCheck, final double newThreshold,
-                                       final int newMaxIter, final EventHandler<AlignmentDetector> newHandler) {
+                                       final int newMaxIter, final EventHandler<? super AlignmentDetector> newHandler) {
         return new AlignmentDetector(newMaxCheck, newThreshold, newMaxIter, newHandler,
                                      body, alignAngle);
     }
@@ -141,8 +141,7 @@ public class AlignmentDetector extends AbstractDetector<AlignmentDetector> {
     public double g(final SpacecraftState s) throws OrekitException {
         final PVCoordinates pv = s.getPVCoordinates();
         final Vector3D a  = pv.getPosition().normalize();
-        final Vector3D z  = pv.getMomentum().negate().normalize();
-        final Vector3D b  = Vector3D.crossProduct(a, z).normalize();
+        final Vector3D b  = Vector3D.crossProduct(pv.getMomentum(), a).normalize();
         final Vector3D x  = new Vector3D(cosAlignAngle, a,  sinAlignAngle, b);
         final Vector3D y  = new Vector3D(sinAlignAngle, a, -cosAlignAngle, b);
         final Vector3D pb = body.getPVCoordinates(s.getDate(), s.getFrame()).getPosition();

@@ -1,4 +1,4 @@
-/* Copyright 2002-2015 CS Systèmes d'Information
+/* Copyright 2002-2016 CS Systèmes d'Information
  * Licensed to CS Systèmes d'Information (CS) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -47,9 +47,12 @@ import org.orekit.utils.PVCoordinatesProvider;
  * @author V&eacute;ronique Pommier-Maurussane
  * @author Luc Maisonobe
  */
-public class Ephemeris extends AbstractAnalyticalPropagator implements BoundedPropagator {
+public class Ephemeris extends AbstractAnalyticalPropagator implements BoundedPropagator, Serializable {
 
-    /** First date in range. */
+    /** Serializable UID. */
+    private static final long serialVersionUID = 20151022L;
+
+     /** First date in range. */
     private final AbsoluteDate minDate;
 
     /** Last date in range. */
@@ -177,6 +180,12 @@ public class Ephemeris extends AbstractAnalyticalPropagator implements BoundedPr
     }
 
     /** {@inheritDoc} */
+    protected void resetIntermediateState(final SpacecraftState state, final boolean forward)
+        throws PropagationException {
+        throw new PropagationException(OrekitMessages.NON_RESETABLE_STATE);
+    }
+
+    /** {@inheritDoc} */
     public SpacecraftState getInitialState() throws PropagationException {
         return basicPropagate(getMinDate());
     }
@@ -260,7 +269,10 @@ public class Ephemeris extends AbstractAnalyticalPropagator implements BoundedPr
     }
 
     /** Internal PVCoordinatesProvider for attitude computation. */
-    private static class LocalPVProvider implements PVCoordinatesProvider {
+    private static class LocalPVProvider implements PVCoordinatesProvider, Serializable {
+
+        /** Serializable UID. */
+        private static final long serialVersionUID = 20160115L;
 
         /** Current state. */
         private SpacecraftState currentState;

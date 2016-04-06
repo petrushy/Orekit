@@ -1,4 +1,4 @@
-<!--- Copyright 2002-2015 CS Systèmes d'Information
+<!--- Copyright 2002-2016 CS Systèmes d'Information
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
   You may obtain a copy of the License at
@@ -12,8 +12,7 @@
   limitations under the License.
 -->
 
-Overview
-========
+# Overview
 
   OREKIT (ORbits Extrapolation KIT) is a free low-level space dynamics library
   written in Java.
@@ -22,13 +21,12 @@ Overview
   various algorithms to handle them (conversions, analytical and numerical
   propagation, pointing ...).
 
-Features
---------
+## Features
 
   * Time
 
     * high accuracy absolute dates
-    * time scales (TAI, UTC, UT1, GPS, TT, TCG, TDB, TCB, GMST, GST ...)
+    * time scales (TAI, UTC, UT1, GPS, TT, TCG, TDB, TCB, GMST, GST, GLONASS, QZSS ...)
     * transparent handling of leap seconds
 
   * Geometry
@@ -65,7 +63,7 @@ Features
 
     * analytical models for small maneuvers without propagation
     * impulse maneuvers for any propagator type
-    *continuous maneuvers for numerical propagator type
+    * continuous maneuvers for numerical propagator type
 
   * Propagation
 
@@ -122,7 +120,9 @@ Features
       * latitude, longitude extremum
       * elevation extremum
       * anomaly, latitude argument, or longitude argument crossings, either true, mean or eccentric
-      * target detection in sensor field of view (circular or dihedral)
+      * moving target detection in spacecraft sensor Field Of View (any shape, with special case for circular)
+      * spacecraft detection in ground based Field Of View (any shape)
+      * sensor Field Of View (any shape) overlapping complex geographic zone
       * complex geographic zones traversal
       * impulse maneuvers occurrence
     * possibility of slightly shifting events in time (for example to switch from
@@ -140,7 +140,7 @@ Features
       * central body related attitude (nadir pointing, center pointing, target pointing, yaw compensation, yaw-steering),
       * orbit referenced attitudes (LOF aligned, offset on all axes),
       * space referenced attitudes (inertial, celestial body-pointed, spin-stabilized)
-      * tabulated attitudes
+      * tabulated attitudes, either respective to inertial frame or respective to Local Orbital Frames
 
   * Orbit file handling
   
@@ -150,6 +150,7 @@ Features
   * Earth models
   
     * tropospheric delay (modified Saastamoinen)
+    * tropospheric refraction correction angle (Recommendation ITU-R P.834-7 and Saemundssen's formula quoted by Meeus)
     * geomagnetic field (WMM, IGRF)
     * geoid model from any gravity field
     * tessellation of zones of interest as tiles
@@ -180,8 +181,7 @@ Features
 
 ![Orekit top packages](./images/design/top-packages.png)
 
-Free software
--------------
+## Free software
 
 Orekit is freely available both in source and binary formats, with all related
 documentation and tests.
@@ -193,8 +193,7 @@ any application, free or not. There are no strings attached to your own code.
 Everybody is encouraged to use Orekit as a common low level layer to improve
 interoperability in space systems.
 
-Maintained library
-------------------
+## Maintained library
 
 Orekit has been in development since 2002 inside [CS Systèmes
 d'Information](http://www.c-s.fr/) and is still used and maintained by its space dynamics experts.
