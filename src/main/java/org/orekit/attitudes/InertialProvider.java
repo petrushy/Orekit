@@ -1,4 +1,4 @@
-/* Copyright 2002-2016 CS Systèmes d'Information
+/* Copyright 2002-2017 CS Systèmes d'Information
  * Licensed to CS Systèmes d'Information (CS) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -16,12 +16,16 @@
  */
 package org.orekit.attitudes;
 
-import org.apache.commons.math3.geometry.euclidean.threed.Rotation;
+import org.hipparchus.RealFieldElement;
+import org.hipparchus.geometry.euclidean.threed.Rotation;
 import org.orekit.errors.OrekitException;
+import org.orekit.frames.FieldTransform;
 import org.orekit.frames.Frame;
 import org.orekit.frames.FramesFactory;
 import org.orekit.frames.Transform;
 import org.orekit.time.AbsoluteDate;
+import org.orekit.time.FieldAbsoluteDate;
+import org.orekit.utils.FieldPVCoordinatesProvider;
 import org.orekit.utils.PVCoordinatesProvider;
 
 
@@ -58,6 +62,14 @@ public class InertialProvider implements AttitudeProvider {
         throws OrekitException {
         final Transform t = frame.getTransformTo(satelliteFrame, date);
         return new Attitude(date, frame, t.getRotation(), t.getRotationRate(), t.getRotationAcceleration());
+    }
+
+    /** {@inheritDoc} */
+    public <T extends RealFieldElement<T>>FieldAttitude<T> getAttitude(final FieldPVCoordinatesProvider<T> pvProv,
+                                                                       final FieldAbsoluteDate<T> date, final Frame frame)
+        throws OrekitException {
+        final FieldTransform<T> t = frame.getTransformTo(satelliteFrame, date);
+        return new FieldAttitude<>(date, frame, t.getRotation(), t.getRotationRate(), t.getRotationAcceleration());
     }
 
 }

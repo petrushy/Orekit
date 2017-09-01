@@ -1,4 +1,4 @@
-/* Copyright 2002-2016 CS Systèmes d'Information
+/* Copyright 2002-2017 CS Systèmes d'Information
  * Licensed to CS Systèmes d'Information (CS) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -15,8 +15,11 @@
  * limitations under the License.
  */
 /**
- *
  * Top level package for various parsers.
- * <p>Each format is handled by a separate sub-package.</p>
+ *
+ * <p>The interfaces for ephemeris file parsers and writers are in the {@link org.orekit.files.general}
+ * package. Specifically, see {@link org.orekit.files.general.EphemerisFile
+ * EphemerisFile}. Each format is handled by a separate sub-package: {@link org.orekit.files.ccsds}, {@link
+ * org.orekit.files.sp3}.</p>
  */
 package org.orekit.files;

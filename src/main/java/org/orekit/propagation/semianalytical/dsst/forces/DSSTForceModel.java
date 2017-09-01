@@ -1,4 +1,4 @@
-/* Copyright 2002-2016 CS Systèmes d'Information
+/* Copyright 2002-2017 CS Systèmes d'Information
  * Licensed to CS Systèmes d'Information (CS) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -49,7 +49,6 @@ import org.orekit.propagation.semianalytical.dsst.utilities.AuxiliaryElements;
  *  if osculating parameters are desired, on a sample of points within the
  *  last step.</li>
  *  </ol>
- *  </p>
  *
  * @author Romain Di Constanzo
  * @author Pascal Parraud
@@ -110,7 +109,7 @@ public interface DSSTForceModel {
      * @param meanStates mean states information: date, kinematics, attitude
      * @throws OrekitException if some specific error occurs
      */
-    void updateShortPeriodTerms(SpacecraftState ... meanStates)
+    void updateShortPeriodTerms(SpacecraftState... meanStates)
         throws OrekitException;
 
 }

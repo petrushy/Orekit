@@ -1,4 +1,4 @@
-/* Copyright 2002-2016 CS Systèmes d'Information
+/* Copyright 2002-2017 CS Systèmes d'Information
  * Licensed to CS Systèmes d'Information (CS) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -20,11 +20,14 @@ package org.orekit.attitudes;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.math3.geometry.euclidean.threed.Line;
-import org.apache.commons.math3.geometry.euclidean.threed.Rotation;
-import org.apache.commons.math3.geometry.euclidean.threed.RotationConvention;
-import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
-import org.apache.commons.math3.util.FastMath;
+import org.hipparchus.Field;
+import org.hipparchus.RealFieldElement;
+import org.hipparchus.geometry.euclidean.threed.Line;
+import org.hipparchus.geometry.euclidean.threed.Rotation;
+import org.hipparchus.geometry.euclidean.threed.RotationConvention;
+import org.hipparchus.geometry.euclidean.threed.Vector3D;
+import org.hipparchus.util.Decimal64Field;
+import org.hipparchus.util.FastMath;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -37,14 +40,17 @@ import org.orekit.frames.Frame;
 import org.orekit.frames.FramesFactory;
 import org.orekit.frames.Transform;
 import org.orekit.orbits.CircularOrbit;
+import org.orekit.orbits.FieldOrbit;
 import org.orekit.orbits.KeplerianOrbit;
 import org.orekit.orbits.Orbit;
 import org.orekit.orbits.PositionAngle;
+import org.orekit.propagation.FieldSpacecraftState;
 import org.orekit.propagation.Propagator;
 import org.orekit.propagation.SpacecraftState;
 import org.orekit.propagation.analytical.KeplerianPropagator;
 import org.orekit.time.AbsoluteDate;
 import org.orekit.time.DateComponents;
+import org.orekit.time.FieldAbsoluteDate;
 import org.orekit.time.TimeComponents;
 import org.orekit.time.TimeScalesFactory;
 import org.orekit.utils.AngularCoordinates;
@@ -52,6 +58,7 @@ import org.orekit.utils.CartesianDerivativesFilter;
 import org.orekit.utils.Constants;
 import org.orekit.utils.IERSConventions;
 import org.orekit.utils.PVCoordinates;
+import org.orekit.utils.TimeStampedFieldPVCoordinates;
 import org.orekit.utils.TimeStampedPVCoordinates;
 
 
@@ -96,6 +103,7 @@ public class YawCompensationTest {
         Assert.assertEquals(0.0, observedDiff.getPosition().getNorm(), Utils.epsilonTest);
         Assert.assertEquals(0.0, observedDiff.getVelocity().getNorm(), Utils.epsilonTest);
         Assert.assertEquals(0.0, observedDiff.getAcceleration().getNorm(), Utils.epsilonTest);
+        Assert.assertSame(nadirLaw, yawCompensLaw.getUnderlyingAttitudeProvider());
 
     }
 
@@ -302,6 +310,8 @@ public class YawCompensationTest {
         Rotation rotNoYaw = nadirLaw.getAttitude(circOrbit, date, circOrbit.getFrame()).getRotation();
         Rotation rotYaw = yawCompensLaw.getAttitude(circOrbit, date, circOrbit.getFrame()).getRotation();
 
+        checkField(Decimal64Field.getInstance(), yawCompensLaw, circOrbit, circOrbit.getDate(), circOrbit.getFrame());
+
         // Compose rotations composition
         Rotation compoRot = rotYaw.compose(rotNoYaw.revert(), RotationConvention.VECTOR_OPERATOR);
         Vector3D yawAxis = compoRot.getAxis(RotationConvention.VECTOR_OPERATOR);
@@ -338,7 +348,7 @@ public class YawCompensationTest {
                                                        s0.getAttitude().getRotation());
         double evolutionAngleMinus = Rotation.distance(sMinus.getAttitude().getRotation(),
                                                        s0.getAttitude().getRotation());
-        Assert.assertEquals(0.0, errorAngleMinus, 7.5e-6 * evolutionAngleMinus);
+        Assert.assertEquals(0.0, errorAngleMinus, 8.5e-6 * evolutionAngleMinus);
         double errorAnglePlus      = Rotation.distance(s0.getAttitude().getRotation(),
                                                        sPlus.shiftedBy(-h).getAttitude().getRotation());
         double evolutionAnglePlus  = Rotation.distance(s0.getAttitude().getRotation(),
@@ -351,6 +361,27 @@ public class YawCompensationTest {
                                                              2 * h);
         Assert.assertTrue(spin0.getNorm() > 1.0e-3);
         Assert.assertEquals(0.0, spin0.subtract(reference).getNorm(), 2.0e-8);
+
+    }
+
+    private <T extends RealFieldElement<T>> void checkField(final Field<T> field, final GroundPointing provider,
+                                                            final Orbit orbit, final AbsoluteDate date,
+                                                            final Frame frame)
+        throws OrekitException {
+
+        final Attitude attitudeD = provider.getAttitude(orbit, date, frame);
+        final FieldOrbit<T> orbitF = new FieldSpacecraftState<>(field, new SpacecraftState(orbit)).getOrbit();
+        final FieldAbsoluteDate<T> dateF = new FieldAbsoluteDate<>(field, date);
+        final FieldAttitude<T> attitudeF = provider.getAttitude(orbitF, dateF, frame);
+        Assert.assertEquals(0.0, Rotation.distance(attitudeD.getRotation(), attitudeF.getRotation().toRotation()), 2.0e-13);
+        Assert.assertEquals(0.0, Vector3D.distance(attitudeD.getSpin(), attitudeF.getSpin().toVector3D()), 2.0e-11);
+        Assert.assertEquals(0.0, Vector3D.distance(attitudeD.getRotationAcceleration(), attitudeF.getRotationAcceleration().toVector3D()), 2.0e-13);
+
+        final TimeStampedPVCoordinates         pvD = provider.getTargetPV(orbit, date, frame);
+        final TimeStampedFieldPVCoordinates<T> pvF = provider.getTargetPV(orbitF, dateF, frame);
+        Assert.assertEquals(0.0, Vector3D.distance(pvD.getPosition(),     pvF.getPosition().toVector3D()),     1.0e-15);
+        Assert.assertEquals(0.0, Vector3D.distance(pvD.getVelocity(),     pvF.getVelocity().toVector3D()),     9.0e-9);
+        Assert.assertEquals(0.0, Vector3D.distance(pvD.getAcceleration(), pvF.getAcceleration().toVector3D()), 8.0e-7);
 
     }
 
@@ -376,7 +407,7 @@ public class YawCompensationTest {
                                        FastMath.toRadians(5.300), PositionAngle.MEAN,
                                        FramesFactory.getEME2000(), date, mu);
 
-            // Elliptic earth shape */
+            // Elliptic earth shape
             earthShape =
                 new OneAxisEllipsoid(6378136.460, 1 / 298.257222101, itrf);
 

@@ -1,4 +1,4 @@
-/* Copyright 2002-2016 CS Systèmes d'Information
+/* Copyright 2002-2017 CS Systèmes d'Information
  * Licensed to CS Systèmes d'Information (CS) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -27,8 +27,8 @@ import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
-import org.apache.commons.math3.util.FastMath;
+import org.hipparchus.geometry.euclidean.threed.Vector3D;
+import org.hipparchus.util.FastMath;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -216,7 +216,7 @@ public class EventEnablingPredicateFilterTest {
         Assert.assertEquals(7 * 3600, reset.get(1).durationFrom(orbit.getDate()), 1.0e-6);
         Assert.assertEquals(8 * 3600, reset.get(2).durationFrom(orbit.getDate()), 1.0e-6);
         Assert.assertEquals(9 * 3600, reset.get(3).durationFrom(orbit.getDate()), 1.0e-6);
-        
+
     }
 
     @Test
@@ -348,7 +348,7 @@ public class EventEnablingPredicateFilterTest {
                                       final double g) {
             return true;
         }
-        
+
     }
 
     @Test
@@ -385,7 +385,7 @@ public class EventEnablingPredicateFilterTest {
                                       final double g) {
             return true;
         }
-        
+
     }
 
     @Before

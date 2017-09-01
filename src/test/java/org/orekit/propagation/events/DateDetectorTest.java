@@ -1,4 +1,4 @@
-/* Copyright 2002-2016 CS Systèmes d'Information
+/* Copyright 2002-2017 CS Systèmes d'Information
  * Licensed to CS Systèmes d'Information (CS) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -16,16 +16,15 @@
  */
 package org.orekit.propagation.events;
 
-import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
-import org.apache.commons.math3.ode.nonstiff.AdaptiveStepsizeIntegrator;
-import org.apache.commons.math3.ode.nonstiff.DormandPrince853Integrator;
+import org.hipparchus.geometry.euclidean.threed.Vector3D;
+import org.hipparchus.ode.nonstiff.AdaptiveStepsizeIntegrator;
+import org.hipparchus.ode.nonstiff.DormandPrince853Integrator;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.orekit.Utils;
 import org.orekit.errors.OrekitException;
-import org.orekit.errors.PropagationException;
 import org.orekit.frames.FramesFactory;
 import org.orekit.orbits.EquinoctialOrbit;
 import org.orekit.orbits.Orbit;
@@ -52,7 +51,7 @@ public class DateDetectorTest {
     @Test
     public void testSimpleTimer() throws OrekitException {
         DateDetector dateDetector = new DateDetector(maxCheck, threshold, iniDate.shiftedBy(2.0*dt));
-    	Assert.assertEquals(2 * dt, dateDetector.getDate().durationFrom(iniDate), 1.0e-10);
+        Assert.assertEquals(2 * dt, dateDetector.getDate().durationFrom(iniDate), 1.0e-10);
         propagator.addEventDetector(dateDetector);
         final SpacecraftState finalState = propagator.propagate(iniDate.shiftedBy(100.*dt));
 
@@ -61,20 +60,20 @@ public class DateDetectorTest {
 
     @Test
     public void testEmbeddedTimer() throws OrekitException {
-    	dateDetector = new DateDetector(maxCheck, threshold);
+        dateDetector = new DateDetector(maxCheck, threshold);
         Assert.assertNull(dateDetector.getDate());
-    	EventDetector nodeDetector = new NodeDetector(iniOrbit, iniOrbit.getFrame()).
-    	        withHandler(new ContinueOnEvent<NodeDetector>() {
+        EventDetector nodeDetector = new NodeDetector(iniOrbit, iniOrbit.getFrame()).
+                withHandler(new ContinueOnEvent<NodeDetector>() {
                     private static final long serialVersionUID = 1L;
-    	            public Action eventOccurred(SpacecraftState s, NodeDetector nd, boolean increasing)
-    	                throws OrekitException {
-    	                if (increasing) {
-    	                    nodeDate = s.getDate();
-    	                    dateDetector.addEventDate(nodeDate.shiftedBy(dt));
-    	                }
-    	                return Action.CONTINUE;
-    	            }
-    	        });
+                    public Action eventOccurred(SpacecraftState s, NodeDetector nd, boolean increasing)
+                        throws OrekitException {
+                        if (increasing) {
+                            nodeDate = s.getDate();
+                            dateDetector.addEventDate(nodeDate.shiftedBy(dt));
+                        }
+                        return Action.CONTINUE;
+                    }
+                });
 
         propagator.addEventDetector(nodeDetector);
         propagator.addEventDetector(dateDetector);
@@ -123,10 +122,10 @@ public class DateDetectorTest {
     /**
      * Check that a generic event handler can be used with an event detector.
      *
-     * @throws PropagationException on error.
+     * @throws OrekitException on error.
      */
     @Test
-    public void testGenericHandler() throws PropagationException {
+    public void testGenericHandler() throws OrekitException {
         //setup
         dateDetector = new DateDetector(maxCheck, threshold, iniDate.shiftedBy(dt));
         // generic event handler that works with all detectors.

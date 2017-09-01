@@ -1,4 +1,4 @@
-/* Copyright 2002-2016 CS Systèmes d'Information
+/* Copyright 2002-2017 CS Systèmes d'Information
  * Licensed to CS Systèmes d'Information (CS) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -19,8 +19,8 @@ package org.orekit.propagation.events;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
-import org.apache.commons.math3.util.FastMath;
+import org.hipparchus.geometry.euclidean.threed.Vector3D;
+import org.hipparchus.util.FastMath;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -28,7 +28,6 @@ import org.junit.Test;
 import org.orekit.Utils;
 import org.orekit.bodies.CelestialBodyFactory;
 import org.orekit.errors.OrekitException;
-import org.orekit.errors.PropagationException;
 import org.orekit.frames.FramesFactory;
 import org.orekit.orbits.EquinoctialOrbit;
 import org.orekit.orbits.Orbit;
@@ -72,7 +71,7 @@ public class EventShifterTest {
                                                   throws OrekitException {
                 return h.resetState(detector, oldState);
             }
-            
+
         });
         EventShifter<EclipseDetector> shifter = new EventShifter<EclipseDetector>(raw, true, -15, -20).
                                                 withMaxIter(200);
@@ -167,14 +166,14 @@ public class EventShifterTest {
         for (EventEntry entry : log) {
             double error = entry.getTimeError();
             if (entry.name.contains("10s")) {
-                Assert.assertTrue(error > 0.00001);
-                Assert.assertTrue(error < 0.0003);
+                Assert.assertTrue(error > 1.0e-6);
+                Assert.assertTrue(error < 3.0e-6);
             } else if (entry.name.contains("100s")) {
-                Assert.assertTrue(error > 0.002);
-                Assert.assertTrue(error < 0.03);
+                Assert.assertTrue(error > 0.001);
+                Assert.assertTrue(error < 0.003);
             } else if (entry.name.contains("1000s")) {
                 Assert.assertTrue(error > 0.7);
-                Assert.assertTrue(error < 3.3);
+                Assert.assertTrue(error < 1.1);
             }
         }
     }
@@ -191,9 +190,6 @@ public class EventShifterTest {
                                            log.add(new EventEntry(s.getDate().durationFrom(iniDate), tolerance,
                                                                   increasing ? nameIncreasing : nameDecreasing));
                                            return Action.CONTINUE;
-                                       }
-                                       public SpacecraftState resetState(EclipseDetector detector, SpacecraftState oldState) {
-                                           return oldState;
                                        }
                                    });
     }
@@ -217,8 +213,8 @@ public class EventShifterTest {
             propagator =
                 new EcksteinHechlerPropagator(orbit, ae, mu, c20, c30, c40, c50, c60);
             log = new ArrayList<EventEntry>();
-        } catch (PropagationException pe) {
-            Assert.fail(pe.getLocalizedMessage());
+        } catch (OrekitException oe) {
+            Assert.fail(oe.getLocalizedMessage());
         }
     }
 

@@ -1,4 +1,4 @@
-<!--- Copyright 2002-2016 CS Systèmes d'Information
+<!--- Copyright 2002-2017 CS Systèmes d'Information
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
   You may obtain a copy of the License at
@@ -16,7 +16,7 @@
 
 The `org.orekit.time` package is an independent package providing classes to handle epochs and
 time scales, and to compare instants.
-	
+
 ## Time Presentation
 
 The principal class is `AbsoluteDate` which represents a unique instant in time, 
@@ -45,7 +45,7 @@ the various available time scales definitions to avoid mistakes. The
 
 * _Terrestrial Time_ 
 
-  defined by IAU(1991)	recommendation IV _Coordinate time at the surface of the Earth_,
+  defined by IAU(1991) recommendation IV _Coordinate time at the surface of the Earth_,
   it is the successor of Ephemeris Time TE. By convention, TT = TAI + 32.184 s.
 
 * _Universal Time Coordinate_

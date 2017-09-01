@@ -1,4 +1,4 @@
-/* Copyright 2002-2016 CS Systèmes d'Information
+/* Copyright 2002-2017 CS Systèmes d'Information
  * Licensed to CS Systèmes d'Information (CS) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -20,7 +20,7 @@ package org.orekit.frames;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
-import org.apache.commons.math3.util.FastMath;
+import org.hipparchus.util.FastMath;
 import org.junit.Assert;
 import org.junit.Test;
 import org.orekit.data.AbstractFilesLoaderTest;
@@ -190,7 +190,7 @@ public class RapidDataAndPredictionColumnsLoaderTest extends AbstractFilesLoader
         new RapidDataAndPredictionColumnsLoader(true, "^finals2000A-post-2070\\.daily$").fillHistory(converter, history);
         Assert.assertEquals(new AbsoluteDate(2075, 4, 16, TimeScalesFactory.getUTC()),
                             new EOPHistory(IERSConventions.IERS_2010, history, true).getEndDate());
-        
+
     }
 
     @Test
@@ -249,7 +249,7 @@ public class RapidDataAndPredictionColumnsLoaderTest extends AbstractFilesLoader
         } catch (OrekitException oe) {
             Assert.assertEquals(OrekitMessages.UNABLE_TO_PARSE_LINE_IN_FILE, oe.getSpecifier());
             Assert.assertEquals(lineNumber, ((Integer) oe.getParts()[0]).intValue());
-        }        
+        }
     }
 
 }

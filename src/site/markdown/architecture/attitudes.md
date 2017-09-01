@@ -1,4 +1,4 @@
-<!--- Copyright 2002-2016 CS Systèmes d'Information
+<!--- Copyright 2002-2017 CS Systèmes d'Information
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
   You may obtain a copy of the License at
@@ -15,7 +15,7 @@
 # Attitudes
 
 The `org.orekit.attitudes` package provides classes to represent simple attitudes.
-	
+
 ## Attitudes Presentation
  
 Some force models, such as the atmospheric drag for maneuvers, need to

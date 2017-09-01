@@ -1,4 +1,4 @@
-/* Copyright 2002-2016 CS Systèmes d'Information
+/* Copyright 2002-2017 CS Systèmes d'Information
  * Licensed to CS Systèmes d'Information (CS) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -124,6 +124,7 @@ public class TimeComponentsTest {
         Assert.assertEquals(86399.9, TimeComponents.parseTime("23:59:59.900+00").getSecondsInLocalDay(), 1.0e-10);
         Assert.assertEquals(86399.9, TimeComponents.parseTime("235959.900-00:12").getSecondsInLocalDay(), 1.0e-10);
         Assert.assertEquals(86399.9, TimeComponents.parseTime("23:59:59.900+00:00").getSecondsInLocalDay(), 1.0e-10);
+        Assert.assertEquals(86340.0, TimeComponents.parseTime("23:59").getSecondsInLocalDay(), 1.0e-10);
     }
 
     @Test(expected=IllegalArgumentException.class)
@@ -136,6 +137,7 @@ public class TimeComponentsTest {
         Assert.assertEquals(60, TimeComponents.parseTime("23:59:59+01:00").getMinutesFromUTC());
     }
 
+    @SuppressWarnings("unlikely-arg-type")
     @Test
     public void testComparisons() {
         TimeComponents[] times = {

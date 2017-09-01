@@ -1,4 +1,4 @@
-/* Copyright 2002-2016 CS Systèmes d'Information
+/* Copyright 2002-2017 CS Systèmes d'Information
  * Licensed to CS Systèmes d'Information (CS) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -16,9 +16,8 @@
  */
 package org.orekit.propagation.numerical;
 
-import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
+import org.hipparchus.geometry.euclidean.threed.Vector3D;
 import org.orekit.errors.OrekitException;
-import org.orekit.frames.Frame;
 
 /** Interface summing up the contribution of several forces into orbit and mass derivatives.
  *
@@ -44,29 +43,20 @@ public interface TimeDerivativesEquations {
      * numerical accuracy.</p>
      * @param mu central body gravitational constant
      */
-    void addKeplerContribution(final double mu);
+    void addKeplerContribution(double mu);
 
-    /** Add the contribution of an acceleration expressed in the inertial frame
-     *  (it is important to make sure this acceleration is defined in the
-     *  same frame as the orbit) .
-     * @param x acceleration along the X axis (m/s²)
-     * @param y acceleration along the Y axis (m/s²)
-     * @param z acceleration along the Z axis (m/s²)
-     */
-    void addXYZAcceleration(final double x, final double y, final double z);
-
-    /** Add the contribution of an acceleration expressed in some inertial frame.
-     * @param gamma acceleration vector (m/s²)
-     * @param frame frame in which acceleration is defined (must be an inertial frame)
+    /** Add the contribution of a non-Keplerian acceleration.
+     * @param gamma acceleration vector in the same inertial frame the spacecraft state is defined in (m/s²)
      * @exception OrekitException if frame transforms cannot be computed
+     * @since 9.0
      */
-    void addAcceleration(final Vector3D gamma, final Frame frame) throws OrekitException;
+    void addNonKeplerianAcceleration(Vector3D gamma) throws OrekitException;
 
     /** Add the contribution of the flow rate (dm/dt).
      * @param q the flow rate, must be negative (dm/dt)
      * @exception IllegalArgumentException if flow-rate is positive
      */
-    void addMassDerivative(final double q);
+    void addMassDerivative(double q);
 
 
 }

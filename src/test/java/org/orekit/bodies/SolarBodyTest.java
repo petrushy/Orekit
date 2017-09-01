@@ -1,4 +1,4 @@
-/* Copyright 2002-2016 CS Systèmes d'Information
+/* Copyright 2002-2017 CS Systèmes d'Information
  * Licensed to CS Systèmes d'Information (CS) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -22,21 +22,21 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
+import java.util.stream.Stream;
 
-import org.apache.commons.math3.analysis.differentiation.DerivativeStructure;
-import org.apache.commons.math3.geometry.euclidean.threed.FieldRotation;
-import org.apache.commons.math3.geometry.euclidean.threed.FieldVector3D;
-import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
-import org.apache.commons.math3.ode.AbstractIntegrator;
-import org.apache.commons.math3.ode.AbstractParameterizable;
-import org.apache.commons.math3.ode.nonstiff.DormandPrince853Integrator;
-import org.apache.commons.math3.util.FastMath;
+import org.hipparchus.Field;
+import org.hipparchus.RealFieldElement;
+import org.hipparchus.geometry.euclidean.threed.FieldVector3D;
+import org.hipparchus.geometry.euclidean.threed.Vector3D;
+import org.hipparchus.ode.AbstractIntegrator;
+import org.hipparchus.ode.nonstiff.DormandPrince853Integrator;
+import org.hipparchus.util.FastMath;
 import org.junit.Assert;
 import org.junit.Test;
 import org.orekit.Utils;
 import org.orekit.errors.OrekitException;
-import org.orekit.errors.PropagationException;
-import org.orekit.forces.ForceModel;
+import org.orekit.errors.OrekitInternalError;
+import org.orekit.forces.AbstractForceModel;
 import org.orekit.frames.Frame;
 import org.orekit.frames.FramesFactory;
 import org.orekit.frames.Transform;
@@ -44,11 +44,12 @@ import org.orekit.orbits.CartesianOrbit;
 import org.orekit.orbits.KeplerianOrbit;
 import org.orekit.orbits.Orbit;
 import org.orekit.orbits.OrbitType;
+import org.orekit.propagation.FieldSpacecraftState;
 import org.orekit.propagation.SpacecraftState;
 import org.orekit.propagation.analytical.KeplerianPropagator;
 import org.orekit.propagation.events.EventDetector;
+import org.orekit.propagation.events.FieldEventDetector;
 import org.orekit.propagation.numerical.NumericalPropagator;
-import org.orekit.propagation.numerical.TimeDerivativesEquations;
 import org.orekit.propagation.sampling.OrekitFixedStepHandler;
 import org.orekit.time.AbsoluteDate;
 import org.orekit.time.TimeScale;
@@ -56,6 +57,7 @@ import org.orekit.time.TimeScalesFactory;
 import org.orekit.utils.Constants;
 import org.orekit.utils.PVCoordinates;
 import org.orekit.utils.PVCoordinatesProvider;
+import org.orekit.utils.ParameterDriver;
 
 public class SolarBodyTest {
 
@@ -93,7 +95,7 @@ public class SolarBodyTest {
                 Assert.assertEquals(0.0, date2.durationFrom(date1), 8.0e-5);
                 final PVCoordinates pv = CelestialBodyFactory.getBody(name).getPVCoordinates(date2,
                                                                                              refFrame);
-                                                  
+
                 Assert.assertEquals(0.0, Vector3D.distance(pRef, pv.getPosition()), 15.0);
                 Assert.assertEquals(0.0, Vector3D.distance(vRef, pv.getVelocity()), 1.0e-5);
             }
@@ -351,7 +353,7 @@ public class SolarBodyTest {
         final CelestialBody sun     = CelestialBodyFactory.getSun();
         final CelestialBody mercury = CelestialBodyFactory.getMercury();
         final CelestialBody venus   = CelestialBodyFactory.getVenus();
-        final CelestialBody earth   = CelestialBodyFactory.getEarth();  
+        final CelestialBody earth   = CelestialBodyFactory.getEarth();
         final CelestialBody mars    = CelestialBodyFactory.getMars();
         final CelestialBody jupiter = CelestialBodyFactory.getJupiter();
         final CelestialBody saturn  = CelestialBodyFactory.getSaturn();
@@ -379,47 +381,41 @@ public class SolarBodyTest {
         propag.setMu(negligibleMu);
 
         //Creation of the ForceModels
-        propag.addForceModel(new BodyAttraction(sun)); 
+        propag.addForceModel(new BodyAttraction(sun));
         propag.addForceModel(new BodyAttraction(mercury));
-        propag.addForceModel(new BodyAttraction(earth)); 
-        propag.addForceModel(new BodyAttraction(mars)); 
+        propag.addForceModel(new BodyAttraction(earth));
+        propag.addForceModel(new BodyAttraction(mars));
         propag.addForceModel(new BodyAttraction(jupiter));
         propag.addForceModel(new BodyAttraction(saturn));
         propag.addForceModel(new BodyAttraction(uranus));
         propag.addForceModel(new BodyAttraction(neptune));
-        propag.addForceModel(new BodyAttraction(pluto)); 
+        propag.addForceModel(new BodyAttraction(pluto));
 
         // checks are done within the step handler
         propag.setMasterMode(1000.0, new OrekitFixedStepHandler() {
-            public void init(SpacecraftState s0, AbsoluteDate t) {
-            }
             public void handleStep(SpacecraftState currentState, boolean isLast)
-                throws PropagationException {
-                try {
-                    // propagated position should remain within 1400m of ephemeris for one month
-                    Vector3D propagatedP = currentState.getPVCoordinates(icrf).getPosition();
-                    Vector3D ephemerisP  = venus.getPVCoordinates(currentState.getDate(), icrf).getPosition();
-                    Assert.assertEquals(0, Vector3D.distance(propagatedP, ephemerisP), 1400.0);
-                } catch (OrekitException oe) {
-                    throw new PropagationException(oe);
-                }
+                throws OrekitException {
+                // propagated position should remain within 1400m of ephemeris for one month
+                Vector3D propagatedP = currentState.getPVCoordinates(icrf).getPosition();
+                Vector3D ephemerisP  = venus.getPVCoordinates(currentState.getDate(), icrf).getPosition();
+                Assert.assertEquals(0, Vector3D.distance(propagatedP, ephemerisP), 1400.0);
             }
         });
 
-        propag.propagate(startingDate,endDate);
+        propag.propagate(startingDate, endDate);
 
     }
 
-    private static class BodyAttraction extends AbstractParameterizable implements ForceModel {
+    private static class BodyAttraction extends AbstractForceModel {
 
-        /** Suffix for parameter name for attraction coefficient enabling jacobian processing. */
+        /** Suffix for parameter name for attraction coefficient enabling Jacobian processing. */
         public static final String ATTRACTION_COEFFICIENT_SUFFIX = " attraction coefficient";
+
+        /** Drivers for force model parameters. */
+        private final ParameterDriver[] parametersDrivers;
 
         /** The body to consider. */
         private final CelestialBody body;
-
-        /** Local value for body attraction coefficient. */
-        private double gm;
 
         /** Simple constructor.
          * @param body the third body to consider
@@ -427,82 +423,75 @@ public class SolarBodyTest {
          * {@link org.orekit.bodies.CelestialBodyFactory#getMoon()})
          */
         public BodyAttraction(final CelestialBody body) {
-            super(body.getName() + ATTRACTION_COEFFICIENT_SUFFIX);
+            this.parametersDrivers = new ParameterDriver[1];
+            try {
+                parametersDrivers[0] = new ParameterDriver(body.getName() + ATTRACTION_COEFFICIENT_SUFFIX,
+                                                           body.getGM(), 1.0e-5 * body.getGM(),
+                                                           0.0, Double.POSITIVE_INFINITY);
+            } catch (OrekitException oe) {
+                // this should never occur as valueChanged above never throws an exception
+                throw new OrekitInternalError(oe);
+            }
             this.body = body;
-            this.gm   = body.getGM();
         }
 
         /** {@inheritDoc} */
-        public void addContribution(final SpacecraftState s, final TimeDerivativesEquations adder)
+        @Override
+        public boolean dependsOnPositionOnly() {
+            return true;
+        }
+
+        /** {@inheritDoc} */
+        @Override
+        public Vector3D acceleration(final SpacecraftState s, final double[] parameters)
             throws OrekitException {
+
+            final double gm = parameters[0];
 
             // compute bodies separation vectors and squared norm
             final Vector3D centralToBody = body.getPVCoordinates(s.getDate(), s.getFrame()).getPosition();
             final Vector3D satToBody     = centralToBody.subtract(s.getPVCoordinates().getPosition());
-            final double r2Sat           = satToBody.getNormSq();
+            final double   r2Sat         = satToBody.getNormSq();
 
             // compute relative acceleration
-            final Vector3D gamma =
-                new Vector3D(gm / (r2Sat * FastMath.sqrt(r2Sat)), satToBody);
-
-            // add contribution to the ODE second member
-            adder.addXYZAcceleration(gamma.getX(), gamma.getY(), gamma.getZ());
+            return new Vector3D(gm / (r2Sat * FastMath.sqrt(r2Sat)), satToBody);
 
         }
 
         /** {@inheritDoc} */
-        public FieldVector3D<DerivativeStructure> accelerationDerivatives(final AbsoluteDate date, final Frame frame,
-                                                                          final FieldVector3D<DerivativeStructure> position,
-                                                                          final FieldVector3D<DerivativeStructure> velocity,
-                                                                          final FieldRotation<DerivativeStructure> rotation,
-                                                                          final DerivativeStructure mass)
+        @Override
+        public <T extends RealFieldElement<T>> FieldVector3D<T> acceleration(final FieldSpacecraftState<T> s,
+                                                                             final T[] parameters)
             throws OrekitException {
 
+            final T gm = parameters[0];
+
             // compute bodies separation vectors and squared norm
-            final Vector3D centralToBody    = body.getPVCoordinates(date, frame).getPosition();
-            final FieldVector3D<DerivativeStructure> satToBody = position.subtract(centralToBody).negate();
-            final DerivativeStructure r2Sat = satToBody.getNormSq();
+            final FieldVector3D<T> centralToBody = body.getPVCoordinates(s.getDate(), s.getFrame()).getPosition();
+            final FieldVector3D<T> satToBody     = centralToBody.subtract(s.getPVCoordinates().getPosition());
+            final T                r2Sat         = satToBody.getNormSq();
 
             // compute absolute acceleration
-            return new FieldVector3D<DerivativeStructure>(r2Sat.pow(-1.5).multiply(gm), satToBody);
+            return new FieldVector3D<>(r2Sat.multiply(r2Sat.sqrt()).reciprocal().multiply(gm), satToBody);
 
         }
 
         /** {@inheritDoc} */
-        public FieldVector3D<DerivativeStructure> accelerationDerivatives(final SpacecraftState s, final String paramName)
-            throws OrekitException {
-
-            complainIfNotSupported(paramName);
-
-            // compute bodies separation vectors and squared norm
-            final Vector3D centralToBody = body.getPVCoordinates(s.getDate(), s.getFrame()).getPosition();
-            final Vector3D satToBody     = centralToBody.subtract(s.getPVCoordinates().getPosition());
-            final double r2Sat           = Vector3D.dotProduct(satToBody, satToBody);
-
-            final DerivativeStructure gmds = new DerivativeStructure(1, 1, 0, gm);
-
-            // compute relative acceleration
-            return new FieldVector3D<DerivativeStructure>(gmds.multiply(FastMath.pow(r2Sat, -1.5)), satToBody);
-
+        @Override
+        public Stream<EventDetector> getEventsDetectors() {
+            return Stream.empty();
         }
 
         /** {@inheritDoc} */
-        public EventDetector[] getEventsDetectors() {
-            return new EventDetector[0];
+        @Override
+        public <T extends RealFieldElement<T>> Stream<FieldEventDetector<T>> getFieldEventsDetectors(final Field<T> field) {
+            return Stream.empty();
         }
 
         /** {@inheritDoc} */
-        public double getParameter(final String name)
-            throws IllegalArgumentException {
-            complainIfNotSupported(name);
-            return gm;
-        }
-
-        /** {@inheritDoc} */
-        public void setParameter(final String name, final double value)
-            throws IllegalArgumentException {
-            complainIfNotSupported(name);
-            gm = value;
+        @Override
+        public ParameterDriver[] getParametersDrivers() {
+            return parametersDrivers.clone();
         }
 
     }
@@ -530,7 +519,7 @@ public class SolarBodyTest {
 
         // set up Keplerian orbit of orbiting body around central body
         Orbit orbit = new KeplerianOrbit(orbiting.getPVCoordinates(start, central.getInertiallyOrientedFrame()),
-                                         central.getInertiallyOrientedFrame(),start, central.getGM());
+                                         central.getInertiallyOrientedFrame(), start, central.getGM());
         KeplerianPropagator propagator = new KeplerianPropagator(orbit);
         Assert.assertEquals(a, orbit.getA(), 0.02 * a);
         double duration = FastMath.min(50 * Constants.JULIAN_DAY, 0.01 * orbit.getKeplerianPeriod());

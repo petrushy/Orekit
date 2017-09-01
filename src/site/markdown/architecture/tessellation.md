@@ -1,4 +1,4 @@
-<!--- Copyright 2002-2016 CS Systèmes d'Information
+<!--- Copyright 2002-2017 CS Systèmes d'Information
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
   You may obtain a copy of the License at
@@ -15,7 +15,7 @@
 # Tessellation
 
 This package provides tools to discretize geographical zones defined over an ellipsoid.
-	
+
 ## Overview
 
 Earth observation missions often need to evaluate some properties globally over
@@ -34,7 +34,7 @@ compute the Dilution Of Precision for a navigation application on each grid poin
 
 ## Zone Of Interest Definition
 
-The definition of the zone of interest is done using Apache Commons Math
+The definition of the zone of interest is done using Hipparchus
 `SphericalPolygonsSet` class, which can handle arbitrarily complex area.
 It is possible to use non-connected area (for example an archipelago with
 separated islands). It is possible to use are with holes (for example to
@@ -71,7 +71,7 @@ larger and will certainly fail to be tessellated properly as per the
 limitation explained above.
 
 More complex zones can be built from simple ones using the set operations
-available in Apache Commons Math `RegionFactory` class (union, intersection,
+available in Hipparchus `RegionFactory` class (union, intersection,
 differences, symmetric difference, complement).
 
 ## Tile aiming

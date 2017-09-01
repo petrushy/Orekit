@@ -1,4 +1,4 @@
-/* Copyright 2002-2016 CS Systèmes d'Information
+/* Copyright 2002-2017 CS Systèmes d'Information
  * Licensed to CS Systèmes d'Information (CS) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -16,8 +16,8 @@
  */
 package org.orekit.propagation.conversion;
 
-import org.apache.commons.math3.ode.AbstractIntegrator;
-import org.apache.commons.math3.ode.nonstiff.EulerIntegrator;
+import org.hipparchus.ode.AbstractIntegrator;
+import org.hipparchus.ode.nonstiff.EulerIntegrator;
 import org.orekit.orbits.Orbit;
 import org.orekit.orbits.OrbitType;
 
@@ -25,7 +25,7 @@ import org.orekit.orbits.OrbitType;
  * @author Pascal Parraud
  * @since 6.0
  */
-public class EulerIntegratorBuilder implements FirstOrderIntegratorBuilder {
+public class EulerIntegratorBuilder implements ODEIntegratorBuilder {
 
     /** Step size (s). */
     private final double step;

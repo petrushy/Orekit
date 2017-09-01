@@ -1,4 +1,4 @@
-/* Copyright 2002-2016 CS Systèmes d'Information
+/* Copyright 2002-2017 CS Systèmes d'Information
  * Licensed to CS Systèmes d'Information (CS) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -16,18 +16,24 @@
  */
 package org.orekit.forces.radiation;
 
-import org.apache.commons.math3.analysis.differentiation.DerivativeStructure;
-import org.apache.commons.math3.geometry.euclidean.threed.FieldRotation;
-import org.apache.commons.math3.geometry.euclidean.threed.FieldVector3D;
-import org.apache.commons.math3.geometry.euclidean.threed.Rotation;
-import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
+import org.hipparchus.RealFieldElement;
+import org.hipparchus.analysis.differentiation.DSFactory;
+import org.hipparchus.analysis.differentiation.DerivativeStructure;
+import org.hipparchus.geometry.euclidean.threed.FieldRotation;
+import org.hipparchus.geometry.euclidean.threed.FieldVector3D;
+import org.hipparchus.geometry.euclidean.threed.Rotation;
+import org.hipparchus.geometry.euclidean.threed.Vector3D;
+import org.hipparchus.util.FastMath;
 import org.orekit.errors.OrekitException;
+import org.orekit.errors.OrekitInternalError;
 import org.orekit.errors.OrekitMessages;
-import org.orekit.forces.radiation.RadiationSensitive;
 import org.orekit.frames.Frame;
 import org.orekit.time.AbsoluteDate;
+import org.orekit.time.FieldAbsoluteDate;
+import org.orekit.utils.ParameterDriver;
 
 /** This class represents the features of a simplified spacecraft.
+ *
  * <p>This model uses the coefficients described in the collective
  * book edited by CNES in 1995: Spaceflight Dynamics (part I), in
  * section 5.2.2.1.3.1 (page 296 of the English edition). The absorption
@@ -37,12 +43,12 @@ import org.orekit.time.AbsoluteDate;
  * Some authors prefer to express thermo-optical properties for surfaces
  * using the following coefficients: Ka = α, Ks = (1-α)τ, Kd = (1-α)(1-τ)
  * </pre>
- * Ka is the same absorption coefficient, and Ks is also called specular
+ * <p> Ka is the same absorption coefficient, and Ks is also called specular
  * reflection coefficient, which leads to a confusion. In fact, as the Ka,
  * Ks and Kd coefficients are the most frequently used ones (using the
  * names Ca, Cs and Cd), when speaking about reflection coefficients, it
  * is more often Cd that is considered rather than τ.
- * </p>
+ *
  * <p>
  * The classical set of coefficients Ca, Cs, and Cd are implemented in the
  * sister class {@link IsotropicRadiationClassicalConvention}, which should
@@ -57,14 +63,25 @@ import org.orekit.time.AbsoluteDate;
  */
 public class IsotropicRadiationCNES95Convention implements RadiationSensitive {
 
+    /** Parameters scaling factor.
+     * <p>
+     * We use a power of 2 to avoid numeric noise introduction
+     * in the multiplications/divisions sequences.
+     * </p>
+     */
+    private final double SCALE = FastMath.scalb(1.0, -3);
+
+    /** Driver for absorption coefficient. */
+    private final ParameterDriver absorptionParameterDriver;
+
+    /** Driver for specular reflection coefficient. */
+    private final ParameterDriver reflectionParameterDriver;
+
     /** Cross section (m²). */
     private final double crossSection;
 
-    /** Absorption coefficient. */
-    private double alpha;
-
-    /** Specular reflection coefficient. */
-    private double tau;
+    /** Factory for the DerivativeStructure instances. */
+    private final DSFactory factory;
 
     /** Simple constructor.
      * @param crossSection Surface (m²)
@@ -72,40 +89,69 @@ public class IsotropicRadiationCNES95Convention implements RadiationSensitive {
      * @param tau specular reflection coefficient τ between 0.0 an 1.0
      */
     public IsotropicRadiationCNES95Convention(final double crossSection, final double alpha, final double tau) {
+        try {
+            absorptionParameterDriver = new ParameterDriver(RadiationSensitive.ABSORPTION_COEFFICIENT,
+                                                            alpha, SCALE, 0.0, 1.0);
+            reflectionParameterDriver = new ParameterDriver(RadiationSensitive.REFLECTION_COEFFICIENT,
+                                                            tau, SCALE, 0.0, 1.0);
+            factory = new DSFactory(1, 1);
+        } catch (OrekitException oe) {
+            // this should never occur as valueChanged above never throws an exception
+            throw new OrekitInternalError(oe);
+        }
         this.crossSection = crossSection;
-        this.alpha        = alpha;
-        this.tau          = tau;
     }
 
     /** {@inheritDoc} */
+    @Override
+    public ParameterDriver[] getRadiationParametersDrivers() {
+        return new ParameterDriver[] {
+            absorptionParameterDriver, reflectionParameterDriver
+        };
+    }
+
+    /** {@inheritDoc} */
+    @Override
     public Vector3D radiationPressureAcceleration(final AbsoluteDate date, final Frame frame, final Vector3D position,
-                                                  final Rotation rotation, final double mass, final Vector3D flux) {
+                                                  final Rotation rotation, final double mass, final Vector3D flux,
+                                                  final double[] parameters) {
+        final double alpha = parameters[0];
+        final double tau   = parameters[1];
         final double kP = crossSection * (1 + 4 * (1.0 - alpha) * (1.0 - tau) / 9.0);
         return new Vector3D(kP / mass, flux);
     }
 
     /** {@inheritDoc} */
-    public FieldVector3D<DerivativeStructure> radiationPressureAcceleration(final AbsoluteDate date, final Frame frame, final FieldVector3D<DerivativeStructure> position,
-                                                                            final FieldRotation<DerivativeStructure> rotation, final DerivativeStructure mass,
-                                                                            final FieldVector3D<DerivativeStructure> flux) {
-        final double kP = crossSection * (1 + 4 * (1.0 - alpha) * (1.0 - tau) / 9.0);
-        return new FieldVector3D<DerivativeStructure>(mass.reciprocal().multiply(kP), flux);
+    @Override
+    public <T extends RealFieldElement<T>> FieldVector3D<T>
+        radiationPressureAcceleration(final FieldAbsoluteDate<T> date, final Frame frame,
+                                      final FieldVector3D<T> position,
+                                      final FieldRotation<T> rotation, final T mass,
+                                      final FieldVector3D<T> flux,
+                                      final T[] parameters)
+        throws OrekitException {
+        final T alpha = parameters[0];
+        final T tau   = parameters[1];
+        final T kP    = alpha.negate().add(1).multiply(tau.negate().add(1)).multiply(4.0 / 9.0).add(1).multiply(crossSection);
+        return new FieldVector3D<>(mass.reciprocal().multiply(kP), flux);
     }
 
     /** {@inheritDoc} */
+    @Override
     public FieldVector3D<DerivativeStructure> radiationPressureAcceleration(final AbsoluteDate date, final Frame frame, final Vector3D position,
                                                                             final Rotation rotation, final double mass,
-                                                                            final Vector3D flux, final String paramName)
+                                                                            final Vector3D flux, final double[] parameters,
+                                                                            final String paramName)
         throws OrekitException {
 
         final DerivativeStructure absorptionCoeffDS;
         final DerivativeStructure specularReflectionCoeffDS;
         if (ABSORPTION_COEFFICIENT.equals(paramName)) {
-            absorptionCoeffDS         = new DerivativeStructure(1, 1, 0, alpha);
-            specularReflectionCoeffDS = new DerivativeStructure(1, 1,    tau);
+            absorptionCoeffDS         = factory.variable(0, parameters[0]);
+            specularReflectionCoeffDS = factory.constant(parameters[1]);
         } else if (REFLECTION_COEFFICIENT.equals(paramName)) {
-            absorptionCoeffDS         = new DerivativeStructure(1, 1,    alpha);
-            specularReflectionCoeffDS = new DerivativeStructure(1, 1, 0, tau);
+            absorptionCoeffDS         = factory.constant(parameters[0]);
+            specularReflectionCoeffDS = factory.variable(0, parameters[1]);
         } else {
             throw new OrekitException(OrekitMessages.UNSUPPORTED_PARAMETER_NAME, paramName,
                                       ABSORPTION_COEFFICIENT + ", " + REFLECTION_COEFFICIENT);
@@ -113,28 +159,8 @@ public class IsotropicRadiationCNES95Convention implements RadiationSensitive {
 
         final DerivativeStructure kP =
                 absorptionCoeffDS.subtract(1).multiply(specularReflectionCoeffDS.subtract(1)).multiply(4.0 / 9.0).add(1).multiply(crossSection);
-        return new FieldVector3D<DerivativeStructure>(kP.divide(mass), flux);
+        return new FieldVector3D<>(kP.divide(mass), flux);
 
-    }
-
-    /** {@inheritDoc} */
-    public void setAbsorptionCoefficient(final double value) {
-        alpha = value;
-    }
-
-    /** {@inheritDoc} */
-    public double getAbsorptionCoefficient() {
-        return alpha;
-    }
-
-    /** {@inheritDoc} */
-    public void setReflectionCoefficient(final double value) {
-        tau = value;
-    }
-
-    /** {@inheritDoc} */
-    public double getReflectionCoefficient() {
-        return tau;
     }
 
 }

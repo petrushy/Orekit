@@ -1,4 +1,4 @@
-' Copyright 2002-2016 CS Systèmes d'Information
+' Copyright 2002-2017 CS Systèmes d'Information
 ' Licensed to CS Systèmes d'Information (CS) under one or more
 ' contributor license agreements.  See the NOTICE file distributed with
 ' this work for additional information regarding copyright ownership.
@@ -34,11 +34,6 @@
         +void addContribution()
         +FieldVector3D<DerivativeStructure> accelerationDerivatives()
         +EventDetector[] getEventsDetectors()
-      }
-
-      package complex #EAECE6 {
-        class ComplexForceModel
-        ForceModel <|.. ComplexForceModel
       }
 
       package radiation #EAECE6 {
@@ -87,6 +82,7 @@
           +void selectParamAndStep(String parameter, double hP)
           +void setInitialJacobians()
        }
+      class Jacobianizer
 
        TimeDerivativesEquations    <--      ForceModel : contributes
        AdditionalEquations         <|..     PartialDerivativesEquations
@@ -95,11 +91,15 @@
        NumericalPropagator         "1..*" *--> ForceModel
        NumericalPropagator         "1" *--> TimeDerivativesEquations : main
 
-       Jacobianizer                  "1" <-->  "1" ComplexForceModel
-
       }
     }
 
   }
 
+  package user.application #F3EDF7 {
+        class ComplexForceModel #EAE6F7/B9B3D2
+        ComplexForceModel ..|> ForceModel
+       Jacobianizer                  "1" <-->  "1" ComplexForceModel
+
+  }
 @enduml

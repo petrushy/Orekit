@@ -1,4 +1,4 @@
-/* Copyright 2002-2016 CS Systèmes d'Information
+/* Copyright 2002-2017 CS Systèmes d'Information
  * Licensed to CS Systèmes d'Information (CS) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -21,7 +21,7 @@ import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import org.apache.commons.math3.util.FastMath;
+import org.hipparchus.util.FastMath;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -29,7 +29,6 @@ import org.orekit.Utils;
 import org.orekit.bodies.CelestialBodyFactory;
 import org.orekit.errors.OrekitException;
 import org.orekit.errors.OrekitMessages;
-import org.orekit.files.general.OrbitFile.TimeSystem;
 import org.orekit.frames.FramesFactory;
 import org.orekit.frames.LOFType;
 import org.orekit.time.AbsoluteDate;
@@ -75,9 +74,9 @@ public class OMMParserTest {
         Assert.assertEquals(file.getMetaData().getCenterBody(),
                             CelestialBodyFactory.getEarth());
         Assert.assertEquals(file.getMetaData().getFrame(), FramesFactory.getTEME());
-        Assert.assertEquals(file.getTimeSystem(), TimeSystem.UTC);
+        Assert.assertEquals(file.getMetaData().getTimeSystem(), CcsdsTimeScale.UTC);
         Assert.assertEquals("SGP/SGP4", file.getMetaData().getMeanElementTheory());
-        Assert.assertEquals("TEME", file.getCoordinateSystem());
+        Assert.assertEquals("TEME", file.getMetaData().getFrame().toString());
         Assert.assertTrue(file.getTLERelatedParametersComment().isEmpty());
 
         // Check Mean Keplerian elements data block;
@@ -207,26 +206,8 @@ public class OMMParserTest {
         final OMMFile file = parser.parse(inEntry, "OMMExample.txt");
 
         final String satId = "1995-025A";
-        Assert.assertEquals(1, file.getSatelliteCount());
-        Assert.assertTrue(file.containsSatellite(satId));
-        Assert.assertFalse(file.containsSatellite("1995-025B"));
-        Assert.assertNotNull(file.getSatellite(satId));
-        Assert.assertEquals(1, file.getSatellites().size());
-        Assert.assertEquals(satId, file.getSatellite(satId).getSatelliteId());
-        Assert.assertEquals(0, file.getSatelliteCoordinates(satId).size());
+        Assert.assertEquals(satId, file.getMetaData().getObjectID());
 
-        try {
-            file.getEpochInterval();
-            Assert.fail("an exception should have been thrown");
-        } catch (UnsupportedOperationException uoe) {
-            // expected
-        }
-        try {
-            file.getNumberOfEpochs();
-            Assert.fail("an exception should have been thrown");
-        } catch (UnsupportedOperationException uoe) {
-            // expected
-        }
     }
 
     @Test

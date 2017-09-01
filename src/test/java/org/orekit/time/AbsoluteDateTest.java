@@ -1,4 +1,4 @@
-/* Copyright 2002-2016 CS Systèmes d'Information
+/* Copyright 2002-2017 CS Systèmes d'Information
  * Licensed to CS Systèmes d'Information (CS) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -21,13 +21,15 @@ import java.io.IOException;
 import java.util.Date;
 import java.util.TimeZone;
 
-import org.apache.commons.math3.util.FastMath;
-import org.apache.commons.math3.util.Precision;
+import org.hipparchus.util.FastMath;
+import org.hipparchus.util.Precision;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.orekit.Utils;
 import org.orekit.errors.OrekitException;
+import org.orekit.errors.OrekitIllegalArgumentException;
+import org.orekit.errors.OrekitMessages;
 import org.orekit.utils.Constants;
 
 public class AbsoluteDateTest {
@@ -67,7 +69,7 @@ public class AbsoluteDateTest {
 
     @Test
     public void testJulianEpochRate() throws OrekitException {
-        
+
         for (int i = 0; i < 10; ++i) {
             AbsoluteDate j200i = AbsoluteDate.createJulianEpoch(2000.0 + i);
             AbsoluteDate j2000 = AbsoluteDate.J2000_EPOCH;
@@ -79,7 +81,7 @@ public class AbsoluteDateTest {
 
     @Test
     public void testBesselianEpochRate() throws OrekitException {
-        
+
         for (int i = 0; i < 10; ++i) {
             AbsoluteDate b195i = AbsoluteDate.createBesselianEpoch(1950.0 + i);
             AbsoluteDate b1950 = AbsoluteDate.createBesselianEpoch(1950.0);
@@ -311,7 +313,7 @@ public class AbsoluteDateTest {
         Assert.assertEquals(0.0, AbsoluteDate.J2000_EPOCH.durationFrom(dateA), 1.0e-15);
         AbsoluteDate dateB = AbsoluteDate.createMJDDate(53774, 0.0, TimeScalesFactory.getUTC());
         AbsoluteDate dateC = new AbsoluteDate("2006-02-08T00:00:00", TimeScalesFactory.getUTC());
-        Assert.assertEquals(0.0, dateC.durationFrom(dateB), 1.0e-15);        
+        Assert.assertEquals(0.0, dateC.durationFrom(dateB), 1.0e-15);
     }
 
     @Test
@@ -373,6 +375,7 @@ public class AbsoluteDateTest {
         }
     }
 
+    @SuppressWarnings("unlikely-arg-type")
     @Test
     public void testEquals() {
         AbsoluteDate d1 =
@@ -390,7 +393,7 @@ public class AbsoluteDateTest {
     public void testComponents() throws OrekitException {
         // this is NOT J2000.0,
         // it is either a few seconds before or after depending on time scale
-        DateComponents date = new DateComponents(2000, 01,01);
+        DateComponents date = new DateComponents(2000, 1, 1);
         TimeComponents time = new TimeComponents(11, 59, 10);
         TimeScale[] scales = {
             TimeScalesFactory.getTAI(), TimeScalesFactory.getUTC(),
@@ -629,6 +632,8 @@ public class AbsoluteDateTest {
         Assert.assertTrue(Double.isInfinite(AbsoluteDate.FUTURE_INFINITY.durationFrom(AbsoluteDate.J2000_EPOCH)));
         Assert.assertTrue(Double.isInfinite(AbsoluteDate.FUTURE_INFINITY.durationFrom(AbsoluteDate.PAST_INFINITY)));
         Assert.assertTrue(Double.isInfinite(AbsoluteDate.PAST_INFINITY.durationFrom(AbsoluteDate.J2000_EPOCH)));
+        Assert.assertEquals("5881610-07-11T23:59:59.999",  AbsoluteDate.FUTURE_INFINITY.toString());
+        Assert.assertEquals("-5877490-03-03T00:00:00.000", AbsoluteDate.PAST_INFINITY.toString());
     }
 
     @Test
@@ -742,6 +747,56 @@ public class AbsoluteDateTest {
         Assert.assertEquals(59.9996, stillBeforeMidnight.getComponents(utc).getTime().getSecond(), 1.0e-15);
         Assert.assertEquals("2008-02-29T23:59:59.999", beforeMidnight.toString(utc));
         Assert.assertEquals("2008-03-01T00:00:00.000", stillBeforeMidnight.toString(utc));
+    }
+
+    @Test
+    public void testLastLeapOutput() throws OrekitException {
+        UTCScale utc = TimeScalesFactory.getUTC();
+        AbsoluteDate t = utc.getLastKnownLeapSecond();
+        Assert.assertEquals("23:59:59.500", t.shiftedBy(-0.5).toString(utc).substring(11));
+        Assert.assertEquals("23:59:60.000", t.shiftedBy( 0.0).toString(utc).substring(11));
+        Assert.assertEquals("23:59:60.500", t.shiftedBy(+0.5).toString(utc).substring(11));
+    }
+
+    @Test
+    public void testWrapBeforeLeap() throws OrekitException {
+        UTCScale utc = TimeScalesFactory.getUTC();
+        AbsoluteDate t = new AbsoluteDate("2015-06-30T23:59:59.999999", utc);
+        Assert.assertEquals(2015,        t.getComponents(utc).getDate().getYear());
+        Assert.assertEquals(   6,        t.getComponents(utc).getDate().getMonth());
+        Assert.assertEquals(  30,        t.getComponents(utc).getDate().getDay());
+        Assert.assertEquals(  23,        t.getComponents(utc).getTime().getHour());
+        Assert.assertEquals(  59,        t.getComponents(utc).getTime().getMinute());
+        Assert.assertEquals(  59.999999, t.getComponents(utc).getTime().getSecond(), 1.0e-6);
+        Assert.assertEquals("2015-06-30T23:59:60.000", t.toString(utc));
+        Assert.assertEquals("2015-07-01T02:59:60.000", t.toString(TimeScalesFactory.getGLONASS()));
+    }
+
+    @Test
+    public void testMjdInLeap() {
+        // inside a leap second
+        AbsoluteDate date1 = new AbsoluteDate(2008, 12, 31, 23, 59, 60.5, utc);
+
+        // check date to MJD conversion
+        DateTimeComponents date1Components = date1.getComponents(utc);
+        int mjd = date1Components.getDate().getMJD();
+        double seconds = date1Components.getTime().getSecondsInUTCDay();
+        Assert.assertEquals(54831, mjd);
+        Assert.assertEquals(86400.5, seconds, 0);
+
+        // check MJD to date conversion
+        AbsoluteDate date2 = AbsoluteDate.createMJDDate(mjd, seconds, utc);
+        Assert.assertEquals(date1, date2);
+
+        // check we still detect seconds overflow
+        try {
+            AbsoluteDate.createMJDDate(mjd, seconds + 1.0, utc);
+            Assert.fail("an exception should have been thrown");
+        } catch (OrekitIllegalArgumentException oiae) {
+            Assert.assertEquals(OrekitMessages.OUT_OF_RANGE_SECONDS_NUMBER, oiae.getSpecifier());
+            Assert.assertEquals(86401.5, ((Double) oiae.getParts()[0]).doubleValue(), 1.0e-10);
+        }
+
     }
 
     @Before

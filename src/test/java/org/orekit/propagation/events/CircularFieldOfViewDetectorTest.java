@@ -1,4 +1,4 @@
-/* Copyright 2002-2016 CS Systèmes d'Information
+/* Copyright 2002-2017 CS Systèmes d'Information
  * Licensed to CS Systèmes d'Information (CS) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -16,8 +16,8 @@
  */
 package org.orekit.propagation.events;
 
-import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
-import org.apache.commons.math3.util.FastMath;
+import org.hipparchus.geometry.euclidean.threed.Vector3D;
+import org.hipparchus.util.FastMath;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -112,7 +112,7 @@ public class CircularFieldOfViewDetectorTest {
                                          Constants.WGS84_EARTH_FLATTENING,
                                          FramesFactory.getITRF(IERSConventions.IERS_2010, true));
 
-            // Create earth center pointing attitude provider */
+            // Create earth center pointing attitude provider
             earthCenterAttitudeLaw = new BodyCenterPointing(initialOrbit.getFrame(), earth);
 
         } catch (OrekitException oe) {
@@ -143,10 +143,6 @@ public class CircularFieldOfViewDetectorTest {
                 Assert.assertTrue(s.getDate().durationFrom(endVisiDate) <= 1);
                 return Action.CONTINUE;//STOP;
             }
-        }
-
-        public SpacecraftState resetState(EventDetector detector, SpacecraftState oldState) {
-            return oldState;
         }
 
     }

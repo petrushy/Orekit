@@ -1,4 +1,4 @@
-/* Copyright 2002-2016 CS Systèmes d'Information
+/* Copyright 2002-2017 CS Systèmes d'Information
  * Licensed to CS Systèmes d'Information (CS) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -16,8 +16,8 @@
  */
 package org.orekit.propagation.events;
 
-import org.apache.commons.math3.analysis.differentiation.DerivativeStructure;
-import org.apache.commons.math3.geometry.euclidean.threed.FieldVector3D;
+import org.hipparchus.analysis.differentiation.DerivativeStructure;
+import org.hipparchus.geometry.euclidean.threed.FieldVector3D;
 import org.orekit.errors.OrekitException;
 import org.orekit.frames.TopocentricFrame;
 import org.orekit.frames.Transform;
@@ -32,9 +32,9 @@ import org.orekit.utils.TimeStampedPVCoordinates;
  * <p>
  * As in most cases only the elevation maximum is needed and the
  * minimum is often irrelevant, this detector is often wrapped into
- * an {@link EventFilter event filter} configured with
+ * an {@link EventSlopeFilter event slope filter} configured with
  * {@link FilterType#TRIGGER_ONLY_DECREASING_EVENTS} (i.e. when the
- * elevation derivative decreases from positive vaules to negative values,
+ * elevation derivative decreases from positive values to negative values,
  * which correspond to a maximum). Setting up this filter saves some computation
  * time as the elevation minimum occurrences are not even looked at. It is
  * however still often necessary to do an additional filtering

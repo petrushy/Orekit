@@ -1,4 +1,4 @@
-/* Copyright 2002-2016 CS Systèmes d'Information
+/* Copyright 2002-2017 CS Systèmes d'Information
  * Licensed to CS Systèmes d'Information (CS) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -28,11 +28,12 @@ import java.util.SortedMap;
 import java.util.SortedSet;
 import java.util.TreeMap;
 
-import org.apache.commons.math3.analysis.differentiation.DerivativeStructure;
-import org.apache.commons.math3.exception.util.LocalizedFormats;
-import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
-import org.apache.commons.math3.util.FastMath;
-import org.apache.commons.math3.util.MathUtils;
+import org.hipparchus.analysis.differentiation.DSFactory;
+import org.hipparchus.analysis.differentiation.DerivativeStructure;
+import org.hipparchus.exception.LocalizedCoreFormats;
+import org.hipparchus.geometry.euclidean.threed.Vector3D;
+import org.hipparchus.util.FastMath;
+import org.hipparchus.util.MathUtils;
 import org.orekit.attitudes.AttitudeProvider;
 import org.orekit.errors.OrekitException;
 import org.orekit.forces.gravity.potential.UnnormalizedSphericalHarmonicsProvider;
@@ -52,8 +53,7 @@ import org.orekit.propagation.semianalytical.dsst.utilities.hansen.HansenTessera
 import org.orekit.time.AbsoluteDate;
 import org.orekit.utils.TimeSpanMap;
 
-/** Tesseral contribution to the {@link DSSTCentralBody central body gravitational
- *  perturbation}.
+/** Tesseral contribution to the central body gravitational perturbation.
  *  <p>
  *  Only resonant tesserals are considered.
  *  </p>
@@ -236,6 +236,9 @@ public class DSSTTesseral implements DSSTForceModel {
     /** Short period terms. */
     private TesseralShortPeriodicCoefficients shortPeriodTerms;
 
+    /** Factory for the DerivativeStructure instances. */
+    private final DSFactory factory;
+
     /** Simple constructor.
      * @param centralBodyFrame rotating body frame
      * @param centralBodyRotationRate central body rotation rate (rad/s)
@@ -310,6 +313,8 @@ public class DSSTTesseral implements DSSTForceModel {
         this.maxEccPow = 0;
         this.maxHansen = 0;
 
+        this.factory = new DSFactory(1, 1);
+
     }
 
     /** Check an index range.
@@ -320,11 +325,8 @@ public class DSSTTesseral implements DSSTForceModel {
      */
     private void checkIndexRange(final int index, final int min, final int max)
         throws OrekitException {
-        if (index < min) {
-            throw new OrekitException(LocalizedFormats.NUMBER_TOO_SMALL, index, min);
-        }
-        if (index > max) {
-            throw new OrekitException(LocalizedFormats.NUMBER_TOO_LARGE, index, max);
+        if (index < min || index > max) {
+            throw new OrekitException(LocalizedCoreFormats.OUT_OF_RANGE_SIMPLE, index, min, max);
         }
     }
 
@@ -416,7 +418,7 @@ public class DSSTTesseral implements DSSTForceModel {
                     //Compute the n0 value
                     final int n0 = FastMath.max(FastMath.max(2, m), s);
 
-                    //Create the object for the pair j,s
+                    //Create the object for the pair j, s
                     this.hansenObjects[s + maxDegree][j] = new HansenTesseralLinear(maxDegree, s, j, n0, maxHansen);
 
                     if (s > 0 && s <= sMin) {
@@ -535,7 +537,7 @@ public class DSSTTesseral implements DSSTForceModel {
 
     /** {@inheritDoc} */
     @Override
-    public void updateShortPeriodTerms(final SpacecraftState ... meanStates)
+    public void updateShortPeriodTerms(final SpacecraftState... meanStates)
         throws OrekitException {
 
         final Slot slot = shortPeriodTerms.createSlot(meanStates);
@@ -896,7 +898,7 @@ public class DSSTTesseral implements DSSTForceModel {
                 final int l = FastMath.min(n - m, n - FastMath.abs(s));
                 // Jacobi polynomial and derivative
                 final DerivativeStructure jacobi =
-                        JacobiPolynomials.getValue(l, v, w, new DerivativeStructure(1, 1, 0, gamma));
+                        JacobiPolynomials.getValue(l, v, w, factory.variable(0, gamma));
 
                 // Geopotential coefficients
                 final double cnm = harmonics.getUnnormalizedCnm(n, m);
@@ -1288,7 +1290,7 @@ public class DSSTTesseral implements DSSTForceModel {
          * @param meanStates mean states defining the slot
          * @return slot valid at the specified date
          */
-        public Slot createSlot(final SpacecraftState ... meanStates) {
+        public Slot createSlot(final SpacecraftState... meanStates) {
             final Slot         slot  = new Slot(mMax, jMax, interpolationPoints);
             final AbsoluteDate first = meanStates[0].getDate();
             final AbsoluteDate last  = meanStates[meanStates.length - 1].getDate();
@@ -1429,7 +1431,7 @@ public class DSSTTesseral implements DSSTForceModel {
          * @param indices list of coefficient indices
          */
         private void storeIfSelected(final Map<String, double[]> map, final Set<String> selected,
-                                     final double[] value, final String id, final int ... indices) {
+                                     final double[] value, final String id, final int... indices) {
             final StringBuilder keyBuilder = new StringBuilder(getCoefficientsKeyPrefix());
             keyBuilder.append(id);
             for (int index : indices) {

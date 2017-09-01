@@ -1,6 +1,6 @@
 package org.orekit.models.earth;
 
-import org.apache.commons.math3.util.FastMath;
+import org.hipparchus.util.FastMath;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -30,8 +30,8 @@ public class EarthITU453AtmosphereRefractionTest {
     private final double[] ref_refraction = new double[] {34.5, 31.4, 28.7, 26.4, 24.3, 22.5, 20.9, 19.5, 18.3, 17.2, 16.1, 15.2, 14.4, 10.7, 9.90,
                                                           8.50, 7.40, 6.60, 5.90, 5.30, 4.90, 4.50, 4.10, 3.80, 3.60, 3.30, 3.10, 2.90, 2.80, 2.60,
                                                           2.10, 1.70, 1.40, 0.80, 0.70, 0.60, 0.50, 0.40, 0.20, 0.00};
-    
-    
+
+
     // Kiruna-2 ESTRACK Station (Sweden)
     private TopocentricFrame stationk;
     private String namek = "Kiruna-2";
@@ -48,7 +48,7 @@ public class EarthITU453AtmosphereRefractionTest {
     // Altitude0 Fake Station ()
     private TopocentricFrame stationa;
     private String namea = "Alt0";
-    
+
     @Before
     public void setUp() throws Exception {
         Utils.setDataRoot("regular-data:potential:tides");
@@ -61,7 +61,7 @@ public class EarthITU453AtmosphereRefractionTest {
         final GeodeticPoint kir = new GeodeticPoint(FastMath.toRadians(67.858428),
                                                    FastMath.toRadians(20.966880),
                                                    385.8);
-        
+
         // Hartebeesthoek (South Africa)
         final GeodeticPoint har = new GeodeticPoint(FastMath.toRadians(-24.110243),
                                                     FastMath.toRadians(27.685308),
@@ -71,12 +71,12 @@ public class EarthITU453AtmosphereRefractionTest {
         final GeodeticPoint eve = new GeodeticPoint(FastMath.toRadians(27.988333),
                                                     FastMath.toRadians(86.991944),
                                                     8848.0);
-        
+
         // Dead Sea (fake station)
         final GeodeticPoint des = new GeodeticPoint(FastMath.toRadians(31.500000),
                                                     FastMath.toRadians(35.500000),
                                                     -422.0);
-        
+
         // Alt0 (fake station)
         final GeodeticPoint alt = new GeodeticPoint(FastMath.toRadians(31.500000),
                                                     FastMath.toRadians(35.500000),
@@ -95,38 +95,38 @@ public class EarthITU453AtmosphereRefractionTest {
         // elevation angle of the space station under free-space propagation conditions
         final double elevation = FastMath.toRadians(2.0);
 
-        // Station altitude (km)
-        final double altitude = statione.getPoint().getAltitude() / 1000.;
+        // Station altitude
+        final double altitude = statione.getPoint().getAltitude();
         EarthITU453AtmosphereRefraction modelTropo = new EarthITU453AtmosphereRefraction(altitude);
 
         // refraction correction in degrees
         double refraction = FastMath.toDegrees(modelTropo.getRefraction(elevation));
-        Assert.assertEquals(refraction, 0.11458177523385392, epsilon);
+        Assert.assertEquals(0.11458177523385392, refraction, epsilon);
     }
-    
+
     @Test
     public void testEarthITU453AtmosphereRefractionLowest() throws OrekitException {
 
         // elevation angle of the space station under free-space propagation conditions
         final double elevation = FastMath.toRadians(2.0);
 
-        // Station altitude (km)
-        final double altitude = stationd.getPoint().getAltitude() / 1000.;
+        // Station altitude
+        final double altitude = stationd.getPoint().getAltitude();
         EarthITU453AtmosphereRefraction modelTropo = new EarthITU453AtmosphereRefraction(altitude);
 
         // refraction correction in degrees
         double refraction = FastMath.toDegrees(modelTropo.getRefraction(elevation));
-        Assert.assertEquals(refraction, 0.3550620274090111, epsilon);
+        Assert.assertEquals(0.3550620274090111, refraction, epsilon);
     }
-    
+
     @Test
     public void testEarthITU453AtmosphereRefraction2degree() throws OrekitException {
 
         // elevation angle of the space station under free-space propagation conditions
         final double elevation = FastMath.toRadians(2.0);
 
-        // Station altitude (km)
-        final double altitude = stationk.getPoint().getAltitude() / 1000.;
+        // Station altitude
+        final double altitude = stationk.getPoint().getAltitude();
         EarthITU453AtmosphereRefraction modelTropo = new EarthITU453AtmosphereRefraction(altitude);
 
         // refraction correction in degrees
@@ -134,55 +134,55 @@ public class EarthITU453AtmosphereRefractionTest {
         Assert.assertEquals(refraction, 0.32, onehundredth);
 
         final double thetamin = FastMath.toDegrees(modelTropo.getThetaMin());
-        Assert.assertEquals(thetamin, -0.5402509318003884, epsilon);
+        Assert.assertEquals(-0.5402509318003884, thetamin, epsilon);
         final double theta0 = FastMath.toDegrees(modelTropo.getTheta0());
-        Assert.assertEquals(theta0, -1.4959064751203384, epsilon);
-        
+        Assert.assertEquals(-1.4959064751203384, theta0, epsilon);
+
     }
-    
+
     @Test
     public void testEarthITU453AtmosphereRefraction4degree() throws OrekitException {
 
         // elevation angle of the space station under free-space propagation conditions
         final double elevation = FastMath.toRadians(4.0);
 
-        // Station altitude (km)
-        final double altitude = stationk.getPoint().getAltitude() / 1000.;
+        // Station altitude
+        final double altitude = stationk.getPoint().getAltitude();
         EarthITU453AtmosphereRefraction modelTropo = new EarthITU453AtmosphereRefraction(altitude);
 
         // refraction correction in degrees
         double refraction = FastMath.toDegrees(modelTropo.getRefraction(elevation));
-        Assert.assertEquals(refraction, 0.21, onehundredth);
+        Assert.assertEquals(0.21, refraction, onehundredth);
     }
-    
+
     @Test
     public void testEarthITU453AtmosphereRefraction10degree() throws OrekitException {
 
         // elevation angle of the space station under free-space propagation conditions
         final double elevation = FastMath.toRadians(10.0);
 
-        // Station altitude (km)
-        final double altitude = stationk.getPoint().getAltitude() / 1000.;
+        // Station altitude
+        final double altitude = stationk.getPoint().getAltitude();
         EarthITU453AtmosphereRefraction modelTropo = new EarthITU453AtmosphereRefraction(altitude);
 
         // refraction correction in degrees
         double refraction = FastMath.toDegrees(modelTropo.getRefraction(elevation));
-        Assert.assertEquals(refraction, 0.10, twohundredth);
+        Assert.assertEquals(0.10, refraction, twohundredth);
     }
-    
+
     @Test
     public void testEarthITU453AtmosphereRefraction30degree() throws OrekitException {
 
         // elevation angle of the space station under free-space propagation conditions
         final double elevation = FastMath.toRadians(30.0);
 
-        // Station altitude (km)
-        final double altitude = stationk.getPoint().getAltitude() / 1000.;
+        // Station altitude
+        final double altitude = stationk.getPoint().getAltitude();
         EarthITU453AtmosphereRefraction modelTropo = new EarthITU453AtmosphereRefraction(altitude);
 
         // refraction correction in degrees
         double refraction = FastMath.toDegrees(modelTropo.getRefraction(elevation));
-        Assert.assertEquals(refraction, 0.02, onehundredth);
+        Assert.assertEquals(0.02, refraction, onehundredth);
     }
 
     @Test
@@ -191,35 +191,35 @@ public class EarthITU453AtmosphereRefractionTest {
         // elevation angle of the space station under free-space propagation conditions
         final double elevation = FastMath.toRadians(90.0);
 
-        // Station altitude (km)
-        final double altitude = stationk.getPoint().getAltitude() / 1000.;
+        // Station altitude
+        final double altitude = stationk.getPoint().getAltitude();
         EarthITU453AtmosphereRefraction modelTropo = new EarthITU453AtmosphereRefraction(altitude);
 
         // refraction correction in degrees
         double refraction = FastMath.toDegrees(modelTropo.getRefraction(elevation));
-        Assert.assertEquals(refraction, 0.002, onethousandth);
-        
+        Assert.assertEquals(0.002, refraction, onethousandth);
+
     }
     @Test
     public void testEarthITU453AtmosphereRefractionminusdegree() throws OrekitException {
 
         // elevation angle of the space station under free-space propagation conditions
         final double elevation = FastMath.toRadians(-10.);
-        
-        // Station altitude (km)
-        final double altitude = stationh.getPoint().getAltitude() / 1000.;
+
+        // Station altitude
+        final double altitude = stationh.getPoint().getAltitude();
         EarthITU453AtmosphereRefraction modelTropo = new EarthITU453AtmosphereRefraction(altitude);
 
         // refraction correction in degrees
         double refraction = FastMath.toDegrees(modelTropo.getRefraction(elevation));
-        Assert.assertEquals(refraction, 1.7367073234643113, onethousandth);
+        Assert.assertEquals(1.7367073234643113, refraction, onethousandth);
     }
 
     @Test
     public void testEarthITU453AtmosphereRefractiontable() throws OrekitException {
 
-        // Station altitude (km)
-        final double altitude = stationa.getPoint().getAltitude() / 1000.;
+        // Station altitude
+        final double altitude = stationa.getPoint().getAltitude();
         EarthITU453AtmosphereRefraction modelTropo = new EarthITU453AtmosphereRefraction(altitude);
 
         for (int itab=0; itab<40; itab++) {
@@ -228,7 +228,7 @@ public class EarthITU453AtmosphereRefractionTest {
 
             // refraction correction in arcminutes
             final double refraction = 60.0 * FastMath.toDegrees(modelTropo.getRefraction(elevation));
-            Assert.assertEquals(refraction, ref_refraction[itab], 2.1 );
+            Assert.assertEquals(ref_refraction[itab], refraction, 2.1);
         }
     }
 }

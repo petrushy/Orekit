@@ -1,4 +1,4 @@
-/* Copyright 2002-2016 CS Systèmes d'Information
+/* Copyright 2002-2017 CS Systèmes d'Information
  * Licensed to CS Systèmes d'Information (CS) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -29,24 +29,24 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.NoSuchElementException;
 
-import org.apache.commons.math3.exception.util.LocalizedFormats;
-import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
-import org.apache.commons.math3.ode.AbstractIntegrator;
-import org.apache.commons.math3.ode.nonstiff.AdaptiveStepsizeIntegrator;
-import org.apache.commons.math3.ode.nonstiff.ClassicalRungeKuttaIntegrator;
-import org.apache.commons.math3.ode.nonstiff.DormandPrince853Integrator;
-import org.apache.commons.math3.util.FastMath;
-import org.apache.commons.math3.util.MathUtils;
-import org.orekit.Utils;
+import org.hipparchus.exception.LocalizedCoreFormats;
+import org.hipparchus.geometry.euclidean.threed.Vector3D;
+import org.hipparchus.ode.AbstractIntegrator;
+import org.hipparchus.ode.nonstiff.AdaptiveStepsizeIntegrator;
+import org.hipparchus.ode.nonstiff.ClassicalRungeKuttaIntegrator;
+import org.hipparchus.ode.nonstiff.DormandPrince853Integrator;
+import org.hipparchus.util.FastMath;
+import org.hipparchus.util.MathUtils;
 import org.orekit.bodies.CelestialBodyFactory;
 import org.orekit.bodies.OneAxisEllipsoid;
+import org.orekit.data.DataProvidersManager;
+import org.orekit.data.DirectoryCrawler;
 import org.orekit.errors.OrekitException;
-import org.orekit.errors.PropagationException;
-import org.orekit.forces.drag.Atmosphere;
 import org.orekit.forces.drag.DragForce;
 import org.orekit.forces.drag.DragSensitive;
-import org.orekit.forces.drag.HarrisPriester;
 import org.orekit.forces.drag.IsotropicDrag;
+import org.orekit.forces.drag.atmosphere.Atmosphere;
+import org.orekit.forces.drag.atmosphere.HarrisPriester;
 import org.orekit.forces.gravity.HolmesFeatherstoneAttractionModel;
 import org.orekit.forces.gravity.ThirdBodyAttraction;
 import org.orekit.forces.gravity.potential.GravityFieldFactory;
@@ -71,8 +71,8 @@ import org.orekit.propagation.sampling.OrekitFixedStepHandler;
 import org.orekit.propagation.semianalytical.dsst.DSSTPropagator;
 import org.orekit.propagation.semianalytical.dsst.forces.DSSTAtmosphericDrag;
 import org.orekit.propagation.semianalytical.dsst.forces.DSSTSolarRadiationPressure;
-import org.orekit.propagation.semianalytical.dsst.forces.DSSTThirdBody;
 import org.orekit.propagation.semianalytical.dsst.forces.DSSTTesseral;
+import org.orekit.propagation.semianalytical.dsst.forces.DSSTThirdBody;
 import org.orekit.propagation.semianalytical.dsst.forces.DSSTZonal;
 import org.orekit.time.AbsoluteDate;
 import org.orekit.time.TimeScale;
@@ -105,8 +105,19 @@ public class DSSTPropagation {
     public static void main(String[] args) {
         try {
 
-            // configure Orekit data acces
-            Utils.setDataRoot("tutorial-orekit-data");
+            // configure Orekit
+            File home       = new File(System.getProperty("user.home"));
+            File orekitData = new File(home, "orekit-data");
+            if (!orekitData.exists()) {
+                System.err.format(Locale.US, "Failed to find %s folder%n",
+                                  orekitData.getAbsolutePath());
+                System.err.format(Locale.US, "You need to download %s from the %s page and unzip it in %s for this tutorial to work%n",
+                                  "orekit-data.zip", "https://www.orekit.org/forge/projects/orekit/files",
+                                  home.getAbsolutePath());
+                System.exit(1);
+            }
+            DataProvidersManager manager = DataProvidersManager.getInstance();
+            manager.addProvider(new DirectoryCrawler(orekitData));
 
             // input/output (in user's home directory)
             File input  = new File(new File(System.getProperty("user.home")), "dsst-propagation.in");
@@ -205,7 +216,9 @@ public class DSSTPropagation {
 
         // read input parameters
         KeyValueFileParser<ParameterKey> parser = new KeyValueFileParser<ParameterKey>(ParameterKey.class);
-        parser.parseInput(input.getAbsolutePath(), new FileInputStream(input));
+        try (final FileInputStream fis = new FileInputStream(input)) {
+            parser.parseInput(input.getAbsolutePath(), fis);
+        }
 
         // check mandatory input parameters
         if (!parser.containsKey(ParameterKey.ORBIT_DATE)) {
@@ -304,7 +317,7 @@ public class DSSTPropagation {
 
         if (parser.containsKey(ParameterKey.FIXED_NUMBER_OF_INTERPOLATION_POINTS)) {
             if (parser.containsKey(ParameterKey.MAX_TIME_GAP_BETWEEN_INTERPOLATION_POINTS)) {
-                throw new OrekitException(LocalizedFormats.SIMPLE_MESSAGE,
+                throw new OrekitException(LocalizedCoreFormats.SIMPLE_MESSAGE,
                                           "cannot specify both fixed.number.of.interpolation.points" +
                                           " and max.time.gap.between.interpolation.points");
             }
@@ -727,10 +740,11 @@ public class DSSTPropagation {
         }
 
         /** {@inheritDoc} */
-        public void init(final SpacecraftState s0, final AbsoluteDate t) throws PropagationException {
+        public void init(final SpacecraftState s0, final AbsoluteDate t, final double step)
+            throws OrekitException {
             try {
                 nbColumns           = 0;
-                outputStream        = new PrintStream(outputFile);
+                outputStream        = new PrintStream(outputFile, "UTF-8");
                 describeNextColumn("time from start (s)");
                 if (outputKeplerian) {
                     describeNextColumn("semi major axis a (km)");
@@ -761,7 +775,7 @@ public class DSSTPropagation {
                 start   = s0.getDate();
                 isFirst = true;
             } catch (IOException ioe) {
-                throw new PropagationException(ioe, LocalizedFormats.SIMPLE_MESSAGE, ioe.getLocalizedMessage());
+                throw new OrekitException(ioe, LocalizedCoreFormats.SIMPLE_MESSAGE, ioe.getLocalizedMessage());
             }
         }
 
@@ -773,85 +787,81 @@ public class DSSTPropagation {
         }
 
         /** {@inheritDoc} */
-        public void handleStep(SpacecraftState s, boolean isLast) throws PropagationException {
-            try {
-                if (isFirst) {
-                    if (shortPeriodCoefficients != null) {
-                        if (shortPeriodCoefficients.isEmpty()) {
-                            // we want all available coefficients,
-                            // they correspond to the additional states
-                            for (final Map.Entry<String, double[]> entry : s.getAdditionalStates().entrySet()) {
-                                shortPeriodCoefficients.add(entry.getKey());
-                            }
-                            Collections.sort(shortPeriodCoefficients);
-                        }
-                        for (final String coefficientName : shortPeriodCoefficients) {
-                            describeNextColumn(coefficientName + " (a)");
-                            describeNextColumn(coefficientName + " (h)");
-                            describeNextColumn(coefficientName + " (k)");
-                            describeNextColumn(coefficientName + " (p)");
-                            describeNextColumn(coefficientName + " (q)");
-                            describeNextColumn(coefficientName + " (L)");
-                        }
-                    }
-                    isFirst = false;
-                }
-                outputStream.format(Locale.US, DT_FORMAT, s.getDate().durationFrom(start));
-                if (outputKeplerian) {
-                    final KeplerianOrbit ko = (KeplerianOrbit) OrbitType.KEPLERIAN.convertType(s.getOrbit());
-                    outputStream.format(Locale.US, KEPLERIAN_ELEMENTS_FORMAT,
-                                        ko.getA() / 1000.,
-                                        ko.getE(),
-                                        FastMath.toDegrees(ko.getI()),
-                                        FastMath.toDegrees(MathUtils.normalizeAngle(ko.getRightAscensionOfAscendingNode(), FastMath.PI)),
-                                        FastMath.toDegrees(MathUtils.normalizeAngle(ko.getPerigeeArgument(), FastMath.PI)),
-                                        FastMath.toDegrees(MathUtils.normalizeAngle(ko.getAnomaly(PositionAngle.MEAN), FastMath.PI)));
-                    if (outputEquinoctial) {
-                        outputStream.format(Locale.US, EQUINOCTIAL_ELEMENTS_WITHOUT_A_FORMAT,
-                                            ko.getEquinoctialEy(), // h
-                                            ko.getEquinoctialEx(), // k
-                                            ko.getHy(),            // p
-                                            ko.getHx(),            // q
-                                            FastMath.toDegrees(MathUtils.normalizeAngle(ko.getLM(), FastMath.PI)));
-                    }
-                } else if (outputEquinoctial) {
-                    outputStream.format(Locale.US, EQUINOCTIAL_ELEMENTS_WITH_A_FORMAT,
-                                        s.getOrbit().getA(),
-                                        s.getOrbit().getEquinoctialEy(), // h
-                                        s.getOrbit().getEquinoctialEx(), // k
-                                        s.getOrbit().getHy(),            // p
-                                        s.getOrbit().getHx(),            // q
-                                        FastMath.toDegrees(MathUtils.normalizeAngle(s.getOrbit().getLM(), FastMath.PI)));
-                }
-                if (outputCartesian) {
-                    final PVCoordinates pv = s.getPVCoordinates();
-                    outputStream.format(Locale.US, CARTESIAN_ELEMENTS_FORMAT,
-                                        pv.getPosition().getX() * 0.001,
-                                        pv.getPosition().getY() * 0.001,
-                                        pv.getPosition().getZ() * 0.001,
-                                        pv.getVelocity().getX() * 0.001,
-                                        pv.getVelocity().getY() * 0.001,
-                                        pv.getVelocity().getZ() * 0.001);
-                }
+        public void handleStep(SpacecraftState s, boolean isLast) throws OrekitException {
+            if (isFirst) {
                 if (shortPeriodCoefficients != null) {
+                    if (shortPeriodCoefficients.isEmpty()) {
+                        // we want all available coefficients,
+                        // they correspond to the additional states
+                        for (final Map.Entry<String, double[]> entry : s.getAdditionalStates().entrySet()) {
+                            shortPeriodCoefficients.add(entry.getKey());
+                        }
+                        Collections.sort(shortPeriodCoefficients);
+                    }
                     for (final String coefficientName : shortPeriodCoefficients) {
-                        final double[] coefficient = s.getAdditionalState(coefficientName);
-                        outputStream.format(Locale.US, SHORT_PERIOD_COEFFICIENTS_FORMAT,
-                                            coefficient[0],
-                                            coefficient[2], // beware, it is really 2 (ey/h), not 1 (ex/k)
-                                            coefficient[1], // beware, it is really 1 (ex/k), not 2 (ey/h)
-                                            coefficient[4], // beware, it is really 4 (hy/p), not 3 (hx/q)
-                                            coefficient[3], // beware, it is really 3 (hx/q), not 4 (hy/p)
-                                            coefficient[5]);
+                        describeNextColumn(coefficientName + " (a)");
+                        describeNextColumn(coefficientName + " (h)");
+                        describeNextColumn(coefficientName + " (k)");
+                        describeNextColumn(coefficientName + " (p)");
+                        describeNextColumn(coefficientName + " (q)");
+                        describeNextColumn(coefficientName + " (L)");
                     }
                 }
-                outputStream.format(Locale.US, "%n");
-                if (isLast) {
-                    outputStream.close();
-                    outputStream = null;
+                isFirst = false;
+            }
+            outputStream.format(Locale.US, DT_FORMAT, s.getDate().durationFrom(start));
+            if (outputKeplerian) {
+                final KeplerianOrbit ko = (KeplerianOrbit) OrbitType.KEPLERIAN.convertType(s.getOrbit());
+                outputStream.format(Locale.US, KEPLERIAN_ELEMENTS_FORMAT,
+                                    ko.getA() / 1000.,
+                                    ko.getE(),
+                                    FastMath.toDegrees(ko.getI()),
+                                    FastMath.toDegrees(MathUtils.normalizeAngle(ko.getRightAscensionOfAscendingNode(), FastMath.PI)),
+                                    FastMath.toDegrees(MathUtils.normalizeAngle(ko.getPerigeeArgument(), FastMath.PI)),
+                                    FastMath.toDegrees(MathUtils.normalizeAngle(ko.getAnomaly(PositionAngle.MEAN), FastMath.PI)));
+                if (outputEquinoctial) {
+                    outputStream.format(Locale.US, EQUINOCTIAL_ELEMENTS_WITHOUT_A_FORMAT,
+                                        ko.getEquinoctialEy(), // h
+                                        ko.getEquinoctialEx(), // k
+                                        ko.getHy(),            // p
+                                        ko.getHx(),            // q
+                                        FastMath.toDegrees(MathUtils.normalizeAngle(ko.getLM(), FastMath.PI)));
                 }
-            } catch (OrekitException oe) {
-                throw new PropagationException(oe);
+            } else if (outputEquinoctial) {
+                outputStream.format(Locale.US, EQUINOCTIAL_ELEMENTS_WITH_A_FORMAT,
+                                    s.getOrbit().getA(),
+                                    s.getOrbit().getEquinoctialEy(), // h
+                                    s.getOrbit().getEquinoctialEx(), // k
+                                    s.getOrbit().getHy(),            // p
+                                    s.getOrbit().getHx(),            // q
+                                    FastMath.toDegrees(MathUtils.normalizeAngle(s.getOrbit().getLM(), FastMath.PI)));
+            }
+            if (outputCartesian) {
+                final PVCoordinates pv = s.getPVCoordinates();
+                outputStream.format(Locale.US, CARTESIAN_ELEMENTS_FORMAT,
+                                    pv.getPosition().getX() * 0.001,
+                                    pv.getPosition().getY() * 0.001,
+                                    pv.getPosition().getZ() * 0.001,
+                                    pv.getVelocity().getX() * 0.001,
+                                    pv.getVelocity().getY() * 0.001,
+                                    pv.getVelocity().getZ() * 0.001);
+            }
+            if (shortPeriodCoefficients != null) {
+                for (final String coefficientName : shortPeriodCoefficients) {
+                    final double[] coefficient = s.getAdditionalState(coefficientName);
+                    outputStream.format(Locale.US, SHORT_PERIOD_COEFFICIENTS_FORMAT,
+                                        coefficient[0],
+                                        coefficient[2], // beware, it is really 2 (ey/h), not 1 (ex/k)
+                                        coefficient[1], // beware, it is really 1 (ex/k), not 2 (ey/h)
+                                        coefficient[4], // beware, it is really 4 (hy/p), not 3 (hx/q)
+                                        coefficient[3], // beware, it is really 3 (hx/q), not 4 (hy/p)
+                                        coefficient[5]);
+                }
+            }
+            outputStream.format(Locale.US, "%n");
+            if (isLast) {
+                outputStream.close();
+                outputStream = null;
             }
         }
 

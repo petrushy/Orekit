@@ -1,4 +1,4 @@
-/* Copyright 2002-2016 CS Systèmes d'Information
+/* Copyright 2002-2017 CS Systèmes d'Information
  * Licensed to CS Systèmes d'Information (CS) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -19,11 +19,11 @@ package org.orekit.bodies;
 import java.io.Serializable;
 import java.text.NumberFormat;
 
-import org.apache.commons.math3.RealFieldElement;
-import org.apache.commons.math3.geometry.euclidean.threed.FieldVector3D;
-import org.apache.commons.math3.util.CompositeFormat;
-import org.apache.commons.math3.util.FastMath;
-import org.apache.commons.math3.util.MathUtils;
+import org.hipparchus.RealFieldElement;
+import org.hipparchus.geometry.euclidean.threed.FieldVector3D;
+import org.hipparchus.util.CompositeFormat;
+import org.hipparchus.util.FastMath;
+import org.hipparchus.util.MathUtils;
 
 /** Point location relative to a 2D body surface, using {@link RealFieldElement}.
  * <p>Instance of this class are guaranteed to be immutable.</p>
@@ -120,9 +120,9 @@ public class FieldGeodeticPoint<T extends RealFieldElement<T>> implements Serial
             final T sinLat = latitude.sin();
             final T cosLon = longitude.cos();
             final T sinLon = longitude.sin();
-            zenith = new FieldVector3D<T>(cosLon.multiply(cosLat),
-                                          sinLon.multiply(cosLat),
-                                          sinLat);
+            zenith = new FieldVector3D<>(cosLon.multiply(cosLat),
+                                         sinLon.multiply(cosLat),
+                                         sinLat);
         }
         return zenith;
     }
@@ -151,9 +151,9 @@ public class FieldGeodeticPoint<T extends RealFieldElement<T>> implements Serial
             final T sinLat = latitude.sin();
             final T cosLon = longitude.cos();
             final T sinLon = longitude.sin();
-            north = new FieldVector3D<T>(cosLon.multiply(sinLat).negate(),
-                                         sinLon.multiply(sinLat).negate(),
-                                         cosLat);
+            north = new FieldVector3D<>(cosLon.multiply(sinLat).negate(),
+                                        sinLon.multiply(sinLat).negate(),
+                                        cosLat);
         }
         return north;
     }
@@ -178,9 +178,9 @@ public class FieldGeodeticPoint<T extends RealFieldElement<T>> implements Serial
      */
     public FieldVector3D<T> getEast() {
         if (east == null) {
-            east = new FieldVector3D<T>(longitude.sin().negate(),
-                                        longitude.cos(),
-                                        longitude.getField().getZero());
+            east = new FieldVector3D<>(longitude.sin().negate(),
+                                       longitude.cos(),
+                                       longitude.getField().getZero());
         }
         return east;
     }

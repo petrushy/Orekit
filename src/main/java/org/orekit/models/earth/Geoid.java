@@ -16,22 +16,31 @@
  */
 package org.orekit.models.earth;
 
-import org.apache.commons.math3.analysis.UnivariateFunction;
-import org.apache.commons.math3.analysis.solvers.BracketingNthOrderBrentSolver;
-import org.apache.commons.math3.analysis.solvers.UnivariateSolver;
-import org.apache.commons.math3.exception.MathIllegalArgumentException;
-import org.apache.commons.math3.exception.TooManyEvaluationsException;
-import org.apache.commons.math3.geometry.euclidean.threed.Line;
-import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
-import org.apache.commons.math3.util.FastMath;
+import org.hipparchus.Field;
+import org.hipparchus.RealFieldElement;
+import org.hipparchus.analysis.RealFieldUnivariateFunction;
+import org.hipparchus.analysis.UnivariateFunction;
+import org.hipparchus.analysis.solvers.AllowedSolution;
+import org.hipparchus.analysis.solvers.BracketingNthOrderBrentSolver;
+import org.hipparchus.analysis.solvers.FieldBracketingNthOrderBrentSolver;
+import org.hipparchus.analysis.solvers.UnivariateSolver;
+import org.hipparchus.exception.MathRuntimeException;
+import org.hipparchus.geometry.euclidean.threed.FieldLine;
+import org.hipparchus.geometry.euclidean.threed.FieldVector3D;
+import org.hipparchus.geometry.euclidean.threed.Line;
+import org.hipparchus.geometry.euclidean.threed.Vector3D;
+import org.hipparchus.util.FastMath;
+import org.orekit.bodies.FieldGeodeticPoint;
 import org.orekit.bodies.GeodeticPoint;
 import org.orekit.errors.OrekitException;
 import org.orekit.forces.gravity.HolmesFeatherstoneAttractionModel;
 import org.orekit.forces.gravity.potential.NormalizedSphericalHarmonicsProvider;
 import org.orekit.forces.gravity.potential.TideSystem;
+import org.orekit.frames.FieldTransform;
 import org.orekit.frames.Frame;
 import org.orekit.frames.Transform;
 import org.orekit.time.AbsoluteDate;
+import org.orekit.time.FieldAbsoluteDate;
 import org.orekit.utils.TimeStampedPVCoordinates;
 
 /**
@@ -217,7 +226,7 @@ public class Geoid implements EarthShape {
 
         // position in geodetic coordinates
         final GeodeticPoint gp = new GeodeticPoint(geodeticLatitude, longitude, 0);
-        // position in cartesian coordinates, is converted to geocentric lat and
+        // position in Cartesian coordinates, is converted to geocentric lat and
         // lon in the Holmes and Featherstone class
         final Vector3D position = ellipsoid.transform(gp);
 
@@ -226,7 +235,8 @@ public class Geoid implements EarthShape {
                 .getNormalGravity(geodeticLatitude);
 
         // calculate disturbing potential, T, eq 30.
-        final double T = this.harmonics.nonCentralPart(date, position);
+        final double mu = this.harmonics.getMu();
+        final double T  = this.harmonics.nonCentralPart(date, position, mu);
         // calculate undulation, eq 30
         return T / normalGravity;
     }
@@ -396,14 +406,14 @@ public class Geoid implements EarthShape {
         // distance from line to center of earth, squared
         final double d2 = line.pointAt(0.0).getNormSq();
         // the minimum abscissa, squared
-        final double minAbscissa2 =
-                FastMath.pow(ellipsoid.getPolarRadius() + MIN_UNDULATION, 2) - d2;
+        final double n = ellipsoid.getPolarRadius() + MIN_UNDULATION;
+        final double minAbscissa2 = n * n - d2;
         // smaller end point of the interval = 0.0 or intersection with
         // min_undulation sphere
         final double lowPoint = FastMath.sqrt(FastMath.max(minAbscissa2, 0.0));
         // the maximum abscissa, squared
-        final double maxAbscissa2 =
-                FastMath.pow(ellipsoid.getEquatorialRadius() + MAX_UNDULATION, 2) - d2;
+        final double x = ellipsoid.getEquatorialRadius() + MAX_UNDULATION;
+        final double maxAbscissa2 = x * x - d2;
         // larger end point of the interval
         final double highPoint = FastMath.sqrt(maxAbscissa2);
 
@@ -430,14 +440,10 @@ public class Geoid implements EarthShape {
         // solve line search problem to find the intersection
         final UnivariateSolver solver = new BracketingNthOrderBrentSolver();
         try {
-            final double abscissa = solver.solve(
-                    MAX_EVALUATIONS, heightFunction, lowPoint, highPoint);
+            final double abscissa = solver.solve(MAX_EVALUATIONS, heightFunction, lowPoint, highPoint);
             // return intersection point
             return this.transform(line.pointAt(abscissa), bodyFrame, date);
-        } catch (TooManyEvaluationsException e) {
-            // no intersection
-            return null;
-        } catch (MathIllegalArgumentException e) {
+        } catch (MathRuntimeException e) {
             // no intersection
             return null;
         }
@@ -452,6 +458,88 @@ public class Geoid implements EarthShape {
                 new GeodeticPoint(gp.getLatitude(), gp.getLongitude(), 0);
         final Transform bodyToFrame = this.getBodyFrame().getTransformTo(frame, date);
         return bodyToFrame.transformPosition(this.transform(gpZero));
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * <p> The intersection point is computed using a line search along the
+     * specified line. This is accurate when the geoid is slowly varying.
+     */
+    @Override
+    public <T extends RealFieldElement<T>> FieldGeodeticPoint<T> getIntersectionPoint(final FieldLine<T> lineInFrame,
+                                                                                      final FieldVector3D<T> closeInFrame,
+                                                                                      final Frame frame,
+                                                                                      final FieldAbsoluteDate<T> date)
+        throws OrekitException {
+
+        final Field<T> field = date.getField();
+        /*
+         * It is assumed that the geoid is slowly varying over it's entire
+         * surface. Therefore there will one local intersection.
+         */
+        // transform to body frame
+        final Frame bodyFrame = this.getBodyFrame();
+        final FieldTransform<T> frameToBody = frame.getTransformTo(bodyFrame, date);
+        final FieldVector3D<T> close = frameToBody.transformPosition(closeInFrame);
+        final FieldLine<T> lineInBodyFrame = frameToBody.transformLine(lineInFrame);
+
+        // set the line's direction so the solved for value is always positive
+        final FieldLine<T> line;
+        if (lineInBodyFrame.getAbscissa(close).getReal() < 0) {
+            line = lineInBodyFrame.revert();
+        } else {
+            line = lineInBodyFrame;
+        }
+
+        final ReferenceEllipsoid ellipsoid = this.getEllipsoid();
+        // calculate end points
+        // distance from line to center of earth, squared
+        final T d2 = line.pointAt(0.0).getNormSq();
+        // the minimum abscissa, squared
+        final double n = ellipsoid.getPolarRadius() + MIN_UNDULATION;
+        final T minAbscissa2 = d2.negate().add(n * n);
+        // smaller end point of the interval = 0.0 or intersection with
+        // min_undulation sphere
+        final T lowPoint = minAbscissa2.getReal() < 0 ? field.getZero() : minAbscissa2.sqrt();
+        // the maximum abscissa, squared
+        final double x = ellipsoid.getEquatorialRadius() + MAX_UNDULATION;
+        final T maxAbscissa2 = d2.negate().add(x * x);
+        // larger end point of the interval
+        final T highPoint = maxAbscissa2.sqrt();
+
+        // line search function
+        final RealFieldUnivariateFunction<T> heightFunction = z -> {
+            try {
+                final FieldGeodeticPoint<T> geodetic =
+                        transform(line.pointAt(z), bodyFrame, date);
+                return geodetic.getAltitude();
+            } catch (OrekitException e) {
+                // due to frame transform -> re-throw
+                throw new RuntimeException(e);
+            }
+        };
+
+        // compute answer
+        if (maxAbscissa2.getReal() < 0) {
+            // ray does not pierce bounding sphere -> no possible intersection
+            return null;
+        }
+        // solve line search problem to find the intersection
+        final FieldBracketingNthOrderBrentSolver<T> solver =
+                        new FieldBracketingNthOrderBrentSolver<>(field.getZero().add(1.0e-14),
+                                                                 field.getZero().add(1.0e-6),
+                                                                 field.getZero().add(1.0e-15),
+                                                                 5);
+        try {
+            final T abscissa = solver.solve(MAX_EVALUATIONS, heightFunction, lowPoint, highPoint,
+                                            AllowedSolution.ANY_SIDE);
+            // return intersection point
+            return this.transform(line.pointAt(abscissa), bodyFrame, date);
+        } catch (MathRuntimeException e) {
+            // no intersection
+            return null;
+        }
     }
 
     @Override
@@ -493,6 +581,37 @@ public class Geoid implements EarthShape {
     /**
      * {@inheritDoc}
      *
+     * @param date date of the conversion. Used for computing frame
+     *             transformations and for time dependent geopotential.
+     * @return The surface relative point at the same location. Altitude is
+     * orthometric height, that is height above the {@link Geoid}. Latitude and
+     * longitude are both geodetic and defined with respect to the {@link
+     * #getEllipsoid() reference ellipsoid}.
+     * @see #transform(GeodeticPoint)
+     * @see <a href="http://en.wikipedia.org/wiki/Orthometric_height">Orthometric_height</a>
+     */
+    @Override
+    public <T extends RealFieldElement<T>> FieldGeodeticPoint<T> transform(final FieldVector3D<T> point, final Frame frame,
+                                                                           final FieldAbsoluteDate<T> date)
+        throws OrekitException {
+        // convert using reference ellipsoid, altitude referenced to ellipsoid
+        final FieldGeodeticPoint<T> ellipsoidal = this.getEllipsoid().transform(
+                point, frame, date);
+        // convert altitude to orthometric using the undulation.
+        final double undulation = this.getUndulation(ellipsoidal.getLatitude().getReal(),
+                                                     ellipsoidal.getLongitude().getReal(),
+                                                     date.toAbsoluteDate());
+        // add undulation to the altitude
+        return new FieldGeodeticPoint<>(
+                ellipsoidal.getLatitude(),
+                ellipsoidal.getLongitude(),
+                ellipsoidal.getAltitude().subtract(undulation)
+        );
+    }
+
+    /**
+     * {@inheritDoc}
+     *
      * @param point The surface relative point to transform. Altitude is
      *              orthometric height, that is height above the {@link Geoid}.
      *              Latitude and longitude are both geodetic and defined with
@@ -515,6 +634,43 @@ public class Geoid implements EarthShape {
                     point.getLatitude(),
                     point.getLongitude(),
                     point.getAltitude() + undulation
+            );
+            // transform using reference ellipsoid
+            return this.getEllipsoid().transform(ellipsoidal);
+        } catch (OrekitException e) {
+            //this method, as defined in BodyShape, is not permitted to throw
+            //an OrekitException, so wrap in an exception we can throw.
+            throw new RuntimeException(e);
+        }
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @param point The surface relative point to transform. Altitude is
+     *              orthometric height, that is height above the {@link Geoid}.
+     *              Latitude and longitude are both geodetic and defined with
+     *              respect to the {@link #getEllipsoid() reference ellipsoid}.
+     * @param <T> type of the field elements
+     * @return point at the same location but as a Cartesian point in the {@link
+     * #getBodyFrame() body frame}.
+     * @see #transform(Vector3D, Frame, AbsoluteDate)
+     * @since 9.0
+     */
+    @Override
+    public <T extends RealFieldElement<T>> FieldVector3D<T> transform(final FieldGeodeticPoint<T> point) {
+        try {
+            // convert orthometric height to height above ellipsoid using undulation
+            // TODO pass in date to allow user to specify
+            final double undulation = this.getUndulation(
+                    point.getLatitude().getReal(),
+                    point.getLongitude().getReal(),
+                    this.defaultDate
+            );
+            final FieldGeodeticPoint<T> ellipsoidal = new FieldGeodeticPoint<>(
+                    point.getLatitude(),
+                    point.getLongitude(),
+                    point.getAltitude().add(undulation)
             );
             // transform using reference ellipsoid
             return this.getEllipsoid().transform(ellipsoidal);

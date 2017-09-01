@@ -1,4 +1,4 @@
-/* Copyright 2002-2016 CS Systèmes d'Information
+/* Copyright 2002-2017 CS Systèmes d'Information
  * Licensed to CS Systèmes d'Information (CS) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -16,16 +16,21 @@
  */
 package org.orekit.forces.radiation;
 
-import org.apache.commons.math3.analysis.differentiation.DerivativeStructure;
-import org.apache.commons.math3.geometry.euclidean.threed.FieldRotation;
-import org.apache.commons.math3.geometry.euclidean.threed.FieldVector3D;
-import org.apache.commons.math3.geometry.euclidean.threed.Rotation;
-import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
+import org.hipparchus.RealFieldElement;
+import org.hipparchus.analysis.differentiation.DSFactory;
+import org.hipparchus.analysis.differentiation.DerivativeStructure;
+import org.hipparchus.geometry.euclidean.threed.FieldRotation;
+import org.hipparchus.geometry.euclidean.threed.FieldVector3D;
+import org.hipparchus.geometry.euclidean.threed.Rotation;
+import org.hipparchus.geometry.euclidean.threed.Vector3D;
+import org.hipparchus.util.FastMath;
 import org.orekit.errors.OrekitException;
+import org.orekit.errors.OrekitInternalError;
 import org.orekit.errors.OrekitMessages;
-import org.orekit.forces.radiation.RadiationSensitive;
 import org.orekit.frames.Frame;
 import org.orekit.time.AbsoluteDate;
+import org.orekit.time.FieldAbsoluteDate;
+import org.orekit.utils.ParameterDriver;
 
 /** This class represents the features of a simplified spacecraft.
  * <p>This model uses a single coefficient cr, considered to be
@@ -40,81 +45,104 @@ import org.orekit.time.AbsoluteDate;
  */
 public class IsotropicRadiationSingleCoefficient implements RadiationSensitive {
 
+    /** Parameters scaling factor.
+     * <p>
+     * We use a power of 2 to avoid numeric noise introduction
+     * in the multiplications/divisions sequences.
+     * </p>
+     */
+    private final double SCALE = FastMath.scalb(1.0, -3);
+
+    /** Driver for reflection coefficient. */
+    private final ParameterDriver reflectionParameterDriver;
+
     /** Cross section (m²). */
     private final double crossSection;
 
-    /** Reflection coefficient. */
-    private double cr;
+    /** Factory for the DerivativeStructure instances. */
+    private final DSFactory factory;
 
-    /** Simple constructor.
+    /** Constructor with reflection coefficient min/max set to ±∞.
      * @param crossSection Surface (m²)
      * @param cr reflection coefficient
      */
     public IsotropicRadiationSingleCoefficient(final double crossSection, final double cr) {
+        this(crossSection, cr, Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY);
+    }
+
+    /** Constructor with reflection coefficient min/max set by user.
+    * @param crossSection Surface (m²)
+    * @param cr reflection coefficient
+    * @param crMin Minimum value of reflection coefficient
+    * @param crMax Maximum value of reflection coefficient
+    */
+    public IsotropicRadiationSingleCoefficient(final double crossSection, final double cr,
+                                               final double crMin, final double crMax) {
+        try {
+            // in some corner cases (unknown spacecraft, fuel leaks, active piloting ...)
+            // the single coefficient may be arbitrary, and even negative
+            reflectionParameterDriver = new ParameterDriver(RadiationSensitive.REFLECTION_COEFFICIENT,
+                                                            cr, SCALE,
+                                                            crMin, crMax);
+            factory = new DSFactory(1, 1);
+        } catch (OrekitException oe) {
+            // this should never occur as valueChanged above never throws an exception
+            throw new OrekitInternalError(oe);
+        }
+
         this.crossSection = crossSection;
-        this.cr           = cr;
+
     }
 
     /** {@inheritDoc} */
+    @Override
+    public ParameterDriver[] getRadiationParametersDrivers() {
+        return new ParameterDriver[] {
+            reflectionParameterDriver
+        };
+    }
+
+    /** {@inheritDoc} */
+    @Override
     public Vector3D radiationPressureAcceleration(final AbsoluteDate date, final Frame frame, final Vector3D position,
-                                                  final Rotation rotation, final double mass, final Vector3D flux) {
+                                                  final Rotation rotation, final double mass, final Vector3D flux,
+                                                  final double[] parameters) {
+        final double cr = parameters[0];
         return new Vector3D(crossSection * cr / mass, flux);
     }
 
     /** {@inheritDoc} */
-    public FieldVector3D<DerivativeStructure> radiationPressureAcceleration(final AbsoluteDate date, final Frame frame, final FieldVector3D<DerivativeStructure> position,
-                                                                            final FieldRotation<DerivativeStructure> rotation, final DerivativeStructure mass,
-                                                                            final FieldVector3D<DerivativeStructure> flux) {
-        return new FieldVector3D<DerivativeStructure>(mass.reciprocal().multiply(crossSection * cr), flux);
+    @Override
+    public <T extends RealFieldElement<T>> FieldVector3D<T>
+        radiationPressureAcceleration(final FieldAbsoluteDate<T> date, final Frame frame,
+                                      final FieldVector3D<T> position,
+                                      final FieldRotation<T> rotation, final T mass,
+                                      final FieldVector3D<T> flux,
+                                      final T[] parameters)
+        throws OrekitException {
+        final T cr = parameters[0];
+        return new FieldVector3D<>(mass.reciprocal().multiply(crossSection).multiply(cr), flux);
+
     }
 
     /** {@inheritDoc} */
+    @Override
     public FieldVector3D<DerivativeStructure> radiationPressureAcceleration(final AbsoluteDate date, final Frame frame, final Vector3D position,
                                                                             final Rotation rotation, final double mass,
-                                                                            final Vector3D flux, final String paramName)
+                                                                            final Vector3D flux, final double[] parameters,
+                                                                            final String paramName)
         throws OrekitException {
 
         final DerivativeStructure crDS;
         if (REFLECTION_COEFFICIENT.equals(paramName)) {
-            crDS = new DerivativeStructure(1, 1, 0, cr);
+            crDS = factory.variable(0, parameters[0]);
         } else {
             throw new OrekitException(OrekitMessages.UNSUPPORTED_PARAMETER_NAME, paramName,
                                       ABSORPTION_COEFFICIENT + ", " + REFLECTION_COEFFICIENT);
         }
 
-        return new FieldVector3D<DerivativeStructure>(crDS.multiply(crossSection / mass), flux);
+        return new FieldVector3D<>(crDS.multiply(crossSection / mass), flux);
 
-    }
-
-    /** {@inheritDoc}
-     * <p>
-     * As there are no absorption coefficients, this method
-     * throws an {@link UnsupportedOperationException}.
-     * </p>
-     */
-    public void setAbsorptionCoefficient(final double value)
-        throws UnsupportedOperationException {
-        throw new UnsupportedOperationException();
-    }
-
-    /** {@inheritDoc}
-     * <p>
-     * As there are no absorption coefficients, this method
-     * always returns 0.0.
-     * </p>
-     */
-    public double getAbsorptionCoefficient() {
-        return 0;
-    }
-
-    /** {@inheritDoc} */
-    public void setReflectionCoefficient(final double value) {
-        cr = value;
-    }
-
-    /** {@inheritDoc} */
-    public double getReflectionCoefficient() {
-        return cr;
     }
 
 }

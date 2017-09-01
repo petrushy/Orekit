@@ -1,4 +1,4 @@
-/* Copyright 2002-2016 CS Systèmes d'Information
+/* Copyright 2002-2017 CS Systèmes d'Information
  * Licensed to CS Systèmes d'Information (CS) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -173,8 +173,8 @@ public abstract class AbstractDetector<T extends EventDetector> implements Event
      * @param newHandler event handler to call at event occurrences
      * @return a new instance of the appropriate sub-type
      */
-    protected abstract T create(final double newMaxCheck, final double newThreshold,
-                                final int newMaxIter, final EventHandler<? super T> newHandler);
+    protected abstract T create(double newMaxCheck, double newThreshold,
+                                int newMaxIter, EventHandler<? super T> newHandler);
 
     /** Check if the current propagation is forward or backward.
      * @return true if the current propagation is forward

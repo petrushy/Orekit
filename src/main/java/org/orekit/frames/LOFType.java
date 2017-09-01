@@ -1,4 +1,4 @@
-/* Copyright 2002-2016 CS Systèmes d'Information
+/* Copyright 2002-2017 CS Systèmes d'Information
  * Licensed to CS Systèmes d'Information (CS) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -16,9 +16,15 @@
  */
 package org.orekit.frames;
 
-import org.apache.commons.math3.geometry.euclidean.threed.Rotation;
-import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
+import org.hipparchus.Field;
+import org.hipparchus.RealFieldElement;
+import org.hipparchus.geometry.euclidean.threed.FieldRotation;
+import org.hipparchus.geometry.euclidean.threed.FieldVector3D;
+import org.hipparchus.geometry.euclidean.threed.Rotation;
+import org.hipparchus.geometry.euclidean.threed.Vector3D;
 import org.orekit.time.AbsoluteDate;
+import org.orekit.time.FieldAbsoluteDate;
+import org.orekit.utils.FieldPVCoordinates;
 import org.orekit.utils.PVCoordinates;
 
 /** Enumerate for different types of Local Orbital Frames.
@@ -35,15 +41,25 @@ public enum LOFType {
      *   <li>Y<sub>TNW</sub> = -Z<sub>VNC</sub></li>
      *   <li>Z<sub>TNW</sub> =  Y<sub>VNC</sub></li>
      * </ul>
-     * </p>
+     *
      * @see #VNC
      */
     TNW {
+
         /** {@inheritDoc} */
         protected Rotation rotationFromInertial(final PVCoordinates pv) {
             return new Rotation(pv.getVelocity(), pv.getMomentum(),
                                 Vector3D.PLUS_I, Vector3D.PLUS_K);
         }
+
+        /** {@inheritDoc} */
+        protected <T extends RealFieldElement<T>> FieldRotation<T> rotationFromInertial(final Field<T> field,
+                                                                                        final FieldPVCoordinates<T> pv) {
+            return new FieldRotation<>(pv.getVelocity(), pv.getMomentum(),
+                                       new FieldVector3D<>(field, Vector3D.PLUS_I),
+                                       new FieldVector3D<>(field, Vector3D.PLUS_K));
+        }
+
     },
 
     /** Constant for QSW frame
@@ -58,16 +74,26 @@ public enum LOFType {
      *   <li>Y<sub>QSW/LVLH</sub> =  X<sub>VVLH</sub></li>
      *   <li>Z<sub>QSW/LVLH</sub> = -Y<sub>VVLH</sub></li>
      * </ul>
-     * </p>
+     *
      * @see #LVLH
      * @see #VVLH
      */
     QSW {
+
         /** {@inheritDoc} */
         protected Rotation rotationFromInertial(final PVCoordinates pv) {
             return new Rotation(pv.getPosition(), pv.getMomentum(),
                                 Vector3D.PLUS_I, Vector3D.PLUS_K);
         }
+
+        /** {@inheritDoc} */
+        protected <T extends RealFieldElement<T>> FieldRotation<T> rotationFromInertial(final Field<T> field,
+                                                                                        final FieldPVCoordinates<T> pv) {
+            return new FieldRotation<>(pv.getPosition(), pv.getMomentum(),
+                                       new FieldVector3D<>(field, Vector3D.PLUS_I),
+                                       new FieldVector3D<>(field, Vector3D.PLUS_K));
+        }
+
     },
 
     /** Constant for Local Vertical, Local Horizontal frame
@@ -82,16 +108,26 @@ public enum LOFType {
      *   <li>Y<sub>LVLH/QSW</sub> =  X<sub>VVLH</sub></li>
      *   <li>Z<sub>LVLH/QSW</sub> = -Y<sub>VVLH</sub></li>
      * </ul>
-     * </p>
+     *
      * @see #QSW
      * @see #VVLH
      */
     LVLH {
+
         /** {@inheritDoc} */
         protected Rotation rotationFromInertial(final PVCoordinates pv) {
             return new Rotation(pv.getPosition(), pv.getMomentum(),
                                 Vector3D.PLUS_I, Vector3D.PLUS_K);
         }
+
+        /** {@inheritDoc} */
+        protected <T extends RealFieldElement<T>> FieldRotation<T> rotationFromInertial(final Field<T> field,
+                                                                                        final FieldPVCoordinates<T> pv) {
+            return new FieldRotation<>(pv.getPosition(), pv.getMomentum(),
+                                       new FieldVector3D<>(field, Vector3D.PLUS_I),
+                                       new FieldVector3D<>(field, Vector3D.PLUS_K));
+        }
+
     },
 
     /** Constant for Vehicle Velocity, Local Horizontal frame
@@ -103,16 +139,26 @@ public enum LOFType {
      *   <li>Y<sub>VVLH</sub> = -Z<sub>QSW/LVLH</sub></li>
      *   <li>Z<sub>VVLH</sub> = -X<sub>QSW/LVLH</sub></li>
      * </ul>
-     * </p>
+     *
      * @see #QSW
      * @see #LVLH
      */
     VVLH {
+
         /** {@inheritDoc} */
         protected Rotation rotationFromInertial(final PVCoordinates pv) {
             return new Rotation(pv.getPosition(), pv.getMomentum(),
                                 Vector3D.MINUS_K, Vector3D.MINUS_J);
         }
+
+        /** {@inheritDoc} */
+        protected <T extends RealFieldElement<T>> FieldRotation<T> rotationFromInertial(final Field<T> field,
+                                                                                        final FieldPVCoordinates<T> pv) {
+            return new FieldRotation<>(pv.getPosition(), pv.getMomentum(),
+                                       new FieldVector3D<>(field, Vector3D.MINUS_K),
+                                       new FieldVector3D<>(field, Vector3D.MINUS_J));
+        }
+
     },
 
     /** Constant for Velocity - Normal - Co-normal frame
@@ -124,15 +170,25 @@ public enum LOFType {
      *   <li>Y<sub>VNC</sub> =  Z<sub>TNW</sub></li>
      *   <li>Z<sub>VNC</sub> = -Y<sub>TNW</sub></li>
      * </ul>
-     * </p>
+     *
      * @see #TNW
      */
     VNC {
+
         /** {@inheritDoc} */
         protected Rotation rotationFromInertial(final PVCoordinates pv) {
             return new Rotation(pv.getVelocity(), pv.getMomentum(),
                                 Vector3D.PLUS_I, Vector3D.PLUS_J);
         }
+
+        @Override
+        protected <T extends RealFieldElement<T>> FieldRotation<T> rotationFromInertial(final Field<T> field,
+                                                                                        final FieldPVCoordinates<T> pv) {
+            return new FieldRotation<>(pv.getVelocity(), pv.getMomentum(),
+                                       new FieldVector3D<>(field, Vector3D.PLUS_I),
+                                       new FieldVector3D<>(field, Vector3D.PLUS_J));
+        }
+
     };
 
     /** Get the transform from an inertial frame defining position-velocity and the local orbital frame.
@@ -156,10 +212,44 @@ public enum LOFType {
 
     }
 
+    /** Get the transform from an inertial frame defining position-velocity and the local orbital frame.
+     * @param date current date
+     * @param pv position-velocity of the spacecraft in some inertial frame
+     * @param <T> type of the fiels elements
+     * @return transform from the frame where position-velocity are defined to local orbital frame
+     * @since 9.0
+     */
+    public <T extends RealFieldElement<T>> FieldTransform<T> transformFromInertial(final FieldAbsoluteDate<T> date,
+                                                                                   final FieldPVCoordinates<T> pv) {
+
+        // compute the translation part of the transform
+        final FieldTransform<T> translation = new FieldTransform<>(date, pv.negate());
+
+        // compute the rotation part of the transform
+        final FieldRotation<T> r = rotationFromInertial(date.getField(), pv);
+        final FieldVector3D<T> p = pv.getPosition();
+        final FieldVector3D<T> momentum = pv.getMomentum();
+        final FieldTransform<T> rotation =
+                new FieldTransform<T>(date, r, new FieldVector3D<>(p.getNormSq().reciprocal(), r.applyTo(momentum)));
+
+        return new FieldTransform<>(date, translation, rotation);
+
+    }
+
     /** Get the rotation from inertial frame to local orbital frame.
      * @param pv position-velocity of the spacecraft in some inertial frame
      * @return rotation from inertial frame to local orbital frame
      */
-    protected abstract Rotation rotationFromInertial(final PVCoordinates pv);
+    protected abstract Rotation rotationFromInertial(PVCoordinates pv);
+
+    /** Get the rotation from inertial frame to local orbital frame.
+     * @param field field to which the elements belong
+     * @param pv position-velocity of the spacecraft in some inertial frame
+     * @param <T> type of the fiels elements
+     * @return rotation from inertial frame to local orbital frame
+     * @since 9.0
+     */
+    protected abstract <T extends RealFieldElement<T>> FieldRotation<T> rotationFromInertial(Field<T> field,
+                                                                                             FieldPVCoordinates<T> pv);
 
 }

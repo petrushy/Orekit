@@ -16,10 +16,10 @@
  */
 package org.orekit.models.earth;
 
-import org.apache.commons.math3.geometry.euclidean.threed.Line;
-import org.apache.commons.math3.geometry.euclidean.threed.Rotation;
-import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
-import org.apache.commons.math3.util.FastMath;
+import org.hipparchus.geometry.euclidean.threed.Line;
+import org.hipparchus.geometry.euclidean.threed.Rotation;
+import org.hipparchus.geometry.euclidean.threed.Vector3D;
+import org.hipparchus.util.FastMath;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -53,9 +53,10 @@ import static org.orekit.OrekitMatchers.vectorCloseTo;
  */
 public class GeoidTest {
 
-    /** maximum degree and order used in testing {@link Geoid}. */
-    @SuppressWarnings("javadoc")
-    private static final int maxOrder = 360, maxDegree = 360;
+    /** maximum degree used in testing {@link Geoid}. */
+    private static final int maxOrder = 360;
+    /** maximum order used in testing {@link Geoid}. */
+    private static final int maxDegree = 360;
     /** The WGS84 reference ellipsoid. */
     private static ReferenceEllipsoid WGS84 = new ReferenceEllipsoid(
             6378137.00, 1 / 298.257223563, FramesFactory.getGCRF(),
@@ -207,9 +208,9 @@ public class GeoidTest {
             // verify
             String message = String.format("point: %s%n",
                     Arrays.toString(point));
-            // position accuracy on Earth's surface to 1 um.
-            assertThat(message, actualReversed, geodeticPointCloseTo(gp, 1e-6));
-            assertThat(message, actual, geodeticPointCloseTo(gp, 1e-6));
+            // position accuracy on Earth's surface to 1.3 um.
+            assertThat(message, actualReversed, geodeticPointCloseTo(gp, 1.3e-6));
+            assertThat(message, actual, geodeticPointCloseTo(gp, 1.3e-6));
         }
     }
 
@@ -374,7 +375,7 @@ public class GeoidTest {
         //verify
         assertThat(
                 geoid.transform(actual, geoid.getBodyFrame(), date).getAltitude(),
-                closeTo(0.0, 1e-9));
+                closeTo(0.0, 1.1e-9));
     }
 
 }

@@ -1,4 +1,4 @@
-/* Copyright 2002-2016 CS Systèmes d'Information
+/* Copyright 2002-2017 CS Systèmes d'Information
  * Licensed to CS Systèmes d'Information (CS) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -16,7 +16,7 @@
  */
 package org.orekit.propagation.events;
 
-import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
+import org.hipparchus.geometry.euclidean.threed.Vector3D;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -25,7 +25,6 @@ import org.orekit.Utils;
 import org.orekit.bodies.CelestialBodyFactory;
 import org.orekit.bodies.OneAxisEllipsoid;
 import org.orekit.errors.OrekitException;
-import org.orekit.errors.PropagationException;
 import org.orekit.frames.FramesFactory;
 import org.orekit.orbits.EquinoctialOrbit;
 import org.orekit.orbits.Orbit;
@@ -89,31 +88,18 @@ public class EventSlopeFilterTest {
         ((Counter) detector.getHandler()).reset();
 
         propagator.clearEventsDetectors();
-        propagator.setMasterMode(10.0, new OrekitFixedStepHandler() {
-            
-            @Override
-            public void init(SpacecraftState s0, AbsoluteDate t) {
-            }
-            
-            @Override
-            public void handleStep(SpacecraftState currentState, boolean isLast)
-                throws PropagationException {
-                try {
-                    // we exceed the events history in the past,
-                    // and in this example get stuck with Transformer.MAX
-                    // transformer, hence the g function is always positive
-                    // in the test range
-                    Assert.assertTrue(filter.g(currentState) > 0);
-                } catch (OrekitException oe) {
-                    throw new PropagationException(oe);
-                }
-            }
+        propagator.setMasterMode(10.0, (currentState, isLast) -> {
+            // we exceed the events history in the past,
+            // and in this example get stuck with Transformer.MAX
+            // transformer, hence the g function is always positive
+            // in the test range
+            Assert.assertTrue(filter.g(currentState) > 0);
         });
         propagator.propagate(iniDate.shiftedBy(-3600), iniDate.shiftedBy(Constants.JULIAN_DAY + 3600));
     }
 
     @Test
-    public void testReplayBackward() throws OrekitException {   
+    public void testReplayBackward() throws OrekitException {
         EclipseDetector detector =
                 new EclipseDetector(60., 1.e-3,
                                      CelestialBodyFactory.getSun(), sunRadius,
@@ -133,23 +119,15 @@ public class EventSlopeFilterTest {
 
         propagator.clearEventsDetectors();
         propagator.setMasterMode(10.0, new OrekitFixedStepHandler() {
-            
-            @Override
-            public void init(SpacecraftState s0, AbsoluteDate t) {
-            }
-            
+
             @Override
             public void handleStep(SpacecraftState currentState, boolean isLast)
-                throws PropagationException {
-                try {
-                    // we exceed the events history in the past,
-                    // and in this example get stuck with Transformer.MIN
-                    // transformer, hence the g function is always negative
-                    // in the test range
-                    Assert.assertTrue(filter.g(currentState) < 0);
-                } catch (OrekitException oe) {
-                    throw new PropagationException(oe);
-                }
+                throws OrekitException {
+                // we exceed the events history in the past,
+                // and in this example get stuck with Transformer.MIN
+                // transformer, hence the g function is always negative
+                // in the test range
+                Assert.assertTrue(filter.g(currentState) < 0);
             }
         });
         propagator.propagate(iniDate.shiftedBy(7 * Constants.JULIAN_DAY + 3600),
@@ -367,7 +345,7 @@ public class EventSlopeFilterTest {
                     @Override
                     public Action eventOccurred(SpacecraftState s,
                                                 LatitudeCrossingDetector detector,
-                                                boolean increasing) throws PropagationException {
+                                                boolean increasing) throws OrekitException {
                         Assert.assertEquals(filter.getTriggeredIncreasing(), increasing);
                         count[0]++;
                         return Action.RESET_STATE;
@@ -411,10 +389,6 @@ public class EventSlopeFilterTest {
                 decreasingCounter++;
             }
             return Action.CONTINUE;
-        }
-
-        public SpacecraftState resetState(EclipseDetector ed, SpacecraftState oldState) {
-            return oldState;
         }
 
         public int getIncreasingCounter() {

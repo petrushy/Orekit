@@ -1,4 +1,4 @@
-/* Copyright 2002-2016 CS Systèmes d'Information
+/* Copyright 2002-2017 CS Systèmes d'Information
  * Licensed to CS Systèmes d'Information (CS) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -16,9 +16,13 @@
  */
 package org.orekit.attitudes;
 
+import org.hipparchus.Field;
+import org.hipparchus.RealFieldElement;
 import org.orekit.errors.OrekitException;
 import org.orekit.frames.Frame;
 import org.orekit.time.AbsoluteDate;
+import org.orekit.time.FieldAbsoluteDate;
+import org.orekit.utils.FieldPVCoordinatesProvider;
 import org.orekit.utils.PVCoordinatesProvider;
 
 
@@ -51,6 +55,17 @@ public class FixedRate implements AttitudeProvider {
         throws OrekitException {
         final double timeShift = date.durationFrom(referenceAttitude.getDate());
         final Attitude shifted = referenceAttitude.shiftedBy(timeShift);
+        return shifted.withReferenceFrame(frame);
+    }
+
+    /** {@inheritDoc} */
+    public <T extends RealFieldElement<T>> FieldAttitude<T> getAttitude(final FieldPVCoordinatesProvider<T> pvProv,
+                                                                        final FieldAbsoluteDate<T> date,
+                                                                        final Frame frame)
+        throws OrekitException {
+        final Field<T> field = date.getField();
+        final T timeShift = date.durationFrom(referenceAttitude.getDate());
+        final FieldAttitude<T> shifted = new FieldAttitude<>(field, referenceAttitude).shiftedBy(timeShift);
         return shifted.withReferenceFrame(frame);
     }
 

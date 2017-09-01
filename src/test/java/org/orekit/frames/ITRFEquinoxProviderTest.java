@@ -1,4 +1,4 @@
-/* Copyright 2002-2016 CS Systèmes d'Information
+/* Copyright 2002-2017 CS Systèmes d'Information
  * Licensed to CS Systèmes d'Information (CS) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -19,11 +19,11 @@ package org.orekit.frames;
 
 import java.util.ArrayList;
 
-import org.apache.commons.math3.geometry.euclidean.threed.Rotation;
-import org.apache.commons.math3.geometry.euclidean.threed.RotationConvention;
-import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
-import org.apache.commons.math3.util.FastMath;
-import org.apache.commons.math3.util.MathUtils;
+import org.hipparchus.geometry.euclidean.threed.Rotation;
+import org.hipparchus.geometry.euclidean.threed.RotationConvention;
+import org.hipparchus.geometry.euclidean.threed.Vector3D;
+import org.hipparchus.util.FastMath;
+import org.hipparchus.util.MathUtils;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -180,7 +180,7 @@ public class ITRFEquinoxProviderTest {
                             1.0e-15);
 
         // sidereal time check
-        double gast = IERSConventions.IERS_1996.getGASTFunction(ut1, eopHistory).value(date).getValue();
+        double gast = IERSConventions.IERS_1996.getGASTFunction(ut1, eopHistory).value(date);
         Assert.assertEquals(13.412402380740 * 3600 * 1.0e6,
                             radToMicroAS(MathUtils.normalizeAngle(gast, 0)),
                             25);

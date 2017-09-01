@@ -22,7 +22,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 
-import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
+import org.hipparchus.geometry.euclidean.threed.Vector3D;
 import org.hamcrest.core.IsInstanceOf;
 import org.junit.Assert;
 import org.junit.BeforeClass;
@@ -135,7 +135,7 @@ public class EclipticProviderTest {
     @Test
     public void testSerialization() throws OrekitException, IOException, ClassNotFoundException {
         TransformProvider provider = new EclipticProvider(IERSConventions.IERS_2010);
-        
+
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
         ObjectOutputStream    oos = new ObjectOutputStream(bos);
         oos.writeObject(provider);
@@ -150,7 +150,7 @@ public class EclipticProviderTest {
             AbsoluteDate date = AbsoluteDate.J2000_EPOCH.shiftedBy(dt);
             Transform expectedIdentity = new Transform(date,
                                                        provider.getTransform(date).getInverse(),
-                                                       deserialized.getTransform(date));;
+                                                       deserialized.getTransform(date));
             Assert.assertEquals(0.0, expectedIdentity.getTranslation().getNorm(), 1.0e-15);
             Assert.assertEquals(0.0, expectedIdentity.getRotation().getAngle(),   1.0e-15);
         }

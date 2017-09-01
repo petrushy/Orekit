@@ -1,4 +1,4 @@
-/* Copyright 2002-2016 CS Systèmes d'Information
+/* Copyright 2002-2017 CS Systèmes d'Information
  * Licensed to CS Systèmes d'Information (CS) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -20,9 +20,10 @@ import java.io.Serializable;
 import java.util.Date;
 import java.util.TimeZone;
 
-import org.apache.commons.math3.util.FastMath;
-import org.apache.commons.math3.util.MathArrays;
+import org.hipparchus.util.FastMath;
+import org.hipparchus.util.MathArrays;
 import org.orekit.errors.OrekitException;
+import org.orekit.errors.OrekitIllegalArgumentException;
 import org.orekit.errors.OrekitMessages;
 import org.orekit.utils.Constants;
 
@@ -373,6 +374,46 @@ public class AbsoluteDate
              timeScale);
     }
 
+    /** Build a date from its internal components.
+     * <p>
+     * This method is reserved for internal used (for example by {@link FieldAbsoluteDate}).
+     * </p>
+     * @param epoch reference epoch in seconds from 2000-01-01T12:00:00 TAI.
+     * (beware, it is not {@link #J2000_EPOCH} since it is in TAI and not in TT)
+     * @param offset offset from the reference epoch in seconds (must be
+     * between 0.0 included and 1.0 excluded)
+     * @since 9.0
+     */
+    AbsoluteDate(final long epoch, final double offset) {
+        this.epoch  = epoch;
+        this.offset = offset;
+    }
+
+    /** Get the reference epoch in seconds from 2000-01-01T12:00:00 TAI.
+     * <p>
+     * This method is reserved for internal used (for example by {@link FieldAbsoluteDate}).
+     * </p>
+     * <p>
+     * Beware, it is not {@link #J2000_EPOCH} since it is in TAI and not in TT.
+     * </p>
+     * @return reference epoch in seconds from 2000-01-01T12:00:00 TAI
+     * @since 9.0
+     */
+    long getEpoch() {
+        return epoch;
+    }
+
+    /** Get the offset from the reference epoch in seconds.
+     * <p>
+     * This method is reserved for internal used (for example by {@link FieldAbsoluteDate}).
+     * </p>
+     * @return offset from the reference epoch in seconds
+     * @since 9.0
+     */
+    double getOffset() {
+        return offset;
+    }
+
     /** Build an instance from a CCSDS Unsegmented Time Code (CUC).
      * <p>
      * CCSDS Unsegmented Time Code is defined in the blue book:
@@ -624,13 +665,36 @@ public class AbsoluteDate
      * @param secondsInDay seconds in the day
      * @param timeScale time scale in which the seconds in day are defined
      * @return a new instant
+     * @exception OrekitIllegalArgumentException if seconds number is out of range
      */
     public static AbsoluteDate createMJDDate(final int mjd, final double secondsInDay,
-                                             final TimeScale timeScale) {
-        return new AbsoluteDate(new DateComponents(DateComponents.MODIFIED_JULIAN_EPOCH, mjd),
-                                new TimeComponents(secondsInDay),
-                                timeScale);
+                                             final TimeScale timeScale)
+        throws OrekitIllegalArgumentException {
+        final DateComponents dc = new DateComponents(DateComponents.MODIFIED_JULIAN_EPOCH, mjd);
+        final TimeComponents tc;
+        if (secondsInDay >= Constants.JULIAN_DAY) {
+            // check we are really allowed to use this number of seconds
+            final int    secondsA = 86399; // 23:59:59, i.e. 59s in the last minute of the day
+            final double secondsB = secondsInDay - secondsA;
+            final TimeComponents safeTC = new TimeComponents(secondsA, 0.0);
+            final AbsoluteDate safeDate = new AbsoluteDate(dc, safeTC, timeScale);
+            if (timeScale.minuteDuration(safeDate) > 59 + secondsB) {
+                // we are within the last minute of the day, the number of seconds is OK
+                return safeDate.shiftedBy(secondsB);
+            } else {
+                // let TimeComponents trigger an OrekitIllegalArgumentException
+                // for the wrong number of seconds
+                tc = new TimeComponents(secondsA, secondsB);
+            }
+        } else {
+            tc = new TimeComponents(secondsInDay);
+        }
+
+        // create the date
+        return new AbsoluteDate(dc, tc, timeScale);
+
     }
+
 
     /** Build an instance corresponding to a GPS date.
      * <p>GPS dates are provided as a week number starting at
@@ -792,6 +856,16 @@ public class AbsoluteDate
      */
     public DateTimeComponents getComponents(final TimeScale timeScale) {
 
+        if (Double.isInfinite(offset)) {
+            // special handling for past and future infinity
+            if (offset < 0) {
+                return new DateTimeComponents(DateComponents.MIN_EPOCH, TimeComponents.H00);
+            } else {
+                return new DateTimeComponents(DateComponents.MAX_EPOCH,
+                                              new TimeComponents(23, 59, 59.999));
+            }
+        }
+
         // compute offset from 2000-01-01T00:00:00 in specified time scale exactly,
         // using Møller-Knuth TwoSum algorithm without branching
         // the following statements must NOT be simplified, they rely on floating point
@@ -951,7 +1025,7 @@ public class AbsoluteDate
      * in ISO-8601 format with milliseconds accuracy
      */
     public String toString(final TimeScale timeScale) {
-        return getComponents(timeScale).toString(timeScale.insideLeap(this));
+        return getComponents(timeScale).toString(timeScale.minuteDuration(this));
     }
 
     /** Get a String representation of the instant location for a local time.
@@ -964,8 +1038,8 @@ public class AbsoluteDate
      */
     public String toString(final int minutesFromUTC)
         throws OrekitException {
-        final boolean inLeap = TimeScalesFactory.getUTC().insideLeap(this);
-        return getComponents(minutesFromUTC).toString(inLeap);
+        final int minuteDuration = TimeScalesFactory.getUTC().minuteDuration(this);
+        return getComponents(minutesFromUTC).toString(minuteDuration);
     }
 
     /** Get a String representation of the instant location for a time zone.
@@ -977,8 +1051,8 @@ public class AbsoluteDate
      */
     public String toString(final TimeZone timeZone)
         throws OrekitException {
-        final boolean inLeap = TimeScalesFactory.getUTC().insideLeap(this);
-        return getComponents(timeZone).toString(inLeap);
+        final int minuteDuration = TimeScalesFactory.getUTC().minuteDuration(this);
+        return getComponents(timeZone).toString(minuteDuration);
     }
 
 }

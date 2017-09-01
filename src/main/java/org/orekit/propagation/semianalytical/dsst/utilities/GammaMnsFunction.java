@@ -1,4 +1,4 @@
-/* Copyright 2002-2016 CS Systèmes d'Information
+/* Copyright 2002-2017 CS Systèmes d'Information
  * Licensed to CS Systèmes d'Information (CS) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -18,8 +18,8 @@ package org.orekit.propagation.semianalytical.dsst.utilities;
 
 import java.util.Arrays;
 
-import org.apache.commons.math3.fraction.BigFraction;
-import org.apache.commons.math3.util.FastMath;
+import org.hipparchus.fraction.BigFraction;
+import org.hipparchus.util.FastMath;
 
 /** Compute the &Gamma;<sup>m</sup><sub>n,s</sub>(γ) function from equation 2.7.1-(13).
  *

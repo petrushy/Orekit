@@ -1,4 +1,4 @@
-/* Copyright 2002-2016 CS Systèmes d'Information
+/* Copyright 2002-2017 CS Systèmes d'Information
  * Licensed to CS Systèmes d'Information (CS) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -26,6 +26,7 @@ import java.util.SortedSet;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.hipparchus.util.MathUtils;
 import org.orekit.data.DataLoader;
 import org.orekit.data.DataProvidersManager;
 import org.orekit.errors.OrekitException;
@@ -62,7 +63,7 @@ import org.orekit.utils.IERSConventions;
 class RapidDataAndPredictionColumnsLoader implements EOPHistoryLoader {
 
     /** Conversion factor. */
-    private static final double  ARC_SECONDS_TO_RADIANS       = 2 * Math.PI / 1296000;
+    private static final double  ARC_SECONDS_TO_RADIANS       = MathUtils.TWO_PI / 1296000;
 
     /** Conversion factor. */
     private static final double  MILLI_ARC_SECONDS_TO_RADIANS = ARC_SECONDS_TO_RADIANS / 1000;

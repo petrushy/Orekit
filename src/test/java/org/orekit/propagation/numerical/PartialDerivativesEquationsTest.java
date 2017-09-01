@@ -1,4 +1,4 @@
-/* Copyright 2002-2016 CS Systèmes d'Information
+/* Copyright 2002-2017 CS Systèmes d'Information
  * Licensed to CS Systèmes d'Information (CS) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -16,29 +16,34 @@
  */
 package org.orekit.propagation.numerical;
 
-import org.apache.commons.math3.analysis.differentiation.DerivativeStructure;
-import org.apache.commons.math3.geometry.euclidean.threed.FieldRotation;
-import org.apache.commons.math3.geometry.euclidean.threed.FieldVector3D;
-import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
-import org.apache.commons.math3.ode.UnknownParameterException;
-import org.apache.commons.math3.ode.nonstiff.DormandPrince54Integrator;
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertThat;
+
+import java.util.stream.Stream;
+
+import org.hipparchus.Field;
+import org.hipparchus.RealFieldElement;
+import org.hipparchus.analysis.differentiation.DerivativeStructure;
+import org.hipparchus.geometry.euclidean.threed.FieldRotation;
+import org.hipparchus.geometry.euclidean.threed.FieldVector3D;
+import org.hipparchus.geometry.euclidean.threed.Vector3D;
+import org.hipparchus.ode.nonstiff.DormandPrince54Integrator;
 import org.junit.Before;
 import org.junit.Test;
 import org.orekit.errors.OrekitException;
+import org.orekit.forces.AbstractForceModel;
 import org.orekit.forces.ForceModel;
 import org.orekit.frames.Frame;
 import org.orekit.frames.FramesFactory;
 import org.orekit.orbits.CartesianOrbit;
+import org.orekit.propagation.FieldSpacecraftState;
 import org.orekit.propagation.SpacecraftState;
 import org.orekit.propagation.events.EventDetector;
+import org.orekit.propagation.events.FieldEventDetector;
 import org.orekit.time.AbsoluteDate;
 import org.orekit.utils.Constants;
 import org.orekit.utils.PVCoordinates;
-
-import java.util.Collection;
-
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
+import org.orekit.utils.ParameterDriver;
 
 /** Unit tests for {@link PartialDerivativesEquations}. */
 public class PartialDerivativesEquationsTest {
@@ -77,7 +82,7 @@ public class PartialDerivativesEquationsTest {
         pv = new PVCoordinates(p, v);
         state = new SpacecraftState(new CartesianOrbit(pv, eci, date, gm))
                 .addAdditionalState("pde", new double[2 * 3 * 6]);
-        pde.setInitialJacobians(state, 6, 0);
+        pde.setInitialJacobians(state);
 
     }
 
@@ -102,7 +107,7 @@ public class PartialDerivativesEquationsTest {
     }
 
     /** Mock {@link ForceModel}. */
-    private static class MockForceModel implements ForceModel {
+    private static class MockForceModel extends AbstractForceModel {
 
         /**
          * argument for {@link #accelerationDerivatives(AbsoluteDate, Frame,
@@ -115,47 +120,49 @@ public class PartialDerivativesEquationsTest {
          */
         public FieldVector3D<DerivativeStructure> accelerationDerivativesVelocity;
 
+        /** {@inheritDoc} */
         @Override
-        public void addContribution(SpacecraftState s, TimeDerivativesEquations adder) throws OrekitException {
-
-        }
-
-        @Override
-        public FieldVector3D<DerivativeStructure> accelerationDerivatives(AbsoluteDate date, Frame frame, FieldVector3D<DerivativeStructure> position, FieldVector3D<DerivativeStructure> velocity, FieldRotation<DerivativeStructure> rotation, DerivativeStructure mass) throws OrekitException {
-            this.accelerationDerivativesPosition = position;
-            this.accelerationDerivativesVelocity = velocity;
-            return position;
-        }
-
-        @Override
-        public FieldVector3D<DerivativeStructure> accelerationDerivatives(SpacecraftState s, String paramName) throws OrekitException {
-            return null;
-        }
-
-        @Override
-        public EventDetector[] getEventsDetectors() {
-            return new EventDetector[0];
-        }
-
-        @Override
-        public double getParameter(String name) throws UnknownParameterException {
-            return 0;
-        }
-
-        @Override
-        public void setParameter(String name, double value) throws UnknownParameterException {
-
-        }
-
-        @Override
-        public Collection<String> getParametersNames() {
-            return null;
-        }
-
-        @Override
-        public boolean isSupported(String name) {
+        public boolean dependsOnPositionOnly() {
             return false;
         }
+
+        @Override
+        public <T extends RealFieldElement<T>> void
+            addContribution(FieldSpacecraftState<T> s,
+                            FieldTimeDerivativesEquations<T> adder) {
+        }
+
+        @Override
+        public Vector3D acceleration(final SpacecraftState s, final double[] parameters)
+            throws OrekitException {
+            return s.getPVCoordinates().getPosition();
+        }
+
+        @SuppressWarnings("unchecked")
+        @Override
+        public <T extends RealFieldElement<T>> FieldVector3D<T> acceleration(final FieldSpacecraftState<T> s,
+                                                                             final T[] parameters)
+            throws OrekitException {
+            this.accelerationDerivativesPosition = (FieldVector3D<DerivativeStructure>) s.getPVCoordinates().getPosition();
+            this.accelerationDerivativesVelocity = (FieldVector3D<DerivativeStructure>) s.getPVCoordinates().getVelocity();
+            return s.getPVCoordinates().getPosition();
+        }
+
+        @Override
+        public Stream<EventDetector> getEventsDetectors() {
+            return Stream.empty();
+        }
+
+        @Override
+        public ParameterDriver[] getParametersDrivers() {
+            return new ParameterDriver[0];
+        }
+
+        @Override
+        public <T extends RealFieldElement<T>> Stream<FieldEventDetector<T>> getFieldEventsDetectors(final Field<T> field) {
+            return Stream.empty();
+        }
+
     }
 
 }

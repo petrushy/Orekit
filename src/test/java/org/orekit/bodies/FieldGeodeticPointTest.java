@@ -16,18 +16,18 @@
  */
 package org.orekit.bodies;
 
-import org.apache.commons.math3.RealFieldElement;
-import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
-import org.apache.commons.math3.util.Decimal64;
-import org.apache.commons.math3.util.FastMath;
+import org.hipparchus.RealFieldElement;
+import org.hipparchus.geometry.euclidean.threed.Vector3D;
+import org.hipparchus.util.Decimal64;
+import org.hipparchus.util.FastMath;
 import org.junit.Assert;
 import org.junit.Test;
 
 /**
  * Unit tests for {@link FieldGeodeticPoint}.
- * 
+ *
  * @author Evan Ward
- * 
+ *
  */
 public class FieldGeodeticPointTest {
 

@@ -1,4 +1,4 @@
-/* Copyright 2002-2016 CS Systèmes d'Information
+/* Copyright 2002-2017 CS Systèmes d'Information
  * Licensed to CS Systèmes d'Information (CS) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -37,6 +37,10 @@
  * <ul>
  *  <li>{@link org.orekit.propagation.events.AlignmentDetector AlignmentDetector}
  *  detects satellite/body alignment (and by default stop when reaching alignment)
+ *  </li>
+ *  <li>{@link org.orekit.propagation.events.AngularSeparationDetector AngularSeparationDetector}
+ *  detects angular separation thresholds crossing between spacecraft and a beacon
+ *  (typically the Sun) as seen from an observer (typically a ground station)
  *  </li>
  *  <li>{@link org.orekit.propagation.events.AltitudeDetector AltitudeDetector}
  *  detects altitude crossing (and by default stop at descending)
@@ -103,13 +107,14 @@
  * org.orekit.propagation.events.EventSlopeFilter EventSlopeFilter} and {@link
  * org.orekit.propagation.events.EventEnablingPredicateFilter EventEnablingPredicateFilter} to trigger
  * only specific types of events, without losing computation time by locating events user is not
- * interested in.
+ * interested in. Also the {@link org.orekit.propagation.events.BooleanDetector} allows
+ * the user to combine other event detectors using Boolean logic.
  * </p>
  *
  * <p>
  * The low level interfaces and classes are heavily based on similar classes
  * from the ode.events package from the <a
- * href="http://commons.apache.org/math/">commons math</a> library. The changes are mainly
+ * href="https://hipparchus.org/">Hipparchus</a> library. The changes are mainly
  * adaptations of the signatures to space dynamics.
  * </p>
  * <ul>

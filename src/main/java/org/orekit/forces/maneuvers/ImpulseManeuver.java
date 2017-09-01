@@ -1,4 +1,4 @@
-/* Copyright 2002-2016 CS Systèmes d'Information
+/* Copyright 2002-2017 CS Systèmes d'Information
  * Licensed to CS Systèmes d'Information (CS) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -16,8 +16,8 @@
  */
 package org.orekit.forces.maneuvers;
 
-import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
-import org.apache.commons.math3.util.FastMath;
+import org.hipparchus.geometry.euclidean.threed.Vector3D;
+import org.hipparchus.util.FastMath;
 import org.orekit.attitudes.Attitude;
 import org.orekit.attitudes.AttitudeProvider;
 import org.orekit.errors.OrekitException;
@@ -65,7 +65,7 @@ public class ImpulseManeuver<T extends EventDetector> extends AbstractDetector<I
     /** Serializable UID. */
     private static final long serialVersionUID = 20131118L;
 
-    /** The attitude to override during the maneuver, if set. **/
+    /** The attitude to override during the maneuver, if set. */
     private final AttitudeProvider attitudeOverride;
 
     /** Triggering event. */
@@ -79,6 +79,9 @@ public class ImpulseManeuver<T extends EventDetector> extends AbstractDetector<I
 
     /** Engine exhaust velocity. */
     private final double vExhaust;
+
+    /** Indicator for forward propagation. */
+    private boolean forward;
 
     /** Build a new instance.
      * @param trigger triggering event
@@ -142,6 +145,7 @@ public class ImpulseManeuver<T extends EventDetector> extends AbstractDetector<I
 
     /** {@inheritDoc} */
     public void init(final SpacecraftState s0, final AbsoluteDate t) {
+        forward = t.durationFrom(s0.getDate()) >= 0;
     }
 
     /** {@inheritDoc} */
@@ -212,16 +216,18 @@ public class ImpulseManeuver<T extends EventDetector> extends AbstractDetector<I
 
             // convert velocity increment in inertial frame
             final Vector3D deltaV = attitude.getRotation().applyInverseTo(im.deltaVSat);
+            final double sign     = im.forward ? +1 : -1;
 
             // apply increment to position/velocity
             final PVCoordinates oldPV = oldState.getPVCoordinates();
-            final PVCoordinates newPV = new PVCoordinates(oldPV.getPosition(),
-                                                          oldPV.getVelocity().add(deltaV));
+            final PVCoordinates newPV =
+                            new PVCoordinates(oldPV.getPosition(),
+                                              new Vector3D(1, oldPV.getVelocity(), sign, deltaV));
             final CartesianOrbit newOrbit =
                     new CartesianOrbit(newPV, oldState.getFrame(), date, oldState.getMu());
 
             // compute new mass
-            final double newMass = oldState.getMass() * FastMath.exp(-deltaV.getNorm() / im.vExhaust);
+            final double newMass = oldState.getMass() * FastMath.exp(-sign * deltaV.getNorm() / im.vExhaust);
 
             // pack everything in a new state
             return new SpacecraftState(oldState.getOrbit().getType().convertType(newOrbit),

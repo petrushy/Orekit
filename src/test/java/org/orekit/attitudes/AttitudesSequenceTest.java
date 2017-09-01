@@ -1,4 +1,4 @@
-/* Copyright 2002-2016 CS Systèmes d'Information
+/* Copyright 2002-2017 CS Systèmes d'Information
  * Licensed to CS Systèmes d'Information (CS) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -20,10 +20,14 @@ package org.orekit.attitudes;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.math3.geometry.euclidean.threed.Rotation;
-import org.apache.commons.math3.geometry.euclidean.threed.RotationOrder;
-import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
-import org.apache.commons.math3.util.FastMath;
+import org.hipparchus.Field;
+import org.hipparchus.RealFieldElement;
+import org.hipparchus.geometry.euclidean.threed.FieldVector3D;
+import org.hipparchus.geometry.euclidean.threed.Rotation;
+import org.hipparchus.geometry.euclidean.threed.RotationOrder;
+import org.hipparchus.geometry.euclidean.threed.Vector3D;
+import org.hipparchus.util.Decimal64Field;
+import org.hipparchus.util.FastMath;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -31,25 +35,32 @@ import org.orekit.Utils;
 import org.orekit.bodies.CelestialBodyFactory;
 import org.orekit.errors.OrekitException;
 import org.orekit.errors.OrekitMessages;
-import org.orekit.errors.PropagationException;
 import org.orekit.frames.FramesFactory;
 import org.orekit.frames.LOFType;
+import org.orekit.orbits.FieldKeplerianOrbit;
+import org.orekit.orbits.FieldOrbit;
 import org.orekit.orbits.KeplerianOrbit;
 import org.orekit.orbits.Orbit;
+import org.orekit.propagation.FieldPropagator;
+import org.orekit.propagation.FieldSpacecraftState;
 import org.orekit.propagation.Propagator;
 import org.orekit.propagation.SpacecraftState;
 import org.orekit.propagation.analytical.EcksteinHechlerPropagator;
+import org.orekit.propagation.analytical.FieldEcksteinHechlerPropagator;
 import org.orekit.propagation.events.DateDetector;
 import org.orekit.propagation.events.EclipseDetector;
 import org.orekit.propagation.events.EventDetector;
 import org.orekit.propagation.events.EventsLogger;
 import org.orekit.propagation.events.handlers.ContinueOnEvent;
 import org.orekit.propagation.events.handlers.EventHandler;
+import org.orekit.propagation.sampling.FieldOrekitFixedStepHandler;
 import org.orekit.propagation.sampling.OrekitFixedStepHandler;
 import org.orekit.time.AbsoluteDate;
+import org.orekit.time.FieldAbsoluteDate;
 import org.orekit.time.TimeScalesFactory;
 import org.orekit.utils.AngularDerivativesFilter;
 import org.orekit.utils.Constants;
+import org.orekit.utils.FieldPVCoordinates;
 import org.orekit.utils.PVCoordinates;
 import org.orekit.utils.PVCoordinatesProvider;
 
@@ -84,7 +95,7 @@ public class AttitudesSequenceTest {
                     private static final long serialVersionUID = 1L;
                     public EventHandler.Action eventOccurred(final SpacecraftState s, final EclipseDetector d, final boolean increasing) {
                         setInEclipse(s.getDate(), !increasing);
-                        return EventHandler.Action.CONTINUE;
+                        return EventHandler.Action.RESET_STATE;
                     }
                 });
         final EventDetector monitored = logger.monitorDetector(ed);
@@ -96,7 +107,9 @@ public class AttitudesSequenceTest {
         attitudesSequence.addSwitchingCondition(nightRestingLaw, dayObservationLaw,
                                                 monitored, true, false, 300.0,
                                                 AngularDerivativesFilter.USE_RRA, nightToDayHandler);
-        if (ed.g(new SpacecraftState(initialOrbit)) >= 0) {
+        SpacecraftState initialState = new SpacecraftState(initialOrbit);
+        initialState = initialState.addAdditionalState("fortyTwo", 42.0);
+        if (ed.g(initialState) >= 0) {
             // initial position is in daytime
             setInEclipse(initialDate, false);
             attitudesSequence.resetActiveProvider(dayObservationLaw);
@@ -117,34 +130,150 @@ public class AttitudesSequenceTest {
         attitudesSequence.registerSwitchEvents(propagator);
 
         propagator.setMasterMode(60.0, new OrekitFixedStepHandler() {
-            public void init(final SpacecraftState s0, final AbsoluteDate t) {
-            }
-            public void handleStep(SpacecraftState currentState, boolean isLast) throws PropagationException {
-                try {
-                    // the Earth position in spacecraft frame should be along spacecraft Z axis
-                    // during night time and away from it during day time due to roll and pitch offsets
-                    final Vector3D earth = currentState.toTransform().transformPosition(Vector3D.ZERO);
-                    final double pointingOffset = Vector3D.angle(earth, Vector3D.PLUS_K);
+            public void handleStep(SpacecraftState currentState, boolean isLast) throws OrekitException {
+                // the Earth position in spacecraft frame should be along spacecraft Z axis
+                // during night time and away from it during day time due to roll and pitch offsets
+                final Vector3D earth = currentState.toTransform().transformPosition(Vector3D.ZERO);
+                final double pointingOffset = Vector3D.angle(earth, Vector3D.PLUS_K);
 
-                    // the g function is the eclipse indicator, its an angle between Sun and Earth limb,
-                    // positive when Sun is outside of Earth limb, negative when Sun is hidden by Earth limb
-                    final double eclipseAngle = ed.g(currentState);
+                // the g function is the eclipse indicator, its an angle between Sun and Earth limb,
+                // positive when Sun is outside of Earth limb, negative when Sun is hidden by Earth limb
+                final double eclipseAngle = ed.g(currentState);
 
-                    if (currentState.getDate().durationFrom(lastChange) > 300) {
-                        if (inEclipse) {
-                            Assert.assertTrue(eclipseAngle <= 0);
-                            Assert.assertEquals(0.0, pointingOffset, 1.0e-6);
-                        } else {
-                            Assert.assertTrue(eclipseAngle >= 0);
-                            Assert.assertEquals(0.767215, pointingOffset, 1.0e-6);
-                        }
+                if (currentState.getDate().durationFrom(lastChange) > 300) {
+                    if (inEclipse) {
+                        Assert.assertTrue(eclipseAngle <= 0);
+                        Assert.assertEquals(0.0, pointingOffset, 1.0e-6);
                     } else {
-                        // we are in transition
-                        Assert.assertTrue(pointingOffset + " " + (0.767215 - pointingOffset),
-                                          pointingOffset <= 0.7672155);
+                        Assert.assertTrue(eclipseAngle >= 0);
+                        Assert.assertEquals(0.767215, pointingOffset, 1.0e-6);
                     }
-                } catch (OrekitException oe) {
-                    throw new PropagationException(oe);
+                } else {
+                    // we are in transition
+                    Assert.assertTrue(pointingOffset + " " + (0.767215 - pointingOffset),
+                                      pointingOffset <= 0.7672155);
+                }
+            }
+        });
+
+        // Propagate from the initial date for the fixed duration
+        propagator.propagate(initialDate.shiftedBy(12600.));
+
+        // as we have 2 switch events (even if they share the same underlying event detector),
+        // and these events are triggered at both eclipse entry and exit, we get 8
+        // raw events on 2 orbits
+        Assert.assertEquals(8, logger.getLoggedEvents().size());
+
+        // we have 4 attitudes switch on 2 orbits, 2 of each type
+        Assert.assertEquals(2, dayToNightHandler.dates.size());
+        Assert.assertEquals(2, nightToDayHandler.dates.size());
+
+    }
+
+    @Test
+    public void testDayNightSwitchField() throws OrekitException {
+        doTestDayNightSwitchField(Decimal64Field.getInstance());
+    }
+
+    private <T extends RealFieldElement<T>> void doTestDayNightSwitchField(final Field<T> field)
+        throws OrekitException {
+
+        //  Initial state definition : date, orbit
+        final FieldAbsoluteDate<T> initialDate = new FieldAbsoluteDate<>(field, 2004, 01, 01, 23, 30, 00.000, TimeScalesFactory.getUTC());
+        final FieldVector3D<T> position  = new FieldVector3D<>(field,
+                                                               new Vector3D(-6142438.668, 3492467.560, -25767.25680));
+        final FieldVector3D<T> velocity  = new FieldVector3D<>(field,
+                                                               new Vector3D(505.8479685, 942.7809215, 7435.922231));
+        final FieldOrbit<T> initialOrbit = new FieldKeplerianOrbit<>(new FieldPVCoordinates<>(position, velocity),
+                                                                     FramesFactory.getEME2000(), initialDate,
+                                                                     Constants.EIGEN5C_EARTH_MU);
+
+
+        // Attitudes sequence definition
+        EventsLogger logger = new EventsLogger();
+        final AttitudesSequence attitudesSequence = new AttitudesSequence();
+        final AttitudeProvider dayObservationLaw = new LofOffset(initialOrbit.getFrame(), LOFType.VVLH,
+                                                                 RotationOrder.XYZ, FastMath.toRadians(20), FastMath.toRadians(40), 0);
+        final AttitudeProvider nightRestingLaw   = new LofOffset(initialOrbit.getFrame(), LOFType.VVLH);
+        final PVCoordinatesProvider sun = CelestialBodyFactory.getSun();
+        final PVCoordinatesProvider earth = CelestialBodyFactory.getEarth();
+        final EclipseDetector ed =
+                new EclipseDetector(sun, 696000000., earth, Constants.WGS84_EARTH_EQUATORIAL_RADIUS).
+                withHandler(new ContinueOnEvent<EclipseDetector>() {
+                    private static final long serialVersionUID = 1L;
+                    int count = 0;
+                    public EventHandler.Action eventOccurred(final SpacecraftState s,
+                                                             final EclipseDetector d,
+                                                             final boolean increasing) {
+                        setInEclipse(s.getDate(), !increasing);
+                        if (count++ == 7) {
+                            return Action.STOP;
+                        } else {
+                            switch (count % 3) {
+                                case 0 :
+                                    return Action.CONTINUE;
+                                case 1 :
+                                    return Action.RESET_DERIVATIVES;
+                                default :
+                                    return Action.RESET_STATE;
+                            }
+                        }
+                    }
+                });
+        final EventDetector monitored = logger.monitorDetector(ed);
+        final Handler dayToNightHandler = new Handler(dayObservationLaw, nightRestingLaw);
+        final Handler nightToDayHandler = new Handler(nightRestingLaw, dayObservationLaw);
+        attitudesSequence.addSwitchingCondition(dayObservationLaw, nightRestingLaw,
+                                                monitored, false, true, 300.0,
+                                                AngularDerivativesFilter.USE_RRA, dayToNightHandler);
+        attitudesSequence.addSwitchingCondition(nightRestingLaw, dayObservationLaw,
+                                                monitored, true, false, 300.0,
+                                                AngularDerivativesFilter.USE_RRA, nightToDayHandler);
+        FieldSpacecraftState<T> initialState = new FieldSpacecraftState<>(initialOrbit);
+        initialState = initialState.addAdditionalState("fortyTwo", field.getZero().add(42.0));
+        if (ed.g(initialState.toSpacecraftState()) >= 0) {
+            // initial position is in daytime
+            setInEclipse(initialDate.toAbsoluteDate(), false);
+            attitudesSequence.resetActiveProvider(dayObservationLaw);
+        } else {
+            // initial position is in nighttime
+            setInEclipse(initialDate.toAbsoluteDate(), true);
+            attitudesSequence.resetActiveProvider(nightRestingLaw);
+        }
+
+        // Propagator : consider the analytical Eckstein-Hechler model
+        final FieldPropagator<T> propagator = new FieldEcksteinHechlerPropagator<T>(initialOrbit, attitudesSequence,
+                                                                                    Constants.EIGEN5C_EARTH_EQUATORIAL_RADIUS,
+                                                                                    Constants.EIGEN5C_EARTH_MU,  Constants.EIGEN5C_EARTH_C20,
+                                                                                    Constants.EIGEN5C_EARTH_C30, Constants.EIGEN5C_EARTH_C40,
+                                                                                    Constants.EIGEN5C_EARTH_C50, Constants.EIGEN5C_EARTH_C60);
+
+        // Register the switching events to the propagator
+        attitudesSequence.registerSwitchEvents(field, propagator);
+
+        propagator.setMasterMode(field.getZero().add(60.0), new FieldOrekitFixedStepHandler<T>() {
+            public void handleStep(FieldSpacecraftState<T> currentState, boolean isLast) throws OrekitException {
+                // the Earth position in spacecraft frame should be along spacecraft Z axis
+                // during night time and away from it during day time due to roll and pitch offsets
+                final FieldVector3D<T> earth = currentState.toTransform().transformPosition(Vector3D.ZERO);
+                final T pointingOffset = FieldVector3D.angle(earth, Vector3D.PLUS_K);
+
+                // the g function is the eclipse indicator, its an angle between Sun and Earth limb,
+                // positive when Sun is outside of Earth limb, negative when Sun is hidden by Earth limb
+                final double eclipseAngle = ed.g(currentState.toSpacecraftState());
+
+                if (currentState.getDate().durationFrom(lastChange).getReal() > 300) {
+                    if (inEclipse) {
+                        Assert.assertTrue(eclipseAngle <= 0);
+                        Assert.assertEquals(0.0, pointingOffset.getReal(), 1.0e-6);
+                    } else {
+                        Assert.assertTrue(eclipseAngle >= 0);
+                        Assert.assertEquals(0.767215, pointingOffset.getReal(), 1.0e-6);
+                    }
+                } else {
+                    // we are in transition
+                    Assert.assertTrue(pointingOffset.getReal() + " " + (0.767215 - pointingOffset.getReal()),
+                                      pointingOffset.getReal() <= 0.7672155);
                 }
             }
         });
@@ -187,16 +316,21 @@ public class AttitudesSequenceTest {
                                                 true, false, 10.0, AngularDerivativesFilter.USE_R, null);
         attitudesSequence.resetActiveProvider(current);
 
+        SpacecraftState initialState = new SpacecraftState(initialOrbit);
+        initialState = initialState.addAdditionalState("fortyTwo", 42.0);
         final Propagator propagator = new EcksteinHechlerPropagator(initialOrbit, attitudesSequence,
                                                                     Constants.EIGEN5C_EARTH_EQUATORIAL_RADIUS,
                                                                     Constants.EIGEN5C_EARTH_MU,  Constants.EIGEN5C_EARTH_C20,
                                                                     Constants.EIGEN5C_EARTH_C30, Constants.EIGEN5C_EARTH_C40,
                                                                     Constants.EIGEN5C_EARTH_C50, Constants.EIGEN5C_EARTH_C60);
+        propagator.resetInitialState(initialState);
+        Assert.assertEquals(42.0, propagator.getInitialState().getAdditionalState("fortyTwo")[0], 1.0e-10);
 
         // Register the switching events to the propagator
         attitudesSequence.registerSwitchEvents(propagator);
 
         SpacecraftState finalState = propagator.propagate(initialDate.shiftedBy(-10000.0));
+        Assert.assertEquals(42.0, finalState.getAdditionalState("fortyTwo")[0], 1.0e-10);
         Assert.assertEquals(1, handler.dates.size());
         Assert.assertEquals(-500.0, handler.dates.get(0).durationFrom(initialDate), 1.0e-3);
         Assert.assertEquals(-490.0, finalState.getDate().durationFrom(initialDate), 1.0e-3);

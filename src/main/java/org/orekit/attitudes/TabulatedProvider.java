@@ -1,4 +1,4 @@
-/* Copyright 2002-2016 CS Systèmes d'Information
+/* Copyright 2002-2017 CS Systèmes d'Information
  * Licensed to CS Systèmes d'Information (CS) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -18,16 +18,20 @@ package org.orekit.attitudes;
 
 import java.io.NotSerializableException;
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
+import org.hipparchus.RealFieldElement;
 import org.orekit.errors.OrekitException;
 import org.orekit.frames.Frame;
 import org.orekit.time.AbsoluteDate;
+import org.orekit.time.FieldAbsoluteDate;
 import org.orekit.utils.AngularDerivativesFilter;
+import org.orekit.utils.FieldPVCoordinatesProvider;
 import org.orekit.utils.ImmutableTimeStampedCache;
 import org.orekit.utils.PVCoordinatesProvider;
 import org.orekit.utils.TimeStampedAngularCoordinates;
+import org.orekit.utils.TimeStampedFieldAngularCoordinates;
 
 
 /**
@@ -53,21 +57,6 @@ public class TabulatedProvider implements AttitudeProvider {
     private final AngularDerivativesFilter filter;
 
     /** Creates new instance.
-     * @param table tabulated attitudes
-     * @param n number of attitude to use for interpolation
-     * @param useRotationRate if true, rotation rate from the tables are used in
-     * the interpolation, otherwise rates present in the table are ignored
-     * and rate is reconstructed from the rotation angles only
-     * @deprecated as of 7.0, replaced with {@link #TabulatedProvider(Frame, List, int, AngularDerivativesFilter)}
-     */
-    @Deprecated
-    public TabulatedProvider(final List<Attitude> table, final int n, final boolean useRotationRate) {
-        this(table.get(0).getReferenceFrame(),
-             toTimeStampedAngularCoordinates(table),
-             n, useRotationRate ? AngularDerivativesFilter.USE_RR : AngularDerivativesFilter.USE_R);
-    }
-
-    /** Creates new instance.
      * @param referenceFrame reference frame for tabulated attitudes
      * @param table tabulated attitudes
      * @param n number of attitude to use for interpolation
@@ -86,7 +75,7 @@ public class TabulatedProvider implements AttitudeProvider {
         throws OrekitException {
 
         // get attitudes sample on which interpolation will be performed
-        final List<TimeStampedAngularCoordinates> sample = table.getNeighbors(date);
+        final List<TimeStampedAngularCoordinates> sample = table.getNeighbors(date).collect(Collectors.toList());
 
         // interpolate
         final TimeStampedAngularCoordinates interpolated =
@@ -97,17 +86,26 @@ public class TabulatedProvider implements AttitudeProvider {
 
     }
 
-    /** Convert an attitude list into a time-stamped angular coordinates list.
-     * @param attitudes attitudes list
-     * @return converted list
-     */
-    private static List<TimeStampedAngularCoordinates> toTimeStampedAngularCoordinates(final List<Attitude> attitudes) {
-        final List<TimeStampedAngularCoordinates> converted =
-                new ArrayList<TimeStampedAngularCoordinates>(attitudes.size());
-        for (final Attitude attitude : attitudes) {
-            converted.add(attitude.getOrientation());
-        }
-        return converted;
+    /** {@inheritDoc} */
+    public <T extends RealFieldElement<T>> FieldAttitude<T> getAttitude(final FieldPVCoordinatesProvider<T> pvProv,
+                                                                        final FieldAbsoluteDate<T> date,
+                                                                        final Frame frame)
+        throws OrekitException {
+
+        // get attitudes sample on which interpolation will be performed
+        final List<TimeStampedFieldAngularCoordinates<T>> sample =
+                        table.
+                        getNeighbors(date.toAbsoluteDate()).
+                        map(ac -> new TimeStampedFieldAngularCoordinates<>(date.getField(), ac)).
+                        collect(Collectors.toList());
+
+        // interpolate
+        final TimeStampedFieldAngularCoordinates<T> interpolated =
+                TimeStampedFieldAngularCoordinates.interpolate(date, filter, sample);
+
+        // build the attitude
+        return new FieldAttitude<>(referenceFrame, interpolated);
+
     }
 
     /** Replace the instance with a data transfer object for serialization.

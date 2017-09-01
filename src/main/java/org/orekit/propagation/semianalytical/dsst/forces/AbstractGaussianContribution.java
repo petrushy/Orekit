@@ -1,4 +1,4 @@
-/* Copyright 2002-2016 CS Systèmes d'Information
+/* Copyright 2002-2017 CS Systèmes d'Information
  * Licensed to CS Systèmes d'Information (CS) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -25,20 +25,19 @@ import java.util.Map;
 import java.util.Set;
 import java.util.SortedSet;
 
-import org.apache.commons.math3.analysis.UnivariateVectorFunction;
-import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
-import org.apache.commons.math3.util.FastMath;
+import org.hipparchus.analysis.UnivariateVectorFunction;
+import org.hipparchus.geometry.euclidean.threed.Vector3D;
+import org.hipparchus.util.FastMath;
 import org.orekit.attitudes.Attitude;
 import org.orekit.attitudes.AttitudeProvider;
 import org.orekit.errors.OrekitException;
 import org.orekit.errors.OrekitExceptionWrapper;
 import org.orekit.forces.ForceModel;
-import org.orekit.frames.Frame;
 import org.orekit.orbits.EquinoctialOrbit;
 import org.orekit.orbits.Orbit;
+import org.orekit.orbits.OrbitType;
 import org.orekit.orbits.PositionAngle;
 import org.orekit.propagation.SpacecraftState;
-import org.orekit.propagation.numerical.TimeDerivativesEquations;
 import org.orekit.propagation.semianalytical.dsst.utilities.AuxiliaryElements;
 import org.orekit.propagation.semianalytical.dsst.utilities.CjSjCoefficient;
 import org.orekit.propagation.semianalytical.dsst.utilities.ShortPeriodicsInterpolatedCoefficient;
@@ -61,10 +60,11 @@ import org.orekit.utils.TimeSpanMap;
  * <li>v is the velocity vector</li>
  * <li>q is the perturbing acceleration due to the considered force</li>
  * </ul>
- * The averaging process and other considerations lead to integrate this contribution
+ *
+ * <p> The averaging process and other considerations lead to integrate this contribution
  * over the true longitude L possibly taking into account some limits.
- * </p><p>
- * To create a numerically averaged contribution, one needs only to provide a
+ *
+ * <p> To create a numerically averaged contribution, one needs only to provide a
  * {@link ForceModel} and to implement in the derived class the method:
  * {@link #getLLimits(SpacecraftState)}.
  * </p>
@@ -273,27 +273,13 @@ public abstract class AbstractGaussianContribution implements DSSTForceModel {
         return meanElementRate;
     }
 
-    /** Compute the acceleration due to the non conservative perturbing force.
-     *
-     *  @param state current state information: date, kinematics, attitude
-     *  @return the perturbing acceleration
-     *  @exception OrekitException if some specific error occurs
-     */
-    protected Vector3D getAcceleration(final SpacecraftState state)
-        throws OrekitException {
-        final AccelerationRetriever retriever = new AccelerationRetriever(state);
-        contribution.addContribution(state, retriever);
-
-        return retriever.getAcceleration();
-    }
-
     /** Compute the limits in L, the true longitude, for integration.
      *
      *  @param  state current state information: date, kinematics, attitude
      *  @return the integration limits in L
      *  @exception OrekitException if some specific error occurs
      */
-    protected abstract double[] getLLimits(final SpacecraftState state) throws OrekitException;
+    protected abstract double[] getLLimits(SpacecraftState state) throws OrekitException;
 
     /** Computes the mean equinoctial elements rates da<sub>i</sub> / dt.
      *
@@ -342,7 +328,7 @@ public abstract class AbstractGaussianContribution implements DSSTForceModel {
 
     /** {@inheritDoc} */
     @Override
-    public void updateShortPeriodTerms(final SpacecraftState ... meanStates)
+    public void updateShortPeriodTerms(final SpacecraftState... meanStates)
         throws OrekitException {
 
         final Slot slot = gaussianSPCoefs.createSlot(meanStates);
@@ -385,56 +371,6 @@ public abstract class AbstractGaussianContribution implements DSSTForceModel {
         return currentRhoSigmaj;
     }
 
-    /** Internal class for retrieving acceleration from a {@link ForceModel}. */
-    private static class AccelerationRetriever implements TimeDerivativesEquations {
-
-        /** acceleration vector. */
-        private Vector3D acceleration;
-
-        /** state. */
-        private final SpacecraftState state;
-
-        /** Simple constructor.
-         *  @param state input state
-         */
-        AccelerationRetriever(final SpacecraftState state) {
-            this.acceleration = Vector3D.ZERO;
-            this.state = state;
-        }
-
-        /** {@inheritDoc} */
-        @Override
-        public void addKeplerContribution(final double mu) {
-        }
-
-        /** {@inheritDoc} */
-        @Override
-        public void addXYZAcceleration(final double x, final double y, final double z) {
-            acceleration = new Vector3D(x, y, z);
-        }
-
-        /** {@inheritDoc} */
-        @Override
-        public void addAcceleration(final Vector3D gamma, final Frame frame)
-            throws OrekitException {
-            acceleration = frame.getTransformTo(state.getFrame(),
-                                                state.getDate()).transformVector(gamma);
-        }
-
-        /** {@inheritDoc} */
-        @Override
-        public void addMassDerivative(final double q) {
-        }
-
-        /** Get the acceleration vector.
-         * @return acceleration vector
-         */
-        public Vector3D getAcceleration() {
-            return acceleration;
-        }
-
-    }
-
     /** Internal class for numerical quadrature. */
     private class IntegrableFunction implements UnivariateVectorFunction {
 
@@ -458,7 +394,15 @@ public abstract class AbstractGaussianContribution implements DSSTForceModel {
          * @param j the j index. used only for short periodic variation. Ignored for mean elements variation.
          */
         IntegrableFunction(final SpacecraftState state, final boolean meanMode, final int j) {
-            this.state = state;
+
+            // remove derivatives from state
+            final double[] stateVector = new double[6];
+            OrbitType.EQUINOCTIAL.mapOrbitToArray(state.getOrbit(), PositionAngle.TRUE, stateVector, null);
+            final Orbit fixedOrbit = OrbitType.EQUINOCTIAL.mapArrayToOrbit(stateVector, null, PositionAngle.TRUE,
+                                                                           state.getDate(),
+                                                                           state.getMu(),
+                                                                           state.getFrame());
+            this.state = new SpacecraftState(fixedOrbit, state.getAttitude(), state.getMass());
             this.meanMode = meanMode;
             this.j = j;
         }
@@ -514,7 +458,7 @@ public abstract class AbstractGaussianContribution implements DSSTForceModel {
                 final SpacecraftState shiftedState =
                         new SpacecraftState(recomposedOrbit, recomposedAttitude, state.getMass());
 
-                acc = getAcceleration(shiftedState);
+                acc = contribution.acceleration(shiftedState, contribution.getParameters());
 
             } catch (OrekitException oe) {
                 throw new OrekitExceptionWrapper(oe);
@@ -654,7 +598,7 @@ public abstract class AbstractGaussianContribution implements DSSTForceModel {
     }
 
     /** Class used to {@link #integrate(UnivariateVectorFunction, double, double) integrate}
-     *  a {@link org.apache.commons.math3.analysis.UnivariateVectorFunction function}
+     *  a {@link org.hipparchus.analysis.UnivariateVectorFunction function}
      *  of the orbital elements using the Gaussian quadrature rule to get the acceleration.
      */
     private static class GaussQuadrature {
@@ -1338,7 +1282,7 @@ public abstract class AbstractGaussianContribution implements DSSTForceModel {
      *
      * <p>
      * The value of M is 0. Also, since the values of the Fourier coefficient D<sub>i</sub><sup>m</sup> is 0
-     * then the values of the coefficients D<sub>i</sub><sup>m</sup> for m > 2 are also 0.
+     * then the values of the coefficients D<sub>i</sub><sup>m</sup> for m &gt; 2 are also 0.
      * </p>
      * @author Petre Bazavan
      * @author Lucian Barbulescu
@@ -1381,7 +1325,7 @@ public abstract class AbstractGaussianContribution implements DSSTForceModel {
          * @param meanStates mean states defining the slot
          * @return slot valid at the specified date
          */
-        public Slot createSlot(final SpacecraftState ... meanStates) {
+        public Slot createSlot(final SpacecraftState... meanStates) {
             final Slot         slot  = new Slot(jMax, interpolationPoints);
             final AbsoluteDate first = meanStates[0].getDate();
             final AbsoluteDate last  = meanStates[meanStates.length - 1].getDate();
@@ -1546,7 +1490,7 @@ public abstract class AbstractGaussianContribution implements DSSTForceModel {
 
         /** {@inheritDoc}
          * <p>
-         * For Gaussian forces,there are JMAX cj coefficients,
+         * For Gaussian forces, there are JMAX cj coefficients,
          * JMAX sj coefficients and 3 dj coefficients. As JMAX = 12,
          * this sums up to 27 coefficients. The j index is the integer
          * multiplier for the true longitude argument in the cj and sj
@@ -1582,7 +1526,7 @@ public abstract class AbstractGaussianContribution implements DSSTForceModel {
          * @param indices list of coefficient indices
          */
         private void storeIfSelected(final Map<String, double[]> map, final Set<String> selected,
-                                     final double[] value, final String id, final int ... indices) {
+                                     final double[] value, final String id, final int... indices) {
             final StringBuilder keyBuilder = new StringBuilder(getCoefficientsKeyPrefix());
             keyBuilder.append(id);
             for (int index : indices) {

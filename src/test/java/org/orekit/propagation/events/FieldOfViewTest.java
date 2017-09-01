@@ -1,4 +1,4 @@
-/* Copyright 2002-2016 CS Systèmes d'Information
+/* Copyright 2002-2017 CS Systèmes d'Information
  * Licensed to CS Systèmes d'Information (CS) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -23,15 +23,15 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.List;
 
-import org.apache.commons.math3.exception.util.LocalizedFormats;
-import org.apache.commons.math3.geometry.euclidean.threed.RotationOrder;
-import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
-import org.apache.commons.math3.geometry.spherical.twod.S2Point;
-import org.apache.commons.math3.geometry.spherical.twod.SphericalPolygonsSet;
-import org.apache.commons.math3.random.UnitSphereRandomVectorGenerator;
-import org.apache.commons.math3.random.Well1024a;
-import org.apache.commons.math3.util.FastMath;
-import org.apache.commons.math3.util.MathUtils;
+import org.hipparchus.exception.LocalizedCoreFormats;
+import org.hipparchus.geometry.euclidean.threed.RotationOrder;
+import org.hipparchus.geometry.euclidean.threed.Vector3D;
+import org.hipparchus.geometry.spherical.twod.S2Point;
+import org.hipparchus.geometry.spherical.twod.SphericalPolygonsSet;
+import org.hipparchus.random.UnitSphereRandomVectorGenerator;
+import org.hipparchus.random.Well1024a;
+import org.hipparchus.util.FastMath;
+import org.hipparchus.util.MathUtils;
 import org.junit.Assert;
 import org.junit.Test;
 import org.orekit.Utils;
@@ -85,9 +85,10 @@ public class FieldOfViewTest {
                             0.125);
             Assert.fail("an exception should have been thrown");
         } catch(OrekitException oe) {
-            Assert.assertEquals(LocalizedFormats.NUMBER_TOO_LARGE, oe.getSpecifier());
-            Assert.assertEquals(tooLarge, (Double) oe.getParts()[0], 1.0e-15);
-            Assert.assertEquals(0.5 * FastMath.PI, (Double) oe.getParts()[1], 1.0e-15);
+            Assert.assertEquals(LocalizedCoreFormats.OUT_OF_RANGE_SIMPLE, oe.getSpecifier());
+            Assert.assertEquals(tooLarge,          (Double) oe.getParts()[0], 1.0e-15);
+            Assert.assertEquals(0,                 (Double) oe.getParts()[1], 1.0e-15);
+            Assert.assertEquals(0.5 * FastMath.PI, (Double) oe.getParts()[2], 1.0e-15);
         }
     }
 
@@ -128,7 +129,7 @@ public class FieldOfViewTest {
                     // the offsetFromBoundary method may use the fast approximate
                     // method, so we cannot check the error accurately
                     // we know however that the fast method will underestimate the offset
-                    
+
                     Assert.assertTrue(offset > 0);
                     Assert.assertTrue(offset <= theoreticalOffset + 5e-16);
                 } else {
@@ -283,7 +284,7 @@ public class FieldOfViewTest {
         double minDist = Double.POSITIVE_INFINITY;
         double maxDist = 0;
         for (int i = 0; i < loop.size(); ++i) {
-            Assert.assertEquals(0.0, loop.get(i).getAltitude(), 8.0e-9);
+            Assert.assertEquals(0.0, loop.get(i).getAltitude(), 3.0e-7);
             TopocentricFrame topo = new TopocentricFrame(earth, loop.get(i), "atLimb");
             final double elevation = topo.getElevation(state.getPVCoordinates().getPosition(),
                                                        state.getFrame(), state.getDate());
@@ -293,7 +294,7 @@ public class FieldOfViewTest {
             minDist = FastMath.min(minDist, dist);
             maxDist = FastMath.max(maxDist, dist);
         }
-        Assert.assertEquals(0.0,       FastMath.toDegrees(minEl), 1.0e-12);
+        Assert.assertEquals(0.0,       FastMath.toDegrees(minEl), 2.0e-12);
         Assert.assertEquals(7.8897,    FastMath.toDegrees(maxEl), 0.001);
         Assert.assertEquals(4584829.6, minDist, 1.0);
         Assert.assertEquals(5347029.8, maxDist, 1.0);
@@ -329,7 +330,7 @@ public class FieldOfViewTest {
         double minDist = Double.POSITIVE_INFINITY;
         double maxDist = 0;
         for (int i = 0; i < loop.size(); ++i) {
-            Assert.assertEquals(0.0, loop.get(i).getAltitude(), 8.0e-9);
+            Assert.assertEquals(0.0, loop.get(i).getAltitude(), 3.0e-7);
             TopocentricFrame topo = new TopocentricFrame(earth, loop.get(i), "atLimb");
             final double elevation = topo.getElevation(state.getPVCoordinates().getPosition(),
                                                        state.getFrame(), state.getDate());
@@ -339,8 +340,8 @@ public class FieldOfViewTest {
             minDist = FastMath.min(minDist, dist);
             maxDist = FastMath.max(maxDist, dist);
         }
-        Assert.assertEquals(0.0,       FastMath.toDegrees(minEl), 1.0e-13);
-        Assert.assertEquals(0.0,       FastMath.toDegrees(maxEl), 1.0e-12);
+        Assert.assertEquals(0.0,       FastMath.toDegrees(minEl), 2.0e-12);
+        Assert.assertEquals(0.0,       FastMath.toDegrees(maxEl), 1.7e-12);
         Assert.assertEquals(5323036.6, minDist, 1.0);
         Assert.assertEquals(5347029.8, maxDist, 1.0);
     }
@@ -382,7 +383,7 @@ public class FieldOfViewTest {
         ObjectOutputStream    oos = new ObjectOutputStream(bos);
         oos.writeObject(fov);
 
-        
+
         Assert.assertTrue(bos.size() > 400);
         Assert.assertTrue(bos.size() < 450);
 
@@ -392,7 +393,7 @@ public class FieldOfViewTest {
         Assert.assertEquals(0.5 * FastMath.PI, deserialized.getZone().getSize(),         1.0e-15);
         Assert.assertEquals(1.5 * FastMath.PI, deserialized.getZone().getBoundarySize(), 1.0e-15);
         Assert.assertEquals(0.001,  deserialized.getMargin(), 1.0e-15);
-        
+
     }
 
 }

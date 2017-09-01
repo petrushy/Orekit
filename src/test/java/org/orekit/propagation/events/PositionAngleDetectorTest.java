@@ -1,4 +1,4 @@
-/* Copyright 2002-2016 CS Systèmes d'Information
+/* Copyright 2002-2017 CS Systèmes d'Information
  * Licensed to CS Systèmes d'Information (CS) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -16,9 +16,9 @@
  */
 package org.orekit.propagation.events;
 
-import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
-import org.apache.commons.math3.util.FastMath;
-import org.apache.commons.math3.util.MathUtils;
+import org.hipparchus.geometry.euclidean.threed.Vector3D;
+import org.hipparchus.util.FastMath;
+import org.hipparchus.util.MathUtils;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -145,7 +145,7 @@ public class PositionAngleDetectorTest {
         double[] array = new double[6];
         for (LoggedEvent e : logger.getLoggedEvents()) {
             SpacecraftState state = e.getState();
-            orbitType.mapOrbitToArray(state.getOrbit(), positionAngle, array);
+            orbitType.mapOrbitToArray(state.getOrbit(), positionAngle, array, null);
             Assert.assertEquals(angle, MathUtils.normalizeAngle(array[5], angle), 1.0e-10);
         }
         Assert.assertEquals(15, logger.getLoggedEvents().size());

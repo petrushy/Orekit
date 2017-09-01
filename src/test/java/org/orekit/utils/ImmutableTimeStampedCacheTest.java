@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -31,7 +32,7 @@ import org.orekit.time.AbsoluteDate;
 
 /**
  * Unit tests for {@link ImmutableTimeStampedCache}.
- * 
+ *
  * @author Evan Ward
  */
 public class ImmutableTimeStampedCacheTest {
@@ -115,7 +116,7 @@ public class ImmutableTimeStampedCacheTest {
     /**
      * check {@link ImmutableTimeStampedCache#getNeighbors(AbsoluteDate)} at a
      * series of different dates designed to test all logic paths.
-     * 
+     *
      * @throws TimeStampedCacheException
      */
     @Test
@@ -198,7 +199,7 @@ public class ImmutableTimeStampedCacheTest {
     /**
      * check that the cache is immutable by changing the data passed in the
      * constructor and returned from methods.
-     * 
+     *
      * @throws TimeStampedCacheException
      */
     @Test
@@ -225,12 +226,7 @@ public class ImmutableTimeStampedCacheTest {
         Assert.assertArrayEquals(cache.getAll().toArray(), expecteds.toArray());
 
         // check getNeighbors
-        actuals = cache.getNeighbors(date);
-        try {
-            actuals.set(0, different);
-        } catch (UnsupportedOperationException e) {
-            // exception ok
-        }
+        actuals = cache.getNeighbors(date).collect(Collectors.toList());
         Assert.assertArrayEquals(cache.getAll().toArray(), expecteds.toArray());
     }
 

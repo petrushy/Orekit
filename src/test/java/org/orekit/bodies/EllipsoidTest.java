@@ -1,4 +1,4 @@
-/* Copyright 2002-2016 CS Systèmes d'Information
+/* Copyright 2002-2017 CS Systèmes d'Information
  * Licensed to CS Systèmes d'Information (CS) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -19,12 +19,12 @@ package org.orekit.bodies;
 
 import java.io.IOException;
 
-import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
-import org.apache.commons.math3.random.RandomGenerator;
-import org.apache.commons.math3.random.Well1024a;
-import org.apache.commons.math3.random.Well19937a;
-import org.apache.commons.math3.util.FastMath;
-import org.apache.commons.math3.util.MathArrays;
+import org.hipparchus.geometry.euclidean.threed.Vector3D;
+import org.hipparchus.random.RandomGenerator;
+import org.hipparchus.random.Well1024a;
+import org.hipparchus.random.Well19937a;
+import org.hipparchus.util.FastMath;
+import org.hipparchus.util.MathArrays;
 import org.junit.Assert;
 import org.junit.Test;
 import org.orekit.errors.OrekitException;
@@ -132,7 +132,7 @@ public class EllipsoidTest {
                 double cAzimuth = FastMath.cos(azimuth);
                 double sAzimuth = FastMath.sin(azimuth);
                 Vector3D tAz = new Vector3D(cAzimuth, t1, sAzimuth, t2);
-                
+
                 final Ellipse ps = ellipsoid.getPlaneSection(surfacePoint, tAz);
                 Assert.assertEquals(0.0, errorOnEllipsoid(ps, ellipsoid), 1.0e-12 * size);
                 Assert.assertEquals(0.0, errorOnPlane(ps, surfacePoint, tAz), 1.0e-10 * size);

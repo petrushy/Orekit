@@ -1,4 +1,4 @@
-/* Copyright 2002-2016 CS Systèmes d'Information
+/* Copyright 2002-2017 CS Systèmes d'Information
  * Licensed to CS Systèmes d'Information (CS) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -17,12 +17,14 @@
 package org.orekit.attitudes;
 
 
-import org.apache.commons.math3.geometry.euclidean.threed.CardanEulerSingularityException;
-import org.apache.commons.math3.geometry.euclidean.threed.Rotation;
-import org.apache.commons.math3.geometry.euclidean.threed.RotationConvention;
-import org.apache.commons.math3.geometry.euclidean.threed.RotationOrder;
-import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
-import org.apache.commons.math3.util.FastMath;
+import org.hipparchus.Field;
+import org.hipparchus.RealFieldElement;
+import org.hipparchus.geometry.euclidean.threed.Rotation;
+import org.hipparchus.geometry.euclidean.threed.RotationConvention;
+import org.hipparchus.geometry.euclidean.threed.RotationOrder;
+import org.hipparchus.geometry.euclidean.threed.Vector3D;
+import org.hipparchus.util.Decimal64Field;
+import org.hipparchus.util.FastMath;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -35,14 +37,17 @@ import org.orekit.frames.Frame;
 import org.orekit.frames.FramesFactory;
 import org.orekit.frames.LOFType;
 import org.orekit.orbits.CircularOrbit;
+import org.orekit.orbits.FieldOrbit;
 import org.orekit.orbits.KeplerianOrbit;
 import org.orekit.orbits.Orbit;
 import org.orekit.orbits.PositionAngle;
+import org.orekit.propagation.FieldSpacecraftState;
 import org.orekit.propagation.Propagator;
 import org.orekit.propagation.SpacecraftState;
 import org.orekit.propagation.analytical.KeplerianPropagator;
 import org.orekit.time.AbsoluteDate;
 import org.orekit.time.DateComponents;
+import org.orekit.time.FieldAbsoluteDate;
 import org.orekit.time.TimeComponents;
 import org.orekit.time.TimeScalesFactory;
 import org.orekit.utils.AngularCoordinates;
@@ -71,7 +76,7 @@ public class LofOffsetTest {
     /** Test is the lof offset is the one expected
      */
     @Test
-    public void testZero() throws OrekitException, CardanEulerSingularityException {
+    public void testZero() throws OrekitException {
 
         //  Satellite position
 
@@ -89,7 +94,7 @@ public class LofOffsetTest {
     /** Test if the lof offset is the one expected
      */
     @Test
-    public void testOffset() throws OrekitException, CardanEulerSingularityException {
+    public void testOffset() throws OrekitException {
 
         //  Satellite position
         final CircularOrbit circ =
@@ -134,7 +139,7 @@ public class LofOffsetTest {
      */
     @Test
     public void testTarget()
-        throws OrekitException, CardanEulerSingularityException {
+        throws OrekitException {
 
         // Create target point and target pointing law towards that point
         final GeodeticPoint targetDef  = new GeodeticPoint(FastMath.toRadians(5.), FastMath.toRadians(-40.), 0.);
@@ -242,7 +247,7 @@ public class LofOffsetTest {
     }
 
     @Test
-    public void testRetrieveAngles() throws OrekitException, CardanEulerSingularityException {
+    public void testRetrieveAngles() throws OrekitException {
         AbsoluteDate date = new AbsoluteDate(new DateComponents(1970, 01, 01),
                                              new TimeComponents(3, 25, 45.6789),
                                              TimeScalesFactory.getUTC());
@@ -260,10 +265,35 @@ public class LofOffsetTest {
         Rotation offsetAtt  = law.getAttitude(orbit, date, orbit.getFrame()).getRotation();
         Rotation alignedAtt = new LofOffset(orbit.getFrame(), LOFType.VVLH).getAttitude(orbit, date, orbit.getFrame()).getRotation();
         Rotation offsetProper = offsetAtt.compose(alignedAtt.revert(), RotationConvention.VECTOR_OPERATOR);
-        double[] angles = offsetProper.revert().getAngles(order, RotationConvention.VECTOR_OPERATOR);
-        Assert.assertEquals(alpha1, angles[0], 1.0e-11);
-        Assert.assertEquals(alpha2, angles[1], 1.0e-11);
-        Assert.assertEquals(alpha3, angles[2], 1.0e-11);
+        double[] anglesV = offsetProper.revert().getAngles(order, RotationConvention.VECTOR_OPERATOR);
+        Assert.assertEquals(alpha1, anglesV[0], 1.0e-11);
+        Assert.assertEquals(alpha2, anglesV[1], 1.0e-11);
+        Assert.assertEquals(alpha3, anglesV[2], 1.0e-11);
+        double[] anglesF = offsetProper.getAngles(order, RotationConvention.FRAME_TRANSFORM);
+        Assert.assertEquals(alpha1, anglesF[0], 1.0e-11);
+        Assert.assertEquals(alpha2, anglesF[1], 1.0e-11);
+        Assert.assertEquals(alpha3, anglesF[2], 1.0e-11);
+    }
+
+    @Test
+    public void testTypesField() throws OrekitException {
+        AbsoluteDate date = new AbsoluteDate(new DateComponents(1970, 01, 01),
+                                             new TimeComponents(3, 25, 45.6789),
+                                             TimeScalesFactory.getUTC());
+        KeplerianOrbit orbit =
+            new KeplerianOrbit(7178000.0, 1.e-4, FastMath.toRadians(50.),
+                              FastMath.toRadians(10.), FastMath.toRadians(20.),
+                              FastMath.toRadians(30.), PositionAngle.MEAN,
+                              FramesFactory.getEME2000(), date, 3.986004415e14);
+
+        for (final LOFType type : LOFType.values()) {
+            RotationOrder order = RotationOrder.ZXY;
+            double alpha1 = 0.123;
+            double alpha2 = 0.456;
+            double alpha3 = 0.789;
+            LofOffset law = new LofOffset(orbit.getFrame(), type, order, alpha1, alpha2, alpha3);
+            checkField(Decimal64Field.getInstance(), law, orbit, date, orbit.getFrame());
+        }
     }
 
     private void checkSatVector(Orbit o, Attitude a, Vector3D satVector,
@@ -277,6 +307,19 @@ public class LofOffsetTest {
         Assert.assertEquals(expectedX, Vector3D.dotProduct(v, xLof), 1.0e-8);
         Assert.assertEquals(expectedY, Vector3D.dotProduct(v, yLof), 1.0e-8);
         Assert.assertEquals(expectedZ, Vector3D.dotProduct(v, zLof), 1.0e-8);
+    }
+
+    private <T extends RealFieldElement<T>> void checkField(final Field<T> field, final AttitudeProvider provider,
+                                                            final Orbit orbit, final AbsoluteDate date,
+                                                            final Frame frame)
+        throws OrekitException {
+        Attitude attitudeD = provider.getAttitude(orbit, date, frame);
+        final FieldOrbit<T> orbitF = new FieldSpacecraftState<>(field, new SpacecraftState(orbit)).getOrbit();
+        final FieldAbsoluteDate<T> dateF = new FieldAbsoluteDate<>(field, date);
+        FieldAttitude<T> attitudeF = provider.getAttitude(orbitF, dateF, frame);
+        Assert.assertEquals(0.0, Rotation.distance(attitudeD.getRotation(), attitudeF.getRotation().toRotation()), 1.0e-15);
+        Assert.assertEquals(0.0, Vector3D.distance(attitudeD.getSpin(), attitudeF.getSpin().toVector3D()), 1.0e-15);
+        Assert.assertEquals(0.0, Vector3D.distance(attitudeD.getRotationAcceleration(), attitudeF.getRotationAcceleration().toVector3D()), 1.0e-15);
     }
 
     @Before

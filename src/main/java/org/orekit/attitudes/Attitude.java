@@ -1,4 +1,4 @@
-/* Copyright 2002-2016 CS Systèmes d'Information
+/* Copyright 2002-2017 CS Systèmes d'Information
  * Licensed to CS Systèmes d'Information (CS) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -17,13 +17,13 @@
 package org.orekit.attitudes;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
-import org.apache.commons.math3.geometry.euclidean.threed.Rotation;
-import org.apache.commons.math3.geometry.euclidean.threed.RotationConvention;
-import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
+import org.hipparchus.geometry.euclidean.threed.Rotation;
+import org.hipparchus.geometry.euclidean.threed.RotationConvention;
+import org.hipparchus.geometry.euclidean.threed.Vector3D;
 import org.orekit.errors.OrekitException;
 import org.orekit.frames.Frame;
 import org.orekit.frames.Transform;
@@ -211,13 +211,10 @@ public class Attitude
      * </p>
      * @exception OrekitException if the number of point is too small for interpolating
      */
-    public Attitude interpolate(final AbsoluteDate interpolationDate, final Collection<Attitude> sample)
+    public Attitude interpolate(final AbsoluteDate interpolationDate, final Stream<Attitude> sample)
         throws OrekitException {
         final List<TimeStampedAngularCoordinates> datedPV =
-                new ArrayList<TimeStampedAngularCoordinates>(sample.size());
-        for (final Attitude attitude : sample) {
-            datedPV.add(attitude.orientation);
-        }
+             sample.map(attitude -> attitude.orientation).collect(Collectors.toList());
         final TimeStampedAngularCoordinates interpolated =
                 TimeStampedAngularCoordinates.interpolate(interpolationDate, AngularDerivativesFilter.USE_RR, datedPV);
         return new Attitude(referenceFrame, interpolated);
