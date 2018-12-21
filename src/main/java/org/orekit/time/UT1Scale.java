@@ -1,4 +1,4 @@
-/* Copyright 2002-2017 CS Systèmes d'Information
+/* Copyright 2002-2018 CS Systèmes d'Information
  * Licensed to CS Systèmes d'Information (CS) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -39,13 +39,21 @@ public class UT1Scale implements TimeScale {
     /** EOP history. */
     private final EOPHistory eopHistory;
 
-    /** Package private constructor for the factory.
+    /** Simple constructor.
      * @param eopHistory user supplied EOP history (may be null)
      * @param utc UTC time scale
      */
-    UT1Scale(final EOPHistory eopHistory, final UTCScale utc) {
+    protected UT1Scale(final EOPHistory eopHistory, final UTCScale utc) {
         this.eopHistory = eopHistory;
         this.utc        = utc;
+    }
+
+    /** Get the associated UTC scale.
+     * @return associated UTC scale.
+     * @since 9.1
+     */
+    public UTCScale getUTCScale() {
+        return utc;
     }
 
     /** Get the EOP history.

@@ -84,7 +84,7 @@ public class MariniMurrayModel implements TroposphericModel {
     @Override
     public double pathDelay(final double elevation, final double height) {
         final double A = 0.002357 * P0 + 0.000141 * e0;
-        final double K = 1.163 * 0.00968 * FastMath.cos(2 * latitude) - 0.00104 * T0 + 0.00001435 * P0;
+        final double K = 1.163 - 0.00968 * FastMath.cos(2 * latitude) - 0.00104 * T0 + 0.00001435 * P0;
         final double B = (1.084 * 1e-8) * P0 * T0 * K + (4.734 * 1e-8) * P0 * (P0 / T0) * (2 * K) / (3 * K - 1);
         final double flambda = getLaserFrequencyParameter();
 
@@ -119,7 +119,7 @@ public class MariniMurrayModel implements TroposphericModel {
      *
      * See: Giacomo, P., Equation for the dertermination of the density of moist air, Metrologia, V. 18, 1982
      *
-     * @param rh relative humidity, in percent.
+     * @param rh relative humidity, in percent (50% -&gt; 0.5).
      * @return the water vapor, in mbar (1 mbar = 100 Pa).
      */
     private double getWaterVapor(final double rh) {

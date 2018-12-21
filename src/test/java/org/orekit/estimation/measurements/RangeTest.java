@@ -1,4 +1,4 @@
-/* Copyright 2002-2017 CS Systèmes d'Information
+/* Copyright 2002-2018 CS Systèmes d'Information
  * Licensed to CS Systèmes d'Information (CS) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -17,6 +17,7 @@
 package org.orekit.estimation.measurements;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
 
@@ -39,7 +40,6 @@ import org.orekit.propagation.SpacecraftState;
 import org.orekit.propagation.conversion.NumericalPropagatorBuilder;
 import org.orekit.propagation.sampling.OrekitStepInterpolator;
 import org.orekit.time.AbsoluteDate;
-import org.orekit.time.ChronologicalComparator;
 import org.orekit.utils.Constants;
 import org.orekit.utils.Differentiation;
 import org.orekit.utils.ParameterDriver;
@@ -48,7 +48,6 @@ import org.orekit.utils.StateFunction;
 import org.orekit.utils.TimeStampedPVCoordinates;
 
 public class RangeTest {
-
 
     /**
      * Test the values of the range comparing the observed values and the estimated values
@@ -79,12 +78,12 @@ public class RangeTest {
         }
         // Run test
         boolean isModifier = false;
-        double refErrorsPMedian = 5.7e-10;
-        double refErrorsPMean   = 5.0e-09;
-        double refErrorsPMax    = 1.9e-07;
-        double refErrorsVMedian = 1.7e-04;
-        double refErrorsVMean   = 6.9e-04;
-        double refErrorsVMax    = 1.4e-02;
+        double refErrorsPMedian = 6.5e-10;
+        double refErrorsPMean   = 4.0e-09;
+        double refErrorsPMax    = 2.1e-07;
+        double refErrorsVMedian = 1.8e-04;
+        double refErrorsVMean   = 6.0e-04;
+        double refErrorsVMax    = 1.3e-02;
         this.genericTestStateDerivatives(isModifier, printResults,
                                          refErrorsPMedian, refErrorsPMean, refErrorsPMax,
                                          refErrorsVMedian, refErrorsVMean, refErrorsVMax);
@@ -104,12 +103,12 @@ public class RangeTest {
         }
         // Run test
         boolean isModifier = true;
-        double refErrorsPMedian = 6.2e-10;
-        double refErrorsPMean   = 5.3e-09;
-        double refErrorsPMax    = 2.4e-07;
-        double refErrorsVMedian = 1.7e-04;
-        double refErrorsVMean   = 6.9e-04;
-        double refErrorsVMax    = 1.4e-02;
+        double refErrorsPMedian = 6.3e-10;
+        double refErrorsPMean   = 3.3e-09;
+        double refErrorsPMax    = 1.6e-07;
+        double refErrorsVMedian = 1.8e-04;
+        double refErrorsVMean   = 6.0e-04;
+        double refErrorsVMax    = 1.3e-02;
         this.genericTestStateDerivatives(isModifier, printResults,
                                          refErrorsPMedian, refErrorsPMean, refErrorsPMax,
                                          refErrorsVMedian, refErrorsVMean, refErrorsVMax);
@@ -131,9 +130,9 @@ public class RangeTest {
         }
         // Run test
         boolean isModifier = false;
-        double refErrorsMedian = 9.0e-11;
-        double refErrorsMean   = 3.9e-10;
-        double refErrorsMax    = 9.0e-09;
+        double refErrorsMedian = 1.1e-8;
+        double refErrorsMean   = 8.2e-8;
+        double refErrorsMax    = 5.1e-6;
         this.genericTestParameterDerivatives(isModifier, printResults,
                                              refErrorsMedian, refErrorsMean, refErrorsMax);
 
@@ -155,9 +154,9 @@ public class RangeTest {
         }
         // Run test
         boolean isModifier = true;
-        double refErrorsMedian = 9.9e-11;
-        double refErrorsMean   = 3.9e-10;
-        double refErrorsMax    = 9.0e-09;
+        double refErrorsMedian = 1.1e-8;
+        double refErrorsMean   = 8.2e-8;
+        double refErrorsMax    = 5.1e-6;
         this.genericTestParameterDerivatives(isModifier, printResults,
                                              refErrorsMedian, refErrorsMean, refErrorsMax);
 
@@ -259,7 +258,7 @@ public class RangeTest {
         propagator.propagate(context.initialOrbit.getDate());
 
         // Sort measurements chronologically
-        measurements.sort(new ChronologicalComparator());
+        measurements.sort(Comparator.naturalOrder());
 
         // Propagate to final measurement's date
         propagator.propagate(measurements.get(measurements.size()-1).getDate());
@@ -285,11 +284,11 @@ public class RangeTest {
             System.out.println("Relative errors max   : " +  relErrorsMax);
         }
 
-        Assert.assertEquals(0.0, absErrorsMedian, 2e-8);
-        Assert.assertEquals(0.0, absErrorsMin, 2.2e-7);
-        Assert.assertEquals(0.0, absErrorsMax, 2e-7);
-        Assert.assertEquals(0.0, relErrorsMedian, 1e-14);
-        Assert.assertEquals(0.0, relErrorsMax, 2.6e-14);
+        Assert.assertEquals(0.0, absErrorsMedian, 4.9e-8);
+        Assert.assertEquals(0.0, absErrorsMin,    2.2e-7);
+        Assert.assertEquals(0.0, absErrorsMax,    2.1e-7);
+        Assert.assertEquals(0.0, relErrorsMedian, 1.0e-14);
+        Assert.assertEquals(0.0, relErrorsMax,    2.6e-14);
 
 
     }
@@ -408,7 +407,7 @@ public class RangeTest {
         propagator.propagate(context.initialOrbit.getDate());
 
         // Sort measurements chronologically
-        measurements.sort(new ChronologicalComparator());
+        measurements.sort(Comparator.naturalOrder());
 
         // Propagate to final measurement's date
         propagator.propagate(measurements.get(measurements.size()-1).getDate());
@@ -545,7 +544,7 @@ public class RangeTest {
         propagator.propagate(context.initialOrbit.getDate());
 
         // Sort measurements chronologically
-        measurements.sort(new ChronologicalComparator());
+        measurements.sort(Comparator.naturalOrder());
 
         // Print results ? Header
         if (printResults) {

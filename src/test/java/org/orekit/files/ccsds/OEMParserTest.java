@@ -1,4 +1,4 @@
-/* Copyright 2002-2017 CS Systèmes d'Information
+/* Copyright 2002-2018 CS Systèmes d'Information
  * Licensed to CS Systèmes d'Information (CS) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -16,15 +16,20 @@
  */
 package org.orekit.files.ccsds;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.SequenceInputStream;
 import java.net.URISyntaxException;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.hipparchus.geometry.euclidean.threed.Rotation;
 import org.hipparchus.geometry.euclidean.threed.Vector3D;
 import org.hipparchus.linear.Array2DRowRealMatrix;
+import org.hipparchus.util.Pair;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -39,6 +44,7 @@ import org.orekit.files.ccsds.OEMFile.OemSatelliteEphemeris;
 import org.orekit.frames.FactoryManagedFrame;
 import org.orekit.frames.Frame;
 import org.orekit.frames.FramesFactory;
+import org.orekit.frames.ITRFVersion;
 import org.orekit.frames.LOFType;
 import org.orekit.frames.Transform;
 import org.orekit.orbits.CartesianOrbit;
@@ -444,6 +450,56 @@ public class OEMParserTest {
             Assert.assertEquals(OrekitMessages.CCSDS_UNEXPECTED_KEYWORD, oe.getSpecifier());
             Assert.assertEquals(91, ((Integer) oe.getParts()[0]).intValue());
             Assert.assertTrue(((String) oe.getParts()[2]).startsWith("USER_DEFINED_TEST_KEY"));
+        }
+    }
+
+    /**
+     * Check the parser can parse several ITRF frames. Test case for #361.
+     *
+     * @throws OrekitException on error.
+     */
+    @Test
+    public void testITRFFrames() throws OrekitException {
+        // setup
+        Charset utf8 = StandardCharsets.UTF_8;
+        IERSConventions conventions = IERSConventions.IERS_2010;
+        boolean simpleEop = true;
+        OEMParser parser = new OEMParser()
+                .withSimpleEOP(simpleEop)
+                .withConventions(conventions);
+        // frames to check
+        List<Pair<String, Frame>> frames = new ArrayList<>();
+        frames.add(new Pair<>("ITRF-93",  FramesFactory.getITRF(ITRFVersion.ITRF_93,   conventions, simpleEop)));
+        frames.add(new Pair<>("ITRF-97",  FramesFactory.getITRF(ITRFVersion.ITRF_97,   conventions, simpleEop)));
+        frames.add(new Pair<>("ITRF2000", FramesFactory.getITRF(ITRFVersion.ITRF_2000, conventions, simpleEop)));
+        frames.add(new Pair<>("ITRF2005", FramesFactory.getITRF(ITRFVersion.ITRF_2005, conventions, simpleEop)));
+        frames.add(new Pair<>("ITRF2008", FramesFactory.getITRF(ITRFVersion.ITRF_2008, conventions, simpleEop)));
+        frames.add(new Pair<>("ITRF2014", FramesFactory.getITRF(ITRFVersion.ITRF_2014, conventions, simpleEop)));
+
+        for (Pair<String, Frame> frame : frames) {
+            final String frameName = frame.getFirst();
+
+            InputStream pre = OEMParserTest.class
+                    .getResourceAsStream("/ccsds/OEMExample7.txt.pre");
+            InputStream middle = new ByteArrayInputStream(
+                    ("REF_FRAME = " + frameName).getBytes(utf8));
+            InputStream post = OEMParserTest.class
+                    .getResourceAsStream("/ccsds/OEMExample7.txt.post");
+            InputStream input =
+                    new SequenceInputStream(pre, new SequenceInputStream(middle, post));
+
+            // action
+            OEMFile actual = parser.parse(input);
+
+            // verify
+            EphemeridesBlock actualBlock = actual.getEphemeridesBlocks().get(0);
+            Assert.assertEquals(actualBlock.getFrameString(), frameName);
+            // check expected frame
+            Frame actualFrame = actualBlock.getFrame();
+            Frame expectedFrame = frame.getSecond();
+            Assert.assertEquals(expectedFrame, actualFrame);
+            Assert.assertEquals(expectedFrame.getTransformProvider(),
+                                actualFrame.getTransformProvider());
         }
     }
 

@@ -1,4 +1,4 @@
-<!--- Copyright 2002-2017 CS Systèmes d'Information
+<!--- Copyright 2002-2018 CS Systèmes d'Information
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
   You may obtain a copy of the License at
@@ -26,7 +26,7 @@
   * Time
 
     * high accuracy absolute dates
-    * time scales (TAI, UTC, UT1, GPS, TT, TCG, TDB, TCB, GMST, GST, GLONASS, QZSS ...)
+    * time scales (TAI, UTC, UT1, GPS, TT, TCG, TDB, TCB, GMST, GST, GLONASS, QZSS, BDT, IRNSS ...)
     * transparent handling of leap seconds
 
   * Geometry
@@ -72,6 +72,7 @@
     * analytical propagation models
       (Kepler, Eckstein-Heschler, SDP4/SGP4 with 2006 corrections)
     * numerical propagators
+
       * central attraction
       * gravity models including time-dependent like trends and pulsations
         (automatic reading of ICGEM (new Eigen models), SHM (old Eigen models),
@@ -91,11 +92,14 @@
         force models parameters
       * serialization mechanism to store complete results on persistent storage for
         later use
+
     * semi-analytical propagation model (DSST) with customizable force models
     * tabulated ephemerides
+
       * file based
       * memory based
       * integration based
+
     * specialized GPS propagation, using SEM or YUMA files
     * Taylor-algebra (or any other real field) version of most of the above propagators,
         with all force models, events detection, orbits types, coordinates types and frames
@@ -104,6 +108,7 @@
     * unified interface above analytical/numerical/tabulated propagators for easy
       switch from coarse analysis to fine simulation with one line change
     * all propagators can be used in several different modes
+
       * slave mode: propagator is driven by calling application
       * master mode: propagator drives application callback functions
       * ephemeris generation mode: all intermediate results are stored during
@@ -111,9 +116,11 @@
         through them, effectively using the propagated orbit as if it was an
         analytical model, even if it really is a numerically propagated one, which
         is ideal for search and iterative algorithms
+
     * handling of discrete events during integration
       (models changes, G-stop, simple notifications ...)
     * predefined discrete events
+
       * eclipse (both umbra and penumbra)
       * ascending and descending node crossing
       * anomaly, latitude argument or longitude argument crossings,
@@ -135,6 +142,7 @@
       * sensor Field Of View (any shape) overlapping complex geographic zone
       * complex geographic zones traversal
       * impulse maneuvers occurrence
+
     * possibility of slightly shifting events in time (for example to switch from
       solar pointing mode to something else a few minutes before eclipse entry and
       reverting to solar pointing mode a few minutes after eclipse exit)
@@ -150,21 +158,40 @@
 
     * extensible attitude evolution models
     * predefined laws
+
       * central body related attitude (nadir pointing, center pointing, target pointing, yaw compensation, yaw-steering),
       * orbit referenced attitudes (LOF aligned, offset on all axes),
       * space referenced attitudes (inertial, celestial body-pointed, spin-stabilized)
       * tabulated attitudes, either respective to inertial frame or respective to Local Orbital Frames
+      * specific law for GNSS satellites: GPS (block IIA, block IIF, block IIF), GLONASS, GALILEO, BEIDOU (GEO, IGSO, MEO)
+        (as of release 9.2, this feature is still considered experimental)
 
   * Orbit determination
   
     * batch least squares fitting
+
+      * optimizers choice (Levenberg-Marquardt or Gauss-Newton)
+      * decomposition algorithms choice (QR, LU, SVD, Cholesky)
+      * choice between forming normal equations or not
+
+    *  Kalman filtering
+
+      * customizable process noise matrices providers
+      * time dependent process noise provider (as of release 9.2, this feature is still considered experimental)
+
+    * parameters estimation
+
       * orbital parameters estimation (or only a subset if desired)
       * force model parameters estimation (drag coefficients, radiation pressure coefficients,
         central attraction, maneuver thrust or flow rate)
       * measurements parameters estimation (biases, station position, pole motion and rate,
         prime meridian correction and rate)
+
     * multi-satellites orbit determination
+    * ground stations displacements due to solid tides
+    * ground stations displacements due to ocean loading (based on Onsala Space Observatory files in BLQ format)
     * several predefined measurements
+
       * range
       * range rate (one way and two way)
       * turn-around range
@@ -172,20 +199,31 @@
       * right ascension/declination
       * position-velocity
       * inter-satellites range (one way and two way)
+      * GNSS code
+      * GNSS phase (as of release 9.2, this feature is still considered experimental)
+
     * possibility to add custom measurements
     * several predefined modifiers
+
       * tropospheric effects
       * ionospheric effects
       * station offsets
       * biases
       * delays
       * Antenna Phase Center
+
     * possibility to add custom measurement modifiers (even for predefined events)
     * possibility to parse CCSDS Tracking Data Message files
 
+  * GNSS
+
+    * computation of Dilution Of Precision
+    * loading of ANTEX antenna models file
+    * loading of RINEX observation files (version 2 and version 3)
+
   * Orbit file handling
   
-    * loading of SP3-a and SP3-c orbit files
+    * loading of SP3 orbit files (from version a to d)
     * loading of CCSDS Orbit Data Messages (both OPM, OEM, and OMM types are supported)
     * loading of SEM and YUMA files for GPS constellation
     * exporting of ephemeris in CCSDS OEM file format
@@ -194,9 +232,11 @@
   
     * tropospheric delay (modified Saastamoinen)
     * tropospheric refraction correction angle (Recommendation ITU-R P.834-7 and Saemundssen's formula quoted by Meeus)
+    * tropospheric model for laser ranging (Marini-Murray)
     * Klobuchar ionospheric model (including parsing α and β coefficients from University of Bern Astronomical Institute files)
     * geomagnetic field (WMM, IGRF)
     * geoid model from any gravity field
+    * displacement of ground points due to tides
     * tessellation of zones of interest as tiles
     * sampling of zones of interest as grids of points
     
@@ -206,7 +246,9 @@
     * loading from classpath
     * loading from network (even through internet proxies)
     * support for zip archives
-    * support from gzip compressed files
+    * automatic decompression of gzip compressed (.gz) files upon loading
+    * automatic decompression of Unix compressed (.Z) files upon loading
+    * plugin mechanism to add filtering like custom decompression algorithms, deciphering or monitoring
     * plugin mechanism to delegate loading to user defined database or data access library
 
   * Localized in several languages

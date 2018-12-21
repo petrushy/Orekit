@@ -1,4 +1,4 @@
-/* Copyright 2002-2017 CS Systèmes d'Information
+/* Copyright 2002-2018 CS Systèmes d'Information
  * Licensed to CS Systèmes d'Information (CS) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -25,6 +25,10 @@
  *   <li>Tropospheric Delay</li>
  *   <li>Geomagnetic Field</li>
  *   <li>Geoid</li>
+ *   <li>Atmospheric refraction</li>
+ *   <li>Displacement of ground points</li>
+ *   <li>Tessellation of zones of interest as tiles</li>
+ *   <li>Sampling of zones of interest as grids of points</li>
  * </ul>
  *
  * <h2>Geoid</h2>

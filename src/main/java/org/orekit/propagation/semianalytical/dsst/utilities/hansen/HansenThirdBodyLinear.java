@@ -1,4 +1,4 @@
-/* Copyright 2002-2017 CS Systèmes d'Information
+/* Copyright 2002-2018 CS Systèmes d'Information
  * Licensed to CS Systèmes d'Information (CS) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -105,8 +105,8 @@ public class HansenThirdBodyLinear {
         mpvec = new PolynomialFunction[this.nMax + 1][];
         mpvecDeriv = new PolynomialFunction[this.nMax + 1][];
 
-        this.numSlices = (int) FastMath.ceil(((double) nMax - s - 1) / SLICE);
-        hansenRoot = new double[numSlices][2];
+        this.numSlices  = FastMath.max(1, (nMax - s + SLICE - 2) / SLICE);
+        hansenRoot      = new double[numSlices][2];
         hansenDerivRoot = new double[numSlices][2];
 
         // Prepare the database of the associated polynomials

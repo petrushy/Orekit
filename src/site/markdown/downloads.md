@@ -1,4 +1,4 @@
-<!--- Copyright 2002-2017 CS Systèmes d'Information
+<!--- Copyright 2002-2018 CS Systèmes d'Information
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
   You may obtain a copy of the License at
@@ -41,6 +41,27 @@ with groupID org.orekit and artifactId orekit so maven
 internal mechanism will download automatically all artifacts and dependencies
 as required.
 
+|  package |                                              link                                                             |
+|----------|---------------------------------------------------------------------------------------------------------------|
+|  source  | [orekit-9.2-sources.zip](https://www.orekit.org/forge/attachments/download/731/orekit-9.2-sources.zip)        |
+|  binary  | [orekit-9.2.jar](https://www.orekit.org/forge/attachments/download/732/orekit-9.2.jar)                        |
+|  javadoc | [orekit-9.2-javadoc.jar](https://www.orekit.org/forge/attachments/download/733/orekit-9.2-javadoc.jar)        |
+version 9.2 downloads (release date: 2018-05-26)
+
+|  package |                                              link                                                             |
+|----------|---------------------------------------------------------------------------------------------------------------|
+|  source  | [orekit-9.1-sources.zip](https://www.orekit.org/forge/attachments/download/696/orekit-9.1-sources.zip)        |
+|  binary  | [orekit-9.1.jar](https://www.orekit.org/forge/attachments/download/697/orekit-9.1.jar)                        |
+|  javadoc | [orekit-9.1-javadoc.jar](https://www.orekit.org/forge/attachments/download/698/orekit-9.1-javadoc.jar)        |
+version 9.1 downloads (release date: 2017-11-26)
+
+|  package |                                              link                                                             |
+|----------|---------------------------------------------------------------------------------------------------------------|
+|  source  | [orekit-9.0.1-sources.zip](https://www.orekit.org/forge/attachments/download/690/orekit-9.0.1-sources.zip)    |
+|  binary  | [orekit-9.0.1.jar](https://www.orekit.org/forge/attachments/download/691/orekit-9.0.1.jar)                    |
+|  javadoc | [orekit-9.0.1-javadoc.jar](https://www.orekit.org/forge/attachments/download/692/orekit-9.0.1-javadoc.jar)    |
+version 9.0.1 downloads (release date: 2017-11-03)
+
 |  package |                                              link                                                         |
 |----------|-----------------------------------------------------------------------------------------------------------|
 |  source  | [orekit-9.0-sources.zip](https://www.orekit.org/forge/attachments/download/663/orekit-9.0-sources.zip)    |
@@ -48,12 +69,26 @@ as required.
 |  javadoc | [orekit-9.0-javadoc.jar](https://www.orekit.org/forge/attachments/download/665/orekit-9.0-javadoc.jar)    |
 version 9.0 downloads (release date: 2017-07-26)
 
+|  package |                                              link                                                             |
+|----------|---------------------------------------------------------------------------------------------------------------|
+|  source  | [orekit-8.0.1-sources.zip](https://www.orekit.org/forge/attachments/download/684/orekit-8.0.1-sources.zip)    |
+|  binary  | [orekit-8.0.1.jar](https://www.orekit.org/forge/attachments/download/685/orekit-8.0.1.jar)                    |
+|  javadoc | [orekit-8.0.1-javadoc.jar](https://www.orekit.org/forge/attachments/download/686/orekit-8.0.1-javadoc.jar)    |
+version 8.0.1 downloads (release date: 2017-11-03)
+
 |  package |                                              link                                                         |
 |----------|-----------------------------------------------------------------------------------------------------------|
 |  source  | [orekit-8.0-sources.zip](https://www.orekit.org/forge/attachments/download/611/orekit-8.0-sources.zip)    |
 |  binary  | [orekit-8.0.jar](https://www.orekit.org/forge/attachments/download/612/orekit-8.0.jar)                    |
 |  javadoc | [orekit-8.0-javadoc.jar](https://www.orekit.org/forge/attachments/download/613/orekit-8.0-javadoc.jar)    |
 version 8.0 downloads (release date: 2016-06-30)
+
+|  package |                                              link                                                             |
+|----------|---------------------------------------------------------------------------------------------------------------|
+|  source  | [orekit-7.2.1-sources.zip](https://www.orekit.org/forge/attachments/download/678/orekit-7.2.1-sources.zip)    |
+|  binary  | [orekit-7.2.1.jar](https://www.orekit.org/forge/attachments/download/679/orekit-7.2.1.jar)                    |
+|  javadoc | [orekit-7.2.1-javadoc.jar](https://www.orekit.org/forge/attachments/download/680/orekit-7.2.1-javadoc.jar)    |
+version 7.2.1 downloads (release date: 2017-11-03)
 
 |  package |                                              link                                                         |
 |----------|-----------------------------------------------------------------------------------------------------------|

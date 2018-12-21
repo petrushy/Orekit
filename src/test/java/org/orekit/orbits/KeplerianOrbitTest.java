@@ -1,4 +1,4 @@
-/* Copyright 2002-2017 CS Systèmes d'Information
+/* Copyright 2002-2018 CS Systèmes d'Information
  * Licensed to CS Systèmes d'Information (CS) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -1384,7 +1384,7 @@ public class KeplerianOrbitTest {
 
     @Test
     public void testSerialization()
-            throws IOException, ClassNotFoundException, NoSuchFieldException, IllegalAccessException {
+            throws IOException, ClassNotFoundException {
         Vector3D position = new Vector3D(-29536113.0, 30329259.0, -100125.0);
         Vector3D velocity = new Vector3D(-2194.0, -2141.0, -8.0);
         PVCoordinates pvCoordinates = new PVCoordinates(position, velocity);
@@ -1421,7 +1421,7 @@ public class KeplerianOrbitTest {
 
     @Test
     public void testSerializationWithDerivatives()
-            throws IOException, ClassNotFoundException, NoSuchFieldException, IllegalAccessException {
+            throws IOException, ClassNotFoundException {
         Vector3D position = new Vector3D(-29536113.0, 30329259.0, -100125.0);
         Vector3D velocity = new Vector3D(-2194.0, -2141.0, -8.0);
         double r2 = position.getNormSq();

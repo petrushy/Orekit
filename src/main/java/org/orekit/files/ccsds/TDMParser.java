@@ -1,4 +1,4 @@
-/* Copyright 2002-2017 CS Systèmes d'Information
+/* Copyright 2002-2018 CS Systèmes d'Information
  * Licensed to CS Systèmes d'Information (CS) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -35,6 +35,7 @@ import org.orekit.time.AbsoluteDate;
 import org.orekit.time.TimeScalesFactory;
 import org.orekit.utils.IERSConventions;
 import org.xml.sax.Attributes;
+import org.xml.sax.InputSource;
 import org.xml.sax.Locator;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
@@ -1008,6 +1009,12 @@ public class TDMParser extends DefaultHandler {
             {
                 throw new SAXException(e);
             }
+        }
+
+        @Override
+        public InputSource resolveEntity(final String publicId, final String systemId) {
+            // disable external entities
+            return new InputSource();
         }
 
         /** Parse a line in an observation data block.

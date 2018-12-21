@@ -1,4 +1,4 @@
-/* Copyright 2002-2017 CS Systèmes d'Information
+/* Copyright 2002-2018 CS Systèmes d'Information
  * Licensed to CS Systèmes d'Information (CS) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -93,7 +93,7 @@ public class RangeRateTest {
             }
 
         }
-        Assert.assertEquals(0, maxRelativeError, 1.4e-8);
+        Assert.assertEquals(0, maxRelativeError, 1.6e-8);
 
     }
 
@@ -219,7 +219,7 @@ public class RangeRateTest {
             }
 
         }
-        Assert.assertEquals(0, maxRelativeError, 9.1e-9);
+        Assert.assertEquals(0, maxRelativeError, 1.2e-6);
 
     }
 
@@ -412,7 +412,7 @@ public class RangeRateTest {
             }
 
         }
-        Assert.assertEquals(0, maxRelativeError, 1.1e-8);
+        Assert.assertEquals(0, maxRelativeError, 1.2e-6);
 
     }
 

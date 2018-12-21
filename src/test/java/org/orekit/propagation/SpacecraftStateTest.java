@@ -1,4 +1,4 @@
-/* Copyright 2002-2017 CS Systèmes d'Information
+/* Copyright 2002-2018 CS Systèmes d'Information
  * Licensed to CS Systèmes d'Information (CS) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -290,7 +290,7 @@ public class SpacecraftStateTest {
 
     @Test
     public void testSerialization()
-            throws IOException, ClassNotFoundException, NoSuchFieldException, IllegalAccessException, OrekitException {
+            throws IOException, ClassNotFoundException, OrekitException {
 
         propagator.resetInitialState(propagator.getInitialState().
                                      addAdditionalState("p1", 12.25).

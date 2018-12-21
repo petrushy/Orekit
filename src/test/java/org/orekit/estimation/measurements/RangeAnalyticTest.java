@@ -1,4 +1,4 @@
-/* Copyright 2002-2017 CS Systèmes d'Information
+/* Copyright 2002-2018 CS Systèmes d'Information
  * Licensed to CS Systèmes d'Information (CS) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -17,6 +17,7 @@
 package org.orekit.estimation.measurements;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
 
@@ -39,14 +40,12 @@ import org.orekit.propagation.SpacecraftState;
 import org.orekit.propagation.conversion.NumericalPropagatorBuilder;
 import org.orekit.propagation.sampling.OrekitStepInterpolator;
 import org.orekit.time.AbsoluteDate;
-import org.orekit.time.ChronologicalComparator;
 import org.orekit.utils.Constants;
 import org.orekit.utils.Differentiation;
 import org.orekit.utils.ParameterDriver;
 import org.orekit.utils.StateFunction;
 
 public class RangeAnalyticTest {
-
 
     /**
      * Test the values of the range comparing the observed values and the estimated values
@@ -117,7 +116,7 @@ public class RangeAnalyticTest {
         boolean isModifier = true;
         boolean isFiniteDifferences = false;
         genericTestStateDerivatives(isModifier, isFiniteDifferences, printResults,
-                                    4.1e-7, 1.8e-6, 6.3e-5, 3.5e-8, 1.4e-7, 7.7e-6);
+                                    4.1e-7, 1.9e-6, 6.3e-5, 4.7e-11, 4.7e-11, 5.6e-11);
     }
 
     /**
@@ -295,7 +294,7 @@ public class RangeAnalyticTest {
         propagator.propagate(context.initialOrbit.getDate());
 
         // Sort measurements chronologically
-        measurements.sort(new ChronologicalComparator());
+        measurements.sort(Comparator.naturalOrder());
 
         // Propagate to final measurement's date
         propagator.propagate(measurements.get(measurements.size()-1).getDate());
@@ -321,11 +320,11 @@ public class RangeAnalyticTest {
             System.out.println("Relative errors max   : " +  relErrorsMax);
         }
 
-        Assert.assertEquals(0.0, absErrorsMedian, 7.0e-09);
-        Assert.assertEquals(0.0, absErrorsMin, 1.6e-07);
-        Assert.assertEquals(0.0, absErrorsMax, 1.7e-07);
-        Assert.assertEquals(0.0, relErrorsMedian, 4.4e-15);
-        Assert.assertEquals(0.0, relErrorsMax, 1.7e-14);
+        Assert.assertEquals(0.0, absErrorsMedian, 3.8e-08);
+        Assert.assertEquals(0.0, absErrorsMin,    2.0e-07);
+        Assert.assertEquals(0.0, absErrorsMax,    2.3e-07);
+        Assert.assertEquals(0.0, relErrorsMedian, 6.5e-15);
+        Assert.assertEquals(0.0, relErrorsMax,    2.4e-14);
     }
 
     /**
@@ -467,7 +466,7 @@ public class RangeAnalyticTest {
         propagator.propagate(context.initialOrbit.getDate());
 
         // Sort measurements chronologically
-        measurements.sort(new ChronologicalComparator());
+        measurements.sort(Comparator.naturalOrder());
 
         // Propagate to final measurement's date
         propagator.propagate(measurements.get(measurements.size()-1).getDate());
@@ -608,7 +607,7 @@ public class RangeAnalyticTest {
         propagator.propagate(context.initialOrbit.getDate());
 
         // Sort measurements chronologically
-        measurements.sort(new ChronologicalComparator());
+        measurements.sort(Comparator.naturalOrder());
 
         // Print results ? Header
         if (printResults) {

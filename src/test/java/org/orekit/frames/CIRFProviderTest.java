@@ -1,4 +1,4 @@
-/* Copyright 2002-2017 CS Systèmes d'Information
+/* Copyright 2002-2018 CS Systèmes d'Information
  * Licensed to CS Systèmes d'Information (CS) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -47,7 +47,6 @@ public class CIRFProviderTest {
                 new InterpolatingTransformProvider(new CIRFProvider(eopHistory),
                                                    CartesianDerivativesFilter.USE_PVA,
                                                    AngularDerivativesFilter.USE_R,
-                                                   AbsoluteDate.PAST_INFINITY, AbsoluteDate.FUTURE_INFINITY,
                                                    3, 1.0, 5, Constants.JULIAN_DAY, 100.0);
         AbsoluteDate tMin = new AbsoluteDate(2009, 4, 7, 2, 56, 33.816, TimeScalesFactory.getUTC());
         double minRate = provider.getTransform(tMin).getRotationRate().getNorm();
@@ -88,7 +87,6 @@ public class CIRFProviderTest {
                 new ShiftingTransformProvider(nonShitfing,
                                               CartesianDerivativesFilter.USE_PVA,
                                               AngularDerivativesFilter.USE_R,
-                                              AbsoluteDate.PAST_INFINITY, AbsoluteDate.FUTURE_INFINITY,
                                               6, Constants.JULIAN_DAY / 24,
                                               OrekitConfiguration.getCacheSlotsNumber(),
                                               Constants.JULIAN_YEAR, 30 * Constants.JULIAN_DAY);
@@ -139,7 +137,6 @@ public class CIRFProviderTest {
                 new ShiftingTransformProvider(nonShifting,
                                               CartesianDerivativesFilter.USE_PVA,
                                               AngularDerivativesFilter.USE_R,
-                                              AbsoluteDate.PAST_INFINITY, AbsoluteDate.FUTURE_INFINITY,
                                               6, Constants.JULIAN_DAY / 24,
                                               OrekitConfiguration.getCacheSlotsNumber(),
                                               Constants.JULIAN_YEAR, 30 * Constants.JULIAN_DAY);
@@ -168,8 +165,8 @@ public class CIRFProviderTest {
         ObjectOutputStream    oos = new ObjectOutputStream(bos);
         oos.writeObject(provider);
 
-        Assert.assertTrue(bos.size() > 280000);
-        Assert.assertTrue(bos.size() < 285000);
+        Assert.assertTrue(bos.size() > 295000);
+        Assert.assertTrue(bos.size() < 300000);
 
         ByteArrayInputStream  bis = new ByteArrayInputStream(bos.toByteArray());
         ObjectInputStream     ois = new ObjectInputStream(bis);

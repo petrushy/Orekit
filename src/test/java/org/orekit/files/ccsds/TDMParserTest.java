@@ -1,4 +1,4 @@
-/* Copyright 2002-2017 CS Systèmes d'Information
+/* Copyright 2002-2018 CS Systèmes d'Information
  * Licensed to CS Systèmes d'Information (CS) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -18,10 +18,12 @@ package org.orekit.files.ccsds;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.hamcrest.CoreMatchers;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -48,6 +50,27 @@ public class TDMParserTest {
     public void setUp()
                     throws Exception {
         Utils.setDataRoot("regular-data");
+    }
+
+    @Test
+    public void testParseTdmExternalResourceIssue368() throws OrekitException {
+        // setup
+        TDMParser parser = new TDMParser().withFileFormat(TDMFileFormat.XML);
+        String name = "/ccsds/XML/TDM-external-doctype.xml";
+        InputStream in = TDMParserTest.class.getResourceAsStream(name);
+
+        try {
+            // action
+            parser.parse(in, name);
+
+            // verify
+            Assert.fail("Expected Exception");
+        } catch (OrekitException e) {
+            // Malformed URL exception indicates external resource was disabled
+            // file not found exception indicates parser tried to load the resource
+            Assert.assertThat(e.getCause(),
+                    CoreMatchers.instanceOf(MalformedURLException.class));
+        }
     }
 
     @Test

@@ -1,4 +1,4 @@
-/* Copyright 2002-2017 CS Systèmes d'Information
+/* Copyright 2002-2018 CS Systèmes d'Information
  * Licensed to CS Systèmes d'Information (CS) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -15,6 +15,8 @@
  * limitations under the License.
  */
 package org.orekit.forces.maneuvers;
+
+import java.util.Map;
 
 import org.hipparchus.geometry.euclidean.threed.Vector3D;
 import org.hipparchus.util.FastMath;
@@ -57,7 +59,7 @@ import org.orekit.utils.PVCoordinates;
  * node on an equatorial orbit! This is a real case that has been encountered
  * during validation ...</p>
  * @see org.orekit.propagation.Propagator#addEventDetector(EventDetector)
-     * @param <T> class type for the generic version
+ * @param <T> class type for the generic version
  * @author Luc Maisonobe
  */
 public class ImpulseManeuver<T extends EventDetector> extends AbstractDetector<ImpulseManeuver<T>> {
@@ -230,8 +232,13 @@ public class ImpulseManeuver<T extends EventDetector> extends AbstractDetector<I
             final double newMass = oldState.getMass() * FastMath.exp(-sign * deltaV.getNorm() / im.vExhaust);
 
             // pack everything in a new state
-            return new SpacecraftState(oldState.getOrbit().getType().convertType(newOrbit),
-                                       attitude, newMass);
+            SpacecraftState newState = new SpacecraftState(oldState.getOrbit().getType().convertType(newOrbit),
+                                                           attitude, newMass);
+            for (final Map.Entry<String, double[]> entry : oldState.getAdditionalStates().entrySet()) {
+                newState = newState.addAdditionalState(entry.getKey(), entry.getValue());
+            }
+            return newState;
+
 
         }
 

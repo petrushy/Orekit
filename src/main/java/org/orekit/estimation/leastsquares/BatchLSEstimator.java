@@ -1,4 +1,4 @@
-/* Copyright 2002-2017 CS Systèmes d'Information
+/* Copyright 2002-2018 CS Systèmes d'Information
  * Licensed to CS Systèmes d'Information (CS) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -19,11 +19,14 @@ package org.orekit.estimation.leastsquares;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 
 import org.hipparchus.exception.LocalizedCoreFormats;
+import org.hipparchus.exception.MathIllegalArgumentException;
 import org.hipparchus.exception.MathRuntimeException;
+import org.hipparchus.linear.RealMatrix;
 import org.hipparchus.linear.RealVector;
 import org.hipparchus.optim.ConvergenceChecker;
 import org.hipparchus.optim.nonlinear.vector.leastsquares.EvaluationRmsChecker;
@@ -42,7 +45,6 @@ import org.orekit.orbits.Orbit;
 import org.orekit.propagation.conversion.NumericalPropagatorBuilder;
 import org.orekit.propagation.conversion.PropagatorBuilder;
 import org.orekit.propagation.numerical.NumericalPropagator;
-import org.orekit.time.ChronologicalComparator;
 import org.orekit.utils.ParameterDriver;
 import org.orekit.utils.ParameterDriversList;
 import org.orekit.utils.ParameterDriversList.DelegatingDriver;
@@ -54,7 +56,7 @@ import org.orekit.utils.ParameterDriversList.DelegatingDriver;
  */
 public class BatchLSEstimator {
 
-    /** Builders for propagator. */
+    /** Builders for propagators. */
     private final NumericalPropagatorBuilder[] builders;
 
     /** Measurements. */
@@ -447,10 +449,64 @@ public class BatchLSEstimator {
      * The {@link Optimum} object contains detailed elements (covariance matrix, estimated
      * parameters standard deviation, weighted Jacobian, RMS, χ², residuals and more).
      * </p>
+     * <p>
+     * Beware that the returned object is the raw view from the underlying mathematical
+     * library. At this ral level, parameters have {@link ParameterDriver#getNormalizedValue()
+     * normalized values} whereas the space flight parameters have {@link ParameterDriver#getValue()
+     * physical values} with their units. So there are {@link ParameterDriver#getScale() scaling
+     * factors} to apply when using these elements.
+     * </p>
      * @return optimum found after last call to {@link #estimate()}
      */
     public Optimum getOptimum() {
         return optimum;
+    }
+
+    /** Get the covariances matrix in space flight dynamics physical units.
+     * <p>
+     * This method retrieve the {@link
+     * org.hipparchus.optim.nonlinear.vector.leastsquares.LeastSquaresProblem.Evaluation#getCovariances(double)
+     * covariances} from the [@link {@link #getOptimum() optimum} and applies the scaling factors
+     * to it in order to convert it from raw normalized values back to physical values.
+     * </p>
+     * @param threshold threshold to identify matrix singularity
+     * @return covariances matrix in space flight dynamics physical units
+     * @exception OrekitException if the covariance matrix cannot be computed (singular problem).
+     * @since 9.1
+     */
+    public RealMatrix getPhysicalCovariances(final double threshold)
+        throws OrekitException {
+        final RealMatrix covariances;
+        try {
+            // get the normalized matrix
+            covariances = optimum.getCovariances(threshold).copy();
+        } catch (MathIllegalArgumentException miae) {
+            // the problem is singular
+            throw new OrekitException(miae);
+        }
+
+        // retrieve the scaling factors
+        final double[] scale = new double[covariances.getRowDimension()];
+        int index = 0;
+        for (final ParameterDriver driver : getOrbitalParametersDrivers(true).getDrivers()) {
+            scale[index++] = driver.getScale();
+        }
+        for (final ParameterDriver driver : getPropagatorParametersDrivers(true).getDrivers()) {
+            scale[index++] = driver.getScale();
+        }
+        for (final ParameterDriver driver : getMeasurementsParametersDrivers(true).getDrivers()) {
+            scale[index++] = driver.getScale();
+        }
+
+        // unnormalize the matrix, to retrieve physical covariances
+        for (int i = 0; i < covariances.getRowDimension(); ++i) {
+            for (int j = 0; j < covariances.getColumnDimension(); ++j) {
+                covariances.setEntry(i, j, scale[i] * scale[j] * covariances.getEntry(i, j));
+            }
+        }
+
+        return covariances;
+
     }
 
     /** Get the number of iterations used for last estimation.
@@ -609,9 +665,8 @@ public class BatchLSEstimator {
                     sortedEstimations[i++] = entry.getValue();
                 }
 
-                // sort the array chronologically
-                Arrays.sort(sortedEstimations, 0, sortedEstimations.length,
-                            new ChronologicalComparator());
+                // sort the array, primarily chronologically
+                Arrays.sort(sortedEstimations, 0, sortedEstimations.length, Comparator.naturalOrder());
 
             }
 

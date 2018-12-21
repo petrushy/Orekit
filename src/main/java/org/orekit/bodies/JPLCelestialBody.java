@@ -1,4 +1,4 @@
-/* Copyright 2002-2017 CS Systèmes d'Information
+/* Copyright 2002-2018 CS Systèmes d'Information
  * Licensed to CS Systèmes d'Information (CS) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -206,10 +206,7 @@ class JPLCelestialBody implements CelestialBody {
                     // specialized classes that do implement the getPole and getPrimeMeridianAngle
                     // methods
                     final Vector3D pole  = iauPole.getPole(date);
-                    Vector3D qNode = Vector3D.crossProduct(Vector3D.PLUS_K, pole);
-                    if (qNode.getNormSq() < Precision.SAFE_MIN) {
-                        qNode = Vector3D.PLUS_I;
-                    }
+                    final Vector3D qNode = iauPole.getNode(date);
                     final Transform rotation =
                             new Transform(date, new Rotation(pole, qNode, Vector3D.PLUS_K, Vector3D.PLUS_I));
 

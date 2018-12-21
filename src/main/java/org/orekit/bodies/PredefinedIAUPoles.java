@@ -1,4 +1,4 @@
-/* Copyright 2002-2017 CS Systèmes d'Information
+/* Copyright 2002-2018 CS Systèmes d'Information
  * Licensed to CS Systèmes d'Information (CS) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -245,6 +245,22 @@ enum PredefinedIAUPoles implements IAUPole {
             final T t = t(date);
             return new FieldVector3D<>(toRadians(t.multiply(ALPHA_DOT).add(ALPHA_0)),
                                        toRadians(t.multiply(DELTA_DOT).add(DELTA_0)));
+        }
+
+        /** {@inheritDoc} */
+        @Override
+        public Vector3D getNode(final AbsoluteDate date) {
+            final double t = t(date);
+            return new Vector3D(FastMath.toRadians(t * ALPHA_DOT + ALPHA_0 + 90.0),
+                                0.0);
+        }
+
+        /** {@inheritDoc} */
+        @Override
+        public <T extends RealFieldElement<T>> FieldVector3D<T> getNode(final FieldAbsoluteDate<T> date) {
+            final T t = t(date);
+            return new FieldVector3D<>(toRadians(t.multiply(ALPHA_DOT).add(ALPHA_0 + 90.0)),
+                                       date.getField().getZero());
         }
 
         /** {@inheritDoc} */
@@ -912,6 +928,18 @@ enum PredefinedIAUPoles implements IAUPole {
         /** {@inheritDoc} */
         public <T extends RealFieldElement<T>> FieldVector3D<T> getPole(final FieldAbsoluteDate<T> date) {
             return FieldVector3D.getPlusK(date.getField());
+        }
+
+        /** {@inheritDoc} */
+        @Override
+        public Vector3D getNode(final AbsoluteDate date) {
+            return Vector3D.PLUS_I;
+        }
+
+        /** {@inheritDoc} */
+        @Override
+        public <T extends RealFieldElement<T>> FieldVector3D<T> getNode(final FieldAbsoluteDate<T> date) {
+            return FieldVector3D.getPlusI(date.getField());
         }
 
         /** {@inheritDoc} */
