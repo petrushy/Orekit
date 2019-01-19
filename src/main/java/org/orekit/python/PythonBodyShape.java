@@ -14,6 +14,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+// this file was created by SCC 2019 and is largely a derived work from the
+// original java class/interface
+
 
 package org.orekit.python;
 

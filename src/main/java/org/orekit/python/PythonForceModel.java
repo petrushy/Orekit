@@ -1,3 +1,22 @@
+/* Copyright 2002-2019 CS Systèmes d'Information
+ * Licensed to CS Systèmes d'Information (CS) under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * CS licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+// this file was created by SCC 2019 and is largely a derived work from the
+// original java class/interface
+
 package org.orekit.python;
 
 import org.hipparchus.Field;
@@ -57,9 +76,7 @@ public class PythonForceModel implements ForceModel {
      * @param target       date of propagation. Not equal to {@code initialState.getDate()}.
      */
     @Override
-    public void init(SpacecraftState initialState, AbsoluteDate target) {
-
-    }
+    public native void init(SpacecraftState initialState, AbsoluteDate target);
 
     /**
      * Compute the contribution of the force model to the perturbing
@@ -73,9 +90,7 @@ public class PythonForceModel implements ForceModel {
      * @param adder object where the contribution should be added
      */
     @Override
-    public void addContribution(SpacecraftState s, TimeDerivativesEquations adder) {
-
-    }
+    public native void addContribution(SpacecraftState s, TimeDerivativesEquations adder);
 
     /**
      * Compute the contribution of the force model to the perturbing
@@ -85,9 +100,7 @@ public class PythonForceModel implements ForceModel {
      * @param adder object where the contribution should be added
      */
     @Override
-    public <T extends RealFieldElement<T>> void addContribution(FieldSpacecraftState<T> s, FieldTimeDerivativesEquations<T> adder) {
-
-    }
+    public native <T extends RealFieldElement<T>> void addContribution(FieldSpacecraftState<T> s, FieldTimeDerivativesEquations<T> adder);
 
     /**
      * Get force model parameters.
@@ -96,9 +109,7 @@ public class PythonForceModel implements ForceModel {
      * @since 9.0
      */
     @Override
-    public double[] getParameters() {
-        return new double[0];
-    }
+    public native double[] getParameters();
 
     /**
      * Get force model parameters.
@@ -108,9 +119,7 @@ public class PythonForceModel implements ForceModel {
      * @since 9.0
      */
     @Override
-    public <T extends RealFieldElement<T>> T[] getParameters(Field<T> field) {
-        return null;
-    }
+    public native <T extends RealFieldElement<T>> T[] getParameters(Field<T> field);
 
     /**
      * Check if force models depends on position only.
@@ -121,9 +130,7 @@ public class PythonForceModel implements ForceModel {
      * @since 9.0
      */
     @Override
-    public boolean dependsOnPositionOnly() {
-        return false;
-    }
+    public native boolean dependsOnPositionOnly();
 
     /**
      * Compute acceleration.
@@ -134,9 +141,7 @@ public class PythonForceModel implements ForceModel {
      * @since 9.0
      */
     @Override
-    public Vector3D acceleration(SpacecraftState s, double[] parameters) {
-        return null;
-    }
+    public native Vector3D acceleration(SpacecraftState s, double[] parameters);
 
     /**
      * Compute acceleration.
@@ -147,9 +152,7 @@ public class PythonForceModel implements ForceModel {
      * @since 9.0
      */
     @Override
-    public <T extends RealFieldElement<T>> FieldVector3D<T> acceleration(FieldSpacecraftState<T> s, T[] parameters) {
-        return null;
-    }
+    public native <T extends RealFieldElement<T>> FieldVector3D<T> acceleration(FieldSpacecraftState<T> s, T[] parameters);
 
     /**
      * Get the discrete events related to the model.
@@ -157,9 +160,7 @@ public class PythonForceModel implements ForceModel {
      * @return stream of events detectors
      */
     @Override
-    public Stream<EventDetector> getEventsDetectors() {
-        return null;
-    }
+    public native Stream<EventDetector> getEventsDetectors();
 
     /**
      * Get the discrete events related to the model.
@@ -168,9 +169,7 @@ public class PythonForceModel implements ForceModel {
      * @return stream of events detectors
      */
     @Override
-    public <T extends RealFieldElement<T>> Stream<FieldEventDetector<T>> getFieldEventsDetectors(Field<T> field) {
-        return null;
-    }
+    public native <T extends RealFieldElement<T>> Stream<FieldEventDetector<T>> getFieldEventsDetectors(Field<T> field);
 
     /**
      * Get the drivers for force model parameters.
@@ -179,9 +178,7 @@ public class PythonForceModel implements ForceModel {
      * @since 8.0
      */
     @Override
-    public ParameterDriver[] getParametersDrivers() {
-        return new ParameterDriver[0];
-    }
+    public native ParameterDriver[] getParametersDrivers();
 
     /**
      * Get parameter value from its name.
@@ -191,9 +188,7 @@ public class PythonForceModel implements ForceModel {
      * @since 8.0
      */
     @Override
-    public ParameterDriver getParameterDriver(String name) {
-        return null;
-    }
+    public native ParameterDriver getParameterDriver(String name);
 
     /**
      * Check if a parameter is supported.

@@ -14,6 +14,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+// this file was created by SCC 2019 and is largely a derived work from the
+// original java class/interface
 
 package org.orekit.python;
 
@@ -23,6 +25,32 @@ import org.orekit.orbits.OrbitType;
 import org.orekit.propagation.conversion.ODEIntegratorBuilder;
 
 public class PythonODEIntegratorBuilder implements ODEIntegratorBuilder {
+
+    /** Part of JCC Python interface to object */
+    private long pythonObject;
+
+    /** Part of JCC Python interface to object */
+    public void pythonExtension(long pythonObject)
+    {
+        this.pythonObject = pythonObject;
+    }
+
+    /** Part of JCC Python interface to object */
+    public long pythonExtension()
+    {
+        return this.pythonObject;
+    }
+
+    /** Part of JCC Python interface to object */
+    public void finalize()
+            throws Throwable
+    {
+        pythonDecRef();
+    }
+
+    /** Part of JCC Python interface to object */
+    public native void pythonDecRef();
+
     /**
      * Build a first order integrator.
      *
