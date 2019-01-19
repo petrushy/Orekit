@@ -28,6 +28,32 @@ import java.util.List;
 import java.util.SortedSet;
 
 public class PythonObservedMeasurement<T extends ObservedMeasurement<T>> implements ObservedMeasurement<T> {
+
+    /** Part of JCC Python interface to object */
+    private long pythonObject;
+
+    /** Part of JCC Python interface to object */
+    public void pythonExtension(long pythonObject)
+    {
+        this.pythonObject = pythonObject;
+    }
+
+    /** Part of JCC Python interface to object */
+    public long pythonExtension()
+    {
+        return this.pythonObject;
+    }
+
+    /** Part of JCC Python interface to object */
+    public void finalize()
+            throws Throwable
+    {
+        pythonDecRef();
+    }
+
+    /** Part of JCC Python interface to object */
+    public native void pythonDecRef();
+    
     /**
      * Enable or disable a measurement.
      * <p>

@@ -19,6 +19,32 @@ import java.util.stream.Stream;
 // TODO: CHECK HOW TO DEAL WITH METHODS OF SAME NAME!!
 
 public class PythonForceModel implements ForceModel {
+
+    /** Part of JCC Python interface to object */
+    private long pythonObject;
+
+    /** Part of JCC Python interface to object */
+    public void pythonExtension(long pythonObject)
+    {
+        this.pythonObject = pythonObject;
+    }
+
+    /** Part of JCC Python interface to object */
+    public long pythonExtension()
+    {
+        return this.pythonObject;
+    }
+
+    /** Part of JCC Python interface to object */
+    public void finalize()
+            throws Throwable
+    {
+        pythonDecRef();
+    }
+
+    /** Part of JCC Python interface to object */
+    public native void pythonDecRef();
+
     /**
      * Initialize the force model at the start of propagation. This method will be called
      * before any calls to {@link #addContribution(SpacecraftState, TimeDerivativesEquations)},

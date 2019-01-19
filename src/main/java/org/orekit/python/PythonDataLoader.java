@@ -24,6 +24,32 @@ import java.io.InputStream;
 import java.text.ParseException;
 
 public class PythonDataLoader implements DataLoader {
+
+    /** Part of JCC Python interface to object */
+    private long pythonObject;
+
+    /** Part of JCC Python interface to object */
+    public void pythonExtension(long pythonObject)
+    {
+        this.pythonObject = pythonObject;
+    }
+
+    /** Part of JCC Python interface to object */
+    public long pythonExtension()
+    {
+        return this.pythonObject;
+    }
+
+    /** Part of JCC Python interface to object */
+    public void finalize()
+            throws Throwable
+    {
+        pythonDecRef();
+    }
+
+    /** Part of JCC Python interface to object */
+    public native void pythonDecRef();
+    
     /**
      * Check if the loader still accepts new data.
      * <p>

@@ -22,6 +22,31 @@ import org.orekit.propagation.FieldAdditionalStateProvider;
 import org.orekit.propagation.FieldSpacecraftState;
 
 public class PythonFieldAdditionalStateProvider<T extends RealFieldElement<T>> implements FieldAdditionalStateProvider<T> {
+    /** Part of JCC Python interface to object */
+    private long pythonObject;
+
+    /** Part of JCC Python interface to object */
+    public void pythonExtension(long pythonObject)
+    {
+        this.pythonObject = pythonObject;
+    }
+
+    /** Part of JCC Python interface to object */
+    public long pythonExtension()
+    {
+        return this.pythonObject;
+    }
+
+    /** Part of JCC Python interface to object */
+    public void finalize()
+            throws Throwable
+    {
+        pythonDecRef();
+    }
+
+    /** Part of JCC Python interface to object */
+    public native void pythonDecRef();
+
     /**
      * Get the name of the additional state.
      *

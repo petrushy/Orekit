@@ -21,6 +21,31 @@ import org.orekit.forces.gravity.potential.TideSystem;
 import org.orekit.forces.gravity.potential.TideSystemProvider;
 
 public class PythonTideSystemProvider implements TideSystemProvider {
+    /** Part of JCC Python interface to object */
+    private long pythonObject;
+
+    /** Part of JCC Python interface to object */
+    public void pythonExtension(long pythonObject)
+    {
+        this.pythonObject = pythonObject;
+    }
+
+    /** Part of JCC Python interface to object */
+    public long pythonExtension()
+    {
+        return this.pythonObject;
+    }
+
+    /** Part of JCC Python interface to object */
+    public void finalize()
+            throws Throwable
+    {
+        pythonDecRef();
+    }
+
+    /** Part of JCC Python interface to object */
+    public native void pythonDecRef();
+
     /**
      * Get the {@link TideSystem} used in the gravity field.
      *

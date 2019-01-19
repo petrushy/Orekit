@@ -36,6 +36,31 @@ import java.util.Collection;
 import java.util.List;
 
 public class PythonFieldBoundedPropagator<T extends RealFieldElement<T>> implements FieldBoundedPropagator<T> {
+    /** Part of JCC Python interface to object */
+    private long pythonObject;
+
+    /** Part of JCC Python interface to object */
+    public void pythonExtension(long pythonObject)
+    {
+        this.pythonObject = pythonObject;
+    }
+
+    /** Part of JCC Python interface to object */
+    public long pythonExtension()
+    {
+        return this.pythonObject;
+    }
+
+    /** Part of JCC Python interface to object */
+    public void finalize()
+            throws Throwable
+    {
+        pythonDecRef();
+    }
+
+    /** Part of JCC Python interface to object */
+    public native void pythonDecRef();
+
     /**
      * Get the first date of the range.
      *

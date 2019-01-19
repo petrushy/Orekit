@@ -23,6 +23,32 @@ import org.orekit.files.general.EphemerisFileWriter;
 import java.io.IOException;
 
 public class PythonEphemerisFileWriter implements EphemerisFileWriter {
+
+    /** Part of JCC Python interface to object */
+    private long pythonObject;
+
+    /** Part of JCC Python interface to object */
+    public void pythonExtension(long pythonObject)
+    {
+        this.pythonObject = pythonObject;
+    }
+
+    /** Part of JCC Python interface to object */
+    public long pythonExtension()
+    {
+        return this.pythonObject;
+    }
+
+    /** Part of JCC Python interface to object */
+    public void finalize()
+            throws Throwable
+    {
+        pythonDecRef();
+    }
+
+    /** Part of JCC Python interface to object */
+    public native void pythonDecRef();
+
     /**
      * Write the passed in {@link EphemerisFile} using the passed in
      * {@link Appendable}.

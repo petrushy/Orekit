@@ -21,6 +21,32 @@ import org.orekit.forces.drag.atmosphere.DTM2000InputParameters;
 import org.orekit.time.AbsoluteDate;
 
 public class PythonDTM2000InputParameters implements DTM2000InputParameters {
+
+    /** Part of JCC Python interface to object */
+    private long pythonObject;
+
+    /** Part of JCC Python interface to object */
+    public void pythonExtension(long pythonObject)
+    {
+        this.pythonObject = pythonObject;
+    }
+
+    /** Part of JCC Python interface to object */
+    public long pythonExtension()
+    {
+        return this.pythonObject;
+    }
+
+    /** Part of JCC Python interface to object */
+    public void finalize()
+            throws Throwable
+    {
+        pythonDecRef();
+    }
+
+    /** Part of JCC Python interface to object */
+    public native void pythonDecRef();
+
     /**
      * Gets the available data range minimum date.
      *

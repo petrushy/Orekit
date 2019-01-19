@@ -20,6 +20,31 @@ package org.orekit.python;
 import org.orekit.models.earth.TroposphericModel;
 
 public class PythonTroposphericModel implements TroposphericModel {
+    /** Part of JCC Python interface to object */
+    private long pythonObject;
+
+    /** Part of JCC Python interface to object */
+    public void pythonExtension(long pythonObject)
+    {
+        this.pythonObject = pythonObject;
+    }
+
+    /** Part of JCC Python interface to object */
+    public long pythonExtension()
+    {
+        return this.pythonObject;
+    }
+
+    /** Part of JCC Python interface to object */
+    public void finalize()
+            throws Throwable
+    {
+        pythonDecRef();
+    }
+
+    /** Part of JCC Python interface to object */
+    public native void pythonDecRef();
+
     /**
      * Calculates the tropospheric path delay for the signal path from a ground
      * station to a satellite.
