@@ -67,7 +67,7 @@ public class PythonAbstractDetector<T extends EventDetector> extends AbstractDet
 
     /** {@inheritDoc} */
     @Override
-    public native double g(SpacecraftState s) throws OrekitException;
+    public native double g(SpacecraftState s);
 
     /** {@inheritDoc} */
 	@Override

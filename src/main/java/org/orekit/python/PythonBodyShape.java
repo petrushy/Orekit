@@ -155,7 +155,20 @@ public class PythonBodyShape  implements BodyShape {
      * @since 9.0
      */
     @Override
-    public native <T extends RealFieldElement<T>> FieldGeodeticPoint<T> transform(FieldVector3D<T> point, Frame frame, FieldAbsoluteDate<T> date);
+    public <T extends RealFieldElement<T>> FieldGeodeticPoint<T> transform(FieldVector3D<T> point, Frame frame, FieldAbsoluteDate<T> date) {
+        return this.Fieldtransform(point, frame,date);
+    }
+
+    /**
+     * Transform a Cartesian point to a surface-relative point.
+     *
+     * @param point Cartesian point
+     * @param frame frame in which Cartesian point is expressed
+     * @param date  date of the computation (used for frames conversions)
+     * @return point at the same location but as a surface-relative point
+     * @since 9.0
+     */
+     public native <T extends RealFieldElement<T>> FieldGeodeticPoint<T> Fieldtransform(FieldVector3D<T> point, Frame frame, FieldAbsoluteDate<T> date);
 
     /**
      * Transform a surface-relative point to a Cartesian point.
@@ -174,5 +187,16 @@ public class PythonBodyShape  implements BodyShape {
      * @since 9.0
      */
     @Override
-    public native <T extends RealFieldElement<T>> FieldVector3D<T> transform(FieldGeodeticPoint<T> point);
+    public <T extends RealFieldElement<T>> FieldVector3D<T> transform(FieldGeodeticPoint<T> point) {
+        return this.FieldVector3Dtransform(point);
+    }
+
+    /**
+     * Transform a surface-relative point to a Cartesian point.
+     *
+     * @param point surface-relative point
+     * @return point at the same location but as a Cartesian point
+     * @since 9.0
+     */
+    public native <T extends RealFieldElement<T>> FieldVector3D<T> FieldVector3Dtransform(FieldGeodeticPoint<T> point);
 }

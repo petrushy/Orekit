@@ -112,7 +112,7 @@ public class PythonCelestialBody implements CelestialBody {
      */
     @Override
     public native <T extends RealFieldElement<T>> TimeStampedFieldPVCoordinates<T> getPVCoordinates(FieldAbsoluteDate<T> date, Frame frame);
-
+    // TODO: Separate double methods for python!
     /**
      * Get the {@link PVCoordinates} of the body in the selected frame.
      *

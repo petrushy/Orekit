@@ -63,17 +63,11 @@ public class PythonOrekitFixedStepHandler implements OrekitFixedStepHandler {
     public native void pythonDecRef();
 
     /** {@inheritDoc} */
-    @Deprecated
-    @Override
-    public native void init(SpacecraftState s0, AbsoluteDate t) throws OrekitException;
-
-    /** {@inheritDoc} */
     @Override
     public native void init(SpacecraftState s0, AbsoluteDate t, double step);
 
    /** {@inheritDoc} */
     @Override
-    public native void handleStep(final SpacecraftState currentState, final boolean isLast)
-        throws OrekitException;
+    public native void handleStep(final SpacecraftState currentState, final boolean isLast);
 
 }

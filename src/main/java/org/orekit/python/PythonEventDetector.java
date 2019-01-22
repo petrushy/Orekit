@@ -85,7 +85,7 @@ public class PythonEventDetector implements EventDetector
 
 	/** {@inheritDoc} */
 	@Override
-	public native double g(SpacecraftState s) throws OrekitException;
+	public native double g(SpacecraftState s);
 
 	/** {@inheritDoc} */
 	@Override
@@ -101,12 +101,11 @@ public class PythonEventDetector implements EventDetector
 
 	/** {@inheritDoc} */
 	@Override
-	public native Action eventOccurred(SpacecraftState s, boolean increasing)
-			throws OrekitException;
+	public native Action eventOccurred(SpacecraftState s, boolean increasing);
 
 	/** {@inheritDoc} */
 	@Override
-	public native SpacecraftState resetState(SpacecraftState oldState) throws OrekitException;
+	public native SpacecraftState resetState(SpacecraftState oldState);
 
 }
 

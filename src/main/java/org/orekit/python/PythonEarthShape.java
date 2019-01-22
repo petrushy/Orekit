@@ -128,7 +128,7 @@ public class PythonEarthShape implements EarthShape {
      */
     @Override
     public native Vector3D projectToGround(Vector3D point, AbsoluteDate date, Frame frame);
-
+    // TODO: Separate double methods for python!
     /**
      * Project a moving point to the ground.
      *

@@ -124,6 +124,8 @@ public class PythonBoundedPropagator implements BoundedPropagator {
     @Override
     public native void setMasterMode(double h, OrekitFixedStepHandler handler);
 
+    // TODO: Separate double methods for python!
+
     /**
      * Set the propagator to master mode with variable steps.
      * <p>This mode is used when the user needs to have some custom function called at the
