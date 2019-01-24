@@ -108,7 +108,12 @@ public class PythonDragSensitive implements DragSensitive {
      * @since 9.0
      */
     @Override
-    public native <T extends RealFieldElement<T>> FieldVector3D<T> dragAcceleration(FieldAbsoluteDate<T> date, Frame frame, FieldVector3D<T> position, FieldRotation<T> rotation, T mass, T density, FieldVector3D<T> relativeVelocity, T[] parameters);
+    public <T extends RealFieldElement<T>> FieldVector3D<T> dragAcceleration(FieldAbsoluteDate<T> date, Frame frame, FieldVector3D<T> position, FieldRotation<T> rotation, T mass, T density, FieldVector3D<T> relativeVelocity, T[] parameters) {
+        return this.dragRealFieldElementAcceleration(date,frame, position, rotation, mass, density, relativeVelocity, parameters);
+    }
+
+    public native <T extends RealFieldElement<T>> FieldVector3D<T> dragRealFieldElementAcceleration(FieldAbsoluteDate<T> date, Frame frame, FieldVector3D<T> position, FieldRotation<T> rotation, T mass, T density, FieldVector3D<T> relativeVelocity, T[] parameters);
+
 
     /**
      * Compute acceleration due to drag, with parameters derivatives.
@@ -126,5 +131,10 @@ public class PythonDragSensitive implements DragSensitive {
      * @return spacecraft acceleration in the same inertial frame as spacecraft orbit (m/s²)
      */
     @Override
-    public native FieldVector3D<DerivativeStructure> dragAcceleration(AbsoluteDate date, Frame frame, Vector3D position, Rotation rotation, double mass, double density, Vector3D relativeVelocity, double[] parameters, String paramName);
+    public FieldVector3D<DerivativeStructure> dragAcceleration(AbsoluteDate date, Frame frame, Vector3D position, Rotation rotation, double mass, double density, Vector3D relativeVelocity, double[] parameters, String paramName) {
+        return this.dragFieldVector3DAcceleration(date,frame,position, rotation, mass, density, relativeVelocity, parameters, paramName);
+    }
+
+    public native FieldVector3D<DerivativeStructure> dragFieldVector3DAcceleration(AbsoluteDate date, Frame frame, Vector3D position, Rotation rotation, double mass, double density, Vector3D relativeVelocity, double[] parameters, String paramName);
+
 }

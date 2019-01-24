@@ -100,7 +100,11 @@ public class PythonForceModel implements ForceModel {
      * @param adder object where the contribution should be added
      */
     @Override
-    public native <T extends RealFieldElement<T>> void addContribution(FieldSpacecraftState<T> s, FieldTimeDerivativesEquations<T> adder);
+    public <T extends RealFieldElement<T>> void addContribution(FieldSpacecraftState<T> s, FieldTimeDerivativesEquations<T> adder) {
+       this.addFieldContribution(s, adder);
+    }
+
+    public native <T extends RealFieldElement<T>> void addFieldContribution(FieldSpacecraftState<T> s, FieldTimeDerivativesEquations<T> adder);
 
     /**
      * Get force model parameters.
@@ -119,7 +123,18 @@ public class PythonForceModel implements ForceModel {
      * @since 9.0
      */
     @Override
-    public native <T extends RealFieldElement<T>> T[] getParameters(Field<T> field);
+    public <T extends RealFieldElement<T>> T[] getParameters(Field<T> field) {
+        return this.getFieldParameters(field);
+    }
+
+    /**
+     * Get force model parameters.
+     *
+     * @param field field to which the elements belong
+     * @return force model parameters
+     * @since 9.0
+     */
+    public native <T extends RealFieldElement<T>> T[] getFieldParameters(Field<T> field);
 
     /**
      * Check if force models depends on position only.
