@@ -84,7 +84,21 @@ public class PythonAtmosphere implements Atmosphere {
      * @return local density (kg/m³)
      */
     @Override
-    public native <T extends RealFieldElement<T>> T getDensity(FieldAbsoluteDate<T> date, FieldVector3D<T> position, Frame frame);
+    public <T extends RealFieldElement<T>> T getDensity(FieldAbsoluteDate<T> date, FieldVector3D<T> position, Frame frame) {
+        return this.getDensity(date, position, frame);
+    }
+
+    /**
+     * Get the local density.
+     *
+     * @param date     current date
+     * @param position current position in frame
+     * @param frame    the frame in which is defined the position
+     * @return local density (kg/m³)
+     */
+
+    public native <T extends RealFieldElement<T>> T getFieldDensity(FieldAbsoluteDate<T> date, FieldVector3D<T> position, Frame frame);
+
 
     /**
      * Get the inertial velocity of atmosphere molecules.
@@ -108,5 +122,18 @@ public class PythonAtmosphere implements Atmosphere {
      * @return velocity (m/s) (defined in the same frame as the position)
      */
     @Override
-    public native <T extends RealFieldElement<T>> FieldVector3D<T> getVelocity(FieldAbsoluteDate<T> date, FieldVector3D<T> position, Frame frame);
+    public <T extends RealFieldElement<T>> FieldVector3D<T> getVelocity(FieldAbsoluteDate<T> date, FieldVector3D<T> position, Frame frame) {
+        return this.getFieldVelocity(date, position, frame);
+    }
+
+    /**
+     * Get the inertial velocity of atmosphere molecules.
+     *
+     * @param date     current date
+     * @param position current position in frame
+     * @param frame    the frame in which is defined the position
+     * @return velocity (m/s) (defined in the same frame as the position)
+     */
+    public native <T extends RealFieldElement<T>> FieldVector3D<T> getFieldVelocity(FieldAbsoluteDate<T> date, FieldVector3D<T> position, Frame frame);
+
 }

@@ -17,6 +17,9 @@
 // this file was created by SCC 2019 and is largely a derived work from the
 // original java class/interface
 
+
+// TODO: Add python wrappers for this class.
+
 package org.orekit.python;
 
 import org.orekit.propagation.Propagator;

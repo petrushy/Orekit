@@ -108,7 +108,26 @@ public class PythonFieldPropagator<T extends RealFieldElement<T>> implements Fie
      * @see #MASTER_MODE
      */
     @Override
-    public native void setMasterMode(T h, FieldOrekitFixedStepHandler<T> handler);
+    public void setMasterMode(T h, FieldOrekitFixedStepHandler<T> handler) {
+        this.setMasterMode_2p(h, handler);
+    }
+
+    /**
+     * Set the propagator to master mode with fixed steps.
+     * <p>This mode is used when the user needs to have some custom function called at the
+     * end of each finalized step during integration. The (master) propagator integration
+     * loop calls the (slave) application callback methods at each finalized step.</p>
+     *
+     * @param h       fixed stepsize (s)
+     * @param handler handler called at the end of each finalized step
+     * @see #setSlaveMode()
+     * @see #setMasterMode(FieldOrekitStepHandler)
+     * @see #setEphemerisMode()
+     * @see #getMode()
+     * @see #MASTER_MODE
+     */
+    public native void setMasterMode_2p(T h, FieldOrekitFixedStepHandler<T> handler);
+
 
     /**
      * Set the propagator to master mode with variable steps.
@@ -312,8 +331,25 @@ public class PythonFieldPropagator<T extends RealFieldElement<T>> implements Fie
      * @return propagated state
      */
     @Override
-    public native FieldSpacecraftState<T> propagate(FieldAbsoluteDate<T> start, FieldAbsoluteDate<T> target);
-    //TODO: Fix python hooks
+    public FieldSpacecraftState<T> propagate(FieldAbsoluteDate<T> start, FieldAbsoluteDate<T> target) {
+        return this.propagate_2p(start, target);
+    }
+
+    /**
+     * Propagate from a start date towards a target date.
+     * <p>Those propagators use a start date and a target date to
+     * compute the propagated state. For propagators using event detection mechanism,
+     * if the provided start date is different from the initial state date, a first,
+     * simple propagation is performed, without processing any event computation.
+     * Then complete propagation is performed from start date to target date.</p>
+     *
+     * @param start  start date from which orbit state should be propagated
+     * @param target target date to which orbit state should be propagated
+     * @return propagated state
+     */
+    public native FieldSpacecraftState<T> propagate_2p(FieldAbsoluteDate<T> start, FieldAbsoluteDate<T> target);
+
+
     /**
      * Get the {@link FieldPVCoordinates} of the body in the selected frame.
      *

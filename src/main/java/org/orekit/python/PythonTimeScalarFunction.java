@@ -67,5 +67,16 @@ public class PythonTimeScalarFunction implements TimeScalarFunction {
      * @return value of the function
      */
     @Override
-    public native <T extends RealFieldElement<T>> T value(FieldAbsoluteDate<T> date);
+    public <T extends RealFieldElement<T>> T value(FieldAbsoluteDate<T> date) {
+        return this.valueField(date);
+    }
+
+
+    /**
+     * Compute a function of time.
+     *
+     * @param date date
+     * @return value of the function
+     */
+    public native <T extends RealFieldElement<T>> T valueField(FieldAbsoluteDate<T> date);
 }
