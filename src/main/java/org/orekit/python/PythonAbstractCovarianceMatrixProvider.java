@@ -42,6 +42,7 @@ public class PythonAbstractCovarianceMatrixProvider extends AbstractCovarianceMa
 
     /**
      * Get the process noise matrix between previous and current states.
+     * Extension point for Python.
      * <p>
      * The process noise matrix is a covariance matrix corresponding to the
      * parameters managed by the {@link KalmanEstimator Kalman estimator}.

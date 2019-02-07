@@ -64,6 +64,7 @@ public class PythonBodyShape  implements BodyShape {
 
     /**
      * Get body frame related to body shape.
+     * Extension point for Python.
      *
      * @return body frame related to body shape
      */
@@ -72,6 +73,8 @@ public class PythonBodyShape  implements BodyShape {
 
     /**
      * Get the intersection point of a line with the surface of the body.
+     * Extension point for Python.
+     *
      * <p>A line may have several intersection points with a closed
      * surface (we consider the one point case as a degenerated two
      * points case). The close parameter is used to select which of
@@ -90,6 +93,8 @@ public class PythonBodyShape  implements BodyShape {
 
     /**
      * Get the intersection point of a line with the surface of the body.
+     * Extension point for Python.
+     *
      * <p>A line may have several intersection points with a closed
      * surface (we consider the one point case as a degenerated two
      * points case). The close parameter is used to select which of
@@ -109,6 +114,7 @@ public class PythonBodyShape  implements BodyShape {
 
     /**
      * Project a point to the ground.
+     * Extension point for Python.
      *
      * @param point point to project
      * @param date  current date
@@ -123,6 +129,7 @@ public class PythonBodyShape  implements BodyShape {
 
     /**
      * Project a moving point to the ground.
+     * Extension point for Python.
      *
      * @param pv    moving point
      * @param frame frame in which moving point is expressed
@@ -136,6 +143,7 @@ public class PythonBodyShape  implements BodyShape {
 
     /**
      * Transform a Cartesian point to a surface-relative point.
+     * Extension point for Python.
      *
      * @param point Cartesian point
      * @param frame frame in which Cartesian point is expressed
@@ -147,6 +155,7 @@ public class PythonBodyShape  implements BodyShape {
 
     /**
      * Transform a Cartesian point to a surface-relative point.
+     * Redirects to Fieldtransform(...) for Python extension
      *
      * @param point Cartesian point
      * @param frame frame in which Cartesian point is expressed
@@ -161,6 +170,7 @@ public class PythonBodyShape  implements BodyShape {
 
     /**
      * Transform a Cartesian point to a surface-relative point.
+     * Extension point for Python.
      *
      * @param point Cartesian point
      * @param frame frame in which Cartesian point is expressed
@@ -172,6 +182,7 @@ public class PythonBodyShape  implements BodyShape {
 
     /**
      * Transform a surface-relative point to a Cartesian point.
+     * Extension point for Python.
      *
      * @param point surface-relative point
      * @return point at the same location but as a Cartesian point
@@ -181,6 +192,7 @@ public class PythonBodyShape  implements BodyShape {
 
     /**
      * Transform a surface-relative point to a Cartesian point.
+     * Redirects to FieldVector3Dtransfor(...) for Python extension.
      *
      * @param point surface-relative point
      * @return point at the same location but as a Cartesian point
@@ -193,6 +205,7 @@ public class PythonBodyShape  implements BodyShape {
 
     /**
      * Transform a surface-relative point to a Cartesian point.
+     * Extension point for Python. Connects to method transform.
      *
      * @param point surface-relative point
      * @return point at the same location but as a Cartesian point

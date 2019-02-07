@@ -52,6 +52,7 @@ public class PythonAbstractMeasurement<T extends ObservedMeasurement<T>> extends
 
     /**
      * Estimate the theoretical value.
+     * Extension point for Python.
      * <p>
      * The theoretical value does not have <em>any</em> modifiers applied.
      * </p>

@@ -99,15 +99,21 @@ public class PythonAdditionalEquations implements AdditionalEquations {
 	
 
     /** Get the name of the additional state.
+	 * Extension point for Python.
+	 *
      * @return name of the additional state
      */
     public native String getName();
 
-    /** {@inheritDoc} */
+    /** Extension point for Python.
+	 * {@inheritDoc} */
 	@Override
 	public native void init(final SpacecraftState initialState, final AbsoluteDate target);
 
-	/** {@inheritDoc} */
+	/**
+	 * Extension point for Python.
+	 *
+	 * {@inheritDoc} */
 	@Override
 	public native double[] computeDerivatives(SpacecraftState s,  double[] pDot);
 

@@ -42,7 +42,7 @@ public class PythonAbstractAnalyticalPropagator extends AbstractAnalyticalPropag
     }
 
     /**
-     * Get the mass.
+     * Get the mass. Extension point for Python.
      *
      * @param date target date for the orbit
      * @return mass mass
@@ -52,7 +52,7 @@ public class PythonAbstractAnalyticalPropagator extends AbstractAnalyticalPropag
 
     /**
      * Reset an intermediate state.
-     *
+     * Extension point for Python.
      * @param state   new intermediate state to consider
      * @param forward if true, the intermediate state is valid for
      */
@@ -61,7 +61,7 @@ public class PythonAbstractAnalyticalPropagator extends AbstractAnalyticalPropag
 
     /**
      * Extrapolate an orbit up to a specific target date.
-     *
+     * Extension point for Python.
      * @param date target date for the orbit
      * @return extrapolated parameters
      */

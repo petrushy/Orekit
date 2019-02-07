@@ -66,6 +66,7 @@ public class PythonAtmosphere implements Atmosphere {
 
     /**
      * Get the local density.
+     * Extension point for Python.
      *
      * @param date     current date
      * @param position current position in frame
@@ -77,6 +78,7 @@ public class PythonAtmosphere implements Atmosphere {
 
     /**
      * Get the local density.
+     * Redirects to getFieldDensity
      *
      * @param date     current date
      * @param position current position in frame
@@ -85,23 +87,26 @@ public class PythonAtmosphere implements Atmosphere {
      */
     @Override
     public <T extends RealFieldElement<T>> T getDensity(FieldAbsoluteDate<T> date, FieldVector3D<T> position, Frame frame) {
-        return this.getDensity(date, position, frame);
+        return this.getFieldDensity(date, position, frame);
     }
+
 
     /**
      * Get the local density.
+     * Extension point for Python.
      *
      * @param date     current date
      * @param position current position in frame
      * @param frame    the frame in which is defined the position
      * @return local density (kg/m³)
      */
-
     public native <T extends RealFieldElement<T>> T getFieldDensity(FieldAbsoluteDate<T> date, FieldVector3D<T> position, Frame frame);
 
 
     /**
      * Get the inertial velocity of atmosphere molecules.
+     * Extension point for Python.
+     *
      * <p>By default, atmosphere is supposed to have a null
      * velocity in the central body frame.</p>
      *
@@ -115,6 +120,7 @@ public class PythonAtmosphere implements Atmosphere {
 
     /**
      * Get the inertial velocity of atmosphere molecules.
+     * Redirects to getFieldVelocity(...)
      *
      * @param date     current date
      * @param position current position in frame
@@ -128,6 +134,7 @@ public class PythonAtmosphere implements Atmosphere {
 
     /**
      * Get the inertial velocity of atmosphere molecules.
+     * Extension point for Python.
      *
      * @param date     current date
      * @param position current position in frame

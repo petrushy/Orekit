@@ -48,6 +48,7 @@ public class PythonAbstractIntegratedPropagator extends AbstractIntegratedPropag
     /**
      * Create a mapper between raw double components and spacecraft state.
      * /** Simple constructor.
+     *  Extension point for Python.
      * <p>
      * The position parameter type is meaningful only if {@link
      * #getOrbitType() propagation orbit type}
@@ -68,6 +69,7 @@ public class PythonAbstractIntegratedPropagator extends AbstractIntegratedPropag
 
     /**
      * Get the differential equations to integrate (for main state only).
+     * Extension point for Python.
      *
      * @param integ numerical integrator to use for propagation.
      * @return differential equations for main state

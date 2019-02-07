@@ -61,6 +61,7 @@ public class PythonAttitudeProvider implements AttitudeProvider {
 
     /**
      * Compute the attitude corresponding to an orbital state.
+     * Extension point for Python for the basic parameter set.
      *
      * @param pvProv local position-velocity provider around current date
      * @param date   current date
@@ -72,6 +73,7 @@ public class PythonAttitudeProvider implements AttitudeProvider {
 
     /**
      * Compute the attitude corresponding to an orbital state.
+     * Redirects to getFieldAttitude(...) for extension
      *
      * @param pvProv local position-velocity provider around current date
      * @param date   current date
@@ -86,6 +88,7 @@ public class PythonAttitudeProvider implements AttitudeProvider {
 
     /**
      * Compute the attitude corresponding to an orbital state.
+     * Extension point for Python. Connected to getAttitude(...) orekit function.
      *
      * @param pvProv local position-velocity provider around current date
      * @param date   current date

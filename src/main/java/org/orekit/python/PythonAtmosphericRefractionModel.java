@@ -51,6 +51,7 @@ public class PythonAtmosphericRefractionModel implements AtmosphericRefractionMo
 
     /**
      * Compute the refraction angle from the true (geometrical) elevation.
+     * Extension point for Python.
      *
      * @param trueElevation true elevation (rad)
      * @return refraction angle (rad)

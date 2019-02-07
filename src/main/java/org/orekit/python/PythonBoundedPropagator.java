@@ -93,6 +93,8 @@ public class PythonBoundedPropagator implements BoundedPropagator {
 
     /**
      * Set the propagator to slave mode.
+     * Extension point for Python.
+     *
      * <p>This mode is used when the user needs only the final orbit at the target time.
      * The (slave) propagator computes this result and return it to the calling
      * (master) application, without any intermediate feedback.

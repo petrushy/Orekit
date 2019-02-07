@@ -22,12 +22,13 @@ public class PythonAbstractParametricAcceleration extends AbstractParametricAcce
      *                         attitude law})
      * @param attitudeOverride provider for attitude used to compute acceleration
      */
-    protected PythonAbstractParametricAcceleration(Vector3D direction, boolean isInertial, AttitudeProvider attitudeOverride) {
+    public PythonAbstractParametricAcceleration(Vector3D direction, boolean isInertial, AttitudeProvider attitudeOverride) {
         super(direction, isInertial, attitudeOverride);
     }
 
     /**
      * Compute the signed amplitude of the acceleration.
+     * Extension point for Python.
      * <p>
      * The acceleration is the direction multiplied by the signed amplitude. So if
      * signed amplitude is negative, the acceleratin is towards the opposite of the
@@ -57,11 +58,28 @@ public class PythonAbstractParametricAcceleration extends AbstractParametricAcce
     protected <T extends RealFieldElement<T>> T signedAmplitude(FieldSpacecraftState<T> state, T[] parameters) {
         return this.signedFieldAmplitude(state, parameters);
     }
-    // Create a python extension point
+
+
+
+    /**
+     * Compute the signed amplitude of the acceleration.
+     * Extension point for Python linked to the signedAmplitude method.
+     * <p>
+     * The acceleration is the direction multiplied by the signed amplitude. So if
+     * signed amplitude is negative, the acceleratin is towards the opposite of the
+     * direction specified at construction.
+     * </p>
+     *
+     * @param state      current state information: date, kinematics, attitude
+     * @param parameters values of the force model parameters
+     * @return norm of the acceleration
+     */
+
     public native <T extends RealFieldElement<T>> T signedFieldAmplitude(FieldSpacecraftState<T> state, T[] parameters);
 
     /**
      * Check if force models depends on position only.
+     * Extension point for Python
      *
      * @return true if force model depends on position only, false
      * if it depends on velocity, either directly or due to a dependency
@@ -73,6 +91,7 @@ public class PythonAbstractParametricAcceleration extends AbstractParametricAcce
 
     /**
      * Get the drivers for force model parameters.
+     * Extension Point for Python
      *
      * @return drivers for force model parameters
      * @since 8.0
