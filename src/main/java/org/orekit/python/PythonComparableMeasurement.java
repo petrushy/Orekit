@@ -64,6 +64,8 @@ public class PythonComparableMeasurement implements ComparableMeasurement {
 
     /**
      * {@inheritDoc}
+     *
+     * Extension point for Python.
      * <p>
      * Measurements comparison is primarily chronological, but measurements
      * with the same date are sorted based on the observed value. Even if they
@@ -80,6 +82,7 @@ public class PythonComparableMeasurement implements ComparableMeasurement {
 
     /**
      * Get the date.
+     * Extension point for Python.
      *
      * @return date attached to the object
      */

@@ -53,6 +53,7 @@ public class PythonDatesSelector implements DatesSelector {
 
     /**
      * Select dates within an interval.
+     * Extension point for Python.
      * <p>
      * The {@code start} and {@code end} date may be either in direct or reverse
      * chronological order. The list is produced in the same order as {@code start}

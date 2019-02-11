@@ -53,6 +53,7 @@ public class PythonDataFilter implements DataFilter {
 
     /**
      * Filter the named data.
+     * Extension point for Python.
      * <p>
      * Filtering is often based on suffix. For example a gzip compressed
      * file will have an original name of the form base.ext.gz when the
