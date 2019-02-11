@@ -32,6 +32,8 @@ import org.orekit.utils.PVCoordinatesProvider;
 
 public class PythonAttitudeProviderModifier  implements AttitudeProviderModifier {
 
+    private static final long serialVersionUID = 4242537148465131675L;
+    
     /** Part of JCC Python interface to object */
     private long pythonObject;
 

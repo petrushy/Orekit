@@ -19,8 +19,6 @@
 
 package org.orekit.python;
 
-import java.io.Serializable;
-
 import org.hipparchus.RealFieldElement;
 import org.hipparchus.geometry.euclidean.threed.FieldVector3D;
 import org.hipparchus.geometry.euclidean.threed.Vector3D;
@@ -31,6 +29,8 @@ import org.orekit.time.FieldAbsoluteDate;
 
 public class PythonIAUPole  implements IAUPole {
 
+    private static final long serialVersionUID = -1083702732696194808L;
+    
     /** Part of JCC Python interface to object */
     private long pythonObject;
 

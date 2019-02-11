@@ -30,6 +30,8 @@ import org.orekit.utils.FieldPVCoordinatesProvider;
 import org.orekit.utils.PVCoordinatesProvider;
 
 public class PythonGNSSAttitudeProvider implements GNSSAttitudeProvider {
+    private static final long serialVersionUID = 7166332223515373718L;
+    
     /** Part of JCC Python interface to object */
     private long pythonObject;
 

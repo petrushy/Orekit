@@ -20,8 +20,6 @@
 
 package org.orekit.python;
 
-import java.io.Serializable;
-
 import org.hipparchus.RealFieldElement;
 import org.orekit.attitudes.Attitude;
 import org.orekit.attitudes.AttitudeProvider;
@@ -34,6 +32,8 @@ import org.orekit.utils.PVCoordinatesProvider;
 
 public class PythonAttitudeProvider implements AttitudeProvider {
 
+    private static final long serialVersionUID = 6448449255147110967L;
+    
     /** Part of JCC Python interface to object */
     private long pythonObject;
 

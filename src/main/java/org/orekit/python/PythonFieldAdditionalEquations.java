@@ -22,11 +22,8 @@ package org.orekit.python;
 
 import org.hipparchus.RealFieldElement;
 import org.orekit.propagation.FieldSpacecraftState;
-import org.orekit.propagation.SpacecraftState;
 import org.orekit.propagation.integration.AbstractIntegratedPropagator;
-import org.orekit.propagation.integration.AdditionalEquations;
 import org.orekit.propagation.integration.FieldAdditionalEquations;
-import org.orekit.time.AbsoluteDate;
 import org.orekit.time.FieldAbsoluteDate;
 
 /** This interface allows users to add their own differential equations to a numerical propagator.

@@ -35,6 +35,8 @@ import org.orekit.utils.TimeStampedPVCoordinates;
 
 public class PythonEarthShape implements EarthShape {
 
+    private static final long serialVersionUID = -3177940928549930595L;
+    
     /** Part of JCC Python interface to object */
     private long pythonObject;
 

@@ -25,6 +25,8 @@ import org.orekit.time.AbsoluteDate;
 
 public class PythonIonosphericModel implements IonosphericModel {
 
+    private static final long serialVersionUID = 1716300861604915492L;
+    
     /** Part of JCC Python interface to object */
     private long pythonObject;
 

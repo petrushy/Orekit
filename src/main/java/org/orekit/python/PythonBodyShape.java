@@ -37,6 +37,8 @@ import org.orekit.utils.TimeStampedPVCoordinates;
 
 public class PythonBodyShape  implements BodyShape {
 
+    private static final long serialVersionUID = -8332951800383544536L;
+    
     /** Part of JCC Python interface to object */
     private long pythonObject;
 

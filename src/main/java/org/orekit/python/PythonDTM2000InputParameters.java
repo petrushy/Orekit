@@ -24,6 +24,8 @@ import org.orekit.time.AbsoluteDate;
 
 public class PythonDTM2000InputParameters implements DTM2000InputParameters {
 
+    private static final long serialVersionUID = -3411393378880910291L;
+    
     /** Part of JCC Python interface to object */
     private long pythonObject;
 

@@ -22,6 +22,9 @@ package org.orekit.python;
 import org.orekit.models.earth.TroposphericModel;
 
 public class PythonTroposphericModel implements TroposphericModel {
+
+    private static final long serialVersionUID = 9108275770987643642L;
+    
     /** Part of JCC Python interface to object */
     private long pythonObject;
 

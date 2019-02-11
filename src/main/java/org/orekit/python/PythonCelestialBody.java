@@ -31,6 +31,8 @@ import org.orekit.utils.TimeStampedPVCoordinates;
 
 public class PythonCelestialBody implements CelestialBody {
 
+    private static final long serialVersionUID = -7481310063914250761L;
+    
     /** Part of JCC Python interface to object */
     private long pythonObject;
 

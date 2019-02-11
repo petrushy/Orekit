@@ -29,6 +29,8 @@ import org.orekit.time.FieldAbsoluteDate;
 
 public class PythonEOPBasedTransformProvider implements EOPBasedTransformProvider {
 
+    private static final long serialVersionUID = 6434996513250596254L;
+    
     /** Part of JCC Python interface to object */
     private long pythonObject;
 

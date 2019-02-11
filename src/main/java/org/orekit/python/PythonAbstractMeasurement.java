@@ -5,7 +5,6 @@ import org.orekit.propagation.SpacecraftState;
 import org.orekit.time.AbsoluteDate;
 
 import java.util.List;
-import java.util.SortedSet;
 
 public class PythonAbstractMeasurement<T extends ObservedMeasurement<T>> extends AbstractMeasurement<T> {
     /** Part of JCC Python interface to object */

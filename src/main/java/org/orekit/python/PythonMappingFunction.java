@@ -30,6 +30,8 @@ import java.util.List;
 
 public class PythonMappingFunction implements MappingFunction {
 
+    private static final long serialVersionUID = -9157284216952908403L;
+    
     /** Part of JCC Python interface to object */
     private long pythonObject;
 
