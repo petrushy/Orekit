@@ -23,6 +23,9 @@ import org.orekit.forces.drag.atmosphere.JB2008InputParameters;
 import org.orekit.time.AbsoluteDate;
 
 public class PythonJB2008InputParameters implements JB2008InputParameters {
+
+    private static final long serialVersionUID = -7188821056124189596L;
+    
     /** Part of JCC Python interface to object */
     private long pythonObject;
 
