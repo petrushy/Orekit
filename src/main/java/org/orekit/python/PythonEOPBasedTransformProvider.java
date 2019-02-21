@@ -62,9 +62,7 @@ public class PythonEOPBasedTransformProvider implements EOPBasedTransformProvide
      * @return EOP history
      */
     @Override
-    public EOPHistory getEOPHistory() {
-        return null;
-    }
+    public native EOPHistory getEOPHistory();
 
     /**
      * Get a version of the provider that does <em>not</em> cache tidal corrections.
@@ -83,9 +81,7 @@ public class PythonEOPBasedTransformProvider implements EOPBasedTransformProvide
      * @see FramesFactory#getNonInterpolatingTransform(Frame, Frame, AbsoluteDate)
      */
     @Override
-    public EOPBasedTransformProvider getNonInterpolatingProvider() {
-        return null;
-    }
+    public native EOPBasedTransformProvider getNonInterpolatingProvider();
 
     /**
      * Get the {@link Transform} corresponding to specified date.
@@ -94,9 +90,9 @@ public class PythonEOPBasedTransformProvider implements EOPBasedTransformProvide
      * @return transform at specified date
      */
     @Override
-    public Transform getTransform(AbsoluteDate date) {
-        return null;
-    }
+    public native Transform getTransform(AbsoluteDate date);
+
+    /* TODO: These methods needs to be separated */
 
     /**
      * Get the {@link FieldTransform} corresponding to specified date.
@@ -106,9 +102,7 @@ public class PythonEOPBasedTransformProvider implements EOPBasedTransformProvide
      * @since 9.0
      */
     @Override
-    public <T extends RealFieldElement<T>> FieldTransform<T> getTransform(FieldAbsoluteDate<T> date) {
-        return this.getFieldTransform(date);
-    }
+    public native <T extends RealFieldElement<T>> FieldTransform<T> getTransform(FieldAbsoluteDate<T> date);
 
     /**
      * Get the {@link FieldTransform} corresponding to specified date.

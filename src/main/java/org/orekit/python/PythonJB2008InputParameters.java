@@ -57,9 +57,7 @@ public class PythonJB2008InputParameters implements JB2008InputParameters {
      * @return the minimum date.
      */
     @Override
-    public AbsoluteDate getMinDate() {
-        return null;
-    }
+    public native AbsoluteDate getMinDate();
 
     /**
      * Gets the available data range maximum date.

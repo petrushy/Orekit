@@ -55,9 +55,7 @@ public class PythonGPSOrbitalElements implements GPSOrbitalElements {
      * @return the PRN number of the GPS satellite
      */
     @Override
-    public int getPRN() {
-        return 0;
-    }
+    public native int getPRN();
 
     /**
      * Gets the Reference Week of the GPS orbit.
@@ -65,9 +63,7 @@ public class PythonGPSOrbitalElements implements GPSOrbitalElements {
      * @return the Reference Week of the GPS orbit within [0, 1024[
      */
     @Override
-    public int getWeek() {
-        return 0;
-    }
+    public native int getWeek();
 
     /**
      * Gets the Reference Time of the GPS orbit as a duration from week start.
@@ -75,9 +71,7 @@ public class PythonGPSOrbitalElements implements GPSOrbitalElements {
      * @return the Reference Time of the GPS orbit (s)
      */
     @Override
-    public double getTime() {
-        return 0;
-    }
+    public native double getTime();
 
     /**
      * Gets the Semi-Major Axis.
@@ -85,9 +79,7 @@ public class PythonGPSOrbitalElements implements GPSOrbitalElements {
      * @return the Semi-Major Axis (m)
      */
     @Override
-    public double getSma() {
-        return 0;
-    }
+    public native double getSma();
 
     /**
      * Gets the Mean Motion.
@@ -95,9 +87,7 @@ public class PythonGPSOrbitalElements implements GPSOrbitalElements {
      * @return the Mean Motion (rad/s)
      */
     @Override
-    public double getMeanMotion() {
-        return 0;
-    }
+    public native double getMeanMotion();
 
     /**
      * Gets the Eccentricity.
@@ -105,9 +95,7 @@ public class PythonGPSOrbitalElements implements GPSOrbitalElements {
      * @return the Eccentricity
      */
     @Override
-    public double getE() {
-        return 0;
-    }
+    public native double getE();
 
     /**
      * Gets the Inclination Angle at Reference Time.
@@ -115,9 +103,7 @@ public class PythonGPSOrbitalElements implements GPSOrbitalElements {
      * @return the Inclination Angle at Reference Time (rad)
      */
     @Override
-    public double getI0() {
-        return 0;
-    }
+    public native double getI0();
 
     /**
      * Gets the Rate of Inclination Angle.
@@ -125,9 +111,7 @@ public class PythonGPSOrbitalElements implements GPSOrbitalElements {
      * @return the Rate of Inclination Angle (rad/s)
      */
     @Override
-    public double getIDot() {
-        return 0;
-    }
+    public native double getIDot();
 
     /**
      * Gets the Longitude of Ascending Node of Orbit Plane at Weekly Epoch.
@@ -135,9 +119,7 @@ public class PythonGPSOrbitalElements implements GPSOrbitalElements {
      * @return the Longitude of Ascending Node of Orbit Plane at Weekly Epoch (rad)
      */
     @Override
-    public double getOmega0() {
-        return 0;
-    }
+    public native double getOmega0();
 
     /**
      * Gets the Rate of Right Ascension.
@@ -145,9 +127,7 @@ public class PythonGPSOrbitalElements implements GPSOrbitalElements {
      * @return the Rate of Right Ascension (rad/s)
      */
     @Override
-    public double getOmegaDot() {
-        return 0;
-    }
+    public native double getOmegaDot();
 
     /**
      * Gets the Argument of Perigee.
@@ -155,9 +135,7 @@ public class PythonGPSOrbitalElements implements GPSOrbitalElements {
      * @return the Argument of Perigee (rad)
      */
     @Override
-    public double getPa() {
-        return 0;
-    }
+    public native double getPa();
 
     /**
      * Gets the Mean Anomaly at Reference Time.
@@ -165,9 +143,7 @@ public class PythonGPSOrbitalElements implements GPSOrbitalElements {
      * @return the Mean Anomaly at Reference Time (rad)
      */
     @Override
-    public double getM0() {
-        return 0;
-    }
+    public native double getM0();
 
     /**
      * Gets the Amplitude of the Cosine Harmonic Correction Term to the Argument of Latitude.
@@ -175,9 +151,7 @@ public class PythonGPSOrbitalElements implements GPSOrbitalElements {
      * @return the Amplitude of the Cosine Harmonic Correction Term to the Argument of Latitude (rad)
      */
     @Override
-    public double getCuc() {
-        return 0;
-    }
+    public native double getCuc();
 
     /**
      * Gets the Amplitude of the Sine Harmonic Correction Term to the Argument of Latitude.
@@ -185,9 +159,7 @@ public class PythonGPSOrbitalElements implements GPSOrbitalElements {
      * @return the Amplitude of the Sine Harmonic Correction Term to the Argument of Latitude (rad)
      */
     @Override
-    public double getCus() {
-        return 0;
-    }
+    public native double getCus();
 
     /**
      * Gets the Amplitude of the Cosine Harmonic Correction Term to the Orbit Radius.
@@ -195,9 +167,7 @@ public class PythonGPSOrbitalElements implements GPSOrbitalElements {
      * @return the Amplitude of the Cosine Harmonic Correction Term to the Orbit Radius (m)
      */
     @Override
-    public double getCrc() {
-        return 0;
-    }
+    public native double getCrc();
 
     /**
      * Gets the Amplitude of the Sine Harmonic Correction Term to the Orbit Radius.
@@ -205,9 +175,7 @@ public class PythonGPSOrbitalElements implements GPSOrbitalElements {
      * @return the Amplitude of the Sine Harmonic Correction Term to the Orbit Radius (m)
      */
     @Override
-    public double getCrs() {
-        return 0;
-    }
+    public native double getCrs();
 
     /**
      * Gets the Amplitude of the Cosine Harmonic Correction Term to the Angle of Inclination.
@@ -215,9 +183,7 @@ public class PythonGPSOrbitalElements implements GPSOrbitalElements {
      * @return the Amplitude of the Cosine Harmonic Correction Term to the Angle of Inclination (rad)
      */
     @Override
-    public double getCic() {
-        return 0;
-    }
+    public native double getCic();
 
     /**
      * Gets the Amplitude of the Sine Harmonic Correction Term to the Angle of Inclination.
@@ -225,9 +191,7 @@ public class PythonGPSOrbitalElements implements GPSOrbitalElements {
      * @return the Amplitude of the Sine Harmonic Correction Term to the Angle of Inclination (rad)
      */
     @Override
-    public double getCis() {
-        return 0;
-    }
+    public native double getCis();
 
     /**
      * Gets the Issue Of Data Clock (IODC).
@@ -236,9 +200,7 @@ public class PythonGPSOrbitalElements implements GPSOrbitalElements {
      * @since 9.3
      */
     @Override
-    public int getIODC() {
-        return 0;
-    }
+    public native int getIODC();
 
     /**
      * Gets the Issue Of Data Ephemeris (IODE).
@@ -247,9 +209,7 @@ public class PythonGPSOrbitalElements implements GPSOrbitalElements {
      * @since 9.3
      */
     @Override
-    public int getIODE() {
-        return 0;
-    }
+    public native int getIODE();
 
     /**
      * Gets the Zeroth Order Clock Correction.
@@ -261,9 +221,7 @@ public class PythonGPSOrbitalElements implements GPSOrbitalElements {
      * @since 9.3
      */
     @Override
-    public double getAf0() {
-        return 0;
-    }
+    public native double getAf0();
 
     /**
      * Gets the First Order Clock Correction.
@@ -275,9 +233,7 @@ public class PythonGPSOrbitalElements implements GPSOrbitalElements {
      * @since 9.3
      */
     @Override
-    public double getAf1() {
-        return 0;
-    }
+    public native double getAf1();
 
     /**
      * Gets the Second Order Clock Correction.
@@ -289,9 +245,7 @@ public class PythonGPSOrbitalElements implements GPSOrbitalElements {
      * @since 9.3
      */
     @Override
-    public double getAf2() {
-        return 0;
-    }
+    public native double getAf2();
 
     /**
      * Gets the clock correction reference time toc.
@@ -303,9 +257,7 @@ public class PythonGPSOrbitalElements implements GPSOrbitalElements {
      * @since 9.3
      */
     @Override
-    public double getToc() {
-        return 0;
-    }
+    public native double getToc();
 
     /**
      * Gets the estimated group delay differential TGD for L1-L2 correction.
@@ -314,9 +266,7 @@ public class PythonGPSOrbitalElements implements GPSOrbitalElements {
      * @since 9.3
      */
     @Override
-    public double getTGD() {
-        return 0;
-    }
+    public native double getTGD();
 
     /**
      * Get the date.
@@ -324,7 +274,5 @@ public class PythonGPSOrbitalElements implements GPSOrbitalElements {
      * @return date attached to the object
      */
     @Override
-    public AbsoluteDate getDate() {
-        return null;
-    }
+    public native AbsoluteDate getDate();
 }

@@ -66,9 +66,7 @@ public class PythonAttitudeProviderModifier  implements AttitudeProviderModifier
      * @return underlying attitude provider
      */
     @Override
-    public AttitudeProvider getUnderlyingAttitudeProvider() {
-        return null;
-    }
+    public native AttitudeProvider getUnderlyingAttitudeProvider();
 
     /**
      * Compute the attitude corresponding to an orbital state.

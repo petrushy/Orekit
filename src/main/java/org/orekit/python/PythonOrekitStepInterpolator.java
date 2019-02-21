@@ -52,18 +52,18 @@ public class PythonOrekitStepInterpolator implements OrekitStepInterpolator {
 
     /**
      * Get the state at previous grid point date.
+     * Extension point for Python.
      *
      * @return state at previous grid point date
      */
     @Override
-    public SpacecraftState getPreviousState() {
-        return null;
-    }
+    public native SpacecraftState getPreviousState();
 
     /**
      * Determines if the {@link #getPreviousState() previous state} is computed directly
      * by the integrator, or if it is calculated using {@link #getInterpolatedState(AbsoluteDate)
      * interpolation}.
+     * Extension point for Python.
      *
      * <p> Typically the previous state is directly computed by the integrator, but when
      * events are detected the steps are shortened so that events occur on step boundaries
@@ -73,24 +73,22 @@ public class PythonOrekitStepInterpolator implements OrekitStepInterpolator {
      * false if it was computed directly by the integrator.
      */
     @Override
-    public boolean isPreviousStateInterpolated() {
-        return false;
-    }
+    public native boolean isPreviousStateInterpolated();
 
     /**
      * Get the state at current grid point date.
+     * Extension point for Python.
      *
      * @return state at current grid point date
      */
     @Override
-    public SpacecraftState getCurrentState() {
-        return null;
-    }
+    public native SpacecraftState getCurrentState();
 
     /**
      * Determines if the {@link #getCurrentState() current state} is computed directly by
      * the integrator, or if it is calculated using {@link #getInterpolatedState(AbsoluteDate)
      * interpolation}.
+     * Extension point for Python.
      *
      * <p> Typically the current state is directly computed by the integrator, but when
      * events are detected the steps are shortened so that events occur on step boundaries
@@ -100,9 +98,7 @@ public class PythonOrekitStepInterpolator implements OrekitStepInterpolator {
      * false if it was computed directly by the integrator.
      */
     @Override
-    public boolean isCurrentStateInterpolated() {
-        return false;
-    }
+    public native boolean isCurrentStateInterpolated();
 
     /**
      * Get the state at interpolated date.
@@ -111,9 +107,7 @@ public class PythonOrekitStepInterpolator implements OrekitStepInterpolator {
      * @return state at interpolated date
      */
     @Override
-    public SpacecraftState getInterpolatedState(AbsoluteDate date) {
-        return null;
-    }
+    public native SpacecraftState getInterpolatedState(AbsoluteDate date);
 
     /**
      * Check is integration direction is forward in date.
@@ -121,9 +115,7 @@ public class PythonOrekitStepInterpolator implements OrekitStepInterpolator {
      * @return true if integration is forward in date
      */
     @Override
-    public boolean isForward() {
-        return false;
-    }
+    public native boolean isForward();
 
     /**
      * Create a new restricted version of the instance.
@@ -139,7 +131,5 @@ public class PythonOrekitStepInterpolator implements OrekitStepInterpolator {
      * @since 9.0
      */
     @Override
-    public OrekitStepInterpolator restrictStep(SpacecraftState newPreviousState, SpacecraftState newCurrentState) {
-        return null;
-    }
+    public native OrekitStepInterpolator restrictStep(SpacecraftState newPreviousState, SpacecraftState newCurrentState);
 }
