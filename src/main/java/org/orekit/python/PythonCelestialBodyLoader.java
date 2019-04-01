@@ -51,6 +51,7 @@ public class PythonCelestialBodyLoader implements CelestialBodyLoader {
 
     /**
      * Load celestial body.
+     * Extension point for Python.
      *
      * @param name name of the celestial body
      * @return loaded celestial body

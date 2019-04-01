@@ -32,6 +32,8 @@ import org.orekit.utils.PVCoordinatesProvider;
 
 public class PythonAttitudeProviderModifier  implements AttitudeProviderModifier {
 
+    private static final long serialVersionUID = 4242537148465131675L;
+    
     /** Part of JCC Python interface to object */
     private long pythonObject;
 
@@ -59,16 +61,16 @@ public class PythonAttitudeProviderModifier  implements AttitudeProviderModifier
     
     /**
      * Get the underlying attitude provider.
+     * Extension point for Python.
      *
      * @return underlying attitude provider
      */
     @Override
-    public AttitudeProvider getUnderlyingAttitudeProvider() {
-        return null;
-    }
+    public native AttitudeProvider getUnderlyingAttitudeProvider();
 
     /**
      * Compute the attitude corresponding to an orbital state.
+     * Extension point for Python.
      *
      * @param pvProv local position-velocity provider around current date
      * @param date   current date
@@ -76,12 +78,11 @@ public class PythonAttitudeProviderModifier  implements AttitudeProviderModifier
      * @return attitude attitude on the specified date and position-velocity state
      */
     @Override
-    public Attitude getAttitude(PVCoordinatesProvider pvProv, AbsoluteDate date, Frame frame) {
-        return null;
-    }
+    public native Attitude getAttitude(PVCoordinatesProvider pvProv, AbsoluteDate date, Frame frame);
 
     /**
      * Compute the attitude corresponding to an orbital state.
+     * Redirects to getFieldAttitude(...) for Python extension
      *
      * @param pvProv local position-velocity provider around current date
      * @param date   current date
@@ -96,6 +97,7 @@ public class PythonAttitudeProviderModifier  implements AttitudeProviderModifier
 
     /**
      * Compute the attitude corresponding to an orbital state.
+     * Extension point for Python. Connected to getAttitude(...)
      *
      * @param pvProv local position-velocity provider around current date
      * @param date   current date

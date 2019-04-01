@@ -46,6 +46,7 @@ public class PythonAbstractGaussianContribution extends AbstractGaussianContribu
 
     /**
      * Compute the limits in L, the true longitude, for integration.
+     * Extension point for Python.
      *
      * @param state current state information: date, kinematics, attitude
      * @return the integration limits in L
@@ -55,6 +56,7 @@ public class PythonAbstractGaussianContribution extends AbstractGaussianContribu
 
     /**
      * Get the discrete events related to the model.
+     * Extension point for Python.
      *
      * @return array of events detectors or null if the model is not
      * related to any discrete events

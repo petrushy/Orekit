@@ -107,7 +107,25 @@ public class PythonPropagator implements Propagator {
      * @see #MASTER_MODE
      */
     @Override
-    public native void setMasterMode(double h, OrekitFixedStepHandler handler);
+    public void setMasterMode(double h, OrekitFixedStepHandler handler) {
+        this.setMasterMode_2p(h, handler);
+    }
+
+    /**
+     * Set the propagator to master mode with fixed steps.
+     * <p>This mode is used when the user needs to have some custom function called at the
+     * end of each finalized step during integration. The (master) propagator integration
+     * loop calls the (slave) application callback methods at each finalized step.</p>
+     *
+     * @param h       fixed stepsize (s)
+     * @param handler handler called at the end of each finalized step
+     * @see #setSlaveMode()
+     * @see #setMasterMode(OrekitStepHandler)
+     * @see #setEphemerisMode()
+     * @see #getMode()
+     * @see #MASTER_MODE
+     */
+    public native void setMasterMode_2p(double h, OrekitFixedStepHandler handler);
 
     /**
      * Set the propagator to master mode with variable steps.
@@ -169,7 +187,34 @@ public class PythonPropagator implements Propagator {
      * @see #EPHEMERIS_GENERATION_MODE
      */
     @Override
-    public native void setEphemerisMode(OrekitStepHandler handler);
+    public void setEphemerisMode(OrekitStepHandler handler) {
+        this.setEphemerisModeHandler(handler);
+    }
+
+    /**
+     * Set the propagator to ephemeris generation mode with the specified handler for each
+     * integration step.
+     *
+     * <p>This mode is used when the user needs random access to the orbit state at any
+     * time between the initial and target times, as well as access to the steps computed
+     * by the integrator as in Master Mode. A typical example is the implementation of
+     * search and iterative algorithms that may navigate forward and backward inside the
+     * propagation range before finding their result.</p>
+     *
+     * <p>Beware that since this mode stores <strong>all</strong> intermediate results, it
+     * may be memory intensive for long integration ranges and high precision/short time
+     * steps.</p>
+     *
+     * @param handler handler called at the end of each finalized step
+     * @see #setEphemerisMode()
+     * @see #getGeneratedEphemeris()
+     * @see #setSlaveMode()
+     * @see #setMasterMode(double, OrekitFixedStepHandler)
+     * @see #setMasterMode(OrekitStepHandler)
+     * @see #getMode()
+     * @see #EPHEMERIS_GENERATION_MODE
+     */
+    public native void setEphemerisModeHandler(OrekitStepHandler handler);
 
     /**
      * Get the ephemeris generated during propagation.
@@ -337,7 +382,25 @@ public class PythonPropagator implements Propagator {
      * @return propagated state
      */
     @Override
-    public native SpacecraftState propagate(AbsoluteDate start, AbsoluteDate target);
+    public SpacecraftState propagate(AbsoluteDate start, AbsoluteDate target) {
+        return this.propagate_2p(start, target);
+    }
+
+
+    /**
+     * Propagate from a start date towards a target date.
+     * <p>Those propagators use a start date and a target date to
+     * compute the propagated state. For propagators using event detection mechanism,
+     * if the provided start date is different from the initial state date, a first,
+     * simple propagation is performed, without processing any event computation.
+     * Then complete propagation is performed from start date to target date.</p>
+     *
+     * @param start  start date from which orbit state should be propagated
+     * @param target target date to which orbit state should be propagated
+     * @return propagated state
+     */
+    public native SpacecraftState propagate_2p(AbsoluteDate start, AbsoluteDate target);
+
 
     /**
      * Get the {@link PVCoordinates} of the body in the selected frame.

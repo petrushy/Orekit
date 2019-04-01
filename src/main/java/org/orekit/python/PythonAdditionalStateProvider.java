@@ -52,6 +52,7 @@ public class PythonAdditionalStateProvider implements AdditionalStateProvider {
     
     /**
      * Get the name of the additional state.
+     * Extension point for Python.
      *
      * @return name of the additional state
      */
@@ -60,6 +61,7 @@ public class PythonAdditionalStateProvider implements AdditionalStateProvider {
 
     /**
      * Get the additional state.
+     * Extension point for Python.
      *
      * @param state spacecraft state to which additional state should correspond
      * @return additional state corresponding to spacecraft state

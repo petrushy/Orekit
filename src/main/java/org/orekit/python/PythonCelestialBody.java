@@ -31,6 +31,8 @@ import org.orekit.utils.TimeStampedPVCoordinates;
 
 public class PythonCelestialBody implements CelestialBody {
 
+    private static final long serialVersionUID = -7481310063914250761L;
+    
     /** Part of JCC Python interface to object */
     private long pythonObject;
 
@@ -58,6 +60,8 @@ public class PythonCelestialBody implements CelestialBody {
 
     /**
      * Get an inertially oriented, body centered frame.
+     * Extension point for Python.
+     *
      * <p>The frame is always bound to the body center, and its axes have a
      * fixed orientation with respect to other inertial frames.</p>
      *
@@ -69,6 +73,8 @@ public class PythonCelestialBody implements CelestialBody {
 
     /**
      * Get a body oriented, body centered frame.
+     * Extension point for Python.
+     *
      * <p>The frame is always bound to the body center, and its axes have a
      * fixed orientation with respect to the celestial body.</p>
      *
@@ -80,6 +86,7 @@ public class PythonCelestialBody implements CelestialBody {
 
     /**
      * Get the name of the body.
+     * Extension point for Python.
      *
      * @return name of the body
      */
@@ -88,6 +95,7 @@ public class PythonCelestialBody implements CelestialBody {
 
     /**
      * Get the attraction coefficient of the body.
+     * Extension point for Python.
      *
      * @return attraction coefficient of the body (m³/s²)
      */
@@ -96,6 +104,7 @@ public class PythonCelestialBody implements CelestialBody {
 
     /**
      * Convert to a {@link FieldPVCoordinatesProvider} with a specific type.
+     * Extension point for Python.
      *
      * @param field field for the argument and value
      * @return converted function
@@ -105,16 +114,31 @@ public class PythonCelestialBody implements CelestialBody {
 
     /**
      * Get the {@link FieldPVCoordinates} of the body in the selected frame.
+     * Links to getFieldPVCoordinates() for Python extension
      *
      * @param date  current date
      * @param frame the frame where to define the position
      * @return time-stamped position/velocity of the body (m and m/s)
      */
     @Override
-    public native <T extends RealFieldElement<T>> TimeStampedFieldPVCoordinates<T> getPVCoordinates(FieldAbsoluteDate<T> date, Frame frame);
-    // TODO: Separate double methods for python!
+    public <T extends RealFieldElement<T>> TimeStampedFieldPVCoordinates<T> getPVCoordinates(FieldAbsoluteDate<T> date, Frame frame) {
+        return this.getFieldPVCoordinates(date, frame);
+    }
+
+    /**
+     * Get the {@link FieldPVCoordinates} of the body in the selected frame.
+     * Extension point for Python. Links to getPVCoordinates()
+     *
+     * @param date  current date
+     * @param frame the frame where to define the position
+     * @return time-stamped position/velocity of the body (m and m/s)
+     */
+    public native <T extends RealFieldElement<T>> TimeStampedFieldPVCoordinates<T> getFieldPVCoordinates(FieldAbsoluteDate<T> date, Frame frame);
+
+
     /**
      * Get the {@link PVCoordinates} of the body in the selected frame.
+     * Extension point for Python.
      *
      * @param date  current date
      * @param frame the frame where to define the position

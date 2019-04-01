@@ -47,6 +47,7 @@ public class PythonAbstractScheduler<T extends ObservedMeasurement<T>> extends A
 
     /**
      * Generate a sequence of measurements.
+     * Extension point for Python.
      *
      * @param interpolators interpolators for spacecraft states
      * @return generated measurements

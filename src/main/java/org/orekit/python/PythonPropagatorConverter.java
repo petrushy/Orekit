@@ -17,6 +17,9 @@
 // this file was created by SCC 2019 and is largely a derived work from the
 // original java class/interface
 
+
+// TODO: Add python wrappers for this class.
+
 package org.orekit.python;
 
 import org.orekit.propagation.Propagator;
@@ -62,9 +65,9 @@ public class PythonPropagatorConverter implements PropagatorConverter {
      * @return adapted propagator
      */
     @Override
-    public Propagator convert(Propagator source, double timeSpan, int nbPoints, List<String> freeParameters) {
-        return null;
-    }
+    public native Propagator convert(Propagator source, double timeSpan, int nbPoints, List<String> freeParameters);
+
+    /* TODO: These methods needs to be separated for Python */
 
     /**
      * Convert a propagator into another one.
@@ -76,9 +79,7 @@ public class PythonPropagatorConverter implements PropagatorConverter {
      * @return adapted propagator
      */
     @Override
-    public Propagator convert(Propagator source, double timeSpan, int nbPoints, String... freeParameters) {
-        return null;
-    }
+    public native Propagator convert(Propagator source, double timeSpan, int nbPoints, String... freeParameters);
 
     /**
      * Find the propagator that minimize the mean square error for a sample of {@link SpacecraftState states}.
@@ -89,9 +90,7 @@ public class PythonPropagatorConverter implements PropagatorConverter {
      * @return adapted propagator
      */
     @Override
-    public Propagator convert(List<SpacecraftState> states, boolean positionOnly, List<String> freeParameters) {
-        return null;
-    }
+    public native Propagator convert(List<SpacecraftState> states, boolean positionOnly, List<String> freeParameters);
 
     /**
      * Find the propagator that minimize the mean square error for a sample of {@link SpacecraftState states}.
@@ -102,7 +101,5 @@ public class PythonPropagatorConverter implements PropagatorConverter {
      * @return adapted propagator
      */
     @Override
-    public Propagator convert(List<SpacecraftState> states, boolean positionOnly, String... freeParameters) {
-        return null;
-    }
+    public native Propagator convert(List<SpacecraftState> states, boolean positionOnly, String... freeParameters);
 }

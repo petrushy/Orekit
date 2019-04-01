@@ -64,6 +64,8 @@ public class PythonAbstractPropagatorBuilder extends AbstractPropagatorBuilder {
 
     /**
      * Build a propagator.
+     * Extension point for Python.
+     *
      *
      * @param normalizedParameters normalized values for the selected parameters
      * @return an initialized propagator

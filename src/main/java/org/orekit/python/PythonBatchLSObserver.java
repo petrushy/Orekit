@@ -54,6 +54,7 @@ public class PythonBatchLSObserver implements BatchLSObserver {
 
     /**
      * Notification callback for the end of each evaluation.
+     * Extension point for Python.
      *
      * @param iterationsCount                 iterations count
      * @param evaluationsCount                evaluations count

@@ -19,8 +19,6 @@
 
 package org.orekit.python;
 
-import java.io.Serializable;
-
 import org.hipparchus.RealFieldElement;
 import org.hipparchus.geometry.euclidean.threed.FieldVector3D;
 import org.hipparchus.geometry.euclidean.threed.Vector3D;
@@ -31,6 +29,8 @@ import org.orekit.time.FieldAbsoluteDate;
 
 public class PythonIAUPole  implements IAUPole {
 
+    private static final long serialVersionUID = -1083702732696194808L;
+    
     /** Part of JCC Python interface to object */
     private long pythonObject;
 
@@ -73,7 +73,20 @@ public class PythonIAUPole  implements IAUPole {
      * @since 9.0
      */
     @Override
-    public native <T extends RealFieldElement<T>> FieldVector3D<T> getPole(FieldAbsoluteDate<T> date);
+    public <T extends RealFieldElement<T>> FieldVector3D<T> getPole(FieldAbsoluteDate<T> date) {
+        return this.getFieldPole(date);
+    }
+
+    /**
+     * Get the body North pole direction in ICRF frame.
+     *
+     * @param date current date
+     * @return body North pole direction in ICRF frame
+     * @since 9.0
+     */
+    public native <T extends RealFieldElement<T>> FieldVector3D<T> getFieldPole(FieldAbsoluteDate<T> date);
+
+
 
     /**
      * Get the body Q Node direction in ICRF frame.
@@ -93,7 +106,19 @@ public class PythonIAUPole  implements IAUPole {
      * @since 9.1
      */
     @Override
-    public native <T extends RealFieldElement<T>> FieldVector3D<T> getNode(FieldAbsoluteDate<T> date);
+    public <T extends RealFieldElement<T>> FieldVector3D<T> getNode(FieldAbsoluteDate<T> date) {
+        return this.getFieldNode(date);
+    }
+
+    /**
+     * Get the body Q Node direction in ICRF frame.
+     *
+     * @param date current date
+     * @return body Q Node direction in ICRF frame
+     * @since 9.1
+     */
+    public native <T extends RealFieldElement<T>> FieldVector3D<T> getFieldNode(FieldAbsoluteDate<T> date);
+
 
     /**
      * Get the prime meridian angle.
@@ -120,5 +145,22 @@ public class PythonIAUPole  implements IAUPole {
      * @since 9.0
      */
     @Override
-    public native <T extends RealFieldElement<T>> T getPrimeMeridianAngle(FieldAbsoluteDate<T> date);
+    public <T extends RealFieldElement<T>> T getPrimeMeridianAngle(FieldAbsoluteDate<T> date) {
+        return this.getFieldPrimeMeridianAngle(date);
+    }
+
+    /**
+     * Get the prime meridian angle.
+     * <p>
+     * The prime meridian angle is the angle between the Q node and the
+     * prime meridian. represents the body rotation.
+     * </p>
+     *
+     * @param date current date
+     * @return prime meridian vector
+     * @since 9.0
+     */
+    public native <T extends RealFieldElement<T>> T getFieldPrimeMeridianAngle(FieldAbsoluteDate<T> date);
+
+
 }

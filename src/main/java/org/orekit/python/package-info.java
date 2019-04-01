@@ -25,27 +25,3 @@
  */
 package org.orekit.python;
 
-/**
-There are a number of classes that maybe should be wrapped in the future.
- The currently wrapped ones are:
-     PythonAbstractDetector.java
-     PythonAdditionalEquations.java
-     PythonEventDetector.java
-     PythonEventHandler.java
-     PythonOrekitFixedStepHandler.java
-     PythonUnivariateFunction.java
-
- Candidates for wrapping are:
-     GroundPointing
-     PVCoordinatesProvider
-     Frame
-     BodyShape
-     ODMFile
-     OGMFile
-     ForceModel
-     ObservedMeasurement
-    BatchLSObserver
-
-    ... Please add more as needed.
-
- **/

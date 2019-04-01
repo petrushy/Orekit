@@ -53,6 +53,7 @@ public class PythonDataProvider implements DataProvider {
 
     /**
      * Feed a data file loader by browsing the data collection.
+     * Extension point for Python.
      * <p>
      * The method crawls all files referenced in the instance (for example
      * all files in a directories tree) and for each file supported by the

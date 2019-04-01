@@ -93,6 +93,8 @@ public class PythonBoundedPropagator implements BoundedPropagator {
 
     /**
      * Set the propagator to slave mode.
+     * Extension point for Python.
+     *
      * <p>This mode is used when the user needs only the final orbit at the target time.
      * The (slave) propagator computes this result and return it to the calling
      * (master) application, without any intermediate feedback.
@@ -122,9 +124,26 @@ public class PythonBoundedPropagator implements BoundedPropagator {
      * @see #MASTER_MODE
      */
     @Override
-    public native void setMasterMode(double h, OrekitFixedStepHandler handler);
+    public void setMasterMode(double h, OrekitFixedStepHandler handler) {
+        setMasterMode_2p(h, handler);
+    }
 
-    // TODO: Separate double methods for python!
+
+    /**
+     * Set the propagator to master mode with fixed steps.
+     * <p>This mode is used when the user needs to have some custom function called at the
+     * end of each finalized step during integration. The (master) propagator integration
+     * loop calls the (slave) application callback methods at each finalized step.</p>
+     *
+     * @param h       fixed stepsize (s)
+     * @param handler handler called at the end of each finalized step
+     * @see #setSlaveMode()
+     * @see #setMasterMode(OrekitStepHandler)
+     * @see #setEphemerisMode()
+     * @see #getMode()
+     * @see #MASTER_MODE
+     */
+    public native void setMasterMode_2p(double h, OrekitFixedStepHandler handler);
 
     /**
      * Set the propagator to master mode with variable steps.
@@ -354,7 +373,23 @@ public class PythonBoundedPropagator implements BoundedPropagator {
      * @return propagated state
      */
     @Override
-    public native SpacecraftState propagate(AbsoluteDate start, AbsoluteDate target);
+    public SpacecraftState propagate(AbsoluteDate start, AbsoluteDate target) {
+        return this.propagate_2p(start, target);
+    }
+
+    /**
+     * Propagate from a start date towards a target date.
+     * <p>Those propagators use a start date and a target date to
+     * compute the propagated state. For propagators using event detection mechanism,
+     * if the provided start date is different from the initial state date, a first,
+     * simple propagation is performed, without processing any event computation.
+     * Then complete propagation is performed from start date to target date.</p>
+     *
+     * @param start  start date from which orbit state should be propagated
+     * @param target target date to which orbit state should be propagated
+     * @return propagated state
+     */
+    public native SpacecraftState propagate_2p(AbsoluteDate start, AbsoluteDate target);
 
     /**
      * Get the {@link PVCoordinates} of the body in the selected frame.

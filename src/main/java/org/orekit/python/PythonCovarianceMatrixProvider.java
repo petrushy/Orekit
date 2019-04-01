@@ -53,6 +53,7 @@ public class PythonCovarianceMatrixProvider implements CovarianceMatrixProvider 
 
     /**
      * Get the initial covariance matrix.
+     * Extension point for Python.
      * <p>
      * The initial covariance matrix is a covariance matrix corresponding to the
      * parameters managed by the {@link KalmanEstimator Kalman estimator}.
@@ -84,6 +85,8 @@ public class PythonCovarianceMatrixProvider implements CovarianceMatrixProvider 
 
     /**
      * Get the process noise matrix between previous and current states.
+     * Extension point for Python.
+     *
      * <p>
      * The process noise matrix is a covariance matrix corresponding to the
      * parameters managed by the {@link KalmanEstimator Kalman estimator}.

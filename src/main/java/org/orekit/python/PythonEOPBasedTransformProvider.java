@@ -29,6 +29,8 @@ import org.orekit.time.FieldAbsoluteDate;
 
 public class PythonEOPBasedTransformProvider implements EOPBasedTransformProvider {
 
+    private static final long serialVersionUID = 6434996513250596254L;
+    
     /** Part of JCC Python interface to object */
     private long pythonObject;
 
@@ -60,9 +62,7 @@ public class PythonEOPBasedTransformProvider implements EOPBasedTransformProvide
      * @return EOP history
      */
     @Override
-    public EOPHistory getEOPHistory() {
-        return null;
-    }
+    public native EOPHistory getEOPHistory();
 
     /**
      * Get a version of the provider that does <em>not</em> cache tidal corrections.
@@ -81,9 +81,7 @@ public class PythonEOPBasedTransformProvider implements EOPBasedTransformProvide
      * @see FramesFactory#getNonInterpolatingTransform(Frame, Frame, AbsoluteDate)
      */
     @Override
-    public EOPBasedTransformProvider getNonInterpolatingProvider() {
-        return null;
-    }
+    public native EOPBasedTransformProvider getNonInterpolatingProvider();
 
     /**
      * Get the {@link Transform} corresponding to specified date.
@@ -92,9 +90,9 @@ public class PythonEOPBasedTransformProvider implements EOPBasedTransformProvide
      * @return transform at specified date
      */
     @Override
-    public Transform getTransform(AbsoluteDate date) {
-        return null;
-    }
+    public native Transform getTransform(AbsoluteDate date);
+
+    /* TODO: These methods needs to be separated */
 
     /**
      * Get the {@link FieldTransform} corresponding to specified date.
@@ -104,7 +102,15 @@ public class PythonEOPBasedTransformProvider implements EOPBasedTransformProvide
      * @since 9.0
      */
     @Override
-    public <T extends RealFieldElement<T>> FieldTransform<T> getTransform(FieldAbsoluteDate<T> date) {
-        return null;
-    }
+    public native <T extends RealFieldElement<T>> FieldTransform<T> getTransform(FieldAbsoluteDate<T> date);
+
+    /**
+     * Get the {@link FieldTransform} corresponding to specified date.
+     *
+     * @param date current date
+     * @return transform at specified date
+     * @since 9.0
+     */
+
+    public native <T extends RealFieldElement<T>> FieldTransform<T> getFieldTransform(FieldAbsoluteDate<T> date);
 }

@@ -23,6 +23,9 @@ import org.orekit.forces.drag.atmosphere.NRLMSISE00InputParameters;
 import org.orekit.time.AbsoluteDate;
 
 public class PythonNRLMSISE00InputParameters implements NRLMSISE00InputParameters {
+
+    private static final long serialVersionUID = -2826576363359682591L;
+    
     /** Part of JCC Python interface to object */
     private long pythonObject;
 

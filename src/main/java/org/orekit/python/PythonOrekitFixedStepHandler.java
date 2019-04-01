@@ -21,7 +21,6 @@
 package org.orekit.python;
 import org.orekit.propagation.sampling.OrekitFixedStepHandler;
 
-import org.orekit.errors.OrekitException;
 import org.orekit.propagation.SpacecraftState;
 import org.orekit.time.AbsoluteDate;
 

@@ -45,6 +45,7 @@ public class PythonAbstractPropagatorConverter extends AbstractPropagatorConvert
 
     /**
      * Get the function computing position/velocity at sample points.
+     * Extension point for Python.
      *
      * @return function computing position/velocity at sample points
      */
@@ -53,6 +54,7 @@ public class PythonAbstractPropagatorConverter extends AbstractPropagatorConvert
 
     /**
      * Get the Jacobian of the function computing position/velocity at sample points.
+     * Extension point for Python.
      *
      * @return Jacobian of the function computing position/velocity at sample points
      */

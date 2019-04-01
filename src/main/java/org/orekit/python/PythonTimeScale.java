@@ -26,6 +26,8 @@ import org.orekit.time.TimeScale;
 
 public class PythonTimeScale implements TimeScale {
 
+    private static final long serialVersionUID = 1472684095479052858L;
+    
     /** Part of JCC Python interface to object */
     private long pythonObject;
 
@@ -72,7 +74,21 @@ public class PythonTimeScale implements TimeScale {
      * @since 9.0
      */
     @Override
-    public native <T extends RealFieldElement<T>> T offsetFromTAI(FieldAbsoluteDate<T> date);
+    public <T extends RealFieldElement<T>> T offsetFromTAI(FieldAbsoluteDate<T> date) {
+        return this.offsetFieldFromTAI(date);
+    }
+
+    /**
+     * Get the offset to convert locations from {@link TAIScale} to instance.
+     *
+     * @param date conversion date
+     * @return offset in seconds to add to a location in <em>{@link TAIScale}
+     * time scale</em> to get a location in <em>instance time scale</em>
+     * @see #offsetToTAI(DateComponents, TimeComponents)
+     * @since 9.0
+     */
+    public native <T extends RealFieldElement<T>> T offsetFieldFromTAI(FieldAbsoluteDate<T> date);
+
 
     /**
      * Get the name time scale.

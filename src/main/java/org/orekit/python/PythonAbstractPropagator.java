@@ -42,6 +42,7 @@ public class PythonAbstractPropagator extends AbstractPropagator {
     public native BoundedPropagator getGeneratedEphemeris();
 
     /**
+     * Extension point for Python.
      * {@inheritDoc}
      *
      * @param detector
@@ -50,12 +51,14 @@ public class PythonAbstractPropagator extends AbstractPropagator {
     public native <T extends EventDetector> void addEventDetector(T detector);
 
     /**
+     * Extension point for Python.
      * {@inheritDoc}
      */
     @Override
     public native Collection<EventDetector> getEventsDetectors();
 
     /**
+     * Extension point for Python.
      * {@inheritDoc}
      */
     @Override
@@ -63,6 +66,8 @@ public class PythonAbstractPropagator extends AbstractPropagator {
 
     /**
      * Propagate from a start date towards a target date.
+     * Extension point for Python.
+     *
      * <p>Those propagators use a start date and a target date to
      * compute the propagated state. For propagators using event detection mechanism,
      * if the provided start date is different from the initial state date, a first,

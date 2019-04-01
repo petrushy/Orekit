@@ -30,6 +30,8 @@ import org.orekit.time.FieldAbsoluteDate;
 
 public class PythonAtmosphere implements Atmosphere {
 
+    private static final long serialVersionUID = 335860944218555301L;
+    
     /** Part of JCC Python interface to object */
     private long pythonObject;
 
@@ -66,6 +68,7 @@ public class PythonAtmosphere implements Atmosphere {
 
     /**
      * Get the local density.
+     * Extension point for Python.
      *
      * @param date     current date
      * @param position current position in frame
@@ -77,6 +80,7 @@ public class PythonAtmosphere implements Atmosphere {
 
     /**
      * Get the local density.
+     * Redirects to getFieldDensity
      *
      * @param date     current date
      * @param position current position in frame
@@ -84,10 +88,27 @@ public class PythonAtmosphere implements Atmosphere {
      * @return local density (kg/m³)
      */
     @Override
-    public native <T extends RealFieldElement<T>> T getDensity(FieldAbsoluteDate<T> date, FieldVector3D<T> position, Frame frame);
+    public <T extends RealFieldElement<T>> T getDensity(FieldAbsoluteDate<T> date, FieldVector3D<T> position, Frame frame) {
+        return this.getFieldDensity(date, position, frame);
+    }
+
+
+    /**
+     * Get the local density.
+     * Extension point for Python.
+     *
+     * @param date     current date
+     * @param position current position in frame
+     * @param frame    the frame in which is defined the position
+     * @return local density (kg/m³)
+     */
+    public native <T extends RealFieldElement<T>> T getFieldDensity(FieldAbsoluteDate<T> date, FieldVector3D<T> position, Frame frame);
+
 
     /**
      * Get the inertial velocity of atmosphere molecules.
+     * Extension point for Python.
+     *
      * <p>By default, atmosphere is supposed to have a null
      * velocity in the central body frame.</p>
      *
@@ -101,6 +122,7 @@ public class PythonAtmosphere implements Atmosphere {
 
     /**
      * Get the inertial velocity of atmosphere molecules.
+     * Redirects to getFieldVelocity(...)
      *
      * @param date     current date
      * @param position current position in frame
@@ -108,5 +130,19 @@ public class PythonAtmosphere implements Atmosphere {
      * @return velocity (m/s) (defined in the same frame as the position)
      */
     @Override
-    public native <T extends RealFieldElement<T>> FieldVector3D<T> getVelocity(FieldAbsoluteDate<T> date, FieldVector3D<T> position, Frame frame);
+    public <T extends RealFieldElement<T>> FieldVector3D<T> getVelocity(FieldAbsoluteDate<T> date, FieldVector3D<T> position, Frame frame) {
+        return this.getFieldVelocity(date, position, frame);
+    }
+
+    /**
+     * Get the inertial velocity of atmosphere molecules.
+     * Extension point for Python.
+     *
+     * @param date     current date
+     * @param position current position in frame
+     * @param frame    the frame in which is defined the position
+     * @return velocity (m/s) (defined in the same frame as the position)
+     */
+    public native <T extends RealFieldElement<T>> FieldVector3D<T> getFieldVelocity(FieldAbsoluteDate<T> date, FieldVector3D<T> position, Frame frame);
+
 }

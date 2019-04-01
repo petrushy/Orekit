@@ -24,6 +24,8 @@ import org.orekit.models.AtmosphericRefractionModel;
 
 public class PythonAtmosphericRefractionModel implements AtmosphericRefractionModel {
 
+    private static final long serialVersionUID = -6933430021018867767L;
+    
     /** Part of JCC Python interface to object */
     private long pythonObject;
 
@@ -51,6 +53,7 @@ public class PythonAtmosphericRefractionModel implements AtmosphericRefractionMo
 
     /**
      * Compute the refraction angle from the true (geometrical) elevation.
+     * Extension point for Python.
      *
      * @param trueElevation true elevation (rad)
      * @return refraction angle (rad)

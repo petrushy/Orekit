@@ -60,6 +60,7 @@ public class PythonAbstractMeasurementBuilder<T extends ObservedMeasurement<T>> 
 
     /**
      * Generate a single measurement.
+     * Extension point for Python.
      *
      * @param states spacecraft states
      * @return generated measurement

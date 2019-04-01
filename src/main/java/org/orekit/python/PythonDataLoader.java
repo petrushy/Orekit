@@ -54,6 +54,7 @@ public class PythonDataLoader implements DataLoader {
     
     /**
      * Check if the loader still accepts new data.
+     * Extension point for Python.
      * <p>
      * This method is used to speed up data loading by interrupting crawling
      * the data sets as soon as a loader has found the data it was waiting for.
@@ -70,6 +71,7 @@ public class PythonDataLoader implements DataLoader {
 
     /**
      * Load data from a stream.
+     * Extension point for Python.
      *
      * @param input data input stream
      * @param name  name of the file (or zip entry)

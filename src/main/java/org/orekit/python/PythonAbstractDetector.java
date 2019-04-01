@@ -20,12 +20,10 @@
 
 package org.orekit.python;
 
-import org.orekit.errors.OrekitException;
 import org.orekit.propagation.SpacecraftState;
 import org.orekit.propagation.events.AbstractDetector;
 import org.orekit.propagation.events.EventDetector;
 import org.orekit.propagation.events.handlers.EventHandler;
-import org.orekit.time.AbsoluteDate;
 
 /** Common parts shared by several orbital events finders.
  * @see org.orekit.propagation.Propagator#addEventDetector(EventDetector)

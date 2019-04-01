@@ -53,6 +53,7 @@ public class PythonOrekitStepHandler implements OrekitStepHandler {
 
     /**
      * Initialize step handler at the start of a propagation.
+     * Extension point for Python.
      * <p>
      * This method is called once at the start of the propagation. It
      * may be used by the step handler to initialize some internal data
@@ -66,18 +67,15 @@ public class PythonOrekitStepHandler implements OrekitStepHandler {
      * @param t  target time for the integration
      */
     @Override
-    public void init(SpacecraftState s0, AbsoluteDate t) {
-
-    }
+    public native void init(SpacecraftState s0, AbsoluteDate t);
 
     /**
      * Handle the current step.
+     * Extension point for Python.
      *
      * @param interpolator interpolator set up for the current step
      * @param isLast       if true, this is the last integration step
      */
     @Override
-    public void handleStep(OrekitStepInterpolator interpolator, boolean isLast) {
-
-    }
+    public native void handleStep(OrekitStepInterpolator interpolator, boolean isLast);
 }
