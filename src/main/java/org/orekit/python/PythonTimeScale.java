@@ -75,7 +75,7 @@ public class PythonTimeScale implements TimeScale {
      */
     @Override
     public <T extends RealFieldElement<T>> T offsetFromTAI(FieldAbsoluteDate<T> date) {
-        return this.offsetFieldFromTAI(date);
+        return this.offsetFromTAI_F(date);
     }
 
     /**
@@ -87,7 +87,7 @@ public class PythonTimeScale implements TimeScale {
      * @see #offsetToTAI(DateComponents, TimeComponents)
      * @since 9.0
      */
-    public native <T extends RealFieldElement<T>> T offsetFieldFromTAI(FieldAbsoluteDate<T> date);
+    public native <T extends RealFieldElement<T>> T offsetFromTAI_F(FieldAbsoluteDate<T> date);
 
 
     /**

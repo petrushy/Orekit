@@ -345,7 +345,7 @@ public class PythonFieldBoundedPropagator<T extends RealFieldElement<T>> impleme
      */
     @Override
     public FieldSpacecraftState<T> propagate(FieldAbsoluteDate<T> start, FieldAbsoluteDate<T> target) {
-        return this.propagate_2p(start, target);
+        return this.propagate_FF(start, target);
     }
 
     /**
@@ -360,7 +360,7 @@ public class PythonFieldBoundedPropagator<T extends RealFieldElement<T>> impleme
      * @param target target date to which orbit state should be propagated
      * @return propagated state
      */
-    public native FieldSpacecraftState<T> propagate_2p(FieldAbsoluteDate<T> start, FieldAbsoluteDate<T> target);
+    public native FieldSpacecraftState<T> propagate_FF(FieldAbsoluteDate<T> start, FieldAbsoluteDate<T> target);
 
     /**
      * Get the {@link FieldPVCoordinates} of the body in the selected frame.

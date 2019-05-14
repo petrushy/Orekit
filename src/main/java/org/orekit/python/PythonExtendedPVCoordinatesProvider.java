@@ -63,7 +63,7 @@ public class PythonExtendedPVCoordinatesProvider implements ExtendedPVCoordinate
      */
     @Override
     public <T extends RealFieldElement<T>> TimeStampedFieldPVCoordinates<T> getPVCoordinates(FieldAbsoluteDate<T> date, Frame frame) {
-        return this.getFieldPVCoordinates(date, frame);
+        return this.getPVCoordinates_FF(date, frame);
     }
 
     /**
@@ -73,7 +73,7 @@ public class PythonExtendedPVCoordinatesProvider implements ExtendedPVCoordinate
      * @param frame the frame where to define the position
      * @return time-stamped position/velocity of the body (m and m/s)
      */
-    public native <T extends RealFieldElement<T>> TimeStampedFieldPVCoordinates<T> getFieldPVCoordinates(FieldAbsoluteDate<T> date, Frame frame);
+    public native <T extends RealFieldElement<T>> TimeStampedFieldPVCoordinates<T> getPVCoordinates_FF(FieldAbsoluteDate<T> date, Frame frame);
 
     /**
      * Get the {@link PVCoordinates} of the body in the selected frame.

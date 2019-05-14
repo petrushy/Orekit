@@ -90,7 +90,7 @@ public class PythonMappingFunction implements MappingFunction {
      */
     @Override
     public <T extends RealFieldElement<T>> T[] mappingFactors(T elevation, T height, T[] parameters, FieldAbsoluteDate<T> date) {
-        return this.mappingFieldFactors(elevation, height, parameters, date);
+        return this.mappingFactors_TTTF(elevation, height, parameters, date);
     }
 
 
@@ -108,7 +108,7 @@ public class PythonMappingFunction implements MappingFunction {
      * @param date       current date
      * @return a two components array containing the hydrostatic and wet mapping functions.
      */
-    public native <T extends RealFieldElement<T>> T[] mappingFieldFactors(T elevation, T height, T[] parameters, FieldAbsoluteDate<T> date);
+    public native <T extends RealFieldElement<T>> T[] mappingFactors_TTTF(T elevation, T height, T[] parameters, FieldAbsoluteDate<T> date);
 
 
     /**
@@ -135,7 +135,7 @@ public class PythonMappingFunction implements MappingFunction {
      */
     @Override
     public <T extends RealFieldElement<T>> T[] getParameters(Field<T> field) {
-        return this.getFieldParameters(field);
+        return this.getParameters_F(field);
     }
 
     /**
@@ -144,5 +144,5 @@ public class PythonMappingFunction implements MappingFunction {
      * @param field field to which the elements belong
      * @return tropospheric model parameters
      */
-    public native <T extends RealFieldElement<T>> T[] getFieldParameters(Field<T> field);
+    public native <T extends RealFieldElement<T>> T[] getParameters_F(Field<T> field);
 }

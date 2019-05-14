@@ -116,10 +116,10 @@ public class PythonEarthShape implements EarthShape {
      */
     @Override
     public <T extends RealFieldElement<T>> FieldGeodeticPoint<T> getIntersectionPoint(FieldLine<T> line, FieldVector3D<T> close, Frame frame, FieldAbsoluteDate<T> date) {
-        return this.getFieldIntersectionPoint(line, close, frame, date);
+        return this.getIntersectionPoint_FFFF(line, close, frame, date);
     }
 
-    public native <T extends RealFieldElement<T>> FieldGeodeticPoint<T> getFieldIntersectionPoint(FieldLine<T> line, FieldVector3D<T> close, Frame frame, FieldAbsoluteDate<T> date);
+    public native <T extends RealFieldElement<T>> FieldGeodeticPoint<T> getIntersectionPoint_FFFF(FieldLine<T> line, FieldVector3D<T> close, Frame frame, FieldAbsoluteDate<T> date);
 
     /**
      * Project a point to the ground.
@@ -147,10 +147,10 @@ public class PythonEarthShape implements EarthShape {
      */
     @Override
     public TimeStampedPVCoordinates projectToGround(TimeStampedPVCoordinates pv, Frame frame) {
-        return this.projectTimeStampedToGround(pv,frame);
+        return this.projectToGround_TF(pv,frame);
     }
 
-    public native TimeStampedPVCoordinates projectTimeStampedToGround(TimeStampedPVCoordinates pv, Frame frame);
+    public native TimeStampedPVCoordinates projectToGround_TF(TimeStampedPVCoordinates pv, Frame frame);
 
     /**
      * Transform a Cartesian point to a surface-relative point.
@@ -174,7 +174,7 @@ public class PythonEarthShape implements EarthShape {
      */
     @Override
     public <T extends RealFieldElement<T>> FieldGeodeticPoint<T> transform(FieldVector3D<T> point, Frame frame, FieldAbsoluteDate<T> date) {
-        return this.transformFV(point,frame, date);
+        return this.transform_FFF(point,frame, date);
     }
 
     /**
@@ -185,7 +185,7 @@ public class PythonEarthShape implements EarthShape {
      */
     @Override
     public Vector3D transform(GeodeticPoint point) {
-        return this.transformGP(point);
+        return this.transform_G(point);
     }
 
     /**
@@ -198,7 +198,7 @@ public class PythonEarthShape implements EarthShape {
      * @since 9.0
      */
 
-    public native <T extends RealFieldElement<T>> FieldGeodeticPoint<T> transformFV(FieldVector3D<T> point, Frame frame, FieldAbsoluteDate<T> date);
+    public native <T extends RealFieldElement<T>> FieldGeodeticPoint<T> transform_FFF(FieldVector3D<T> point, Frame frame, FieldAbsoluteDate<T> date);
 
     /**
      * Transform a surface-relative point to a Cartesian point.
@@ -207,7 +207,7 @@ public class PythonEarthShape implements EarthShape {
      * @return point at the same location but as a Cartesian point
      */
 
-    public native Vector3D transformGP(GeodeticPoint point);
+    public native Vector3D transform_G(GeodeticPoint point);
 
     /**
      * Transform a surface-relative point to a Cartesian point.
@@ -218,9 +218,9 @@ public class PythonEarthShape implements EarthShape {
      */
     @Override
     public <T extends RealFieldElement<T>> FieldVector3D<T> transform(FieldGeodeticPoint<T> point) {
-        return this.transformFGP(point);
+        return this.transform_F(point);
     }
 
-    public native <T extends RealFieldElement<T>> FieldVector3D<T> transformFGP(FieldGeodeticPoint<T> point);
+    public native <T extends RealFieldElement<T>> FieldVector3D<T> transform_F(FieldGeodeticPoint<T> point);
 
 }

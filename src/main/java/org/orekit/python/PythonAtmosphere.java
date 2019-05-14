@@ -80,7 +80,7 @@ public class PythonAtmosphere implements Atmosphere {
 
     /**
      * Get the local density.
-     * Redirects to getFieldDensity
+     * Redirects to getDensity_FFF
      *
      * @param date     current date
      * @param position current position in frame
@@ -89,7 +89,7 @@ public class PythonAtmosphere implements Atmosphere {
      */
     @Override
     public <T extends RealFieldElement<T>> T getDensity(FieldAbsoluteDate<T> date, FieldVector3D<T> position, Frame frame) {
-        return this.getFieldDensity(date, position, frame);
+        return this.getDensity_FFF(date, position, frame);
     }
 
 
@@ -102,7 +102,7 @@ public class PythonAtmosphere implements Atmosphere {
      * @param frame    the frame in which is defined the position
      * @return local density (kg/m³)
      */
-    public native <T extends RealFieldElement<T>> T getFieldDensity(FieldAbsoluteDate<T> date, FieldVector3D<T> position, Frame frame);
+    public native <T extends RealFieldElement<T>> T getDensity_FFF(FieldAbsoluteDate<T> date, FieldVector3D<T> position, Frame frame);
 
 
     /**
@@ -122,7 +122,7 @@ public class PythonAtmosphere implements Atmosphere {
 
     /**
      * Get the inertial velocity of atmosphere molecules.
-     * Redirects to getFieldVelocity(...)
+     * Redirects to getVelocity_FFF(...)
      *
      * @param date     current date
      * @param position current position in frame
@@ -131,7 +131,7 @@ public class PythonAtmosphere implements Atmosphere {
      */
     @Override
     public <T extends RealFieldElement<T>> FieldVector3D<T> getVelocity(FieldAbsoluteDate<T> date, FieldVector3D<T> position, Frame frame) {
-        return this.getFieldVelocity(date, position, frame);
+        return this.getVelocity_FFF(date, position, frame);
     }
 
     /**
@@ -143,6 +143,6 @@ public class PythonAtmosphere implements Atmosphere {
      * @param frame    the frame in which is defined the position
      * @return velocity (m/s) (defined in the same frame as the position)
      */
-    public native <T extends RealFieldElement<T>> FieldVector3D<T> getFieldVelocity(FieldAbsoluteDate<T> date, FieldVector3D<T> position, Frame frame);
+    public native <T extends RealFieldElement<T>> FieldVector3D<T> getVelocity_FFF(FieldAbsoluteDate<T> date, FieldVector3D<T> position, Frame frame);
 
 }

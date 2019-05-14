@@ -73,7 +73,7 @@ public class PythonTransformProvider implements TransformProvider {
      */
     @Override
     public <T extends RealFieldElement<T>> FieldTransform<T> getTransform(FieldAbsoluteDate<T> date) {
-        return this.getFieldTransform(date);
+        return this.getTransform_F(date);
     }
 
     /**
@@ -84,6 +84,6 @@ public class PythonTransformProvider implements TransformProvider {
      * @since 9.0
      */
 
-    public native <T extends RealFieldElement<T>> FieldTransform<T> getFieldTransform(FieldAbsoluteDate<T> date);
+    public native <T extends RealFieldElement<T>> FieldTransform<T> getTransform_F(FieldAbsoluteDate<T> date);
 
 }

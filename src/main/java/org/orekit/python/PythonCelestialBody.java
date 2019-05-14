@@ -114,7 +114,7 @@ public class PythonCelestialBody implements CelestialBody {
 
     /**
      * Get the {@link FieldPVCoordinates} of the body in the selected frame.
-     * Links to getFieldPVCoordinates() for Python extension
+     * Links to getPVCoordinates_FF() for Python extension
      *
      * @param date  current date
      * @param frame the frame where to define the position
@@ -122,7 +122,7 @@ public class PythonCelestialBody implements CelestialBody {
      */
     @Override
     public <T extends RealFieldElement<T>> TimeStampedFieldPVCoordinates<T> getPVCoordinates(FieldAbsoluteDate<T> date, Frame frame) {
-        return this.getFieldPVCoordinates(date, frame);
+        return this.getPVCoordinates_FF(date, frame);
     }
 
     /**
@@ -133,7 +133,7 @@ public class PythonCelestialBody implements CelestialBody {
      * @param frame the frame where to define the position
      * @return time-stamped position/velocity of the body (m and m/s)
      */
-    public native <T extends RealFieldElement<T>> TimeStampedFieldPVCoordinates<T> getFieldPVCoordinates(FieldAbsoluteDate<T> date, Frame frame);
+    public native <T extends RealFieldElement<T>> TimeStampedFieldPVCoordinates<T> getPVCoordinates_FF(FieldAbsoluteDate<T> date, Frame frame);
 
 
     /**

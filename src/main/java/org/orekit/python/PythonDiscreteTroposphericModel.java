@@ -76,7 +76,7 @@ public class PythonDiscreteTroposphericModel implements DiscreteTroposphericMode
     /**
      * Calculates the tropospheric path delay for the signal path from a ground
      * station to a satellite.
-     * Redirects to pathFieldDelay(...) for Python extension
+     * Redirects to pathDelay_TTTF(...) for Python extension
      *
      * @param elevation  the elevation of the satellite, in radians
      * @param height     the height of the station in m above sea level
@@ -86,7 +86,7 @@ public class PythonDiscreteTroposphericModel implements DiscreteTroposphericMode
      */
     @Override
     public <T extends RealFieldElement<T>> T pathDelay(T elevation, T height, T[] parameters, FieldAbsoluteDate<T> date) {
-        return this.pathFieldDelay(elevation, height, parameters, date);
+        return this.pathDelay_TTTF(elevation, height, parameters, date);
     }
 
     /**
@@ -100,7 +100,7 @@ public class PythonDiscreteTroposphericModel implements DiscreteTroposphericMode
      * @param date       current date
      * @return the path delay due to the troposphere in m
      */
-    public native <T extends RealFieldElement<T>> T pathFieldDelay(T elevation, T height, T[] parameters, FieldAbsoluteDate<T> date);
+    public native <T extends RealFieldElement<T>> T pathDelay_TTTF(T elevation, T height, T[] parameters, FieldAbsoluteDate<T> date);
 
 
     /**
@@ -129,7 +129,7 @@ public class PythonDiscreteTroposphericModel implements DiscreteTroposphericMode
      * <li>T[1] = D<sub>wz</sub> -&gt zenith wet delay
      * </ul>
      *
-     * Calls computeFieldZenithDelay(...) for Python extension.
+     * Calls computeZenithDelay_TTF(...) for Python extension.
      *
      * @param height     the height of the station in m above sea level.
      * @param parameters tropospheric model parameters.
@@ -138,7 +138,7 @@ public class PythonDiscreteTroposphericModel implements DiscreteTroposphericMode
      */
     @Override
     public <T extends RealFieldElement<T>> T[] computeZenithDelay(T height, T[] parameters, FieldAbsoluteDate<T> date) {
-        return this.computeFieldZenithDelay(height, parameters, date);
+        return this.computeZenithDelay_TTF(height, parameters, date);
     }
 
     /**
@@ -156,7 +156,7 @@ public class PythonDiscreteTroposphericModel implements DiscreteTroposphericMode
      * @param date       current date
      * @return a two components array containing the zenith hydrostatic and wet delays.
      */
-     public native <T extends RealFieldElement<T>> T[] computeFieldZenithDelay(T height, T[] parameters, FieldAbsoluteDate<T> date);
+     public native <T extends RealFieldElement<T>> T[] computeZenithDelay_TTF(T height, T[] parameters, FieldAbsoluteDate<T> date);
 
     /**
      * This method allows the computation of the hydrostatic and
@@ -185,7 +185,7 @@ public class PythonDiscreteTroposphericModel implements DiscreteTroposphericMode
      * <li>T[1] = m<sub>w</sub>(e) -&gt wet mapping function
      * </ul>
      *
-     * Calls mappingFieldFactors(...) for Python extension.
+     * Calls mappingFactors_TTTF(...) for Python extension.
      *
      * @param elevation  the elevation of the satellite, in radians.
      * @param height     the height of the station in m above sea level.
@@ -195,7 +195,7 @@ public class PythonDiscreteTroposphericModel implements DiscreteTroposphericMode
      */
     @Override
     public <T extends RealFieldElement<T>> T[] mappingFactors(T elevation, T height, T[] parameters, FieldAbsoluteDate<T> date) {
-        return this.mappingFieldFactors(elevation, height, parameters, date);
+        return this.mappingFactors_TTTF(elevation, height, parameters, date);
     }
 
     /**
@@ -214,7 +214,7 @@ public class PythonDiscreteTroposphericModel implements DiscreteTroposphericMode
      * @param date       current date
      * @return a two components array containing the hydrostatic and wet mapping functions.
      */
-    public native <T extends RealFieldElement<T>> T[] mappingFieldFactors(T elevation, T height, T[] parameters, FieldAbsoluteDate<T> date);
+    public native <T extends RealFieldElement<T>> T[] mappingFactors_TTTF(T elevation, T height, T[] parameters, FieldAbsoluteDate<T> date);
 
 
     /**
@@ -244,7 +244,7 @@ public class PythonDiscreteTroposphericModel implements DiscreteTroposphericMode
      */
     @Override
     public <T extends RealFieldElement<T>> T[] getParameters(Field<T> field) {
-        return this.getFieldParameters(field);
+        return this.getParameters_F(field);
     }
 
     /**
@@ -254,6 +254,6 @@ public class PythonDiscreteTroposphericModel implements DiscreteTroposphericMode
      * @param field field to which the elements belong
      * @return tropospheric model parameters
      */
-    public native <T extends RealFieldElement<T>> T[] getFieldParameters(Field<T> field);
+    public native <T extends RealFieldElement<T>> T[] getParameters_F(Field<T> field);
 
 }

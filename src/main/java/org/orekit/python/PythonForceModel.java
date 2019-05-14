@@ -124,7 +124,7 @@ public class PythonForceModel implements ForceModel {
      */
     @Override
     public <T extends RealFieldElement<T>> T[] getParameters(Field<T> field) {
-        return this.getFieldParameters(field);
+        return this.getParameters_F(field);
     }
 
     /**
@@ -134,7 +134,7 @@ public class PythonForceModel implements ForceModel {
      * @return force model parameters
      * @since 9.0
      */
-    public native <T extends RealFieldElement<T>> T[] getFieldParameters(Field<T> field);
+    public native <T extends RealFieldElement<T>> T[] getParameters_F(Field<T> field);
 
     /**
      * Check if force models depends on position only.

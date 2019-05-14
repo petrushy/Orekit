@@ -93,7 +93,7 @@ public class PythonDragSensitive implements DragSensitive {
 
     /**
      * Compute the acceleration due to drag.
-     * Connects to dragRealFieldElementAcceleration for Python extension.
+     * Connects to dragAcceleration_FFFFTTFT for Python extension.
      * <p>
      * The computation includes all spacecraft specific characteristics
      * like shape, area and coefficients.
@@ -113,16 +113,16 @@ public class PythonDragSensitive implements DragSensitive {
      */
     @Override
     public <T extends RealFieldElement<T>> FieldVector3D<T> dragAcceleration(FieldAbsoluteDate<T> date, Frame frame, FieldVector3D<T> position, FieldRotation<T> rotation, T mass, T density, FieldVector3D<T> relativeVelocity, T[] parameters) {
-        return this.dragRealFieldElementAcceleration(date,frame, position, rotation, mass, density, relativeVelocity, parameters);
+        return this.dragAcceleration_FFFFTTFT(date,frame, position, rotation, mass, density, relativeVelocity, parameters);
     }
 
     /* Extension point for Python. Connected to dragAcceleration(...)*/
-    public native <T extends RealFieldElement<T>> FieldVector3D<T> dragRealFieldElementAcceleration(FieldAbsoluteDate<T> date, Frame frame, FieldVector3D<T> position, FieldRotation<T> rotation, T mass, T density, FieldVector3D<T> relativeVelocity, T[] parameters);
+    public native <T extends RealFieldElement<T>> FieldVector3D<T> dragAcceleration_FFFFTTFT(FieldAbsoluteDate<T> date, Frame frame, FieldVector3D<T> position, FieldRotation<T> rotation, T mass, T density, FieldVector3D<T> relativeVelocity, T[] parameters);
 
 
     /**
      * Compute acceleration due to drag, with parameters derivatives.
-     * Connects to dragFieldVector3DAcceleration for Python extension.
+     * Connects to dragAcceleration_AFVRddVdS for Python extension.
      *
      * @param date             current date
      * @param frame            inertial reference frame for state (both orbit and attitude)
@@ -138,10 +138,10 @@ public class PythonDragSensitive implements DragSensitive {
      */
     @Override
     public FieldVector3D<DerivativeStructure> dragAcceleration(AbsoluteDate date, Frame frame, Vector3D position, Rotation rotation, double mass, double density, Vector3D relativeVelocity, double[] parameters, String paramName) {
-        return this.dragFieldVector3DAcceleration(date,frame,position, rotation, mass, density, relativeVelocity, parameters, paramName);
+        return this.dragAcceleration_AFVRddVdS(date,frame,position, rotation, mass, density, relativeVelocity, parameters, paramName);
     }
 
     /* Extension point for Python. Connects to dragAcceleration(...) */
-    public native FieldVector3D<DerivativeStructure> dragFieldVector3DAcceleration(AbsoluteDate date, Frame frame, Vector3D position, Rotation rotation, double mass, double density, Vector3D relativeVelocity, double[] parameters, String paramName);
+    public native FieldVector3D<DerivativeStructure> dragAcceleration_AFVRddVdS(AbsoluteDate date, Frame frame, Vector3D position, Rotation rotation, double mass, double density, Vector3D relativeVelocity, double[] parameters, String paramName);
 
 }

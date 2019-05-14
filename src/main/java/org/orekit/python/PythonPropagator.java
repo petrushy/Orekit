@@ -383,7 +383,7 @@ public class PythonPropagator implements Propagator {
      */
     @Override
     public SpacecraftState propagate(AbsoluteDate start, AbsoluteDate target) {
-        return this.propagate_2p(start, target);
+        return this.propagate_AA(start, target);
     }
 
 
@@ -399,7 +399,7 @@ public class PythonPropagator implements Propagator {
      * @param target target date to which orbit state should be propagated
      * @return propagated state
      */
-    public native SpacecraftState propagate_2p(AbsoluteDate start, AbsoluteDate target);
+    public native SpacecraftState propagate_AA(AbsoluteDate start, AbsoluteDate target);
 
 
     /**

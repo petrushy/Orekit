@@ -332,7 +332,7 @@ public class PythonFieldPropagator<T extends RealFieldElement<T>> implements Fie
      */
     @Override
     public FieldSpacecraftState<T> propagate(FieldAbsoluteDate<T> start, FieldAbsoluteDate<T> target) {
-        return this.propagate_2p(start, target);
+        return this.propagate_FF(start, target);
     }
 
     /**
@@ -347,7 +347,7 @@ public class PythonFieldPropagator<T extends RealFieldElement<T>> implements Fie
      * @param target target date to which orbit state should be propagated
      * @return propagated state
      */
-    public native FieldSpacecraftState<T> propagate_2p(FieldAbsoluteDate<T> start, FieldAbsoluteDate<T> target);
+    public native FieldSpacecraftState<T> propagate_FF(FieldAbsoluteDate<T> start, FieldAbsoluteDate<T> target);
 
 
     /**

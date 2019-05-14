@@ -96,8 +96,9 @@ public class PythonRadiationSensitive implements RadiationSensitive {
      */
     @Override
     public <T extends RealFieldElement<T>> FieldVector3D<T> radiationPressureAcceleration(FieldAbsoluteDate<T> date, Frame frame, FieldVector3D<T> position, FieldRotation<T> rotation, T mass, FieldVector3D<T> flux, T[] parameters) {
-        return this.radiationRealFieldPressureAcceleration(date, frame, position, rotation, mass, flux, parameters);
+        return this.radiationPressureAcceleration_FFFFTFT(date, frame, position, rotation, mass, flux, parameters);
     }
+
 
     /**
      * Compute the acceleration due to radiation pressure.
@@ -111,7 +112,7 @@ public class PythonRadiationSensitive implements RadiationSensitive {
      * @param parameters values of the force model parameters
      * @return spacecraft acceleration in the same inertial frame as spacecraft orbit (m/s²)
      */
-    public native <T extends RealFieldElement<T>> FieldVector3D<T> radiationRealFieldPressureAcceleration(FieldAbsoluteDate<T> date, Frame frame, FieldVector3D<T> position, FieldRotation<T> rotation, T mass, FieldVector3D<T> flux, T[] parameters);
+    public native <T extends RealFieldElement<T>> FieldVector3D<T> radiationPressureAcceleration_FFFFTFT(FieldAbsoluteDate<T> date, Frame frame, FieldVector3D<T> position, FieldRotation<T> rotation, T mass, FieldVector3D<T> flux, T[] parameters);
 
     /**
      * Compute the acceleration due to radiation pressure, with parameters derivatives.
@@ -128,7 +129,7 @@ public class PythonRadiationSensitive implements RadiationSensitive {
      */
     @Override
     public FieldVector3D<DerivativeStructure> radiationPressureAcceleration(AbsoluteDate date, Frame frame, Vector3D position, Rotation rotation, double mass, Vector3D flux, double[] parameters, String paramName) {
-        return this.radiationFieldVector3DPressureAcceleration(date, frame, position, rotation, mass, flux, parameters, paramName);
+        return this.radiationPressureAcceleration_AFVRdVdS(date, frame, position, rotation, mass, flux, parameters, paramName);
     }
 
     /**
@@ -144,7 +145,7 @@ public class PythonRadiationSensitive implements RadiationSensitive {
      * @param paramName  name of the parameter with respect to which derivatives are required
      * @return spacecraft acceleration in the same inertial frame as spacecraft orbit (m/s²)
      */
-    public native FieldVector3D<DerivativeStructure> radiationFieldVector3DPressureAcceleration(AbsoluteDate date, Frame frame, Vector3D position, Rotation rotation, double mass, Vector3D flux, double[] parameters, String paramName);
+    public native FieldVector3D<DerivativeStructure> radiationPressureAcceleration_AFVRdVdS(AbsoluteDate date, Frame frame, Vector3D position, Rotation rotation, double mass, Vector3D flux, double[] parameters, String paramName);
 
 
 }

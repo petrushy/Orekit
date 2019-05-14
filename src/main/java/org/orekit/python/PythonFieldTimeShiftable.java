@@ -66,7 +66,7 @@ public class PythonFieldTimeShiftable<T extends FieldTimeInterpolable<T, KK>, KK
      */
     @Override
     public T shiftedBy(KK dt) {
-        return this.shiftedByType(dt);
+        return this.shiftedBy_KK(dt);
     }
 
 
@@ -76,6 +76,6 @@ public class PythonFieldTimeShiftable<T extends FieldTimeInterpolable<T, KK>, KK
      * @param dt time shift in seconds
      * @return a new instance, shifted with respect to instance (which is not changed)
      */
-    public native T shiftedByType(KK dt);
+    public native T shiftedBy_KK(KK dt);
 
 }

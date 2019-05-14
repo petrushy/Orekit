@@ -74,7 +74,7 @@ public class PythonIAUPole  implements IAUPole {
      */
     @Override
     public <T extends RealFieldElement<T>> FieldVector3D<T> getPole(FieldAbsoluteDate<T> date) {
-        return this.getFieldPole(date);
+        return this.getPole_F(date);
     }
 
     /**
@@ -84,7 +84,7 @@ public class PythonIAUPole  implements IAUPole {
      * @return body North pole direction in ICRF frame
      * @since 9.0
      */
-    public native <T extends RealFieldElement<T>> FieldVector3D<T> getFieldPole(FieldAbsoluteDate<T> date);
+    public native <T extends RealFieldElement<T>> FieldVector3D<T> getPole_F(FieldAbsoluteDate<T> date);
 
 
 
@@ -107,7 +107,7 @@ public class PythonIAUPole  implements IAUPole {
      */
     @Override
     public <T extends RealFieldElement<T>> FieldVector3D<T> getNode(FieldAbsoluteDate<T> date) {
-        return this.getFieldNode(date);
+        return this.getNode_F(date);
     }
 
     /**
@@ -117,7 +117,7 @@ public class PythonIAUPole  implements IAUPole {
      * @return body Q Node direction in ICRF frame
      * @since 9.1
      */
-    public native <T extends RealFieldElement<T>> FieldVector3D<T> getFieldNode(FieldAbsoluteDate<T> date);
+    public native <T extends RealFieldElement<T>> FieldVector3D<T> getNode_F(FieldAbsoluteDate<T> date);
 
 
     /**
@@ -146,7 +146,7 @@ public class PythonIAUPole  implements IAUPole {
      */
     @Override
     public <T extends RealFieldElement<T>> T getPrimeMeridianAngle(FieldAbsoluteDate<T> date) {
-        return this.getFieldPrimeMeridianAngle(date);
+        return this.getPrimeMeridianAngle_F(date);
     }
 
     /**
@@ -160,7 +160,7 @@ public class PythonIAUPole  implements IAUPole {
      * @return prime meridian vector
      * @since 9.0
      */
-    public native <T extends RealFieldElement<T>> T getFieldPrimeMeridianAngle(FieldAbsoluteDate<T> date);
+    public native <T extends RealFieldElement<T>> T getPrimeMeridianAngle_F(FieldAbsoluteDate<T> date);
 
 
 }

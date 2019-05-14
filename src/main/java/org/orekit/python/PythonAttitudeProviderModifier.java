@@ -82,7 +82,7 @@ public class PythonAttitudeProviderModifier  implements AttitudeProviderModifier
 
     /**
      * Compute the attitude corresponding to an orbital state.
-     * Redirects to getFieldAttitude(...) for Python extension
+     * Redirects to getAttitude_FFF(...) for Python extension
      *
      * @param pvProv local position-velocity provider around current date
      * @param date   current date
@@ -92,7 +92,7 @@ public class PythonAttitudeProviderModifier  implements AttitudeProviderModifier
      */
     @Override
     public <T extends RealFieldElement<T>> FieldAttitude<T> getAttitude(FieldPVCoordinatesProvider<T> pvProv, FieldAbsoluteDate<T> date, Frame frame) {
-        return this.getFieldAttitude(pvProv, date, frame);
+        return this.getAttitude_FFF(pvProv, date, frame);
     }
 
     /**
@@ -105,5 +105,5 @@ public class PythonAttitudeProviderModifier  implements AttitudeProviderModifier
      * @return attitude attitude on the specified date and position-velocity state
      * @since 9.3
      */
-    public native <T extends RealFieldElement<T>> FieldAttitude<T> getFieldAttitude(FieldPVCoordinatesProvider<T> pvProv, FieldAbsoluteDate<T> date, Frame frame);
+    public native <T extends RealFieldElement<T>> FieldAttitude<T> getAttitude_FFF(FieldPVCoordinatesProvider<T> pvProv, FieldAbsoluteDate<T> date, Frame frame);
 }
