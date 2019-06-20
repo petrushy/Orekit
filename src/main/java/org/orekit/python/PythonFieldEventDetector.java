@@ -20,9 +20,9 @@
 package org.orekit.python;
 
 import org.hipparchus.RealFieldElement;
+import org.hipparchus.ode.events.Action;
 import org.orekit.propagation.FieldSpacecraftState;
 import org.orekit.propagation.events.FieldEventDetector;
-import org.orekit.propagation.events.handlers.FieldEventHandler;
 import org.orekit.time.FieldAbsoluteDate;
 
 public class PythonFieldEventDetector<T extends RealFieldElement<T>> implements FieldEventDetector<T> {
@@ -113,7 +113,7 @@ public class PythonFieldEventDetector<T extends RealFieldElement<T>> implements 
      * @since 7.0
      */
     @Override
-    public native FieldEventHandler.Action eventOccurred(FieldSpacecraftState<T> s, boolean increasing);
+    public native Action eventOccurred(FieldSpacecraftState<T> s, boolean increasing);
 
     /**
      * Reset the state prior to continue propagation.
