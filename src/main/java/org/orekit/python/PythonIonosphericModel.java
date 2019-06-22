@@ -19,9 +19,17 @@
 
 package org.orekit.python;
 
+import org.hipparchus.Field;
+import org.hipparchus.RealFieldElement;
 import org.orekit.bodies.GeodeticPoint;
-import org.orekit.models.earth.IonosphericModel;
+import org.orekit.frames.TopocentricFrame;
+import org.orekit.models.earth.ionosphere.IonosphericModel;
+import org.orekit.propagation.FieldSpacecraftState;
+import org.orekit.propagation.SpacecraftState;
 import org.orekit.time.AbsoluteDate;
+import org.orekit.utils.ParameterDriver;
+
+import java.util.List;
 
 public class PythonIonosphericModel implements IonosphericModel {
 
@@ -55,13 +63,80 @@ public class PythonIonosphericModel implements IonosphericModel {
     /**
      * Calculates the ionospheric path delay for the signal path from a ground
      * station to a satellite.
+     * <p>
+     * This method is intended to be used for orbit determination issues.
+     * In that respect, if the elevation is below 0° the path delay will be equal to zero.
+     * </p><p>
+     * For individual use of the ionospheric model (i.e. not for orbit determination), another
+     * method signature can be implemented to compute the path delay for any elevation angle.
+     * </p>
      *
-     * @param date      current date
-     * @param geo       the Geodetic point of receiver/station
-     * @param elevation the elevation of the satellite
-     * @param azimuth   the azimuth of the satellite
+     * @param state      spacecraft state
+     * @param baseFrame  base frame associated with the station
+     * @param frequency  frequency of the signal in Hz
+     * @param parameters ionospheric model parameters
      * @return the path delay due to the ionosphere in m
      */
     @Override
-    public native double pathDelay(AbsoluteDate date, GeodeticPoint geo, double elevation, double azimuth);
+    public double pathDelay(SpacecraftState state, TopocentricFrame baseFrame, double frequency, double[] parameters) {
+        return this.pathDelay_STdd(state, baseFrame, frequency, parameters);
+    }
+
+    public native double pathDelay_STdd(SpacecraftState state, TopocentricFrame baseFrame, double frequency, double[] parameters);
+
+
+
+
+    /**
+     * Calculates the ionospheric path delay for the signal path from a ground
+     * station to a satellite.
+     * <p>
+     * This method is intended to be used for orbit determination issues.
+     * In that respect, if the elevation is below 0° the path delay will be equal to zero.
+     * </p><p>
+     * For individual use of the ionospheric model (i.e. not for orbit determination), another
+     * method signature can be implemented to compute the path delay for any elevation angle.
+     * </p>
+     *
+     * @param state      spacecraft state
+     * @param baseFrame  base frame associated with the station
+     * @param frequency  frequency of the signal in Hz
+     * @param parameters ionospheric model parameters
+     * @return the path delay due to the ionosphere in m
+     */
+    @Override
+    public <T extends RealFieldElement<T>> T pathDelay(FieldSpacecraftState<T> state, TopocentricFrame baseFrame, double frequency, T[] parameters) {
+        return this.pathDelay_FTdT(state, baseFrame, frequency, parameters);
+    }
+
+    public native <T extends RealFieldElement<T>> T pathDelay_FTdT(FieldSpacecraftState<T> state, TopocentricFrame baseFrame, double frequency, T[] parameters);
+
+    /**
+     * Get the drivers for ionospheric model parameters.
+     *
+     * @return drivers for ionospheric model parameters
+     */
+    @Override
+    public native List<ParameterDriver> getParametersDrivers();
+
+    /**
+     * Get ionospheric model parameters.
+     *
+     * @return ionospheric model parameters
+     */
+    @Override
+    public native double[] getParameters();
+
+    /**
+     * Get ionospheric model parameters.
+     *
+     * @param field field to which the elements belong
+     * @return ionospheric model parameters
+     */
+    @Override
+    public <T extends RealFieldElement<T>> T[] getParameters(Field<T> field) {
+        return this.getParameters_F(field);
+    }
+
+    public native <T extends RealFieldElement<T>> T[] getParameters_F(Field<T> field);
 }
