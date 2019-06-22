@@ -19,7 +19,7 @@
 
 package org.orekit.python;
 
-import org.orekit.forces.drag.atmosphere.JB2008InputParameters;
+import org.orekit.models.earth.atmosphere.JB2008InputParameters;
 import org.orekit.time.AbsoluteDate;
 
 public class PythonJB2008InputParameters implements JB2008InputParameters {

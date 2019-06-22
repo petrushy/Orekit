@@ -120,28 +120,4 @@ public class PythonDragSensitive implements DragSensitive {
     public native <T extends RealFieldElement<T>> FieldVector3D<T> dragAcceleration_FFFFTTFT(FieldAbsoluteDate<T> date, Frame frame, FieldVector3D<T> position, FieldRotation<T> rotation, T mass, T density, FieldVector3D<T> relativeVelocity, T[] parameters);
 
 
-    /**
-     * Compute acceleration due to drag, with parameters derivatives.
-     * Connects to dragAcceleration_AFVRddVdS for Python extension.
-     *
-     * @param date             current date
-     * @param frame            inertial reference frame for state (both orbit and attitude)
-     * @param position         position of spacecraft in reference frame
-     * @param rotation         orientation (attitude) of the spacecraft with respect to reference frame
-     * @param mass             current mass
-     * @param density          atmospheric density at spacecraft position
-     * @param relativeVelocity relative velocity of atmosphere with respect to spacecraft,
-     *                         in the same inertial frame as spacecraft orbit (m/s)
-     * @param parameters       values of the force model parameters
-     * @param paramName        name of the parameter with respect to which derivatives are required
-     * @return spacecraft acceleration in the same inertial frame as spacecraft orbit (m/s²)
-     */
-    @Override
-    public FieldVector3D<DerivativeStructure> dragAcceleration(AbsoluteDate date, Frame frame, Vector3D position, Rotation rotation, double mass, double density, Vector3D relativeVelocity, double[] parameters, String paramName) {
-        return this.dragAcceleration_AFVRddVdS(date,frame,position, rotation, mass, density, relativeVelocity, parameters, paramName);
-    }
-
-    /* Extension point for Python. Connects to dragAcceleration(...) */
-    public native FieldVector3D<DerivativeStructure> dragAcceleration_AFVRddVdS(AbsoluteDate date, Frame frame, Vector3D position, Rotation rotation, double mass, double density, Vector3D relativeVelocity, double[] parameters, String paramName);
-
 }

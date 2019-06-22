@@ -29,7 +29,7 @@ import org.orekit.propagation.events.handlers.EventHandler;
  * @see org.orekit.propagation.Propagator#addEventDetector(EventDetector)
  * @author Luc Maisonobe
  */
-public class PythonAbstractDetector<T extends EventDetector> extends AbstractDetector<T> {
+public class PythonAbstractDetector<T extends AbstractDetector<T>> extends AbstractDetector<T> {
 
 	/** Serializable UID. */
     private static final long serialVersionUID = -334171965326514174L;

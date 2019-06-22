@@ -23,7 +23,7 @@ package org.orekit.python;
 
 import org.hipparchus.Field;
 import org.hipparchus.RealFieldElement;
-import org.orekit.models.earth.DiscreteTroposphericModel;
+import org.orekit.models.earth.troposphere.DiscreteTroposphericModel;
 import org.orekit.time.AbsoluteDate;
 import org.orekit.time.FieldAbsoluteDate;
 import org.orekit.utils.ParameterDriver;

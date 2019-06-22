@@ -1,9 +1,16 @@
 package org.orekit.python;
 
+import org.hipparchus.Field;
+import org.hipparchus.RealFieldElement;
 import org.orekit.forces.ForceModel;
+import org.orekit.propagation.FieldSpacecraftState;
 import org.orekit.propagation.SpacecraftState;
 import org.orekit.propagation.events.EventDetector;
+import org.orekit.propagation.events.FieldEventDetector;
 import org.orekit.propagation.semianalytical.dsst.forces.AbstractGaussianContribution;
+import org.orekit.propagation.semianalytical.dsst.forces.AbstractGaussianContributionContext;
+import org.orekit.propagation.semianalytical.dsst.forces.FieldAbstractGaussianContributionContext;
+import org.orekit.utils.ParameterDriver;
 
 public class PythonAbstractGaussianContribution extends AbstractGaussianContribution {
 
@@ -40,19 +47,47 @@ public class PythonAbstractGaussianContribution extends AbstractGaussianContribu
      * @param threshold             tolerance for the choice of the Gauss quadrature order
      * @param contribution          the {@link ForceModel} to be numerically averaged
      */
-    public PythonAbstractGaussianContribution(String coefficientsKeyPrefix, double threshold, ForceModel contribution) {
-        super(coefficientsKeyPrefix, threshold, contribution);
+    public PythonAbstractGaussianContribution(String coefficientsKeyPrefix, double threshold, ForceModel contribution, double mu) {
+        super(coefficientsKeyPrefix, threshold, contribution, mu);
     }
 
     /**
-     * Compute the limits in L, the true longitude, for integration.
-     * Extension point for Python.
+     * Get the drivers for force model parameters except the one for the central attraction coefficient.
+     * <p>
+     * The driver for central attraction coefficient is automatically
+     * added at the last element of the {@link ParameterDriver} array
+     * into {@link #getParametersDrivers()} method.
+     * </p>
      *
-     * @param state current state information: date, kinematics, attitude
+     * @return drivers for force model parameters
+     */
+    @Override
+    public native ParameterDriver[] getParametersDriversWithoutMu();
+
+    /**
+     * Compute the limits in L, the true longitude, for integration.
+     *
+     * @param state   current state information: date, kinematics, attitude
+     * @param context container for attributes
      * @return the integration limits in L
      */
     @Override
-    public native double[] getLLimits(SpacecraftState state);
+    public native double[] getLLimits(SpacecraftState state, AbstractGaussianContributionContext context);
+
+    /**
+     * Compute the limits in L, the true longitude, for integration.
+     *
+     * @param state   current state information: date, kinematics, attitude
+     * @param context container for attributes
+     * @return the integration limits in L
+     */
+    @Override
+    protected <T extends RealFieldElement<T>> T[] getLLimits(FieldSpacecraftState<T> state, FieldAbstractGaussianContributionContext<T> context) {
+        return this.getLLimits_FF(state, context);
+    }
+
+    public native <T extends RealFieldElement<T>> T[] getLLimits_FF(FieldSpacecraftState<T> state, FieldAbstractGaussianContributionContext<T> context);
+
 
     /**
      * Get the discrete events related to the model.
@@ -63,4 +98,14 @@ public class PythonAbstractGaussianContribution extends AbstractGaussianContribu
      */
     @Override
     public native EventDetector[] getEventsDetectors();
+
+    /**
+     * Get the discrete events related to the model.
+     *
+     * @param field field used by default
+     * @return array of events detectors or null if the model is not
+     * related to any discrete events
+     */
+    @Override
+    public native <T extends RealFieldElement<T>> FieldEventDetector<T>[] getFieldEventsDetectors(Field<T> field);
 }

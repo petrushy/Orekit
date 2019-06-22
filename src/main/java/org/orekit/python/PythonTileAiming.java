@@ -24,6 +24,8 @@ import org.hipparchus.geometry.euclidean.threed.Vector3D;
 import org.orekit.bodies.GeodeticPoint;
 import org.orekit.models.earth.tessellation.TileAiming;
 
+import java.util.List;
+
 public class PythonTileAiming implements TileAiming {
 
     /** Part of JCC Python interface to object */
@@ -51,6 +53,23 @@ public class PythonTileAiming implements TileAiming {
     /** Part of JCC Python interface to object */
     public native void pythonDecRef();
 
+
+    /**
+     * Get points at which aiming direction cannot be computed.
+     * <p>
+     * As per Brouwer's <a href="http://mathworld.wolfram.com/HairyBallTheorem.html">hairy
+     * ball theorem</a>, any vector field on the 2-sphere has at least one zero.
+     * This implies that any implementation of this interface has at least one point
+     * where the aiming direction cannot be computed. The most typical example is aiming
+     * always towards North pole, for which both poles are singular points.
+     * </p>
+     *
+     * @return a non-empty (as per hairy ball theorem) list of points where aiming direction
+     * is either zero or cannot be computed
+     * @since 10.0
+     */
+    @Override
+    public native List<GeodeticPoint> getSingularPoints();
 
     /**
      * Find the along tile direction for tessellation at specified point.

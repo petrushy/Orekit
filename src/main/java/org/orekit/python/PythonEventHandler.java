@@ -24,7 +24,7 @@ import org.orekit.errors.OrekitException;
 import org.orekit.propagation.SpacecraftState;
 import org.orekit.propagation.events.EventDetector;
 import org.orekit.propagation.events.handlers.EventHandler;
-import static org.orekit.propagation.events.handlers.EventHandler.Action;
+import org.hipparchus.ode.events.Action;
 
 /** This interface represents space-dynamics aware events detectors.
 *

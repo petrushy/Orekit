@@ -157,22 +157,6 @@ public class PythonObservedMeasurement<T extends ObservedMeasurement<T>> impleme
     @Override
     public native List<ParameterDriver> getParametersDrivers();
 
-    /**
-     * Get the indices of the {@link Propagator propagators}
-     * related to this measurement.
-     * <p>
-     * The propagators are indexed starting from 0 and ordered according to
-     * the order of the {@link PropagatorBuilder
-     * propagators builders} in the orbit determination engine used.
-     * </p>
-     *
-     * @return indices of the {@link Propagator propagators}
-     * related to this measurement
-     * @since 9.0
-     * @deprecated as of 9.3, replaced by {@link #getSatellites()}
-     */
-    @Override
-    public native List<Integer> getPropagatorsIndices();
 
     /**
      * Get the satellites related to this measurement.

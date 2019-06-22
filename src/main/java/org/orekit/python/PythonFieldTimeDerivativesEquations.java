@@ -58,7 +58,7 @@ public class PythonFieldTimeDerivativesEquations<T extends RealFieldElement<T>> 
      * @param mu central body gravitational constant
      */
     @Override
-    public native void addKeplerContribution(double mu);
+    public native void addKeplerContribution(T mu);
 
     /**
      * Add the contribution of an acceleration expressed in some inertial frame.

@@ -21,12 +21,10 @@ package org.orekit.python;
 
 import org.hipparchus.Field;
 import org.hipparchus.RealFieldElement;
-import org.orekit.bodies.GeodeticPoint;
 import org.orekit.frames.TopocentricFrame;
 import org.orekit.models.earth.ionosphere.IonosphericModel;
 import org.orekit.propagation.FieldSpacecraftState;
 import org.orekit.propagation.SpacecraftState;
-import org.orekit.time.AbsoluteDate;
 import org.orekit.utils.ParameterDriver;
 
 import java.util.List;

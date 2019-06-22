@@ -5,6 +5,7 @@ import org.orekit.attitudes.AttitudeProvider;
 import org.orekit.frames.Frame;
 import org.orekit.orbits.OrbitType;
 import org.orekit.orbits.PositionAngle;
+import org.orekit.propagation.PropagationType;
 import org.orekit.propagation.integration.AbstractIntegratedPropagator;
 import org.orekit.propagation.integration.StateMapper;
 import org.orekit.time.AbsoluteDate;
@@ -41,8 +42,8 @@ public class PythonAbstractIntegratedPropagator extends AbstractIntegratedPropag
      * @param integrator numerical integrator to use for propagation.
      * @param meanOrbit  output only the mean orbit.
      */
-    protected PythonAbstractIntegratedPropagator(ODEIntegrator integrator, boolean meanOrbit) {
-        super(integrator, meanOrbit);
+    public PythonAbstractIntegratedPropagator(ODEIntegrator integrator, PropagationType propagationType) {
+        super(integrator, propagationType);
     }
 
     /**

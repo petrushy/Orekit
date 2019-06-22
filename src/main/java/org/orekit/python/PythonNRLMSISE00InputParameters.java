@@ -19,7 +19,7 @@
 
 package org.orekit.python;
 
-import org.orekit.forces.drag.atmosphere.NRLMSISE00InputParameters;
+import org.orekit.models.earth.atmosphere.NRLMSISE00InputParameters;
 import org.orekit.time.AbsoluteDate;
 
 public class PythonNRLMSISE00InputParameters implements NRLMSISE00InputParameters {

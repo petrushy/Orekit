@@ -19,7 +19,7 @@
 
 package org.orekit.python;
 
-import org.orekit.models.earth.WeatherModel;
+import org.orekit.models.earth.weather.WeatherModel;
 import org.orekit.time.AbsoluteDate;
 
 public class PythonWeatherModel implements WeatherModel {

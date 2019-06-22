@@ -19,7 +19,7 @@
 
 package org.orekit.python;
 
-import org.orekit.forces.drag.atmosphere.DTM2000InputParameters;
+import org.orekit.models.earth.atmosphere.DTM2000InputParameters;
 import org.orekit.time.AbsoluteDate;
 
 public class PythonDTM2000InputParameters implements DTM2000InputParameters {

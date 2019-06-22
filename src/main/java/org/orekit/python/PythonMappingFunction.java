@@ -21,7 +21,7 @@ package org.orekit.python;
 
 import org.hipparchus.Field;
 import org.hipparchus.RealFieldElement;
-import org.orekit.models.earth.MappingFunction;
+import org.orekit.models.earth.troposphere.MappingFunction;
 import org.orekit.time.AbsoluteDate;
 import org.orekit.time.FieldAbsoluteDate;
 import org.orekit.utils.ParameterDriver;

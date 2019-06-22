@@ -114,38 +114,5 @@ public class PythonRadiationSensitive implements RadiationSensitive {
      */
     public native <T extends RealFieldElement<T>> FieldVector3D<T> radiationPressureAcceleration_FFFFTFT(FieldAbsoluteDate<T> date, Frame frame, FieldVector3D<T> position, FieldRotation<T> rotation, T mass, FieldVector3D<T> flux, T[] parameters);
 
-    /**
-     * Compute the acceleration due to radiation pressure, with parameters derivatives.
-     *
-     * @param date       current date
-     * @param frame      inertial reference frame for state (both orbit and attitude)
-     * @param position   position of spacecraft in reference frame
-     * @param rotation   orientation (attitude) of the spacecraft with respect to reference frame
-     * @param mass       current mass
-     * @param flux       radiation flux in the same inertial frame as spacecraft orbit
-     * @param parameters values of the force model parameters
-     * @param paramName  name of the parameter with respect to which derivatives are required
-     * @return spacecraft acceleration in the same inertial frame as spacecraft orbit (m/s²)
-     */
-    @Override
-    public FieldVector3D<DerivativeStructure> radiationPressureAcceleration(AbsoluteDate date, Frame frame, Vector3D position, Rotation rotation, double mass, Vector3D flux, double[] parameters, String paramName) {
-        return this.radiationPressureAcceleration_AFVRdVdS(date, frame, position, rotation, mass, flux, parameters, paramName);
-    }
-
-    /**
-     * Compute the acceleration due to radiation pressure, with parameters derivatives.
-     *
-     * @param date       current date
-     * @param frame      inertial reference frame for state (both orbit and attitude)
-     * @param position   position of spacecraft in reference frame
-     * @param rotation   orientation (attitude) of the spacecraft with respect to reference frame
-     * @param mass       current mass
-     * @param flux       radiation flux in the same inertial frame as spacecraft orbit
-     * @param parameters values of the force model parameters
-     * @param paramName  name of the parameter with respect to which derivatives are required
-     * @return spacecraft acceleration in the same inertial frame as spacecraft orbit (m/s²)
-     */
-    public native FieldVector3D<DerivativeStructure> radiationPressureAcceleration_AFVRdVdS(AbsoluteDate date, Frame frame, Vector3D position, Rotation rotation, double mass, Vector3D flux, double[] parameters, String paramName);
-
 
 }

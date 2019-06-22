@@ -7,24 +7,16 @@ import org.orekit.attitudes.AttitudeProvider;
 import org.orekit.frames.Frame;
 import org.orekit.orbits.OrbitType;
 import org.orekit.orbits.PositionAngle;
+import org.orekit.propagation.PropagationType;
 import org.orekit.propagation.integration.FieldAbstractIntegratedPropagator;
 import org.orekit.propagation.integration.FieldStateMapper;
 import org.orekit.time.FieldAbsoluteDate;
 
+// TODO: Check this class..
+
 public class PythonFieldAbstractIntegratedPropagator<T extends RealFieldElement<T>> extends FieldAbstractIntegratedPropagator<T> {
     /** Part of JCC Python interface to object */
     private long pythonObject;
-
-    /**
-     * Build a new instance.
-     *
-     * @param field      Field used by default
-     * @param integrator numerical integrator to use for propagation.
-     * @param meanOrbit  output only the mean orbit.
-     */
-    protected PythonFieldAbstractIntegratedPropagator(Field<T> field, FieldODEIntegrator<T> integrator, boolean meanOrbit) {
-        super(field, integrator, meanOrbit);
-    }
 
     /** Part of JCC Python interface to object */
     public void pythonExtension(long pythonObject)
@@ -48,6 +40,16 @@ public class PythonFieldAbstractIntegratedPropagator<T extends RealFieldElement<
     /** Part of JCC Python interface to object */
     public native void pythonDecRef();
 
+    /** Build a new instance.
+     * @param integrator numerical integrator to use for propagation.
+     * @param propagationType type of orbit to output (mean or osculating).
+     * @param field Field used by default
+     */
+
+    public PythonFieldAbstractIntegratedPropagator(Field<T> field, FieldODEIntegrator<T> integrator, PropagationType propagationType) {
+        super(field, integrator, propagationType);
+    }
+
     /**
      * Create a mapper between raw double components and spacecraft state.
      * /** Simple constructor.
@@ -67,7 +69,8 @@ public class PythonFieldAbstractIntegratedPropagator<T extends RealFieldElement<
      * @return new mapper
      */
     @Override
-    public native FieldStateMapper<T> createMapper(FieldAbsoluteDate<T> referenceDate, double mu, OrbitType orbitType, PositionAngle positionAngleType, AttitudeProvider attitudeProvider, Frame frame);
+    public native FieldStateMapper<T> createMapper(FieldAbsoluteDate<T> referenceDate, T mu, OrbitType orbitType, PositionAngle positionAngleType, AttitudeProvider attitudeProvider, Frame frame);
+
 
     /**
      * Get the differential equations to integrate (for main state only).

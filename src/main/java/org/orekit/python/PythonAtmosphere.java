@@ -23,7 +23,7 @@ package org.orekit.python;
 import org.hipparchus.RealFieldElement;
 import org.hipparchus.geometry.euclidean.threed.FieldVector3D;
 import org.hipparchus.geometry.euclidean.threed.Vector3D;
-import org.orekit.forces.drag.atmosphere.Atmosphere;
+import org.orekit.models.earth.atmosphere.Atmosphere;
 import org.orekit.frames.Frame;
 import org.orekit.time.AbsoluteDate;
 import org.orekit.time.FieldAbsoluteDate;
