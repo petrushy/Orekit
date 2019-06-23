@@ -63,7 +63,7 @@ public class PythonAbstractForceModel extends AbstractForceModel {
     public native Vector3D acceleration(SpacecraftState s, double[] parameters);
 
     /**
-     * Compute acceleration. Automatically directs to the Python extension point Fieldacceleration
+     * Compute acceleration. Automatically directs to the Python extension point acceleration_FT
      *
      * @param s          current state information: date, kinematics, attitude
      * @param parameters values of the force model parameters
@@ -72,7 +72,7 @@ public class PythonAbstractForceModel extends AbstractForceModel {
      */
     @Override
     public <T extends RealFieldElement<T>> FieldVector3D<T> acceleration(FieldSpacecraftState<T> s, T[] parameters) {
-        return this.Fieldacceleration(s,parameters);
+        return this.acceleration_FT(s,parameters);
     }
 
     /**
@@ -84,7 +84,7 @@ public class PythonAbstractForceModel extends AbstractForceModel {
      * @return acceleration in same frame as state
      * @since 9.0
      */
-    public native <T extends RealFieldElement<T>> FieldVector3D<T> Fieldacceleration(FieldSpacecraftState<T> s, T[] parameters);
+    public native <T extends RealFieldElement<T>> FieldVector3D<T> acceleration_FT(FieldSpacecraftState<T> s, T[] parameters);
 
     /**
      * Get the discrete events related to the model.

@@ -12,8 +12,6 @@ import org.orekit.propagation.integration.FieldAbstractIntegratedPropagator;
 import org.orekit.propagation.integration.FieldStateMapper;
 import org.orekit.time.FieldAbsoluteDate;
 
-// TODO: Check this class..
-
 public class PythonFieldAbstractIntegratedPropagator<T extends RealFieldElement<T>> extends FieldAbstractIntegratedPropagator<T> {
     /** Part of JCC Python interface to object */
     private long pythonObject;

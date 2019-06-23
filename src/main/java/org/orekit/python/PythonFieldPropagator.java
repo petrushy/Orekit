@@ -109,7 +109,7 @@ public class PythonFieldPropagator<T extends RealFieldElement<T>> implements Fie
      */
     @Override
     public void setMasterMode(T h, FieldOrekitFixedStepHandler<T> handler) {
-        this.setMasterMode_2p(h, handler);
+        this.setMasterMode_TF(h, handler);
     }
 
     /**
@@ -126,7 +126,7 @@ public class PythonFieldPropagator<T extends RealFieldElement<T>> implements Fie
      * @see #getMode()
      * @see #MASTER_MODE
      */
-    public native void setMasterMode_2p(T h, FieldOrekitFixedStepHandler<T> handler);
+    public native void setMasterMode_TF(T h, FieldOrekitFixedStepHandler<T> handler);
 
 
     /**

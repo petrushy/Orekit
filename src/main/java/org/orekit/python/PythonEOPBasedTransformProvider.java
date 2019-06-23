@@ -92,8 +92,6 @@ public class PythonEOPBasedTransformProvider implements EOPBasedTransformProvide
     @Override
     public native Transform getTransform(AbsoluteDate date);
 
-    /* TODO: These methods needs to be separated */
-
     /**
      * Get the {@link FieldTransform} corresponding to specified date.
      *
@@ -102,7 +100,9 @@ public class PythonEOPBasedTransformProvider implements EOPBasedTransformProvide
      * @since 9.0
      */
     @Override
-    public native <T extends RealFieldElement<T>> FieldTransform<T> getTransform(FieldAbsoluteDate<T> date);
+    public <T extends RealFieldElement<T>> FieldTransform<T> getTransform(FieldAbsoluteDate<T> date) {
+        return this.getTransform_F(date);
+    }
 
     /**
      * Get the {@link FieldTransform} corresponding to specified date.
@@ -111,6 +111,5 @@ public class PythonEOPBasedTransformProvider implements EOPBasedTransformProvide
      * @return transform at specified date
      * @since 9.0
      */
-
-    public native <T extends RealFieldElement<T>> FieldTransform<T> getFieldTransform(FieldAbsoluteDate<T> date);
+    public native <T extends RealFieldElement<T>> FieldTransform<T> getTransform_F(FieldAbsoluteDate<T> date);
 }

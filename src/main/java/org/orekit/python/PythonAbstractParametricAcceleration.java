@@ -55,8 +55,8 @@ public class PythonAbstractParametricAcceleration extends AbstractParametricAcce
      * @return norm of the acceleration
      */
     @Override
-    protected <T extends RealFieldElement<T>> T signedAmplitude(FieldSpacecraftState<T> state, T[] parameters) {
-        return this.signedFieldAmplitude(state, parameters);
+    public <T extends RealFieldElement<T>> T signedAmplitude(FieldSpacecraftState<T> state, T[] parameters) {
+        return this.signedAmplitude_F(state, parameters);
     }
 
 
@@ -75,7 +75,7 @@ public class PythonAbstractParametricAcceleration extends AbstractParametricAcce
      * @return norm of the acceleration
      */
 
-    public native <T extends RealFieldElement<T>> T signedFieldAmplitude(FieldSpacecraftState<T> state, T[] parameters);
+    public native <T extends RealFieldElement<T>> T signedAmplitude_F(FieldSpacecraftState<T> state, T[] parameters);
 
     /**
      * Check if force models depends on position only.

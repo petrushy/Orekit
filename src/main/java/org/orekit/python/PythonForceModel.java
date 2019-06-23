@@ -35,8 +35,6 @@ import org.orekit.utils.ParameterDriver;
 
 import java.util.stream.Stream;
 
-// TODO: CHECK HOW TO DEAL WITH METHODS OF SAME NAME!!
-
 public class PythonForceModel implements ForceModel {
 
     /** Part of JCC Python interface to object */
@@ -101,10 +99,10 @@ public class PythonForceModel implements ForceModel {
      */
     @Override
     public <T extends RealFieldElement<T>> void addContribution(FieldSpacecraftState<T> s, FieldTimeDerivativesEquations<T> adder) {
-       this.addFieldContribution(s, adder);
+       this.addContribution_FF(s, adder);
     }
 
-    public native <T extends RealFieldElement<T>> void addFieldContribution(FieldSpacecraftState<T> s, FieldTimeDerivativesEquations<T> adder);
+    public native <T extends RealFieldElement<T>> void addContribution_FF(FieldSpacecraftState<T> s, FieldTimeDerivativesEquations<T> adder);
 
     /**
      * Get force model parameters.
@@ -167,7 +165,20 @@ public class PythonForceModel implements ForceModel {
      * @since 9.0
      */
     @Override
-    public native <T extends RealFieldElement<T>> FieldVector3D<T> acceleration(FieldSpacecraftState<T> s, T[] parameters);
+    public <T extends RealFieldElement<T>> FieldVector3D<T> acceleration(FieldSpacecraftState<T> s, T[] parameters) {
+        return this.acceleration_FT(s, parameters);
+    }
+
+
+    /**
+     * Compute acceleration.
+     *
+     * @param s          current state information: date, kinematics, attitude
+     * @param parameters values of the force model parameters
+     * @return acceleration in same frame as state
+     * @since 9.0
+     */
+    public native <T extends RealFieldElement<T>> FieldVector3D<T> acceleration_FT(FieldSpacecraftState<T> s, T[] parameters);
 
     /**
      * Get the discrete events related to the model.

@@ -19,7 +19,7 @@ public class PythonFieldAbstractDetector<D extends FieldEventDetector<T>,
      * @param maxIter   maximum number of iterations in the event time search
      * @param handler   event handler to call at event occurrences
      */
-    protected PythonFieldAbstractDetector(T maxCheck, T threshold, int maxIter, FieldEventHandler<? super D, T> handler) {
+    public PythonFieldAbstractDetector(T maxCheck, T threshold, int maxIter, FieldEventHandler<? super D, T> handler) {
         super(maxCheck, threshold, maxIter, handler);
     }
 

@@ -18,7 +18,7 @@ public class PythonFieldAbstractAnalyticalPropagator<T extends RealFieldElement<
      * @param field            field used as default
      * @param attitudeProvider provider for attitude computation
      */
-    protected PythonFieldAbstractAnalyticalPropagator(Field<T> field, AttitudeProvider attitudeProvider) {
+    public PythonFieldAbstractAnalyticalPropagator(Field<T> field, AttitudeProvider attitudeProvider) {
         super(field, attitudeProvider);
     }
 

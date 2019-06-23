@@ -123,7 +123,7 @@ public class PythonFieldBoundedPropagator<T extends RealFieldElement<T>> impleme
      */
     @Override
     public void setMasterMode(T h, FieldOrekitFixedStepHandler<T> handler) {
-        this.setMasterMode_2p(h, handler);
+        this.setMasterMode_TF(h, handler);
     }
 
     /**
@@ -140,7 +140,7 @@ public class PythonFieldBoundedPropagator<T extends RealFieldElement<T>> impleme
      * @see #getMode()
      * @see #MASTER_MODE
      */
-    public native void setMasterMode_2p(T h, FieldOrekitFixedStepHandler<T> handler);
+    public native void setMasterMode_TF(T h, FieldOrekitFixedStepHandler<T> handler);
 
     /**
      * Set the propagator to master mode with variable steps.

@@ -19,7 +19,7 @@ public class PythonAbstractScheduler<T extends ObservedMeasurement<T>> extends A
      * @param builder  builder for individual measurements
      * @param selector selector for dates
      */
-    protected PythonAbstractScheduler(MeasurementBuilder<T> builder, DatesSelector selector) {
+    public PythonAbstractScheduler(MeasurementBuilder<T> builder, DatesSelector selector) {
         super(builder, selector);
     }
 

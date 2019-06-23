@@ -18,8 +18,6 @@
 // original java class/interface
 
 
-// TODO: Add python wrappers for this class.
-
 package org.orekit.python;
 
 import org.orekit.propagation.Propagator;
@@ -79,7 +77,11 @@ public class PythonPropagatorConverter implements PropagatorConverter {
      * @return adapted propagator
      */
     @Override
-    public native Propagator convert(Propagator source, double timeSpan, int nbPoints, String... freeParameters);
+    public Propagator convert(Propagator source, double timeSpan, int nbPoints, String... freeParameters) {
+        return this.convert_PdiS(source, timeSpan, nbPoints, freeParameters);
+    }
+
+    public native Propagator convert_PdiS(Propagator source, double timeSpan, int nbPoints, String... freeParameters);
 
     /**
      * Find the propagator that minimize the mean square error for a sample of {@link SpacecraftState states}.
@@ -90,7 +92,11 @@ public class PythonPropagatorConverter implements PropagatorConverter {
      * @return adapted propagator
      */
     @Override
-    public native Propagator convert(List<SpacecraftState> states, boolean positionOnly, List<String> freeParameters);
+    public Propagator convert(List<SpacecraftState> states, boolean positionOnly, List<String> freeParameters) {
+        return this.convert_LbL(states, positionOnly, freeParameters);
+    }
+
+    public native Propagator convert_LbL(List<SpacecraftState> states, boolean positionOnly, List<String> freeParameters);
 
     /**
      * Find the propagator that minimize the mean square error for a sample of {@link SpacecraftState states}.
@@ -101,5 +107,10 @@ public class PythonPropagatorConverter implements PropagatorConverter {
      * @return adapted propagator
      */
     @Override
-    public native Propagator convert(List<SpacecraftState> states, boolean positionOnly, String... freeParameters);
+    public Propagator convert(List<SpacecraftState> states, boolean positionOnly, String... freeParameters) {
+        return this.convert_LbS(states, positionOnly, freeParameters);
+    }
+
+    public native Propagator convert_LbS(List<SpacecraftState> states, boolean positionOnly, String... freeParameters);
+
 }

@@ -82,7 +82,7 @@ public class PythonAbstractGaussianContribution extends AbstractGaussianContribu
      * @return the integration limits in L
      */
     @Override
-    protected <T extends RealFieldElement<T>> T[] getLLimits(FieldSpacecraftState<T> state, FieldAbstractGaussianContributionContext<T> context) {
+    public <T extends RealFieldElement<T>> T[] getLLimits(FieldSpacecraftState<T> state, FieldAbstractGaussianContributionContext<T> context) {
         return this.getLLimits_FF(state, context);
     }
 
