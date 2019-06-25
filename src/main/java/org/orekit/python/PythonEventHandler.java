@@ -96,7 +96,8 @@ public class PythonEventHandler<T extends EventDetector> implements EventHandler
      *
      * @exception OrekitException if some specific error occurs
      */
-    public native Action eventOccurred(SpacecraftState s, T detector, boolean increasing);
+	@Override
+	public native Action eventOccurred(SpacecraftState s, T detector, boolean increasing);
 
     /** Reset the state prior to continue propagation.
      * <p>This method is called after the step handler has returned and
@@ -111,7 +112,8 @@ public class PythonEventHandler<T extends EventDetector> implements EventHandler
      * @return new state
      * @exception OrekitException if the state cannot be reseted
      */
-    public native SpacecraftState resetState(T detector, SpacecraftState oldState);
+	@Override
+	public native SpacecraftState resetState(T detector, SpacecraftState oldState);
 
 
 }
