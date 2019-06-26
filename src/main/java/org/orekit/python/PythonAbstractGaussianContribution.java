@@ -8,8 +8,8 @@ import org.orekit.propagation.SpacecraftState;
 import org.orekit.propagation.events.EventDetector;
 import org.orekit.propagation.events.FieldEventDetector;
 import org.orekit.propagation.semianalytical.dsst.forces.AbstractGaussianContribution;
-import org.orekit.propagation.semianalytical.dsst.forces.AbstractGaussianContributionContext;
-import org.orekit.propagation.semianalytical.dsst.forces.FieldAbstractGaussianContributionContext;
+import org.orekit.propagation.semianalytical.dsst.utilities.AuxiliaryElements;
+import org.orekit.propagation.semianalytical.dsst.utilities.FieldAuxiliaryElements;
 import org.orekit.utils.ParameterDriver;
 
 public class PythonAbstractGaussianContribution extends AbstractGaussianContribution {
@@ -68,25 +68,25 @@ public class PythonAbstractGaussianContribution extends AbstractGaussianContribu
      * Compute the limits in L, the true longitude, for integration.
      *
      * @param state   current state information: date, kinematics, attitude
-     * @param context container for attributes
+     * @param auxiliaryElements auxiliary elements related to the current orbit
      * @return the integration limits in L
      */
     @Override
-    public native double[] getLLimits(SpacecraftState state, AbstractGaussianContributionContext context);
+    public native double[] getLLimits(SpacecraftState state, AuxiliaryElements auxiliaryElements);
 
     /**
      * Compute the limits in L, the true longitude, for integration.
      *
      * @param state   current state information: date, kinematics, attitude
-     * @param context container for attributes
+     * @param auxiliaryElements auxiliary elements related to the current orbit
      * @return the integration limits in L
      */
     @Override
-    public <T extends RealFieldElement<T>> T[] getLLimits(FieldSpacecraftState<T> state, FieldAbstractGaussianContributionContext<T> context) {
-        return this.getLLimits_FF(state, context);
+    public <T extends RealFieldElement<T>> T[] getLLimits(FieldSpacecraftState<T> state, FieldAuxiliaryElements<T> auxiliaryElements) {
+        return this.getLLimits_FF(state, auxiliaryElements);
     }
 
-    public native <T extends RealFieldElement<T>> T[] getLLimits_FF(FieldSpacecraftState<T> state, FieldAbstractGaussianContributionContext<T> context);
+    public native <T extends RealFieldElement<T>> T[] getLLimits_FF(FieldSpacecraftState<T> state, FieldAuxiliaryElements<T> auxiliaryElements);
 
 
     /**
