@@ -1,5 +1,5 @@
-/* Copyright 2002-2019 CS Systèmes d'Information
- * Licensed to CS Systèmes d'Information (CS) under one or more
+/* Copyright 2002-2020 CS Group
+ * Licensed to CS Group (CS) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
  * CS licenses this file to You under the Apache License, Version 2.0
@@ -424,10 +424,11 @@ public class FieldSpacecraftState <T extends RealFieldElement<T>>
         final Map<String, T[]> newMap = new HashMap<String, T[]>(additional.size() + 1);
         newMap.putAll(additional);
         newMap.put(name, value.clone());
-        if (absPva == null)
+        if (absPva == null) {
             return new FieldSpacecraftState<>(orbit, attitude, mass, newMap);
-        else
+        } else {
             return new FieldSpacecraftState<>(absPva, attitude, mass, newMap);
+        }
     }
 
     /** Check orbit and attitude dates are equal.
