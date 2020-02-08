@@ -31,7 +31,7 @@ import org.orekit.propagation.integration.AbstractIntegratedPropagator;
 import org.orekit.time.AbsoluteDate;
 import org.orekit.utils.ParameterDriversList;
 
-//TODO: Check
+
 public class PythonKalmanODModel implements KalmanODModel {
     /** Part of JCC Python interface to object */
     private long pythonObject;

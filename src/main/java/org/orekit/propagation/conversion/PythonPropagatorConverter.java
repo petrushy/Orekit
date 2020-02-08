@@ -65,8 +65,6 @@ public class PythonPropagatorConverter implements PropagatorConverter {
     @Override
     public native Propagator convert(Propagator source, double timeSpan, int nbPoints, List<String> freeParameters);
 
-    /* TODO: These methods needs to be separated for Python */
-
     /**
      * Convert a propagator into another one.
      *

@@ -22,7 +22,7 @@ package org.orekit.time;
 
 import org.orekit.utils.IERSConventions;
 
-// TODO: Finish
+
 
 public class PythonTimeScales implements TimeScales {
     /** Part of JCC Python interface to object */
@@ -73,7 +73,6 @@ public class PythonTimeScales implements TimeScales {
      * @param simpleEOP   if true, tidal effects are ignored when interpolating EOP
      * @return Universal Time 1 scale
      * @see #getUTC()
-     * @see Frames#getEOPHistory(IERSConventions, boolean)
      */
     @Override
     public native UT1Scale getUT1(IERSConventions conventions, boolean simpleEOP);
