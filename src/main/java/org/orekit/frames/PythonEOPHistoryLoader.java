@@ -60,4 +60,6 @@ public class PythonEOPHistoryLoader implements EOPHistoryLoader {
      */
     @Override
     public native void fillHistory(IERSConventions.NutationCorrectionConverter converter, SortedSet<EOPEntry> history);
+
+    // TODO: An embedded interface Parser was included since 10.1, check how to expose this to python
 }

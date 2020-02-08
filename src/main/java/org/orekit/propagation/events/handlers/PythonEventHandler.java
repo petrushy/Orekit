@@ -18,13 +18,14 @@
 // this file was created by SCC and is largely a derived work from the
 // original file EventHandler.java created by CS Systèmes d'Information
 
-package org.orekit.events.handlers;
+package org.orekit.propagation.events.handlers;
 
 import org.orekit.errors.OrekitException;
 import org.orekit.propagation.SpacecraftState;
 import org.orekit.propagation.events.EventDetector;
 import org.orekit.propagation.events.handlers.EventHandler;
 import org.hipparchus.ode.events.Action;
+import org.orekit.time.AbsoluteDate;
 
 /** This interface represents space-dynamics aware events detectors.
 *
@@ -78,11 +79,26 @@ public class PythonEventHandler<T extends EventDetector> implements EventHandler
 
 	/** Part of JCC Python interface to object */
 	public native void pythonDecRef();
-	
 
 
+	/**
+	 * Initialize event handler at the start of a propagation.
+	 * <p>
+	 * This method is called once at the start of the propagation. It
+	 * may be used by the event handler to initialize some internal data
+	 * if needed.
+	 * </p>
+	 * <p>
+	 * The default implementation does nothing
+	 * </p>
+	 *
+	 * @param initialState initial state
+	 * @param target       target date for the propagation
+	 */
+	@Override
+	public native void init(SpacecraftState initialState, AbsoluteDate target);
 
-    /**
+	/**
      * eventOccurred method mirrors the same interface method as in {@link EventDetector}
      * and its subclasses, but with an additional parameter that allows the calling
      * method to pass in an object from the detector which would have potential
