@@ -22,7 +22,6 @@ package org.orekit.estimation.sequential;
 import org.hipparchus.linear.RealMatrix;
 import org.hipparchus.linear.RealVector;
 import org.orekit.estimation.measurements.EstimatedMeasurement;
-import org.orekit.estimation.sequential.KalmanEstimation;
 import org.orekit.propagation.SpacecraftState;
 import org.orekit.time.AbsoluteDate;
 import org.orekit.utils.ParameterDriversList;

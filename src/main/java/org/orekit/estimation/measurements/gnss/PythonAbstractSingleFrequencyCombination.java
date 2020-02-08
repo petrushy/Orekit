@@ -63,9 +63,8 @@ public class PythonAbstractSingleFrequencyCombination extends AbstractSingleFreq
      *
      * @param phase       observed value of the phase measurement
      * @param pseudoRange observed value of the range measurement
-     * @param f           frequency of both measurements in MHz
      * @return combined observed value
      */
     @Override
-    public native double getCombinedValue(double phase, double pseudoRange, double f);
+    public native double getCombinedValue(double phase, double pseudoRange);
 }
