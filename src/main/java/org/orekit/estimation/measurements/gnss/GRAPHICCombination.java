@@ -41,7 +41,7 @@ public class GRAPHICCombination extends AbstractSingleFrequencyCombination {
 
     /**
      * Package private constructor for the factory.
-     * @param system satellite system for wich the combination is applied
+     * @param system satellite system for which the combination is applied
      */
     GRAPHICCombination(final SatelliteSystem system) {
         super(CombinationType.GRAPHIC, system);
@@ -49,7 +49,7 @@ public class GRAPHICCombination extends AbstractSingleFrequencyCombination {
 
     /** {@inheritDoc} */
     @Override
-    protected double getCombinedValue(final double phase, final double pseudoRange, final double f) {
+    protected double getCombinedValue(final double phase, final double pseudoRange) {
         // Combination does not depend on the frequency
         return 0.5 * (phase + pseudoRange);
     }

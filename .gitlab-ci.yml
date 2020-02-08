@@ -4,7 +4,7 @@ stages:
 
 default:
   # Default image
-  image: maven:3.3.9-jdk-8
+  image: registry.orekit.org/orekit/ci-utils/maven:3.3.9-jdk-8
   # Cache downloaded dependencies and plugins between builds.
   # To keep cache across branches add 'key: "$CI_JOB_REF_NAME"'
   cache:
@@ -39,10 +39,9 @@ verify:
 deploy:artifacts:
   stage: deploy
   script:
-    - mvn $MAVEN_CLI_OPTS assembly:single javadoc:jar source:jar deploy -DskipTests=true -Pci-deploy
+    - mvn $MAVEN_CLI_OPTS javadoc:jar source:jar deploy -DskipTests=true -Pci-deploy
   artifacts:
     paths:
-      - target/*.zip
       - target/*.jar
   only:
     - develop@orekit/orekit
