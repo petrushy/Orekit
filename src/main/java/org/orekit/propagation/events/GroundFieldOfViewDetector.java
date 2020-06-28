@@ -1,5 +1,5 @@
-/* Copyright 2002-2020 CS Group
- * Licensed to CS Group (CS) under one or more
+/* Copyright 2002-2020 CS GROUP
+ * Licensed to CS GROUP (CS) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
  * CS licenses this file to You under the Apache License, Version 2.0
@@ -60,6 +60,26 @@ public class GroundFieldOfViewDetector extends AbstractDetector<GroundFieldOfVie
      *
      * @param frame the reference frame attached to the sensor.
      * @param fov   Field Of View of the sensor.
+     * @deprecated as of 10.1, replaced by {@link #GroundFieldOfViewDetector(Frame, FieldOfView)}
+     */
+    @Deprecated
+    public GroundFieldOfViewDetector(final Frame frame,
+                                     final org.orekit.propagation.events.FieldOfView fov) {
+        this(DEFAULT_MAXCHECK, DEFAULT_THRESHOLD, DEFAULT_MAX_ITER,
+                new StopOnIncreasing<GroundFieldOfViewDetector>(),
+                frame, fov);
+    }
+
+    /**
+     * Build a new instance.
+     *
+     * <p>The maximal interval between distance to FOV boundary checks should be
+     * smaller than the half duration of the minimal pass to handle, otherwise
+     * some short passes could be missed.</p>
+     *
+     * @param frame the reference frame attached to the sensor.
+     * @param fov   Field Of View of the sensor.
+     * @since 10.1
      */
     public GroundFieldOfViewDetector(final Frame frame,
                                      final FieldOfView fov) {
