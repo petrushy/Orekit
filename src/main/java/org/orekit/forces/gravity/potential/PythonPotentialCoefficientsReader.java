@@ -20,6 +20,7 @@
 
 package org.orekit.forces.gravity.potential;
 
+import org.orekit.annotation.DefaultDataContext;
 import org.orekit.errors.OrekitException;
 import org.orekit.time.TimeScale;
 
@@ -64,6 +65,8 @@ public class PythonPotentialCoefficientsReader extends PotentialCoefficientsRead
      * @param missingCoefficientsAllowed allow missing coefficients in the input data
      * @see #PotentialCoefficientsReader(String, boolean, TimeScale)
      */
+
+    @DefaultDataContext
     protected PythonPotentialCoefficientsReader(String supportedNames, boolean missingCoefficientsAllowed) {
         super(supportedNames, missingCoefficientsAllowed);
     }

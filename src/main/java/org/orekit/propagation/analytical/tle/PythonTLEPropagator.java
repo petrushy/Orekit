@@ -20,6 +20,7 @@
 
 package org.orekit.propagation.analytical.tle;
 
+import org.orekit.annotation.DefaultDataContext;
 import org.orekit.attitudes.AttitudeProvider;
 import org.orekit.frames.Frame;
 
@@ -59,6 +60,8 @@ public class PythonTLEPropagator extends TLEPropagator {
      * @param mass             spacecraft mass (kg)
      * @see #TLEPropagator(TLE, AttitudeProvider, double, Frame)
      */
+
+    @DefaultDataContext
     public PythonTLEPropagator(TLE initialTLE, AttitudeProvider attitudeProvider, double mass) {
         super(initialTLE, attitudeProvider, mass);
     }
