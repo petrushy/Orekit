@@ -48,29 +48,6 @@ public class PythonAbstractConstantThrustPropulsionModel extends AbstractConstan
         super(thrust, isp, direction, name);
     }
 
-    /** Part of JCC Python interface to object */
-    public void pythonExtension(long pythonObject)
-    {
-        this.pythonObject = pythonObject;
-    }
-
-    /** Part of JCC Python interface to object */
-    public long pythonExtension()
-    {
-        return this.pythonObject;
-    }
-
-    /** Part of JCC Python interface to object */
-    public void finalize()
-            throws Throwable
-    {
-        pythonDecRef();
-    }
-
-    /** Part of JCC Python interface to object */
-    public native void pythonDecRef();
-
-
     /**
      * Get the thrust vector in spacecraft frame (N).
      * Here it does not depend on current S/C state.
@@ -128,6 +105,7 @@ public class PythonAbstractConstantThrustPropulsionModel extends AbstractConstan
      * @param parameters propulsion model parameters
      * @return thrust vector in spacecraft frame (N)
      */
+
     public native <T extends RealFieldElement<T>> FieldVector3D<T> getThrustVector_T(T[] parameters);
 
     /**
@@ -142,6 +120,7 @@ public class PythonAbstractConstantThrustPropulsionModel extends AbstractConstan
         return this.getFlowRate_T(parameters);
     }
 
+
     /**
      * Get the flow rate (kg/s).
      * Here it does not depend on current S/C state.
@@ -151,33 +130,28 @@ public class PythonAbstractConstantThrustPropulsionModel extends AbstractConstan
      */
     public native <T extends RealFieldElement<T>> T getFlowRate_T(T[] parameters);
 
+    /** Part of JCC Python interface to object */
+    public void pythonExtension(long pythonObject)
+    {
+        this.pythonObject = pythonObject;
+    }
 
-    /**
-     * Get the specific impulse (s).
-     *
-     * @param s current spacecraft state
-     * @return specific impulse (s).
-     */
-    @Override
-    public native double getIsp(SpacecraftState s);
+    /** Part of JCC Python interface to object */
+    public long pythonExtension()
+    {
+        return this.pythonObject;
+    }
 
-    /**
-     * Get the thrust direction in spacecraft frame.
-     *
-     * @param s current spacecraft state
-     * @return thrust direction in spacecraft frame
-     */
-    @Override
-    public native Vector3D getDirection(SpacecraftState s);
+    /** Part of JCC Python interface to object */
+    public void finalize()
+            throws Throwable
+    {
+        pythonDecRef();
+    }
 
-    /**
-     * Get the thrust norm (N).
-     *
-     * @param s current spacecraft state
-     * @return thrust norm (N)
-     */
-    @Override
-    public native double getThrust(SpacecraftState s);
+    /** Part of JCC Python interface to object */
+    public native void pythonDecRef();
+
 
     /**
      * Initialization method.
@@ -187,71 +161,7 @@ public class PythonAbstractConstantThrustPropulsionModel extends AbstractConstan
      * @param target       date of propagation. Not equal to {@code initialState.getDate()}.
      */
     @Override
-    public native void init(SpacecraftState initialState, AbsoluteDate target);
+    public void init(SpacecraftState initialState, AbsoluteDate target) {
 
-    /**
-     * {@inheritDoc}
-     * Acceleration is computed here using the thrust vector in S/C frame.
-     *
-     * @param s
-     * @param maneuverAttitude
-     * @param parameters
-     */
-    @Override  /* This is where first error occurs
-
-    build\_orekit\__wrap35__.cpp(5385): error C2027: use of undefined type 'org::orekit::forces::maneuvers::propulsion::ThrustPropulsionModel'
-c:\users\phy\a3\conda-bld\orekit_1593690581951\work\build\_orekit\org/orekit/forces/maneuvers/propulsion/AbstractConstantThrustPropulsionModel.h(26): note: see declaration of 'org::orekit::forces::maneuvers::propulsion::
-ThrustPropulsionModel'
-
-
-*/
-    public native Vector3D getAcceleration(SpacecraftState s, Attitude maneuverAttitude, double[] parameters);
-
-    /**
-     * {@inheritDoc}
-     * Acceleration is computed here using the thrust vector in S/C frame.
-     *
-     * @param s
-     * @param maneuverAttitude
-     * @param parameters
-     */
-    @Override
-    public <T extends RealFieldElement<T>> FieldVector3D<T> getAcceleration(FieldSpacecraftState<T> s, FieldAttitude<T> maneuverAttitude, T[] parameters) {
-        return this.getAcceleration_FFT(s, maneuverAttitude, parameters);
     }
-
-    public native <T extends RealFieldElement<T>> FieldVector3D<T> getAcceleration_FFT(FieldSpacecraftState<T> s, FieldAttitude<T> maneuverAttitude, T[] parameters);
-
-    /**
-     * {@inheritDoc}
-     * Mass derivatives are directly extracted here from the flow rate value.
-     *
-     * @param s
-     * @param parameters
-     */
-    @Override
-    public native double getMassDerivatives(SpacecraftState s, double[] parameters);
-
-    /**
-     * {@inheritDoc}
-     * Mass derivatives are directly extracted here from the flow rate value.
-     *
-     * @param s
-     * @param parameters
-     */
-    @Override
-    public <T extends RealFieldElement<T>> T getMassDerivatives(FieldSpacecraftState<T> s, T[] parameters) {
-        return this.getMassDerivatives_FT(s, parameters);
-    }
-
-    public native <T extends RealFieldElement<T>> T getMassDerivatives_FT(FieldSpacecraftState<T> s, T[] parameters);
-
-
-        /**
-         * Get the propulsion model parameter drivers.
-         *
-         * @return propulsion model parameter drivers
-         */
-    @Override
-    public native ParameterDriver[] getParametersDrivers();
 }
