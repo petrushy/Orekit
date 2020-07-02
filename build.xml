@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<project name="orekit" default="jar" basedir=".">
+<project name="orekit-python-wrapper" default="jar" basedir=".">
 
   <property name="project.version"         value="10.2" />
 
@@ -17,6 +17,10 @@
   <property name="tests.reports"           value="${build.dir}/test-reports" />
 
   <property name="lib.dir"                 location="lib"                    />
+
+  <property name="orekit.version"       value="10.1" />
+  <property name="orekit.jar"      value="orekit-${orekit.version}.jar"      />
+
 
   <property name="hipparchus.version"       value="1.7"                                    />
   <property name="hipparchus.core.jar"      value="hipparchus-core-${hipparchus.version}.jar"      />
@@ -94,6 +98,7 @@
          dest="${lib.dir}/${bytebuddy.agent.jar}"/>
     <get src="${maven.repository}/${objenesis.maven.path}/${objenesis.version}/${objenesis.jar}"
          dest="${lib.dir}/${objenesis.jar}"/>
+
   </target>
 
   <target name="compile" depends="get-libs" description="Compile the code">
