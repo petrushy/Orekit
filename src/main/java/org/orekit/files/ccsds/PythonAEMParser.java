@@ -20,6 +20,7 @@
 
 package org.orekit.files.ccsds;
 
+import org.orekit.annotation.DefaultDataContext;
 import org.orekit.data.DataContext;
 import org.orekit.time.AbsoluteDate;
 import org.orekit.utils.IERSConventions;
@@ -86,7 +87,9 @@ public class PythonAEMParser extends AEMParser {
      * <p>This method uses the {@link DataContext#getDefault() default data context}. See
      * {@link #withDataContext(DataContext)}.
      */
-    public PythonAEMParser() {
+
+  @DefaultDataContext
+  public PythonAEMParser() {
         super(DataContext.getDefault());
     }
 
