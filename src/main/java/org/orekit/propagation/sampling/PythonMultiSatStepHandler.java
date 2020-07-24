@@ -71,9 +71,7 @@ public class PythonMultiSatStepHandler implements MultiSatStepHandler {
      * @param t       target time for the integration
      */
     @Override
-    public void init(List<SpacecraftState> states0, AbsoluteDate t) {
-
-    }
+    public native void init(List<SpacecraftState> states0, AbsoluteDate t);
 
     /**
      * Handle the current step.
@@ -88,7 +86,5 @@ public class PythonMultiSatStepHandler implements MultiSatStepHandler {
      * @param isLast        if true, this is the last integration step
      */
     @Override
-    public void handleStep(List<OrekitStepInterpolator> interpolators, boolean isLast) {
-
-    }
+    public native void handleStep(List<OrekitStepInterpolator> interpolators, boolean isLast);
 }
