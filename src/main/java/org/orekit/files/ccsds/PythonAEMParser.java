@@ -118,7 +118,6 @@ public class PythonAEMParser extends AEMParser {
      * </p>
      *
      * @param dataContext used by the parser.
-     * @see #AEMParser()
      * @see #withDataContext(DataContext)
      */
     public PythonAEMParser(final DataContext dataContext) {
@@ -157,13 +156,33 @@ public class PythonAEMParser extends AEMParser {
     @Override
     public native AEMFile parse(final String fileName);
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public native AEMFile parse(final InputStream stream);
+    public AEMFile parse(final InputStream stream) {
+        return this.parse_I(stream);
+    }
 
-    /** {@inheritDoc} */
+    public native AEMFile parse_I(final InputStream stream);
+
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public native AEMFile parse(final InputStream stream, final String fileName);
+    public AEMFile parse(final InputStream stream, final String fileName) {
+        return this.parse_IS(stream, fileName);
+    }
+
+    public native AEMFile parse_IS(final InputStream stream, final String fileName);
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public AEMFile parse(final BufferedReader reader, final String fileName) {
+        return this.parse_BS(reader, fileName);
+    }
 
     /**
      * Parse an attitude ephemeris file from a stream.
@@ -171,7 +190,6 @@ public class PythonAEMParser extends AEMParser {
      * @param fileName to use in error messages.
      * @return a parsed attitude ephemeris file.
      */
-    @Override
-    public native AEMFile parse(final BufferedReader reader, final String fileName);
+    public native AEMFile parse_BS(final BufferedReader reader, final String fileName);
 
 }
