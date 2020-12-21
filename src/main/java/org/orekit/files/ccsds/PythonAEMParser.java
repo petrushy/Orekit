@@ -150,7 +150,9 @@ public class PythonAEMParser extends AEMParser {
     @Override
     public native AEMParser withDataContext(final DataContext dataContext);
 
-    /* TODO: Two new methods since 10.3 in java */
+    /** {@inheritDoc} */
+    @Override
+    public native AEMParser withInterpolationDegree(final int newInterpolationDegree);
 
     /** {@inheritDoc} */
     @Override
@@ -191,5 +193,11 @@ public class PythonAEMParser extends AEMParser {
      * @return a parsed attitude ephemeris file.
      */
     public native AEMFile parse_BS(final BufferedReader reader, final String fileName);
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public native int getInterpolationDegree();
 
 }

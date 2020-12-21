@@ -58,6 +58,4 @@ public class PythonAttitudeEphemerisFile implements AttitudeEphemerisFile {
      */
     @Override
     public native Map<String, ? extends SatelliteAttitudeEphemeris> getSatellites();
-
-    // TODO: This interface contains nested interfaces, need to figure out how to expose these to Python
 }
