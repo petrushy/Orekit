@@ -19,7 +19,8 @@
 
 package org.orekit.python;
 
-import org.hipparchus.RealFieldElement;
+
+import org.hipparchus.CalculusFieldElement;
 import org.orekit.time.AbsoluteDate;
 import org.orekit.time.FieldAbsoluteDate;
 import org.orekit.time.TimeScale;
@@ -74,7 +75,7 @@ public class PythonTimeScale implements TimeScale {
      * @since 9.0
      */
     @Override
-    public <T extends RealFieldElement<T>> T offsetFromTAI(FieldAbsoluteDate<T> date) {
+    public <T extends CalculusFieldElement<T>> T offsetFromTAI(FieldAbsoluteDate<T> date) {
         return this.offsetFromTAI_F(date);
     }
 
@@ -87,7 +88,7 @@ public class PythonTimeScale implements TimeScale {
      * @see #offsetToTAI(DateComponents, TimeComponents)
      * @since 9.0
      */
-    public native <T extends RealFieldElement<T>> T offsetFromTAI_F(FieldAbsoluteDate<T> date);
+    public native <T extends CalculusFieldElement<T>> T offsetFromTAI_F(FieldAbsoluteDate<T> date);
 
 
     /**

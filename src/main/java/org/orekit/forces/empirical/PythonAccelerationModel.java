@@ -20,7 +20,8 @@
 
 package org.orekit.forces.empirical;
 
-import org.hipparchus.RealFieldElement;
+
+import org.hipparchus.CalculusFieldElement;
 import org.orekit.propagation.FieldSpacecraftState;
 import org.orekit.propagation.SpacecraftState;
 import org.orekit.utils.ParameterDriver;
@@ -80,11 +81,11 @@ public class PythonAccelerationModel implements AccelerationModel {
      * @return norm of the acceleration
      */
     @Override
-    public <T extends RealFieldElement<T>> T signedAmplitude(FieldSpacecraftState<T> state, T[] parameters) {
+    public <T extends CalculusFieldElement<T>> T signedAmplitude(FieldSpacecraftState<T> state, T[] parameters) {
         return this.signedAmplitude_FT(state, parameters);
     }
 
-    public native <T extends RealFieldElement<T>> T signedAmplitude_FT(FieldSpacecraftState<T> state, T[] parameters);
+    public native <T extends CalculusFieldElement<T>> T signedAmplitude_FT(FieldSpacecraftState<T> state, T[] parameters);
 
     /**
      * Get the drivers for acceleration model parameters.

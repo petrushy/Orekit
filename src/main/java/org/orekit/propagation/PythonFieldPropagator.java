@@ -19,25 +19,21 @@
 
 package org.orekit.propagation;
 
-import org.hipparchus.RealFieldElement;
+
+import org.hipparchus.CalculusFieldElement;
 import org.orekit.attitudes.AttitudeProvider;
 import org.orekit.frames.Frame;
-import org.orekit.propagation.FieldAdditionalStateProvider;
-import org.orekit.propagation.FieldBoundedPropagator;
-import org.orekit.propagation.FieldPropagator;
-import org.orekit.propagation.FieldSpacecraftState;
 import org.orekit.propagation.events.FieldEventDetector;
 import org.orekit.propagation.integration.FieldAbstractIntegratedPropagator;
 import org.orekit.propagation.integration.FieldAdditionalEquations;
 import org.orekit.propagation.sampling.FieldOrekitFixedStepHandler;
 import org.orekit.propagation.sampling.FieldOrekitStepHandler;
+import org.orekit.propagation.sampling.FieldStepHandlerMultiplexer;
 import org.orekit.time.FieldAbsoluteDate;
 import org.orekit.utils.TimeStampedFieldPVCoordinates;
 
-import java.util.Collection;
-import java.util.List;
 
-public class PythonFieldPropagator<T extends RealFieldElement<T>> implements FieldPropagator<T> {
+public class PythonFieldPropagator<T extends CalculusFieldElement<T>> implements FieldPropagator<T> {
 
     /** Part of JCC Python interface to object */
     private long pythonObject;
@@ -70,7 +66,7 @@ public class PythonFieldPropagator<T extends RealFieldElement<T>> implements Fie
      * @return one of {@link #SLAVE_MODE}, {@link #MASTER_MODE},
      * {@link #EPHEMERIS_GENERATION_MODE}
      * @see #setSlaveMode()
-     * @see #setMasterMode(RealFieldElement, FieldOrekitFixedStepHandler)
+     * @see #setMasterMode(CalculusFieldElement, FieldOrekitFixedStepHandler)
      * @see #setMasterMode(FieldOrekitStepHandler)
      * @see #setEphemerisMode()
      */
@@ -84,7 +80,7 @@ public class PythonFieldPropagator<T extends RealFieldElement<T>> implements Fie
      * (master) application, without any intermediate feedback.<p>
      * <p>This is the default mode.</p>
      *
-     * @see #setMasterMode(RealFieldElement, FieldOrekitFixedStepHandler)
+     * @see #setMasterMode(CalculusFieldElement, FieldOrekitFixedStepHandler)
      * @see #setMasterMode(FieldOrekitStepHandler)
      * @see #setEphemerisMode()
      * @see #getMode()
@@ -137,7 +133,7 @@ public class PythonFieldPropagator<T extends RealFieldElement<T>> implements Fie
      *
      * @param handler handler called at the end of each finalized step
      * @see #setSlaveMode()
-     * @see #setMasterMode(RealFieldElement, FieldOrekitFixedStepHandler)
+     * @see #setMasterMode(CalculusFieldElement, FieldOrekitFixedStepHandler)
      * @see #setEphemerisMode()
      * @see #getMode()
      * @see #MASTER_MODE
@@ -157,7 +153,7 @@ public class PythonFieldPropagator<T extends RealFieldElement<T>> implements Fie
      *
      * @see #getGeneratedEphemeris()
      * @see #setSlaveMode()
-     * @see #setMasterMode(RealFieldElement, FieldOrekitFixedStepHandler)
+     * @see #setMasterMode(CalculusFieldElement, FieldOrekitFixedStepHandler)
      * @see #setMasterMode(FieldOrekitStepHandler)
      * @see #getMode()
      * @see #EPHEMERIS_GENERATION_MODE
@@ -175,6 +171,55 @@ public class PythonFieldPropagator<T extends RealFieldElement<T>> implements Fie
      */
     @Override
     public native FieldBoundedPropagator<T> getGeneratedEphemeris() throws IllegalStateException;
+
+    /**
+     * Get the multiplexer holding all step handlers.
+     *
+     * @return multiplexer holding all step handlers
+     * @since 11.0
+     */
+    @Override
+    public native FieldStepHandlerMultiplexer<T> getMultiplexer();
+
+    /**
+     * Set up an ephemeris generator that will monitor the propagation for building
+     * an ephemeris from it once completed.
+     *
+     * <p>
+     * This generator can be used when the user needs fast random access to the orbit
+     * state at any time between the initial and target times. A typical example is the
+     * implementation of search and iterative algorithms that may navigate forward and
+     * backward inside the propagation range before finding their result even if the
+     * propagator used is integration-based and only goes from one initial time to one
+     * target time.
+     * </p>
+     * <p>
+     * Beware that when used with integration-based propagators, the generator will
+     * store <strong>all</strong> intermediate results. It is therefore memory intensive
+     * for long integration-based ranges and high precision/short time steps. When
+     * used with analytical propagators, the generator only stores start/stop time
+     * and a reference to the analytical propagator itself to call it back as needed,
+     * so it is less memory intensive.
+     * </p>
+     * <p>
+     * The returned ephemeris generator will be initially empty, it will be filled
+     * with propagation data when a subsequent call to either {@link #propagate(FieldAbsoluteDate)
+     * propagate(target)} or {@link #propagate(FieldAbsoluteDate, FieldAbsoluteDate)
+     * propagate(start, target)} is called. The proper way to use this method is
+     * therefore to do:
+     * </p>
+     * <pre>
+     *   FieldEphemerisGenerator&lt;T&gt; generator = propagator.getEphemerisGenerator();
+     *   propagator.propagate(target);
+     *   FieldBoundedPropagator&lt;T&gt; ephemeris = generator.getGeneratedEphemeris();
+     * </pre>
+     *
+     * @return ephemeris generator
+     */
+    @Override
+    public FieldEphemerisGenerator<T> getEphemerisGenerator() {
+        return null;
+    }
 
     /**
      * Get the propagator initial state.

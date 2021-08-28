@@ -20,7 +20,8 @@
 
 package org.orekit.python;
 
-import org.hipparchus.RealFieldElement;
+
+import org.hipparchus.CalculusFieldElement;
 import org.hipparchus.geometry.euclidean.threed.FieldLine;
 import org.hipparchus.geometry.euclidean.threed.FieldVector3D;
 import org.hipparchus.geometry.euclidean.threed.Line;
@@ -112,7 +113,7 @@ public class PythonBodyShape  implements BodyShape {
      * @since 9.0
      */
     @Override
-    public native <T extends RealFieldElement<T>> FieldGeodeticPoint<T> getIntersectionPoint(FieldLine<T> line, FieldVector3D<T> close, Frame frame, FieldAbsoluteDate<T> date);
+    public native <T extends CalculusFieldElement<T>> FieldGeodeticPoint<T> getIntersectionPoint(FieldLine<T> line, FieldVector3D<T> close, Frame frame, FieldAbsoluteDate<T> date);
 
     /**
      * Project a point to the ground.
@@ -166,7 +167,7 @@ public class PythonBodyShape  implements BodyShape {
      * @since 9.0
      */
     @Override
-    public <T extends RealFieldElement<T>> FieldGeodeticPoint<T> transform(FieldVector3D<T> point, Frame frame, FieldAbsoluteDate<T> date) {
+    public <T extends CalculusFieldElement<T>> FieldGeodeticPoint<T> transform(FieldVector3D<T> point, Frame frame, FieldAbsoluteDate<T> date) {
         return this.transform_FFF(point, frame,date);
     }
 
@@ -180,7 +181,7 @@ public class PythonBodyShape  implements BodyShape {
      * @return point at the same location but as a surface-relative point
      * @since 9.0
      */
-     public native <T extends RealFieldElement<T>> FieldGeodeticPoint<T> transform_FFF(FieldVector3D<T> point, Frame frame, FieldAbsoluteDate<T> date);
+     public native <T extends CalculusFieldElement<T>> FieldGeodeticPoint<T> transform_FFF(FieldVector3D<T> point, Frame frame, FieldAbsoluteDate<T> date);
 
     /**
      * Transform a surface-relative point to a Cartesian point.
@@ -201,7 +202,7 @@ public class PythonBodyShape  implements BodyShape {
      * @since 9.0
      */
     @Override
-    public <T extends RealFieldElement<T>> FieldVector3D<T> transform(FieldGeodeticPoint<T> point) {
+    public <T extends CalculusFieldElement<T>> FieldVector3D<T> transform(FieldGeodeticPoint<T> point) {
         return this.transform_F(point);
     }
 
@@ -213,5 +214,5 @@ public class PythonBodyShape  implements BodyShape {
      * @return point at the same location but as a Cartesian point
      * @since 9.0
      */
-    public native <T extends RealFieldElement<T>> FieldVector3D<T> transform_F(FieldGeodeticPoint<T> point);
+    public native <T extends CalculusFieldElement<T>> FieldVector3D<T> transform_F(FieldGeodeticPoint<T> point);
 }

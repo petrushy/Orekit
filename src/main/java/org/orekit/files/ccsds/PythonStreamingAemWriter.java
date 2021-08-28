@@ -20,28 +20,10 @@
 
 package org.orekit.files.ccsds;
 
-import java.io.IOException;
-import java.text.DecimalFormat;
-import java.text.DecimalFormatSymbols;
-import java.time.ZoneOffset;
-import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.Date;
-import java.util.LinkedHashMap;
-import java.util.Locale;
-import java.util.Map;
-
-import org.hipparchus.exception.LocalizedCoreFormats;
-import org.hipparchus.geometry.euclidean.threed.RotationOrder;
-import org.orekit.errors.OrekitException;
-import org.orekit.files.ccsds.AEMParser.AEMRotationOrder;
-import org.orekit.propagation.SpacecraftState;
-import org.orekit.propagation.sampling.OrekitFixedStepHandler;
-import org.orekit.time.AbsoluteDate;
-import org.orekit.time.DateTimeComponents;
-import org.orekit.time.TimeComponents;
 import org.orekit.time.TimeScale;
-import org.orekit.utils.TimeStampedAngularCoordinates;
+
+import java.io.IOException;
+import java.util.Map;
 
 /**
  * A Python wrapper for the StreamingAemWriter class (streaming writer for Attitude Ephemeris Messsage (AEM) files).

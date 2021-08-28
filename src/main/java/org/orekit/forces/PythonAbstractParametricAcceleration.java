@@ -1,13 +1,15 @@
 package org.orekit.forces;
 
-import org.hipparchus.RealFieldElement;
+
+import org.hipparchus.CalculusFieldElement;
 import org.hipparchus.geometry.euclidean.threed.Vector3D;
 import org.orekit.attitudes.AttitudeProvider;
-import org.orekit.forces.AbstractParametricAcceleration;
 import org.orekit.propagation.FieldSpacecraftState;
 import org.orekit.propagation.Propagator;
 import org.orekit.propagation.SpacecraftState;
 import org.orekit.utils.ParameterDriver;
+
+import java.util.List;
 
 public class PythonAbstractParametricAcceleration extends AbstractParametricAcceleration {
     /**
@@ -55,7 +57,7 @@ public class PythonAbstractParametricAcceleration extends AbstractParametricAcce
      * @return norm of the acceleration
      */
     @Override
-    public <T extends RealFieldElement<T>> T signedAmplitude(FieldSpacecraftState<T> state, T[] parameters) {
+    public <T extends CalculusFieldElement<T>> T signedAmplitude(FieldSpacecraftState<T> state, T[] parameters) {
         return this.signedAmplitude_F(state, parameters);
     }
 
@@ -75,7 +77,7 @@ public class PythonAbstractParametricAcceleration extends AbstractParametricAcce
      * @return norm of the acceleration
      */
 
-    public native <T extends RealFieldElement<T>> T signedAmplitude_F(FieldSpacecraftState<T> state, T[] parameters);
+    public native <T extends CalculusFieldElement<T>> T signedAmplitude_F(FieldSpacecraftState<T> state, T[] parameters);
 
     /**
      * Check if force models depends on position only.
@@ -97,5 +99,5 @@ public class PythonAbstractParametricAcceleration extends AbstractParametricAcce
      * @since 8.0
      */
     @Override
-    public native ParameterDriver[] getParametersDrivers();
+    public native List<ParameterDriver> getParametersDrivers();
 }

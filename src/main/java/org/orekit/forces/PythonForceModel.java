@@ -19,11 +19,10 @@
 
 package org.orekit.forces;
 
+import org.hipparchus.CalculusFieldElement;
 import org.hipparchus.Field;
-import org.hipparchus.RealFieldElement;
 import org.hipparchus.geometry.euclidean.threed.FieldVector3D;
 import org.hipparchus.geometry.euclidean.threed.Vector3D;
-import org.orekit.forces.ForceModel;
 import org.orekit.propagation.FieldSpacecraftState;
 import org.orekit.propagation.SpacecraftState;
 import org.orekit.propagation.events.EventDetector;
@@ -33,6 +32,7 @@ import org.orekit.propagation.numerical.TimeDerivativesEquations;
 import org.orekit.time.AbsoluteDate;
 import org.orekit.utils.ParameterDriver;
 
+import java.util.List;
 import java.util.stream.Stream;
 
 public class PythonForceModel implements ForceModel {
@@ -66,7 +66,7 @@ public class PythonForceModel implements ForceModel {
      * Initialize the force model at the start of propagation. This method will be called
      * before any calls to {@link #addContribution(SpacecraftState, TimeDerivativesEquations)},
      * {@link #addContribution(FieldSpacecraftState, FieldTimeDerivativesEquations)},
-     * {@link #acceleration(SpacecraftState, double[])} or {@link #acceleration(FieldSpacecraftState, RealFieldElement[])}
+     * {@link #acceleration(SpacecraftState, double[])} or {@link #acceleration(FieldSpacecraftState, CalculusFieldElement[])}
      *
      * <p> The default implementation of this method does nothing.</p>
      *
@@ -98,11 +98,11 @@ public class PythonForceModel implements ForceModel {
      * @param adder object where the contribution should be added
      */
     @Override
-    public <T extends RealFieldElement<T>> void addContribution(FieldSpacecraftState<T> s, FieldTimeDerivativesEquations<T> adder) {
+    public <T extends CalculusFieldElement<T>> void addContribution(FieldSpacecraftState<T> s, FieldTimeDerivativesEquations<T> adder) {
        this.addContribution_FF(s, adder);
     }
 
-    public native <T extends RealFieldElement<T>> void addContribution_FF(FieldSpacecraftState<T> s, FieldTimeDerivativesEquations<T> adder);
+    public native <T extends CalculusFieldElement<T>> void addContribution_FF(FieldSpacecraftState<T> s, FieldTimeDerivativesEquations<T> adder);
 
     /**
      * Get force model parameters.
@@ -121,7 +121,7 @@ public class PythonForceModel implements ForceModel {
      * @since 9.0
      */
     @Override
-    public <T extends RealFieldElement<T>> T[] getParameters(Field<T> field) {
+    public <T extends CalculusFieldElement<T>> T[] getParameters(Field<T> field) {
         return this.getParameters_F(field);
     }
 
@@ -132,7 +132,7 @@ public class PythonForceModel implements ForceModel {
      * @return force model parameters
      * @since 9.0
      */
-    public native <T extends RealFieldElement<T>> T[] getParameters_F(Field<T> field);
+    public native <T extends CalculusFieldElement<T>> T[] getParameters_F(Field<T> field);
 
     /**
      * Check if force models depends on position only.
@@ -165,7 +165,7 @@ public class PythonForceModel implements ForceModel {
      * @since 9.0
      */
     @Override
-    public <T extends RealFieldElement<T>> FieldVector3D<T> acceleration(FieldSpacecraftState<T> s, T[] parameters) {
+    public <T extends CalculusFieldElement<T>> FieldVector3D<T> acceleration(FieldSpacecraftState<T> s, T[] parameters) {
         return this.acceleration_FT(s, parameters);
     }
 
@@ -178,7 +178,7 @@ public class PythonForceModel implements ForceModel {
      * @return acceleration in same frame as state
      * @since 9.0
      */
-    public native <T extends RealFieldElement<T>> FieldVector3D<T> acceleration_FT(FieldSpacecraftState<T> s, T[] parameters);
+    public native <T extends CalculusFieldElement<T>> FieldVector3D<T> acceleration_FT(FieldSpacecraftState<T> s, T[] parameters);
 
     /**
      * Get the discrete events related to the model.
@@ -195,7 +195,7 @@ public class PythonForceModel implements ForceModel {
      * @return stream of events detectors
      */
     @Override
-    public native <T extends RealFieldElement<T>> Stream<FieldEventDetector<T>> getFieldEventsDetectors(Field<T> field);
+    public native <T extends CalculusFieldElement<T>> Stream<FieldEventDetector<T>> getFieldEventsDetectors(Field<T> field);
 
     /**
      * Get the drivers for force model parameters.
@@ -204,7 +204,7 @@ public class PythonForceModel implements ForceModel {
      * @since 8.0
      */
     @Override
-    public native ParameterDriver[] getParametersDrivers();
+    public native List<ParameterDriver> getParametersDrivers();
 
     /**
      * Get parameter value from its name.

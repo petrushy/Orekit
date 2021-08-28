@@ -21,7 +21,7 @@
 
 package org.orekit.models.earth.ionosphere;
 
-import org.hipparchus.RealFieldElement;
+import org.hipparchus.CalculusFieldElement;
 
 public class PythonIonosphericMappingFunction implements IonosphericMappingFunction {
 
@@ -67,7 +67,7 @@ public class PythonIonosphericMappingFunction implements IonosphericMappingFunct
      * @return the ionospheric mapping factor.
      */
     @Override
-    public <T extends RealFieldElement<T>> T mappingFactor(T elevation) {
+    public <T extends CalculusFieldElement<T>> T mappingFactor(T elevation) {
         return this.mappingFactor(elevation);
     }
 
@@ -77,7 +77,5 @@ public class PythonIonosphericMappingFunction implements IonosphericMappingFunct
      * @param elevation the elevation of the satellite, in radians.
      * @return the ionospheric mapping factor.
      */
-    public native <T extends RealFieldElement<T>> T mappingFactor_T(T elevation);
-
-
+    public native <T extends CalculusFieldElement<T>> T mappingFactor_T(T elevation);
 }

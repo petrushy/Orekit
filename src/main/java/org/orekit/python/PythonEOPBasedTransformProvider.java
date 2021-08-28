@@ -19,7 +19,8 @@
 
 package org.orekit.python;
 
-import org.hipparchus.RealFieldElement;
+
+import org.hipparchus.CalculusFieldElement;
 import org.orekit.frames.EOPBasedTransformProvider;
 import org.orekit.frames.EOPHistory;
 import org.orekit.frames.FieldTransform;
@@ -100,7 +101,7 @@ public class PythonEOPBasedTransformProvider implements EOPBasedTransformProvide
      * @since 9.0
      */
     @Override
-    public <T extends RealFieldElement<T>> FieldTransform<T> getTransform(FieldAbsoluteDate<T> date) {
+    public <T extends CalculusFieldElement<T>> FieldTransform<T> getTransform(FieldAbsoluteDate<T> date) {
         return this.getTransform_F(date);
     }
 
@@ -111,5 +112,5 @@ public class PythonEOPBasedTransformProvider implements EOPBasedTransformProvide
      * @return transform at specified date
      * @since 9.0
      */
-    public native <T extends RealFieldElement<T>> FieldTransform<T> getTransform_F(FieldAbsoluteDate<T> date);
+    public native <T extends CalculusFieldElement<T>> FieldTransform<T> getTransform_F(FieldAbsoluteDate<T> date);
 }

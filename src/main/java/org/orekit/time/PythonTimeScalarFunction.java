@@ -19,7 +19,8 @@
 
 package org.orekit.time;
 
-import org.hipparchus.RealFieldElement;
+//import org.hipparchus.RealFieldElement;
+import org.hipparchus.CalculusFieldElement;
 import org.orekit.time.AbsoluteDate;
 import org.orekit.time.FieldAbsoluteDate;
 import org.orekit.time.TimeScalarFunction;
@@ -67,7 +68,7 @@ public class PythonTimeScalarFunction implements TimeScalarFunction {
      * @return value of the function
      */
     @Override
-    public <T extends RealFieldElement<T>> T value(FieldAbsoluteDate<T> date) {
+    public <T extends CalculusFieldElement<T>> T value(FieldAbsoluteDate<T> date) {
         return this.value_F(date);
     }
 
@@ -78,5 +79,5 @@ public class PythonTimeScalarFunction implements TimeScalarFunction {
      * @param date date
      * @return value of the function
      */
-    public native <T extends RealFieldElement<T>> T value_F(FieldAbsoluteDate<T> date);
+    public native <T extends CalculusFieldElement<T>> T value_F(FieldAbsoluteDate<T> date);
 }

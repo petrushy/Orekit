@@ -19,7 +19,7 @@
 
 package org.orekit.propagation.numerical;
 
-import org.hipparchus.RealFieldElement;
+
 import org.hipparchus.geometry.euclidean.threed.FieldVector3D;
 import org.orekit.propagation.numerical.FieldTimeDerivativesEquations;
 

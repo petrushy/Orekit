@@ -19,7 +19,8 @@
 
 package org.orekit.python;
 
-import org.hipparchus.RealFieldElement;
+
+import org.hipparchus.CalculusFieldElement;
 import org.orekit.frames.Frame;
 import org.orekit.time.AbsoluteDate;
 import org.orekit.time.FieldAbsoluteDate;
@@ -62,7 +63,7 @@ public class PythonExtendedPVCoordinatesProvider implements ExtendedPVCoordinate
      * @return time-stamped position/velocity of the body (m and m/s)
      */
     @Override
-    public <T extends RealFieldElement<T>> TimeStampedFieldPVCoordinates<T> getPVCoordinates(FieldAbsoluteDate<T> date, Frame frame) {
+    public <T extends CalculusFieldElement<T>> TimeStampedFieldPVCoordinates<T> getPVCoordinates(FieldAbsoluteDate<T> date, Frame frame) {
         return this.getPVCoordinates_FF(date, frame);
     }
 
@@ -73,7 +74,7 @@ public class PythonExtendedPVCoordinatesProvider implements ExtendedPVCoordinate
      * @param frame the frame where to define the position
      * @return time-stamped position/velocity of the body (m and m/s)
      */
-    public native <T extends RealFieldElement<T>> TimeStampedFieldPVCoordinates<T> getPVCoordinates_FF(FieldAbsoluteDate<T> date, Frame frame);
+    public native <T extends CalculusFieldElement<T>> TimeStampedFieldPVCoordinates<T> getPVCoordinates_FF(FieldAbsoluteDate<T> date, Frame frame);
 
     /**
      * Get the {@link PVCoordinates} of the body in the selected frame.

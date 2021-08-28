@@ -1,7 +1,8 @@
 package org.orekit.propagation.semianalytical.dsst.forces;
 
+import org.hipparchus.CalculusFieldElement;
 import org.hipparchus.Field;
-import org.hipparchus.RealFieldElement;
+
 import org.orekit.forces.ForceModel;
 import org.orekit.propagation.FieldSpacecraftState;
 import org.orekit.propagation.SpacecraftState;
@@ -11,6 +12,8 @@ import org.orekit.propagation.semianalytical.dsst.forces.AbstractGaussianContrib
 import org.orekit.propagation.semianalytical.dsst.utilities.AuxiliaryElements;
 import org.orekit.propagation.semianalytical.dsst.utilities.FieldAuxiliaryElements;
 import org.orekit.utils.ParameterDriver;
+
+import java.util.List;
 
 public class PythonAbstractGaussianContribution extends AbstractGaussianContribution {
 
@@ -62,7 +65,7 @@ public class PythonAbstractGaussianContribution extends AbstractGaussianContribu
      * @return drivers for force model parameters
      */
     @Override
-    public native ParameterDriver[] getParametersDriversWithoutMu();
+    public native List<ParameterDriver> getParametersDriversWithoutMu();
 
     /**
      * Compute the limits in L, the true longitude, for integration.
@@ -82,11 +85,11 @@ public class PythonAbstractGaussianContribution extends AbstractGaussianContribu
      * @return the integration limits in L
      */
     @Override
-    public <T extends RealFieldElement<T>> T[] getLLimits(FieldSpacecraftState<T> state, FieldAuxiliaryElements<T> auxiliaryElements) {
+    public <T extends CalculusFieldElement<T>> T[] getLLimits(FieldSpacecraftState<T> state, FieldAuxiliaryElements<T> auxiliaryElements) {
         return this.getLLimits_FF(state, auxiliaryElements);
     }
 
-    public native <T extends RealFieldElement<T>> T[] getLLimits_FF(FieldSpacecraftState<T> state, FieldAuxiliaryElements<T> auxiliaryElements);
+    public native <T extends CalculusFieldElement<T>> T[] getLLimits_FF(FieldSpacecraftState<T> state, FieldAuxiliaryElements<T> auxiliaryElements);
 
 
     /**
@@ -107,5 +110,5 @@ public class PythonAbstractGaussianContribution extends AbstractGaussianContribu
      * related to any discrete events
      */
     @Override
-    public native <T extends RealFieldElement<T>> FieldEventDetector<T>[] getFieldEventsDetectors(Field<T> field);
+    public native <T extends CalculusFieldElement<T>> FieldEventDetector<T>[] getFieldEventsDetectors(Field<T> field);
 }

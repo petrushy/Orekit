@@ -19,7 +19,8 @@
 
 package org.orekit.gnss.attitude;
 
-import org.hipparchus.RealFieldElement;
+
+import org.hipparchus.CalculusFieldElement;
 import org.orekit.attitudes.Attitude;
 import org.orekit.attitudes.FieldAttitude;
 import org.orekit.frames.Frame;
@@ -94,7 +95,7 @@ public class PythonGNSSAttitudeProvider implements GNSSAttitudeProvider {
      * @since 9.0
      */
     @Override
-    public <T extends RealFieldElement<T>> FieldAttitude<T> getAttitude(FieldPVCoordinatesProvider<T> pvProv, FieldAbsoluteDate<T> date, Frame frame) {
+    public <T extends CalculusFieldElement<T>> FieldAttitude<T> getAttitude(FieldPVCoordinatesProvider<T> pvProv, FieldAbsoluteDate<T> date, Frame frame) {
         return this.getAttitude_FFF(pvProv, date, frame);
     }
 
@@ -107,6 +108,6 @@ public class PythonGNSSAttitudeProvider implements GNSSAttitudeProvider {
      * @return attitude attitude on the specified date and position-velocity state
      * @since 9.0
      */
-    public native <T extends RealFieldElement<T>> FieldAttitude<T> getAttitude_FFF(FieldPVCoordinatesProvider<T> pvProv, FieldAbsoluteDate<T> date, Frame frame);
+    public native <T extends CalculusFieldElement<T>> FieldAttitude<T> getAttitude_FFF(FieldPVCoordinatesProvider<T> pvProv, FieldAbsoluteDate<T> date, Frame frame);
 
 }

@@ -19,7 +19,8 @@
 
 package org.orekit.python;
 
-import org.hipparchus.RealFieldElement;
+
+import org.hipparchus.CalculusFieldElement;
 import org.hipparchus.geometry.euclidean.threed.FieldVector3D;
 import org.hipparchus.geometry.euclidean.threed.Vector3D;
 import org.orekit.bodies.IAUPole;
@@ -73,7 +74,7 @@ public class PythonIAUPole  implements IAUPole {
      * @since 9.0
      */
     @Override
-    public <T extends RealFieldElement<T>> FieldVector3D<T> getPole(FieldAbsoluteDate<T> date) {
+    public <T extends CalculusFieldElement<T>> FieldVector3D<T> getPole(FieldAbsoluteDate<T> date) {
         return this.getPole_F(date);
     }
 
@@ -84,7 +85,7 @@ public class PythonIAUPole  implements IAUPole {
      * @return body North pole direction in ICRF frame
      * @since 9.0
      */
-    public native <T extends RealFieldElement<T>> FieldVector3D<T> getPole_F(FieldAbsoluteDate<T> date);
+    public native <T extends CalculusFieldElement<T>> FieldVector3D<T> getPole_F(FieldAbsoluteDate<T> date);
 
 
 
@@ -106,7 +107,7 @@ public class PythonIAUPole  implements IAUPole {
      * @since 9.1
      */
     @Override
-    public <T extends RealFieldElement<T>> FieldVector3D<T> getNode(FieldAbsoluteDate<T> date) {
+    public <T extends CalculusFieldElement<T>> FieldVector3D<T> getNode(FieldAbsoluteDate<T> date) {
         return this.getNode_F(date);
     }
 
@@ -117,7 +118,7 @@ public class PythonIAUPole  implements IAUPole {
      * @return body Q Node direction in ICRF frame
      * @since 9.1
      */
-    public native <T extends RealFieldElement<T>> FieldVector3D<T> getNode_F(FieldAbsoluteDate<T> date);
+    public native <T extends CalculusFieldElement<T>> FieldVector3D<T> getNode_F(FieldAbsoluteDate<T> date);
 
 
     /**
@@ -145,7 +146,7 @@ public class PythonIAUPole  implements IAUPole {
      * @since 9.0
      */
     @Override
-    public <T extends RealFieldElement<T>> T getPrimeMeridianAngle(FieldAbsoluteDate<T> date) {
+    public <T extends CalculusFieldElement<T>> T getPrimeMeridianAngle(FieldAbsoluteDate<T> date) {
         return this.getPrimeMeridianAngle_F(date);
     }
 
@@ -160,7 +161,7 @@ public class PythonIAUPole  implements IAUPole {
      * @return prime meridian vector
      * @since 9.0
      */
-    public native <T extends RealFieldElement<T>> T getPrimeMeridianAngle_F(FieldAbsoluteDate<T> date);
+    public native <T extends CalculusFieldElement<T>> T getPrimeMeridianAngle_F(FieldAbsoluteDate<T> date);
 
 
 }

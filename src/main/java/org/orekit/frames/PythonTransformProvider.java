@@ -19,7 +19,7 @@
 
 package org.orekit.frames;
 
-import org.hipparchus.RealFieldElement;
+import org.hipparchus.CalculusFieldElement;
 import org.orekit.frames.FieldTransform;
 import org.orekit.frames.Transform;
 import org.orekit.frames.TransformProvider;
@@ -72,7 +72,7 @@ public class PythonTransformProvider implements TransformProvider {
      * @since 9.0
      */
     @Override
-    public <T extends RealFieldElement<T>> FieldTransform<T> getTransform(FieldAbsoluteDate<T> date) {
+    public <T extends CalculusFieldElement<T>> FieldTransform<T> getTransform(FieldAbsoluteDate<T> date) {
         return this.getTransform_F(date);
     }
 
@@ -84,6 +84,6 @@ public class PythonTransformProvider implements TransformProvider {
      * @since 9.0
      */
 
-    public native <T extends RealFieldElement<T>> FieldTransform<T> getTransform_F(FieldAbsoluteDate<T> date);
+    public native <T extends CalculusFieldElement<T>> FieldTransform<T> getTransform_F(FieldAbsoluteDate<T> date);
 
 }

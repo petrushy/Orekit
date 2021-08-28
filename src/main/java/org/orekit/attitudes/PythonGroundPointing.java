@@ -20,7 +20,8 @@
 
 package org.orekit.attitudes;
 
-import org.hipparchus.RealFieldElement;
+
+import org.hipparchus.CalculusFieldElement;
 import org.orekit.frames.Frame;
 import org.orekit.time.AbsoluteDate;
 import org.orekit.time.FieldAbsoluteDate;
@@ -86,7 +87,7 @@ public class PythonGroundPointing extends GroundPointing {
 
 
     @Override
-    public <T extends RealFieldElement<T>> TimeStampedFieldPVCoordinates<T> getTargetPV(FieldPVCoordinatesProvider<T> pvProv, FieldAbsoluteDate<T> date, Frame frame)
+    public <T extends CalculusFieldElement<T>> TimeStampedFieldPVCoordinates<T> getTargetPV(FieldPVCoordinatesProvider<T> pvProv, FieldAbsoluteDate<T> date, Frame frame)
     {
         return this.getTargetPV_FFF(pvProv, date, frame);
     }
@@ -101,6 +102,6 @@ public class PythonGroundPointing extends GroundPointing {
      * in specified frame
      * @since 10.1
      */
-    public native <T extends RealFieldElement<T>> TimeStampedFieldPVCoordinates<T> getTargetPV_FFF(FieldPVCoordinatesProvider<T> pvProv, FieldAbsoluteDate<T> date, Frame frame);
+    public native <T extends  CalculusFieldElement<T>> TimeStampedFieldPVCoordinates<T> getTargetPV_FFF(FieldPVCoordinatesProvider<T> pvProv, FieldAbsoluteDate<T> date, Frame frame);
 
 }

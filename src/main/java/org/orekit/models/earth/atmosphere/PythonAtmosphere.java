@@ -20,10 +20,10 @@
 
 package org.orekit.models.earth.atmosphere;
 
-import org.hipparchus.RealFieldElement;
+
+import org.hipparchus.CalculusFieldElement;
 import org.hipparchus.geometry.euclidean.threed.FieldVector3D;
 import org.hipparchus.geometry.euclidean.threed.Vector3D;
-import org.orekit.models.earth.atmosphere.Atmosphere;
 import org.orekit.frames.Frame;
 import org.orekit.time.AbsoluteDate;
 import org.orekit.time.FieldAbsoluteDate;
@@ -88,7 +88,7 @@ public class PythonAtmosphere implements Atmosphere {
      * @return local density (kg/m³)
      */
     @Override
-    public <T extends RealFieldElement<T>> T getDensity(FieldAbsoluteDate<T> date, FieldVector3D<T> position, Frame frame) {
+    public <T extends CalculusFieldElement<T>> T getDensity(FieldAbsoluteDate<T> date, FieldVector3D<T> position, Frame frame) {
         return this.getDensity_FFF(date, position, frame);
     }
 
@@ -102,7 +102,7 @@ public class PythonAtmosphere implements Atmosphere {
      * @param frame    the frame in which is defined the position
      * @return local density (kg/m³)
      */
-    public native <T extends RealFieldElement<T>> T getDensity_FFF(FieldAbsoluteDate<T> date, FieldVector3D<T> position, Frame frame);
+    public native <T extends CalculusFieldElement<T>> T getDensity_FFF(FieldAbsoluteDate<T> date, FieldVector3D<T> position, Frame frame);
 
 
     /**
@@ -130,7 +130,7 @@ public class PythonAtmosphere implements Atmosphere {
      * @return velocity (m/s) (defined in the same frame as the position)
      */
     @Override
-    public <T extends RealFieldElement<T>> FieldVector3D<T> getVelocity(FieldAbsoluteDate<T> date, FieldVector3D<T> position, Frame frame) {
+    public <T extends CalculusFieldElement<T>> FieldVector3D<T> getVelocity(FieldAbsoluteDate<T> date, FieldVector3D<T> position, Frame frame) {
         return this.getVelocity_FFF(date, position, frame);
     }
 
@@ -143,6 +143,6 @@ public class PythonAtmosphere implements Atmosphere {
      * @param frame    the frame in which is defined the position
      * @return velocity (m/s) (defined in the same frame as the position)
      */
-    public native <T extends RealFieldElement<T>> FieldVector3D<T> getVelocity_FFF(FieldAbsoluteDate<T> date, FieldVector3D<T> position, Frame frame);
+    public native <T extends CalculusFieldElement<T>> FieldVector3D<T> getVelocity_FFF(FieldAbsoluteDate<T> date, FieldVector3D<T> position, Frame frame);
 
 }

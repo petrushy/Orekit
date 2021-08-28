@@ -22,7 +22,7 @@
 
 package org.orekit.forces.maneuvers.propulsion;
 
-import org.hipparchus.RealFieldElement;
+import org.hipparchus.CalculusFieldElement;
 import org.hipparchus.geometry.euclidean.threed.FieldVector3D;
 import org.hipparchus.geometry.euclidean.threed.Vector3D;
 import org.orekit.propagation.FieldSpacecraftState;
@@ -104,11 +104,11 @@ public class PythonThrustPropulsionModel implements ThrustPropulsionModel {
      * @return thrust vector in spacecraft frame (N)
      */
     @Override
-    public <T extends RealFieldElement<T>> FieldVector3D<T> getThrustVector(FieldSpacecraftState<T> s, T[] parameters) {
+    public <T extends CalculusFieldElement<T>> FieldVector3D<T> getThrustVector(FieldSpacecraftState<T> s, T[] parameters) {
         return this.getThrustVector_FT(s, parameters);
     }
 
-    public native <T extends RealFieldElement<T>> FieldVector3D<T> getThrustVector_FT(FieldSpacecraftState<T> s, T[] parameters);
+    public native <T extends CalculusFieldElement<T>> FieldVector3D<T> getThrustVector_FT(FieldSpacecraftState<T> s, T[] parameters);
 
     /**
      * Get the flow rate (kg/s).
@@ -118,10 +118,9 @@ public class PythonThrustPropulsionModel implements ThrustPropulsionModel {
      * @return flow rate (kg/s)
      */
     @Override
-    public <T extends RealFieldElement<T>> T getFlowRate(FieldSpacecraftState<T> s, T[] parameters) {
+    public <T extends CalculusFieldElement<T>> T getFlowRate(FieldSpacecraftState<T> s, T[] parameters) {
         return this.getFlowRate_FT(s, parameters);
     }
 
-    public native <T extends RealFieldElement<T>> T getFlowRate_FT(FieldSpacecraftState<T> s, T[] parameters);
-
+    public native <T extends CalculusFieldElement<T>> T getFlowRate_FT(FieldSpacecraftState<T> s, T[] parameters);
 }

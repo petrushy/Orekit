@@ -19,12 +19,10 @@
 
 package org.orekit.propagation;
 
-import org.hipparchus.RealFieldElement;
+
+import org.hipparchus.CalculusFieldElement;
 import org.orekit.attitudes.AttitudeProvider;
 import org.orekit.frames.Frame;
-import org.orekit.propagation.FieldAdditionalStateProvider;
-import org.orekit.propagation.FieldBoundedPropagator;
-import org.orekit.propagation.FieldSpacecraftState;
 import org.orekit.propagation.events.FieldEventDetector;
 import org.orekit.propagation.integration.FieldAbstractIntegratedPropagator;
 import org.orekit.propagation.integration.FieldAdditionalEquations;
@@ -36,7 +34,7 @@ import org.orekit.utils.TimeStampedFieldPVCoordinates;
 import java.util.Collection;
 import java.util.List;
 
-public class PythonFieldBoundedPropagator<T extends RealFieldElement<T>> implements FieldBoundedPropagator<T> {
+public class PythonFieldBoundedPropagator<T extends CalculusFieldElement<T>> implements FieldBoundedPropagator<T> {
     /** Part of JCC Python interface to object */
     private long pythonObject;
 
@@ -98,7 +96,7 @@ public class PythonFieldBoundedPropagator<T extends RealFieldElement<T>> impleme
      * (master) application, without any intermediate feedback.<p>
      * <p>This is the default mode.</p>
      *
-     * @see #setMasterMode(RealFieldElement, FieldOrekitFixedStepHandler)
+     * @see #setMasterMode(CalculusFieldElement, FieldOrekitFixedStepHandler)
      * @see #setMasterMode(FieldOrekitStepHandler)
      * @see #setEphemerisMode()
      * @see #getMode()
