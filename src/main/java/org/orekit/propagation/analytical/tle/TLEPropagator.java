@@ -1,4 +1,4 @@
-/* Copyright 2002-2020 CS GROUP
+/* Copyright 2002-2021 CS GROUP
  * Licensed to CS GROUP (CS) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -68,7 +68,7 @@ public abstract class TLEPropagator extends AbstractAnalyticalPropagator {
     // CHECKSTYLE: stop VisibilityModifier check
 
     /** Initial state. */
-    protected final TLE tle;
+    protected TLE tle;
 
     /** UTC time scale. */
     protected final TimeScale utc;
@@ -203,6 +203,7 @@ public abstract class TLEPropagator extends AbstractAnalyticalPropagator {
         this.teme = teme;
         this.mass = mass;
         this.utc = initialTLE.getUtc();
+
         initializeCommons();
         sxpInitialize();
         // set the initial state
@@ -536,9 +537,21 @@ public abstract class TLEPropagator extends AbstractAnalyticalPropagator {
      */
     protected abstract void sxpPropagate(double t);
 
-    /** {@inheritDoc} */
+    /** {@inheritDoc}
+     * <p>
+     * For TLE propagator, calling this method is only recommended
+     * for covariance propagation when the new <code>state</code>
+     * differs from the previous one by only adding the additional
+     * state containing the derivatives.
+     * </p>
+     */
     public void resetInitialState(final SpacecraftState state) {
-        throw new OrekitException(OrekitMessages.NON_RESETABLE_STATE);
+        super.resetInitialState(state);
+        super.setStartDate(state.getDate());
+        final TLE newTLE = TLE.stateToTLE(state, tle, utc, teme);
+        this.tle = newTLE;
+        initializeCommons();
+        sxpInitialize();
     }
 
     /** {@inheritDoc} */
