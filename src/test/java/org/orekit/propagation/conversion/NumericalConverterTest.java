@@ -30,7 +30,6 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.orekit.Utils;
-import org.orekit.attitudes.InertialProvider;
 import org.orekit.bodies.OneAxisEllipsoid;
 import org.orekit.errors.OrekitException;
 import org.orekit.errors.OrekitMessages;
@@ -360,7 +359,7 @@ public class NumericalConverterTest {
 
         builder.addForceModel(drag);
         builder.addForceModel(gravity);
-        builder.setAttitudeProvider(InertialProvider.EME2000_ALIGNED);
+        builder.setAttitudeProvider(Utils.defaultLaw());
         builder.setMass(1000.0);
 
         JacobianPropagatorConverter fitter = new JacobianPropagatorConverter(builder, 1.0, 500);

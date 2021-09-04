@@ -30,7 +30,6 @@ import org.orekit.errors.OrekitException;
 import org.orekit.errors.OrekitMessages;
 import org.orekit.frames.Frame;
 import org.orekit.frames.FramesFactory;
-import org.orekit.propagation.Propagator;
 import org.orekit.propagation.analytical.gnss.data.GLONASSAlmanac;
 import org.orekit.propagation.analytical.gnss.data.GLONASSOrbitalElements;
 import org.orekit.propagation.analytical.gnss.data.GNSSConstants;
@@ -68,7 +67,7 @@ public class GLONASSAnalyticalPropagatorTest {
     public void testPerfectValues() {
         // Build the propagator
         final GLONASSAnalyticalPropagator propagator = new GLONASSAnalyticalPropagatorBuilder(almanac).
-                        attitudeProvider(Propagator.DEFAULT_LAW).
+                        attitudeProvider(Utils.defaultLaw()).
                         mass(1521.0).
                         eci(FramesFactory.getEME2000()).
                         ecef(FramesFactory.getITRF(IERSConventions.IERS_2010, false)).

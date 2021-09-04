@@ -41,7 +41,6 @@ import org.orekit.orbits.Orbit;
 import org.orekit.orbits.OrbitType;
 import org.orekit.orbits.PositionAngle;
 import org.orekit.propagation.FieldSpacecraftState;
-import org.orekit.propagation.Propagator;
 import org.orekit.propagation.SpacecraftState;
 import org.orekit.propagation.analytical.tle.TLE;
 import org.orekit.propagation.analytical.tle.TLEPropagator;
@@ -98,8 +97,8 @@ public class KnockeRediffusedForceModelTest extends AbstractForceModelTest{
                                                                                      FastMath.toRadians(30));
 
         SpacecraftState state = new SpacecraftState(orbit,
-                                                    Propagator.DEFAULT_LAW.getAttitude(orbit, orbit.getDate(), orbit.getFrame()));
-        checkStateJacobianVsFiniteDifferences(state, forceModel, Propagator.DEFAULT_LAW, 1.0, 5.5e-9, false);
+                                                    Utils.defaultLaw().getAttitude(orbit, orbit.getDate(), orbit.getFrame()));
+        checkStateJacobianVsFiniteDifferences(state, forceModel, Utils.defaultLaw(), 1.0, 5.5e-9, false);
 
     }
     

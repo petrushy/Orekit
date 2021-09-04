@@ -20,12 +20,8 @@ import java.util.Collection;
 import java.util.List;
 
 import org.hipparchus.CalculusFieldElement;
-import org.orekit.annotation.DefaultDataContext;
 import org.orekit.attitudes.AttitudeProvider;
-import org.orekit.attitudes.InertialProvider;
-import org.orekit.data.DataContext;
 import org.orekit.frames.Frame;
-import org.orekit.frames.Frames;
 import org.orekit.propagation.events.FieldEventDetector;
 import org.orekit.propagation.sampling.FieldOrekitFixedStepHandler;
 import org.orekit.propagation.sampling.FieldOrekitStepHandler;
@@ -53,17 +49,6 @@ public interface FieldPropagator<T extends CalculusFieldElement<T>> extends Fiel
 
     /** Default mass. */
     double DEFAULT_MASS = 1000.0;
-
-    /**
-     * Default attitude provider.
-     *
-     * <p>This field uses the {@link DataContext#getDefault() default data context}.
-     *
-     * @see Propagator#getDefaultLaw(Frames)
-     * @see InertialProvider#InertialProvider(Frame)
-     */
-    @DefaultDataContext
-    AttitudeProvider DEFAULT_LAW = InertialProvider.EME2000_ALIGNED;
 
     /** Get the multiplexer holding all step handlers.
      * @return multiplexer holding all step handlers

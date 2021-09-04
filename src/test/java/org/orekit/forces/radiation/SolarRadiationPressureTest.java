@@ -60,7 +60,6 @@ import org.orekit.orbits.Orbit;
 import org.orekit.orbits.OrbitType;
 import org.orekit.orbits.PositionAngle;
 import org.orekit.propagation.FieldSpacecraftState;
-import org.orekit.propagation.Propagator;
 import org.orekit.propagation.SpacecraftState;
 import org.orekit.propagation.analytical.KeplerianPropagator;
 import org.orekit.propagation.numerical.FieldNumericalPropagator;
@@ -390,7 +389,7 @@ public class SolarRadiationPressureTest extends AbstractLegacyForceModelTest {
                                            new IsotropicRadiationClassicalConvention(2.5, 0.7, 0.2));
 
         checkStateJacobianVsFiniteDifferences(new SpacecraftState(orbit.shiftedBy(deltaT)), forceModel,
-                                              Propagator.DEFAULT_LAW, dP, checkTolerance, print);
+                                              Utils.defaultLaw(), dP, checkTolerance, print);
 
     }
 
@@ -414,7 +413,7 @@ public class SolarRadiationPressureTest extends AbstractLegacyForceModelTest {
                                            new IsotropicRadiationClassicalConvention(2.5, 0.7, 0.2));
 
         checkStateJacobianVsFiniteDifferencesGradient(new SpacecraftState(orbit.shiftedBy(deltaT)), forceModel,
-                                              Propagator.DEFAULT_LAW, dP, checkTolerance, print);
+                                              Utils.defaultLaw(), dP, checkTolerance, print);
 
     }
 

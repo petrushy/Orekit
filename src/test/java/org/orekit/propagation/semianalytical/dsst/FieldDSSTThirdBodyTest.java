@@ -23,8 +23,8 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
-import org.hipparchus.Field;
 import org.hipparchus.CalculusFieldElement;
+import org.hipparchus.Field;
 import org.hipparchus.analysis.differentiation.Gradient;
 import org.hipparchus.util.Decimal64Field;
 import org.hipparchus.util.FastMath;
@@ -34,7 +34,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.orekit.Utils;
 import org.orekit.attitudes.Attitude;
-import org.orekit.attitudes.InertialProvider;
 import org.orekit.bodies.CelestialBodyFactory;
 import org.orekit.frames.Frame;
 import org.orekit.frames.FramesFactory;
@@ -203,7 +202,7 @@ public class FieldDSSTThirdBodyTest {
         forces.add(sun);
                         
         // Converter for derivatives
-        final DSSTGradientConverter converter = new DSSTGradientConverter(meanState, InertialProvider.EME2000_ALIGNED);
+        final DSSTGradientConverter converter = new DSSTGradientConverter(meanState, Utils.defaultLaw());
 
         // Compute state Jacobian using directly the method
         final double[][] shortPeriodJacobian = new double[6][6];
@@ -330,7 +329,7 @@ public class FieldDSSTThirdBodyTest {
         }
       
         // Converter for derivatives
-        final DSSTGradientConverter converter = new DSSTGradientConverter(meanState, InertialProvider.EME2000_ALIGNED);
+        final DSSTGradientConverter converter = new DSSTGradientConverter(meanState, Utils.defaultLaw());
         
         final double[][] shortPeriodJacobian = new double[6][1];
       
