@@ -21,6 +21,8 @@
 
 package org.orekit.files.general;
 
+import org.orekit.data.DataSource;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 
@@ -52,18 +54,6 @@ public class PythonAttitudeEphemerisFileParser implements AttitudeEphemerisFileP
     public native void pythonDecRef();
 
 
-    /**
-     * Parse an attitude ephemeris file from a stream.
-     *
-     * @param reader   containing the ephemeris file.
-     * @param fileName to use in error messages.
-     * @return a parsed ephemeris file.
-     * @throws IOException if {@code reader} throws one.
-     */
-    @Override
-    public AttitudeEphemerisFile parse(BufferedReader reader, String fileName) throws IOException {
-        return this.parse_BS(reader, fileName);
-    }
 
     /**
      * Parse an attitude ephemeris file from a stream.
@@ -75,23 +65,14 @@ public class PythonAttitudeEphemerisFileParser implements AttitudeEphemerisFileP
      */
     public native AttitudeEphemerisFile parse_BS(BufferedReader reader, String fileName) throws IOException;
 
+
+
     /**
-     * Parse an attitude ephemeris file from a file on the local file system.
+     * Parse an attitude ephemeris file from a data source.
      *
-     * <p> For Implementors: Most subclasses should implement this method as follows, but
-     * there is no default implementation because most subclasses should use a specialized
-     * return type.
-     *
-     * <pre>
-     * try (BufferedReader reader = Files.newBufferedReader(Paths.get(fileName))) {
-     *     return parse(reader, fileName);
-     * }
-     * </pre>
-     *
-     * @param fileName path to the ephemeris file.
-     * @return parsed ephemeris file.
-     * @throws IOException if one is thrown while opening or reading from {@code fileName}
+     * @param source source providing the data to parse
+     * @return a parsed attitude ephemeris file.
      */
     @Override
-    public native AttitudeEphemerisFile parse(String fileName) throws IOException;
+    public native AttitudeEphemerisFile<?, ?> parse(DataSource source);
 }

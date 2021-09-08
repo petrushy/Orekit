@@ -19,11 +19,7 @@
 
 package org.orekit.files.general;
 
-import org.orekit.files.general.EphemerisFile;
-import org.orekit.files.general.EphemerisFileParser;
-
-import java.io.BufferedReader;
-import java.io.IOException;
+import org.orekit.data.DataSource;
 
 public class PythonEphemerisFileParser implements EphemerisFileParser {
 
@@ -52,35 +48,13 @@ public class PythonEphemerisFileParser implements EphemerisFileParser {
     /** Part of JCC Python interface to object */
     public native void pythonDecRef();
 
-    /**
-     * Parse an ephemeris file from a stream.
-     *
-     * @param reader   containing the ephemeris file.
-     * @param fileName to use in error messages.
-     * @return a parsed ephemeris file.
-     * @throws IOException if {@code reader} throws one.
-     */
-    @Override
-    public native EphemerisFile parse(BufferedReader reader, String fileName) throws IOException;
 
     /**
-     * Parse an ephemeris file from a file on the local file system.
+     * Parse an ephemeris file from a data source.
      *
-     * <p> For Implementors: Most subclasses should implement this method as follows, but
-     * there is no default implementation because most subclasses should use a specialized
-     * return type.
-     *
-     * <code><pre>
-     * try (BufferedReader reader = Files.newBufferedReader(Paths.get(fileName))) {
-     *     return parse(reader, fileName);
-     * }
-     * </pre></code>
-     *
-     * @param fileName path to the ephemeris file.
-     * @return parsed ephemeris file.
-     * @throws IOException if one is thrown while opening or reading from {@code
-     *                     fileName}.
+     * @param source source providing the data to parse
+     * @return a parsed ephemeris file.
      */
     @Override
-    public native EphemerisFile parse(String fileName) throws IOException;
+    public native EphemerisFile<?, ?> parse(DataSource source);
 }

@@ -30,6 +30,8 @@ import org.orekit.propagation.SpacecraftState;
 import org.orekit.time.AbsoluteDate;
 import org.orekit.utils.ParameterDriver;
 
+import java.util.List;
+
 public class PythonPropulsionModel implements PropulsionModel {
 
     /** Part of JCC Python interface to object */
@@ -124,7 +126,7 @@ public class PythonPropulsionModel implements PropulsionModel {
      * @return propulsion model parameter drivers
      */
     @Override
-    public native ParameterDriver[] getParametersDrivers();
+    public native List<ParameterDriver> getParametersDrivers();
 
     /**
      * Get the maneuver name.

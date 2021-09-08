@@ -81,8 +81,11 @@ public class PythonEventHandler<T extends EventDetector> implements EventHandler
 	public native void pythonDecRef();
 
 
-	/**
-	 * Initialize event handler at the start of a propagation.
+	public long getPythonObject() {
+		return pythonObject;
+	}
+
+	/** Initialize event handler at the start of a propagation.
 	 * <p>
 	 * This method is called once at the start of the propagation. It
 	 * may be used by the event handler to initialize some internal data
@@ -91,12 +94,13 @@ public class PythonEventHandler<T extends EventDetector> implements EventHandler
 	 * <p>
 	 * The default implementation does nothing
 	 * </p>
-	 *
 	 * @param initialState initial state
-	 * @param target       target date for the propagation
+	 * @param target target date for the propagation
+	 * @param detector event detector related to the event handler
+	 *
 	 */
-	@Override
-	public native void init(SpacecraftState initialState, AbsoluteDate target);
+	 public native void init(SpacecraftState initialState, AbsoluteDate target, final T detector);
+
 
 	/**
      * eventOccurred method mirrors the same interface method as in {@link EventDetector}

@@ -9,6 +9,8 @@ import org.orekit.time.AbsoluteDate;
 import org.orekit.utils.ExtendedPVCoordinatesProvider;
 import org.orekit.utils.ParameterDriver;
 
+import java.util.List;
+
 public class PythonAbstractRadiationForceModel extends AbstractRadiationForceModel {
     /**
      * Constructor.
@@ -80,6 +82,6 @@ public class PythonAbstractRadiationForceModel extends AbstractRadiationForceMod
      * @since 8.0
      */
     @Override
-    public native ParameterDriver[] getParametersDrivers();
+    public native List<ParameterDriver> getParametersDrivers();
 
 }

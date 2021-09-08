@@ -4,13 +4,13 @@ import org.hipparchus.Field;
 import org.hipparchus.CalculusFieldElement;
 import org.hipparchus.geometry.euclidean.threed.FieldVector3D;
 import org.hipparchus.geometry.euclidean.threed.Vector3D;
-import org.orekit.forces.AbstractForceModel;
 import org.orekit.propagation.FieldSpacecraftState;
 import org.orekit.propagation.SpacecraftState;
 import org.orekit.propagation.events.EventDetector;
 import org.orekit.propagation.events.FieldEventDetector;
 import org.orekit.utils.ParameterDriver;
 
+import java.util.List;
 import java.util.stream.Stream;
 
 public class PythonAbstractForceModel extends AbstractForceModel {
@@ -113,6 +113,6 @@ public class PythonAbstractForceModel extends AbstractForceModel {
      * @since 8.0
      */
     @Override
-    public native ParameterDriver[] getParametersDrivers();
+    public native List<ParameterDriver> getParametersDrivers();
 
     }
