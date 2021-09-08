@@ -18,7 +18,7 @@
 // this file was created by CS Group 2020 and is largely a derived work from the
 // original java class/interface.
 
-package org.orekit.files.ccsds;
+package org.orekit.files.ccsds.ndm.adm.aem;
 
 import java.io.IOException;
 
@@ -27,7 +27,7 @@ import java.io.IOException;
  * @author Bryan Cazabonne
  * @since 10.2
  */
-public class PythonAEMWriter extends AEMWriter {
+public class PythonAemWriter extends AemWriter {
 
     /** Part of JCC Python interface to object */
     private long pythonObject;
@@ -58,7 +58,7 @@ public class PythonAEMWriter extends AEMWriter {
      * Standard default constructor that creates a writer with default
      * configurations.
      */
-    public PythonAEMWriter() {
+    public PythonAemWriter() {
         super(StreamingAemWriter.DEFAULT_ORIGINATOR, null, null);
     }
 
@@ -71,8 +71,8 @@ public class PythonAEMWriter extends AEMWriter {
      * @param spaceObjectId the spacecraft ID
      * @param spaceObjectName the space object common name
      */
-    public PythonAEMWriter(final String originator, final String spaceObjectId,
-                     final String spaceObjectName) {
+    public PythonAemWriter(final String originator, final String spaceObjectId,
+                           final String spaceObjectName) {
         super(originator, spaceObjectId, spaceObjectName);
     }
 

@@ -18,7 +18,7 @@
 // this file was created by CS Group 2020 and is largely a derived work from the
 // original java class/interface and the PythonODMParser class.
 
-package org.orekit.files.ccsds;
+package org.orekit.files.ccsds.ndm.adm.aem;
 
 import org.orekit.annotation.DefaultDataContext;
 import org.orekit.data.DataContext;
@@ -33,7 +33,7 @@ import java.io.BufferedReader;
  * @author Olivier Podevin
  * @since 10.2
  */
-public class PythonAEMParser extends AEMParser {
+public class PythonAemParser extends AemParser {
 
     /** Part of JCC Python interface to object */
     private long pythonObject;
@@ -89,7 +89,7 @@ public class PythonAEMParser extends AEMParser {
      */
 
   @DefaultDataContext
-  public PythonAEMParser() {
+  public PythonAemParser() {
         super(DataContext.getDefault());
     }
 
@@ -120,7 +120,7 @@ public class PythonAEMParser extends AEMParser {
      * @param dataContext used by the parser.
      * @see #withDataContext(DataContext)
      */
-    public PythonAEMParser(final DataContext dataContext) {
+    public PythonAemParser(final DataContext dataContext) {
         super(dataContext);
     }
 

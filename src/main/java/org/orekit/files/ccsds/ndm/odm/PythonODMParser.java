@@ -18,7 +18,7 @@
 // this file was created by SCC 2020 and is largely a derived work from the
 // original java class/interface
 
-package org.orekit.files.ccsds;
+package org.orekit.files.ccsds.ndm.odm;
 
 import org.orekit.data.DataContext;
 import org.orekit.time.AbsoluteDate;
