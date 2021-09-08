@@ -83,4 +83,20 @@ public class PythonFieldOrekitStepInterpolator<T extends CalculusFieldElement<T>
      */
     @Override
     public native boolean isForward();
+
+    /**
+     * Create a new restricted version of the instance.
+     * <p>
+     * The instance is not changed at all.
+     * </p>
+     *
+     * @param newPreviousState start of the restricted step
+     * @param newCurrentState  end of the restricted step
+     * @return restricted version of the instance
+     * @see #getPreviousState()
+     * @see #getCurrentState()
+     * @since 11.0
+     */
+    @Override
+    public native FieldOrekitStepInterpolator<T> restrictStep(FieldSpacecraftState<T> newPreviousState, FieldSpacecraftState<T> newCurrentState);
 }

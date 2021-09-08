@@ -32,6 +32,9 @@ import org.orekit.propagation.sampling.FieldStepHandlerMultiplexer;
 import org.orekit.time.FieldAbsoluteDate;
 import org.orekit.utils.TimeStampedFieldPVCoordinates;
 
+import java.util.Collection;
+import java.util.List;
+
 
 public class PythonFieldPropagator<T extends CalculusFieldElement<T>> implements FieldPropagator<T> {
 
@@ -60,53 +63,7 @@ public class PythonFieldPropagator<T extends CalculusFieldElement<T>> implements
     /** Part of JCC Python interface to object */
     public native void pythonDecRef();
 
-    /**
-     * Get the current operating mode of the propagator.
-     *
-     * @return one of {@link #SLAVE_MODE}, {@link #MASTER_MODE},
-     * {@link #EPHEMERIS_GENERATION_MODE}
-     * @see #setSlaveMode()
-     * @see #setMasterMode(CalculusFieldElement, FieldOrekitFixedStepHandler)
-     * @see #setMasterMode(FieldOrekitStepHandler)
-     * @see #setEphemerisMode()
-     */
-    @Override
-    public native int getMode();
 
-    /**
-     * Set the propagator to slave mode.
-     * <p>This mode is used when the user needs only the final orbit at the target time.
-     * The (slave) propagator computes this result and return it to the calling
-     * (master) application, without any intermediate feedback.<p>
-     * <p>This is the default mode.</p>
-     *
-     * @see #setMasterMode(CalculusFieldElement, FieldOrekitFixedStepHandler)
-     * @see #setMasterMode(FieldOrekitStepHandler)
-     * @see #setEphemerisMode()
-     * @see #getMode()
-     * @see #SLAVE_MODE
-     */
-    @Override
-    public native void setSlaveMode();
-
-    /**
-     * Set the propagator to master mode with fixed steps.
-     * <p>This mode is used when the user needs to have some custom function called at the
-     * end of each finalized step during integration. The (master) propagator integration
-     * loop calls the (slave) application callback methods at each finalized step.</p>
-     *
-     * @param h       fixed stepsize (s)
-     * @param handler handler called at the end of each finalized step
-     * @see #setSlaveMode()
-     * @see #setMasterMode(FieldOrekitStepHandler)
-     * @see #setEphemerisMode()
-     * @see #getMode()
-     * @see #MASTER_MODE
-     */
-    @Override
-    public void setMasterMode(T h, FieldOrekitFixedStepHandler<T> handler) {
-        this.setMasterMode_TF(h, handler);
-    }
 
     /**
      * Set the propagator to master mode with fixed steps.
@@ -125,52 +82,7 @@ public class PythonFieldPropagator<T extends CalculusFieldElement<T>> implements
     public native void setMasterMode_TF(T h, FieldOrekitFixedStepHandler<T> handler);
 
 
-    /**
-     * Set the propagator to master mode with variable steps.
-     * <p>This mode is used when the user needs to have some custom function called at the
-     * end of each finalized step during integration. The (master) propagator integration
-     * loop calls the (slave) application callback methods at each finalized step.</p>
-     *
-     * @param handler handler called at the end of each finalized step
-     * @see #setSlaveMode()
-     * @see #setMasterMode(CalculusFieldElement, FieldOrekitFixedStepHandler)
-     * @see #setEphemerisMode()
-     * @see #getMode()
-     * @see #MASTER_MODE
-     */
-    @Override
-    public native void setMasterMode(FieldOrekitStepHandler<T> handler);
 
-    /**
-     * Set the propagator to ephemeris generation mode.
-     * <p>This mode is used when the user needs random access to the orbit state at any time
-     * between the initial and target times, and in no sequential order. A typical example is
-     * the implementation of search and iterative algorithms that may navigate forward and
-     * backward inside the propagation range before finding their result.</p>
-     * <p>Beware that since this mode stores <strong>all</strong> intermediate results,
-     * it may be memory intensive for long integration ranges and high precision/short
-     * time steps.</p>
-     *
-     * @see #getGeneratedEphemeris()
-     * @see #setSlaveMode()
-     * @see #setMasterMode(CalculusFieldElement, FieldOrekitFixedStepHandler)
-     * @see #setMasterMode(FieldOrekitStepHandler)
-     * @see #getMode()
-     * @see #EPHEMERIS_GENERATION_MODE
-     */
-    @Override
-    public native void setEphemerisMode();
-
-    /**
-     * Get the ephemeris generated during propagation.
-     *
-     * @return generated ephemeris
-     * @throws IllegalStateException if the propagator was not set in ephemeris
-     *                               generation mode before propagation
-     * @see #setEphemerisMode()
-     */
-    @Override
-    public native FieldBoundedPropagator<T> getGeneratedEphemeris() throws IllegalStateException;
 
     /**
      * Get the multiplexer holding all step handlers.
@@ -217,9 +129,7 @@ public class PythonFieldPropagator<T extends CalculusFieldElement<T>> implements
      * @return ephemeris generator
      */
     @Override
-    public FieldEphemerisGenerator<T> getEphemerisGenerator() {
-        return null;
-    }
+    public native FieldEphemerisGenerator<T> getEphemerisGenerator();
 
     /**
      * Get the propagator initial state.
