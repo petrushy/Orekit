@@ -4,15 +4,34 @@ import org.hipparchus.linear.RealMatrix;
 import org.hipparchus.linear.RealVector;
 import org.hipparchus.util.Incrementor;
 import org.hipparchus.util.Pair;
-import org.orekit.estimation.leastsquares.BatchLSODModel;
 import org.orekit.estimation.measurements.EstimatedMeasurement;
+import org.orekit.estimation.measurements.ObservedMeasurement;
+import org.orekit.orbits.Orbit;
+import org.orekit.propagation.Propagator;
+import org.orekit.propagation.conversion.OrbitDeterminationPropagatorBuilder;
 import org.orekit.propagation.integration.AbstractIntegratedPropagator;
+import org.orekit.propagation.integration.AbstractJacobiansMapper;
 import org.orekit.utils.ParameterDriversList;
 
-public class PythonBatchLSODModel implements BatchLSODModel {
+import java.util.List;
+
+public class PythonBatchLSODModel extends AbstractBatchLSModel {
 
     /** Part of JCC Python interface to object */
     private long pythonObject;
+
+    /**
+     * Constructor.
+     *
+     * @param propagatorBuilders              builders to use for propagation
+     * @param measurements                    measurements
+     * @param estimatedMeasurementsParameters estimated measurements parameters
+     * @param mappers                         jacobian mappers
+     * @param observer                        observer to be notified at model calls
+     */
+    public PythonBatchLSODModel(OrbitDeterminationPropagatorBuilder[] propagatorBuilders, List<ObservedMeasurement<?>> measurements, ParameterDriversList estimatedMeasurementsParameters, AbstractJacobiansMapper[] mappers, ModelObserver observer) {
+        super(propagatorBuilders, measurements, estimatedMeasurementsParameters, mappers, observer);
+    }
 
     /** Part of JCC Python interface to object */
     public void pythonExtension(long pythonObject)
@@ -102,6 +121,28 @@ public class PythonBatchLSODModel implements BatchLSODModel {
      */
     @Override
     public native boolean isForwardPropagation();
+
+    /**
+     * Configure the propagator to compute derivatives.
+     *
+     * @param propagators {@link Propagator} to configure
+     * @return mapper for this propagator
+     */
+    @Override
+    public native AbstractJacobiansMapper configureDerivatives(Propagator propagators);
+
+    /**
+     * Configure the current estimated orbits.
+     * <p>
+     * For DSST orbit determination, short period derivatives are also calculated.
+     * </p>
+     *
+     * @param mapper     Jacobian mapper
+     * @param propagator the orbit propagator
+     * @return the current estimated orbits
+     */
+    @Override
+    public native Orbit configureOrbits(AbstractJacobiansMapper mapper, Propagator propagator);
 
     @Override
     public native Pair<RealVector, RealMatrix> value(RealVector realVector);
