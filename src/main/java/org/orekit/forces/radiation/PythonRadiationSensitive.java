@@ -24,11 +24,12 @@ import org.hipparchus.geometry.euclidean.threed.FieldRotation;
 import org.hipparchus.geometry.euclidean.threed.FieldVector3D;
 import org.hipparchus.geometry.euclidean.threed.Rotation;
 import org.hipparchus.geometry.euclidean.threed.Vector3D;
-import org.orekit.forces.radiation.RadiationSensitive;
 import org.orekit.frames.Frame;
 import org.orekit.time.AbsoluteDate;
 import org.orekit.time.FieldAbsoluteDate;
 import org.orekit.utils.ParameterDriver;
+
+import java.util.List;
 
 public class PythonRadiationSensitive implements RadiationSensitive {
 
@@ -64,7 +65,7 @@ public class PythonRadiationSensitive implements RadiationSensitive {
      * @since 8.0
      */
     @Override
-    public native ParameterDriver[] getRadiationParametersDrivers();
+    public native List<ParameterDriver> getRadiationParametersDrivers();
 
     /**
      * Compute the acceleration due to radiation pressure.

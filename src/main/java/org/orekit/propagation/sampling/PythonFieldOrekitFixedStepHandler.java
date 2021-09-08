@@ -70,8 +70,18 @@ public class PythonFieldOrekitFixedStepHandler<T extends CalculusFieldElement<T>
      * Handle the current step.
      *
      * @param currentState current state at step time
-     * @param isLast       if true, this is the last integration step
      */
     @Override
-    public native void handleStep(FieldSpacecraftState<T> currentState, boolean isLast);
+    public native void handleStep(FieldSpacecraftState<T> currentState);
+
+    /**
+     * Finalize propagation.
+     *
+     * @param finalState state at propagation end
+     * @since 11.0
+     */
+    @Override
+    public native void finish(FieldSpacecraftState<T> finalState);
+
+
 }

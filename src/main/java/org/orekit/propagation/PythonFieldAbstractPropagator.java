@@ -1,10 +1,7 @@
 package org.orekit.propagation;
 
-import org.hipparchus.Field;
 import org.hipparchus.CalculusFieldElement;
-import org.orekit.propagation.FieldAbstractPropagator;
-import org.orekit.propagation.FieldBoundedPropagator;
-import org.orekit.propagation.FieldSpacecraftState;
+import org.hipparchus.Field;
 import org.orekit.propagation.events.FieldEventDetector;
 import org.orekit.time.FieldAbsoluteDate;
 
@@ -45,11 +42,44 @@ public class PythonFieldAbstractPropagator<T extends CalculusFieldElement<T>> ex
     /** Part of JCC Python interface to object */
     public native void pythonDecRef();
 
+
     /**
-     * {@inheritDoc}
+     * Set up an ephemeris generator that will monitor the propagation for building
+     * an ephemeris from it once completed.
+     *
+     * <p>
+     * This generator can be used when the user needs fast random access to the orbit
+     * state at any time between the initial and target times. A typical example is the
+     * implementation of search and iterative algorithms that may navigate forward and
+     * backward inside the propagation range before finding their result even if the
+     * propagator used is integration-based and only goes from one initial time to one
+     * target time.
+     * </p>
+     * <p>
+     * Beware that when used with integration-based propagators, the generator will
+     * store <strong>all</strong> intermediate results. It is therefore memory intensive
+     * for long integration-based ranges and high precision/short time steps. When
+     * used with analytical propagators, the generator only stores start/stop time
+     * and a reference to the analytical propagator itself to call it back as needed,
+     * so it is less memory intensive.
+     * </p>
+     * <p>
+     * The returned ephemeris generator will be initially empty, it will be filled
+     * with propagation data when a subsequent call to either {@link #propagate(FieldAbsoluteDate)
+     * propagate(target)} or {@link #propagate(FieldAbsoluteDate, FieldAbsoluteDate)
+     * propagate(start, target)} is called. The proper way to use this method is
+     * therefore to do:
+     * </p>
+     * <pre>
+     *   FieldEphemerisGenerator&lt;T&gt; generator = propagator.getEphemerisGenerator();
+     *   propagator.propagate(target);
+     *   FieldBoundedPropagator&lt;T&gt; ephemeris = generator.getGeneratedEphemeris();
+     * </pre>
+     *
+     * @return ephemeris generator
      */
     @Override
-    public native FieldBoundedPropagator<T> getGeneratedEphemeris();
+    public native FieldEphemerisGenerator<T> getEphemerisGenerator();
 
     /**
      * {@inheritDoc}
