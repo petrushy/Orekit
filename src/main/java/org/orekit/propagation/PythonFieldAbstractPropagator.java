@@ -1,7 +1,7 @@
 package org.orekit.propagation;
 
 import org.hipparchus.Field;
-import org.hipparchus.RealFieldElement;
+import org.hipparchus.CalculusFieldElement;
 import org.orekit.propagation.FieldAbstractPropagator;
 import org.orekit.propagation.FieldBoundedPropagator;
 import org.orekit.propagation.FieldSpacecraftState;
@@ -10,7 +10,7 @@ import org.orekit.time.FieldAbsoluteDate;
 
 import java.util.Collection;
 
-public class PythonFieldAbstractPropagator<T extends RealFieldElement<T>> extends FieldAbstractPropagator<T> {
+public class PythonFieldAbstractPropagator<T extends CalculusFieldElement<T>> extends FieldAbstractPropagator<T> {
     /** Part of JCC Python interface to object */
     private long pythonObject;
 

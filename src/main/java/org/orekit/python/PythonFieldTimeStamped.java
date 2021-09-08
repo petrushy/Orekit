@@ -19,11 +19,11 @@
 
 package org.orekit.python;
 
-import org.hipparchus.RealFieldElement;
+import org.hipparchus.CalculusFieldElement;
 import org.orekit.time.FieldAbsoluteDate;
 import org.orekit.time.FieldTimeStamped;
 
-public class PythonFieldTimeStamped<T extends RealFieldElement<T>> implements FieldTimeStamped<T> {
+public class PythonFieldTimeStamped<T extends CalculusFieldElement<T>> implements FieldTimeStamped<T> {
 
     /** Part of JCC Python interface to object */
     private long pythonObject;

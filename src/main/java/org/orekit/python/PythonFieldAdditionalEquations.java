@@ -20,7 +20,7 @@
 
 package org.orekit.python;
 
-import org.hipparchus.RealFieldElement;
+import org.hipparchus.CalculusFieldElement;
 import org.orekit.propagation.FieldSpacecraftState;
 import org.orekit.propagation.integration.AbstractIntegratedPropagator;
 import org.orekit.propagation.integration.FieldAdditionalEquations;
@@ -49,7 +49,7 @@ import org.orekit.time.FieldAbsoluteDate;
 * the pDot array, which is the time-derivative of the p array. Since the additional parameters
 * p may also have an influence on the equations of motion themselves that should be accumulated
 * to the main state derivatives (for example an equation linked to a complex thrust model may
-* induce an acceleration and a mass change), the {@link #computeDerivatives(FieldSpacecraftState, RealFieldElement[])
+* induce an acceleration and a mass change), the {@link #computeDerivatives(FieldSpacecraftState, CalculusFieldElement[])
 * computeDerivatives} method can return a double array that will be
 * <em>added</em> to the main state derivatives. This means these equations can be used as an
 * additional force model if needed. If the additional parameters have no influence at all on
@@ -65,7 +65,7 @@ import org.orekit.time.FieldAbsoluteDate;
 * @see org.orekit.propagation.AdditionalStateProvider
 * @author Luc Maisonobe
 */
-public class PythonFieldAdditionalEquations<T extends RealFieldElement<T>> implements FieldAdditionalEquations<T> {
+public class PythonFieldAdditionalEquations<T extends CalculusFieldElement<T>> implements FieldAdditionalEquations<T> {
 	
 	
 	static final long serialVersionUID = 1L;

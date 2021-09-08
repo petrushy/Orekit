@@ -19,13 +19,13 @@
 
 package org.orekit.time;
 
-import org.hipparchus.RealFieldElement;
+import org.hipparchus.CalculusFieldElement;
 import org.orekit.time.FieldAbsoluteDate;
 import org.orekit.time.FieldTimeInterpolable;
 
 import java.util.stream.Stream;
 
-public class PythonFieldTimeInterpolable<T extends FieldTimeInterpolable<T, KK>, KK extends RealFieldElement<KK>> implements FieldTimeInterpolable<T, KK> {
+public class PythonFieldTimeInterpolable<T extends FieldTimeInterpolable<T, KK>, KK extends CalculusFieldElement<KK>> implements FieldTimeInterpolable<T, KK> {
     /**
      * Get an interpolated instance.
      * <p>

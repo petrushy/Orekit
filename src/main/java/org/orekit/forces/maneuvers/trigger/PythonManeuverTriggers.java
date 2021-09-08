@@ -22,7 +22,7 @@
 package org.orekit.forces.maneuvers.trigger;
 
 import org.hipparchus.Field;
-import org.hipparchus.RealFieldElement;
+import org.hipparchus.CalculusFieldElement;
 import org.orekit.propagation.SpacecraftState;
 import org.orekit.propagation.events.EventDetector;
 import org.orekit.propagation.events.FieldEventDetector;
@@ -83,7 +83,7 @@ public class PythonManeuverTriggers implements ManeuverTriggers {
      * @return the event detectors
      */
     @Override
-    public native <T extends RealFieldElement<T>> Stream<FieldEventDetector<T>> getFieldEventsDetectors(Field<T> field);
+    public native <T extends CalculusFieldElement<T>> Stream<FieldEventDetector<T>> getFieldEventsDetectors(Field<T> field);
 
     /**
      * Find out if the maneuver is firing or not.
@@ -103,11 +103,11 @@ public class PythonManeuverTriggers implements ManeuverTriggers {
      * @return true if the maneuver is firing, false otherwise
      */
     @Override
-    public <T extends RealFieldElement<T>> boolean isFiring(FieldAbsoluteDate<T> date, T[] parameters) {
+    public <T extends CalculusFieldElement<T>> boolean isFiring(FieldAbsoluteDate<T> date, T[] parameters) {
         return this.isFiring_FT(date, parameters);
     }
 
-    public native <T extends RealFieldElement<T>> boolean isFiring_FT(FieldAbsoluteDate<T> date, T[] parameters);
+    public native <T extends CalculusFieldElement<T>> boolean isFiring_FT(FieldAbsoluteDate<T> date, T[] parameters);
 
 }
 

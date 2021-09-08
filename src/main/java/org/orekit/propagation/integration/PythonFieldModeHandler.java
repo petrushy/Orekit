@@ -19,11 +19,11 @@
 
 package org.orekit.propagation.integration;
 
-import org.hipparchus.RealFieldElement;
+import org.hipparchus.CalculusFieldElement;
 import org.orekit.propagation.integration.FieldModeHandler;
 import org.orekit.time.FieldAbsoluteDate;
 
-public class PythonFieldModeHandler<T extends RealFieldElement<T>> implements FieldModeHandler<T> {
+public class PythonFieldModeHandler<T extends CalculusFieldElement<T>> implements FieldModeHandler<T> {
     /** Part of JCC Python interface to object */
     private long pythonObject;
 

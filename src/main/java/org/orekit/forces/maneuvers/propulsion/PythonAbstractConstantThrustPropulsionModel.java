@@ -20,7 +20,7 @@
 
 package org.orekit.forces.maneuvers.propulsion;
 
-import org.hipparchus.RealFieldElement;
+import org.hipparchus.CalculusFieldElement;
 import org.hipparchus.geometry.euclidean.threed.FieldVector3D;
 import org.hipparchus.geometry.euclidean.threed.Vector3D;
 import org.orekit.attitudes.Attitude;
@@ -94,7 +94,7 @@ public class PythonAbstractConstantThrustPropulsionModel extends AbstractConstan
      * @return thrust vector in spacecraft frame (N)
      */
     @Override
-    public <T extends RealFieldElement<T>> FieldVector3D<T> getThrustVector(T[] parameters) {
+    public <T extends CalculusFieldElement<T>> FieldVector3D<T> getThrustVector(T[] parameters) {
         return this.getThrustVector_T(parameters);
     }
 
@@ -106,7 +106,7 @@ public class PythonAbstractConstantThrustPropulsionModel extends AbstractConstan
      * @return thrust vector in spacecraft frame (N)
      */
 
-    public native <T extends RealFieldElement<T>> FieldVector3D<T> getThrustVector_T(T[] parameters);
+    public native <T extends CalculusFieldElement<T>> FieldVector3D<T> getThrustVector_T(T[] parameters);
 
     /**
      * Get the flow rate (kg/s).
@@ -116,7 +116,7 @@ public class PythonAbstractConstantThrustPropulsionModel extends AbstractConstan
      * @return flow rate (kg/s)
      */
     @Override
-    public <T extends RealFieldElement<T>> T getFlowRate(T[] parameters) {
+    public <T extends CalculusFieldElement<T>> T getFlowRate(T[] parameters) {
         return this.getFlowRate_T(parameters);
     }
 
@@ -128,7 +128,7 @@ public class PythonAbstractConstantThrustPropulsionModel extends AbstractConstan
      * @param parameters propulsion model parameters
      * @return flow rate (kg/s)
      */
-    public native <T extends RealFieldElement<T>> T getFlowRate_T(T[] parameters);
+    public native <T extends CalculusFieldElement<T>> T getFlowRate_T(T[] parameters);
 
     /** Part of JCC Python interface to object */
     public void pythonExtension(long pythonObject)

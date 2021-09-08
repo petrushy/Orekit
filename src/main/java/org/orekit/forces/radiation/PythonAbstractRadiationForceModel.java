@@ -1,6 +1,6 @@
 package org.orekit.forces.radiation;
 
-import org.hipparchus.RealFieldElement;
+import org.hipparchus.CalculusFieldElement;
 import org.hipparchus.geometry.euclidean.threed.FieldVector3D;
 import org.hipparchus.geometry.euclidean.threed.Vector3D;
 import org.orekit.propagation.FieldSpacecraftState;
@@ -24,7 +24,7 @@ public class PythonAbstractRadiationForceModel extends AbstractRadiationForceMod
      * Initialize the force model at the start of propagation. This method will be called
      * before any calls to {@link #addContribution(SpacecraftState, TimeDerivativesEquations)},
      * {@link #addContribution(FieldSpacecraftState, FieldTimeDerivativesEquations)},
-     * {@link #acceleration(SpacecraftState, double[])} or {@link #acceleration(FieldSpacecraftState, RealFieldElement[])}
+     * {@link #acceleration(SpacecraftState, double[])} or {@link #acceleration(FieldSpacecraftState, CalculusFieldElement[])}
      *
      * <p> The default implementation of this method does nothing.</p>
      *
@@ -56,7 +56,7 @@ public class PythonAbstractRadiationForceModel extends AbstractRadiationForceMod
      * @since 9.0
      */
     @Override
-    public <T extends RealFieldElement<T>> FieldVector3D<T> acceleration(FieldSpacecraftState<T> s, T[] parameters) {
+    public <T extends CalculusFieldElement<T>> FieldVector3D<T> acceleration(FieldSpacecraftState<T> s, T[] parameters) {
         return this.acceleration_FT(s,parameters);
     }
 
@@ -69,7 +69,7 @@ public class PythonAbstractRadiationForceModel extends AbstractRadiationForceMod
      * @return acceleration in same frame as state
      * @since 9.0
      */
-    public native <T extends RealFieldElement<T>> FieldVector3D<T> acceleration_FT(FieldSpacecraftState<T> s, T[] parameters);
+    public native <T extends CalculusFieldElement<T>> FieldVector3D<T> acceleration_FT(FieldSpacecraftState<T> s, T[] parameters);
 
 
     /**

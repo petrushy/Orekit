@@ -19,11 +19,11 @@
 
 package org.orekit.python;
 
-import org.hipparchus.RealFieldElement;
+import org.hipparchus.CalculusFieldElement;
 import org.orekit.time.FieldTimeInterpolable;
 import org.orekit.time.FieldTimeShiftable;
 
-public class PythonFieldTimeShiftable<T extends FieldTimeInterpolable<T, KK>, KK extends RealFieldElement<KK>> implements FieldTimeShiftable<T, KK> {
+public class PythonFieldTimeShiftable<T extends FieldTimeInterpolable<T, KK>, KK extends CalculusFieldElement<KK>> implements FieldTimeShiftable<T, KK> {
     /** Part of JCC Python interface to object */
     private long pythonObject;
 

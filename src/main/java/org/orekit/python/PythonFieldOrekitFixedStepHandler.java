@@ -19,12 +19,12 @@
 
 package org.orekit.python;
 
-import org.hipparchus.RealFieldElement;
+import org.hipparchus.CalculusFieldElement;
 import org.orekit.propagation.FieldSpacecraftState;
 import org.orekit.propagation.sampling.FieldOrekitFixedStepHandler;
 import org.orekit.time.FieldAbsoluteDate;
 
-public class PythonFieldOrekitFixedStepHandler<T extends RealFieldElement<T>> implements FieldOrekitFixedStepHandler<T> {
+public class PythonFieldOrekitFixedStepHandler<T extends CalculusFieldElement<T>> implements FieldOrekitFixedStepHandler<T> {
 
     /** Part of JCC Python interface to object */
     private long pythonObject;

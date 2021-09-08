@@ -20,7 +20,7 @@
 
 package org.orekit.forces.maneuvers.propulsion;
 
-import org.hipparchus.RealFieldElement;
+import org.hipparchus.CalculusFieldElement;
 import org.hipparchus.geometry.euclidean.threed.FieldVector3D;
 import org.hipparchus.geometry.euclidean.threed.Vector3D;
 import org.orekit.attitudes.Attitude;
@@ -88,11 +88,11 @@ public class PythonPropulsionModel implements PropulsionModel {
      * @return acceleration
      */
     @Override
-    public <T extends RealFieldElement<T>> FieldVector3D<T> getAcceleration(FieldSpacecraftState<T> s, FieldAttitude<T> maneuverAttitude, T[] parameters) {
+    public <T extends CalculusFieldElement<T>> FieldVector3D<T> getAcceleration(FieldSpacecraftState<T> s, FieldAttitude<T> maneuverAttitude, T[] parameters) {
         return this.getAcceleration_FFT(s, maneuverAttitude, parameters);
     }
 
-    public native <T extends RealFieldElement<T>> FieldVector3D<T> getAcceleration_FFT(FieldSpacecraftState<T> s, FieldAttitude<T> maneuverAttitude, T[] parameters);
+    public native <T extends CalculusFieldElement<T>> FieldVector3D<T> getAcceleration_FFT(FieldSpacecraftState<T> s, FieldAttitude<T> maneuverAttitude, T[] parameters);
 
 
         /**
@@ -111,11 +111,11 @@ public class PythonPropulsionModel implements PropulsionModel {
      * @param parameters propulsion model parameters  @return mass derivative in kg/s
      */
     @Override
-    public <T extends RealFieldElement<T>> T getMassDerivatives(FieldSpacecraftState<T> s, T[] parameters) {
+    public <T extends CalculusFieldElement<T>> T getMassDerivatives(FieldSpacecraftState<T> s, T[] parameters) {
         return this.getMassDerivatives_FT(s, parameters);
     }
 
-    public native <T extends RealFieldElement<T>> T getMassDerivatives_FT(FieldSpacecraftState<T> s, T[] parameters);
+    public native <T extends CalculusFieldElement<T>> T getMassDerivatives_FT(FieldSpacecraftState<T> s, T[] parameters);
 
 
     /**

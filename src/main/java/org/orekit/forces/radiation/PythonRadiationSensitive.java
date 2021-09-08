@@ -19,7 +19,7 @@
 
 package org.orekit.forces.radiation;
 
-import org.hipparchus.RealFieldElement;
+import org.hipparchus.CalculusFieldElement;
 import org.hipparchus.geometry.euclidean.threed.FieldRotation;
 import org.hipparchus.geometry.euclidean.threed.FieldVector3D;
 import org.hipparchus.geometry.euclidean.threed.Rotation;
@@ -94,7 +94,7 @@ public class PythonRadiationSensitive implements RadiationSensitive {
      * @return spacecraft acceleration in the same inertial frame as spacecraft orbit (m/s²)
      */
     @Override
-    public <T extends RealFieldElement<T>> FieldVector3D<T> radiationPressureAcceleration(FieldAbsoluteDate<T> date, Frame frame, FieldVector3D<T> position, FieldRotation<T> rotation, T mass, FieldVector3D<T> flux, T[] parameters) {
+    public <T extends CalculusFieldElement<T>> FieldVector3D<T> radiationPressureAcceleration(FieldAbsoluteDate<T> date, Frame frame, FieldVector3D<T> position, FieldRotation<T> rotation, T mass, FieldVector3D<T> flux, T[] parameters) {
         return this.radiationPressureAcceleration_FFFFTFT(date, frame, position, rotation, mass, flux, parameters);
     }
 
@@ -111,7 +111,7 @@ public class PythonRadiationSensitive implements RadiationSensitive {
      * @param parameters values of the force model parameters
      * @return spacecraft acceleration in the same inertial frame as spacecraft orbit (m/s²)
      */
-    public native <T extends RealFieldElement<T>> FieldVector3D<T> radiationPressureAcceleration_FFFFTFT(FieldAbsoluteDate<T> date, Frame frame, FieldVector3D<T> position, FieldRotation<T> rotation, T mass, FieldVector3D<T> flux, T[] parameters);
+    public native <T extends CalculusFieldElement<T>> FieldVector3D<T> radiationPressureAcceleration_FFFFTFT(FieldAbsoluteDate<T> date, Frame frame, FieldVector3D<T> position, FieldRotation<T> rotation, T mass, FieldVector3D<T> flux, T[] parameters);
 
 
 }

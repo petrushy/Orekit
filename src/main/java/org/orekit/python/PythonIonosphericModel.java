@@ -20,7 +20,7 @@
 package org.orekit.python;
 
 import org.hipparchus.Field;
-import org.hipparchus.RealFieldElement;
+import org.hipparchus.CalculusFieldElement;
 import org.orekit.frames.TopocentricFrame;
 import org.orekit.models.earth.ionosphere.IonosphericModel;
 import org.orekit.propagation.FieldSpacecraftState;
@@ -103,11 +103,11 @@ public class PythonIonosphericModel implements IonosphericModel {
      * @return the path delay due to the ionosphere in m
      */
     @Override
-    public <T extends RealFieldElement<T>> T pathDelay(FieldSpacecraftState<T> state, TopocentricFrame baseFrame, double frequency, T[] parameters) {
+    public <T extends CalculusFieldElement<T>> T pathDelay(FieldSpacecraftState<T> state, TopocentricFrame baseFrame, double frequency, T[] parameters) {
         return this.pathDelay_FTdT(state, baseFrame, frequency, parameters);
     }
 
-    public native <T extends RealFieldElement<T>> T pathDelay_FTdT(FieldSpacecraftState<T> state, TopocentricFrame baseFrame, double frequency, T[] parameters);
+    public native <T extends CalculusFieldElement<T>> T pathDelay_FTdT(FieldSpacecraftState<T> state, TopocentricFrame baseFrame, double frequency, T[] parameters);
 
     /**
      * Get the drivers for ionospheric model parameters.
@@ -132,9 +132,9 @@ public class PythonIonosphericModel implements IonosphericModel {
      * @return ionospheric model parameters
      */
     @Override
-    public <T extends RealFieldElement<T>> T[] getParameters(Field<T> field) {
+    public <T extends CalculusFieldElement<T>> T[] getParameters(Field<T> field) {
         return this.getParameters_F(field);
     }
 
-    public native <T extends RealFieldElement<T>> T[] getParameters_F(Field<T> field);
+    public native <T extends CalculusFieldElement<T>> T[] getParameters_F(Field<T> field);
 }

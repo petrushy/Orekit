@@ -19,7 +19,7 @@
 
 package org.orekit.python;
 
-import org.hipparchus.RealFieldElement;
+import org.hipparchus.CalculusFieldElement;
 import org.orekit.attitudes.AttitudeProvider;
 import org.orekit.frames.Frame;
 import org.orekit.propagation.FieldAdditionalStateProvider;
@@ -37,7 +37,7 @@ import org.orekit.utils.TimeStampedFieldPVCoordinates;
 import java.util.Collection;
 import java.util.List;
 
-public class PythonFieldPropagator<T extends RealFieldElement<T>> implements FieldPropagator<T> {
+public class PythonFieldPropagator<T extends CalculusFieldElement<T>> implements FieldPropagator<T> {
 
     /** Part of JCC Python interface to object */
     private long pythonObject;
@@ -70,7 +70,7 @@ public class PythonFieldPropagator<T extends RealFieldElement<T>> implements Fie
      * @return one of {@link #SLAVE_MODE}, {@link #MASTER_MODE},
      * {@link #EPHEMERIS_GENERATION_MODE}
      * @see #setSlaveMode()
-     * @see #setMasterMode(RealFieldElement, FieldOrekitFixedStepHandler)
+     * @see #setMasterMode(CalculusFieldElement, FieldOrekitFixedStepHandler)
      * @see #setMasterMode(FieldOrekitStepHandler)
      * @see #setEphemerisMode()
      */
@@ -84,7 +84,7 @@ public class PythonFieldPropagator<T extends RealFieldElement<T>> implements Fie
      * (master) application, without any intermediate feedback.<p>
      * <p>This is the default mode.</p>
      *
-     * @see #setMasterMode(RealFieldElement, FieldOrekitFixedStepHandler)
+     * @see #setMasterMode(CalculusFieldElement, FieldOrekitFixedStepHandler)
      * @see #setMasterMode(FieldOrekitStepHandler)
      * @see #setEphemerisMode()
      * @see #getMode()
@@ -137,7 +137,7 @@ public class PythonFieldPropagator<T extends RealFieldElement<T>> implements Fie
      *
      * @param handler handler called at the end of each finalized step
      * @see #setSlaveMode()
-     * @see #setMasterMode(RealFieldElement, FieldOrekitFixedStepHandler)
+     * @see #setMasterMode(CalculusFieldElement, FieldOrekitFixedStepHandler)
      * @see #setEphemerisMode()
      * @see #getMode()
      * @see #MASTER_MODE
@@ -157,7 +157,7 @@ public class PythonFieldPropagator<T extends RealFieldElement<T>> implements Fie
      *
      * @see #getGeneratedEphemeris()
      * @see #setSlaveMode()
-     * @see #setMasterMode(RealFieldElement, FieldOrekitFixedStepHandler)
+     * @see #setMasterMode(CalculusFieldElement, FieldOrekitFixedStepHandler)
      * @see #setMasterMode(FieldOrekitStepHandler)
      * @see #getMode()
      * @see #EPHEMERIS_GENERATION_MODE

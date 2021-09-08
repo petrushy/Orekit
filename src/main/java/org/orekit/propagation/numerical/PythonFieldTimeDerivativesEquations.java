@@ -23,7 +23,7 @@ package org.orekit.propagation.numerical;
 import org.hipparchus.geometry.euclidean.threed.FieldVector3D;
 import org.orekit.propagation.numerical.FieldTimeDerivativesEquations;
 
-public class PythonFieldTimeDerivativesEquations<T extends RealFieldElement<T>> implements FieldTimeDerivativesEquations<T> {
+public class PythonFieldTimeDerivativesEquations<T extends CalculusFieldElement<T>> implements FieldTimeDerivativesEquations<T> {
 
     /** Part of JCC Python interface to object */
     private long pythonObject;

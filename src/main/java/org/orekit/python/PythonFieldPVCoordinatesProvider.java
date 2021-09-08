@@ -19,13 +19,13 @@
 
 package org.orekit.python;
 
-import org.hipparchus.RealFieldElement;
+import org.hipparchus.CalculusFieldElement;
 import org.orekit.frames.Frame;
 import org.orekit.time.FieldAbsoluteDate;
 import org.orekit.utils.FieldPVCoordinatesProvider;
 import org.orekit.utils.TimeStampedFieldPVCoordinates;
 
-public class PythonFieldPVCoordinatesProvider<T extends RealFieldElement<T>> implements FieldPVCoordinatesProvider<T> {
+public class PythonFieldPVCoordinatesProvider<T extends CalculusFieldElement<T>> implements FieldPVCoordinatesProvider<T> {
 
     /** Part of JCC Python interface to object */
     private long pythonObject;

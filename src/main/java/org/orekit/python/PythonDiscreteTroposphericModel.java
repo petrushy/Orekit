@@ -21,7 +21,7 @@
 package org.orekit.python;
 
 import org.hipparchus.Field;
-import org.hipparchus.RealFieldElement;
+import org.hipparchus.CalculusFieldElement;
 import org.orekit.models.earth.troposphere.DiscreteTroposphericModel;
 import org.orekit.time.AbsoluteDate;
 import org.orekit.time.FieldAbsoluteDate;
@@ -84,7 +84,7 @@ public class PythonDiscreteTroposphericModel implements DiscreteTroposphericMode
      * @return the path delay due to the troposphere in m
      */
     @Override
-    public <T extends RealFieldElement<T>> T pathDelay(T elevation, T height, T[] parameters, FieldAbsoluteDate<T> date) {
+    public <T extends CalculusFieldElement<T>> T pathDelay(T elevation, T height, T[] parameters, FieldAbsoluteDate<T> date) {
         return this.pathDelay_TTTF(elevation, height, parameters, date);
     }
 
@@ -99,7 +99,7 @@ public class PythonDiscreteTroposphericModel implements DiscreteTroposphericMode
      * @param date       current date
      * @return the path delay due to the troposphere in m
      */
-    public native <T extends RealFieldElement<T>> T pathDelay_TTTF(T elevation, T height, T[] parameters, FieldAbsoluteDate<T> date);
+    public native <T extends CalculusFieldElement<T>> T pathDelay_TTTF(T elevation, T height, T[] parameters, FieldAbsoluteDate<T> date);
 
 
     /**
@@ -136,7 +136,7 @@ public class PythonDiscreteTroposphericModel implements DiscreteTroposphericMode
      * @return a two components array containing the zenith hydrostatic and wet delays.
      */
     @Override
-    public <T extends RealFieldElement<T>> T[] computeZenithDelay(T height, T[] parameters, FieldAbsoluteDate<T> date) {
+    public <T extends CalculusFieldElement<T>> T[] computeZenithDelay(T height, T[] parameters, FieldAbsoluteDate<T> date) {
         return this.computeZenithDelay_TTF(height, parameters, date);
     }
 
@@ -155,7 +155,7 @@ public class PythonDiscreteTroposphericModel implements DiscreteTroposphericMode
      * @param date       current date
      * @return a two components array containing the zenith hydrostatic and wet delays.
      */
-     public native <T extends RealFieldElement<T>> T[] computeZenithDelay_TTF(T height, T[] parameters, FieldAbsoluteDate<T> date);
+     public native <T extends CalculusFieldElement<T>> T[] computeZenithDelay_TTF(T height, T[] parameters, FieldAbsoluteDate<T> date);
 
     /**
      * This method allows the computation of the hydrostatic and
@@ -193,7 +193,7 @@ public class PythonDiscreteTroposphericModel implements DiscreteTroposphericMode
      * @return a two components array containing the hydrostatic and wet mapping functions.
      */
     @Override
-    public <T extends RealFieldElement<T>> T[] mappingFactors(T elevation, T height, T[] parameters, FieldAbsoluteDate<T> date) {
+    public <T extends CalculusFieldElement<T>> T[] mappingFactors(T elevation, T height, T[] parameters, FieldAbsoluteDate<T> date) {
         return this.mappingFactors_TTTF(elevation, height, parameters, date);
     }
 
@@ -213,7 +213,7 @@ public class PythonDiscreteTroposphericModel implements DiscreteTroposphericMode
      * @param date       current date
      * @return a two components array containing the hydrostatic and wet mapping functions.
      */
-    public native <T extends RealFieldElement<T>> T[] mappingFactors_TTTF(T elevation, T height, T[] parameters, FieldAbsoluteDate<T> date);
+    public native <T extends CalculusFieldElement<T>> T[] mappingFactors_TTTF(T elevation, T height, T[] parameters, FieldAbsoluteDate<T> date);
 
 
     /**
@@ -242,7 +242,7 @@ public class PythonDiscreteTroposphericModel implements DiscreteTroposphericMode
      * @return tropospheric model parameters
      */
     @Override
-    public <T extends RealFieldElement<T>> T[] getParameters(Field<T> field) {
+    public <T extends CalculusFieldElement<T>> T[] getParameters(Field<T> field) {
         return this.getParameters_F(field);
     }
 
@@ -253,6 +253,6 @@ public class PythonDiscreteTroposphericModel implements DiscreteTroposphericMode
      * @param field field to which the elements belong
      * @return tropospheric model parameters
      */
-    public native <T extends RealFieldElement<T>> T[] getParameters_F(Field<T> field);
+    public native <T extends CalculusFieldElement<T>> T[] getParameters_F(Field<T> field);
 
 }

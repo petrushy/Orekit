@@ -1,13 +1,13 @@
 package org.orekit.python;
 
-import org.hipparchus.RealFieldElement;
+import org.hipparchus.CalculusFieldElement;
 import org.orekit.propagation.FieldSpacecraftState;
 import org.orekit.propagation.events.FieldAbstractDetector;
 import org.orekit.propagation.events.FieldEventDetector;
 import org.orekit.propagation.events.handlers.FieldEventHandler;
 
 public class PythonFieldAbstractDetector<D extends FieldEventDetector<T>,
-                                            T extends RealFieldElement<T>> extends FieldAbstractDetector<D, T> {
+                                            T extends CalculusFieldElement<T>> extends FieldAbstractDetector<D, T> {
     /** Part of JCC Python interface to object */
     private long pythonObject;
 

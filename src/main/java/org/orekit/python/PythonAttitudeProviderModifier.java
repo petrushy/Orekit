@@ -19,7 +19,7 @@
 
 package org.orekit.python;
 
-import org.hipparchus.RealFieldElement;
+import org.hipparchus.CalculusFieldElement;
 import org.orekit.attitudes.Attitude;
 import org.orekit.attitudes.AttitudeProvider;
 import org.orekit.attitudes.AttitudeProviderModifier;
@@ -91,7 +91,7 @@ public class PythonAttitudeProviderModifier  implements AttitudeProviderModifier
      * @since 9.0
      */
     @Override
-    public <T extends RealFieldElement<T>> FieldAttitude<T> getAttitude(FieldPVCoordinatesProvider<T> pvProv, FieldAbsoluteDate<T> date, Frame frame) {
+    public <T extends CalculusFieldElement<T>> FieldAttitude<T> getAttitude(FieldPVCoordinatesProvider<T> pvProv, FieldAbsoluteDate<T> date, Frame frame) {
         return this.getAttitude_FFF(pvProv, date, frame);
     }
 
@@ -105,5 +105,5 @@ public class PythonAttitudeProviderModifier  implements AttitudeProviderModifier
      * @return attitude attitude on the specified date and position-velocity state
      * @since 9.3
      */
-    public native <T extends RealFieldElement<T>> FieldAttitude<T> getAttitude_FFF(FieldPVCoordinatesProvider<T> pvProv, FieldAbsoluteDate<T> date, Frame frame);
+    public native <T extends CalculusFieldElement<T>> FieldAttitude<T> getAttitude_FFF(FieldPVCoordinatesProvider<T> pvProv, FieldAbsoluteDate<T> date, Frame frame);
 }

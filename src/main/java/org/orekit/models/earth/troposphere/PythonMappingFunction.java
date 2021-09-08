@@ -20,7 +20,7 @@
 package org.orekit.models.earth.troposphere;
 
 import org.hipparchus.Field;
-import org.hipparchus.RealFieldElement;
+import org.hipparchus.CalculusFieldElement;
 import org.orekit.models.earth.troposphere.MappingFunction;
 import org.orekit.time.AbsoluteDate;
 import org.orekit.time.FieldAbsoluteDate;
@@ -89,7 +89,7 @@ public class PythonMappingFunction implements MappingFunction {
      * @return a two components array containing the hydrostatic and wet mapping functions.
      */
     @Override
-    public <T extends RealFieldElement<T>> T[] mappingFactors(T elevation, T height, T[] parameters, FieldAbsoluteDate<T> date) {
+    public <T extends CalculusFieldElement<T>> T[] mappingFactors(T elevation, T height, T[] parameters, FieldAbsoluteDate<T> date) {
         return this.mappingFactors_TTTF(elevation, height, parameters, date);
     }
 
@@ -108,7 +108,7 @@ public class PythonMappingFunction implements MappingFunction {
      * @param date       current date
      * @return a two components array containing the hydrostatic and wet mapping functions.
      */
-    public native <T extends RealFieldElement<T>> T[] mappingFactors_TTTF(T elevation, T height, T[] parameters, FieldAbsoluteDate<T> date);
+    public native <T extends CalculusFieldElement<T>> T[] mappingFactors_TTTF(T elevation, T height, T[] parameters, FieldAbsoluteDate<T> date);
 
 
     /**
@@ -134,7 +134,7 @@ public class PythonMappingFunction implements MappingFunction {
      * @return tropospheric model parameters
      */
     @Override
-    public <T extends RealFieldElement<T>> T[] getParameters(Field<T> field) {
+    public <T extends CalculusFieldElement<T>> T[] getParameters(Field<T> field) {
         return this.getParameters_F(field);
     }
 
@@ -144,5 +144,5 @@ public class PythonMappingFunction implements MappingFunction {
      * @param field field to which the elements belong
      * @return tropospheric model parameters
      */
-    public native <T extends RealFieldElement<T>> T[] getParameters_F(Field<T> field);
+    public native <T extends CalculusFieldElement<T>> T[] getParameters_F(Field<T> field);
 }

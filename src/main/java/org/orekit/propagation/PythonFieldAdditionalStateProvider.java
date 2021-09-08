@@ -19,11 +19,11 @@
 
 package org.orekit.propagation;
 
-import org.hipparchus.RealFieldElement;
+import org.hipparchus.CalculusFieldElement;
 import org.orekit.propagation.FieldAdditionalStateProvider;
 import org.orekit.propagation.FieldSpacecraftState;
 
-public class PythonFieldAdditionalStateProvider<T extends RealFieldElement<T>> implements FieldAdditionalStateProvider<T> {
+public class PythonFieldAdditionalStateProvider<T extends CalculusFieldElement<T>> implements FieldAdditionalStateProvider<T> {
     /** Part of JCC Python interface to object */
     private long pythonObject;
 

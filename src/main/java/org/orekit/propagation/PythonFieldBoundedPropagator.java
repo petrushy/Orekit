@@ -82,7 +82,7 @@ public class PythonFieldBoundedPropagator<T extends CalculusFieldElement<T>> imp
      * @return one of {@link #SLAVE_MODE}, {@link #MASTER_MODE},
      * {@link #EPHEMERIS_GENERATION_MODE}
      * @see #setSlaveMode()
-     * @see #setMasterMode(RealFieldElement, FieldOrekitFixedStepHandler)
+     * @see #setMasterMode(CalculusFieldElement, FieldOrekitFixedStepHandler)
      * @see #setMasterMode(FieldOrekitStepHandler)
      * @see #setEphemerisMode()
      */
@@ -148,7 +148,7 @@ public class PythonFieldBoundedPropagator<T extends CalculusFieldElement<T>> imp
      *
      * @param handler handler called at the end of each finalized step
      * @see #setSlaveMode()
-     * @see #setMasterMode(RealFieldElement, FieldOrekitFixedStepHandler)
+     * @see #setMasterMode(CalculusFieldElement, FieldOrekitFixedStepHandler)
      * @see #setEphemerisMode()
      * @see #getMode()
      * @see #MASTER_MODE
@@ -168,7 +168,7 @@ public class PythonFieldBoundedPropagator<T extends CalculusFieldElement<T>> imp
      *
      * @see #getGeneratedEphemeris()
      * @see #setSlaveMode()
-     * @see #setMasterMode(RealFieldElement, FieldOrekitFixedStepHandler)
+     * @see #setMasterMode(CalculusFieldElement, FieldOrekitFixedStepHandler)
      * @see #setMasterMode(FieldOrekitStepHandler)
      * @see #getMode()
      * @see #EPHEMERIS_GENERATION_MODE
