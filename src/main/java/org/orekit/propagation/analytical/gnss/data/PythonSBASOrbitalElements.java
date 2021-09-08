@@ -18,7 +18,7 @@
 // this file was created by SCC 2020 and is largely a derived work from the
 // original java class/interface
 
-package org.orekit.propagation.analytical.gnss;
+package org.orekit.propagation.analytical.gnss.data;
 
 import org.orekit.time.AbsoluteDate;
 

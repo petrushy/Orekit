@@ -23,12 +23,14 @@ import org.orekit.attitudes.AttitudeProvider;
 import org.orekit.frames.Frame;
 import org.orekit.propagation.AdditionalStateProvider;
 import org.orekit.propagation.BoundedPropagator;
+import org.orekit.propagation.EphemerisGenerator;
 import org.orekit.propagation.SpacecraftState;
 import org.orekit.propagation.events.EventDetector;
 import org.orekit.propagation.integration.AbstractIntegratedPropagator;
 import org.orekit.propagation.integration.AdditionalEquations;
 import org.orekit.propagation.sampling.OrekitFixedStepHandler;
 import org.orekit.propagation.sampling.OrekitStepHandler;
+import org.orekit.propagation.sampling.StepHandlerMultiplexer;
 import org.orekit.time.AbsoluteDate;
 import org.orekit.utils.TimeStampedPVCoordinates;
 
@@ -88,135 +90,47 @@ public class PythonBoundedPropagator implements BoundedPropagator {
      * @see #setMasterMode(OrekitStepHandler)
      * @see #setEphemerisMode()
      */
+
     @Override
-    public native int getMode();
+    public native StepHandlerMultiplexer getMultiplexer();
 
     /**
-     * Set the propagator to slave mode.
-     * Extension point for Python.
+     * Set up an ephemeris generator that will monitor the propagation for building
+     * an ephemeris from it once completed.
      *
-     * <p>This mode is used when the user needs only the final orbit at the target time.
-     * The (slave) propagator computes this result and return it to the calling
-     * (master) application, without any intermediate feedback.
-     * <p>This is the default mode.</p>
+     * <p>
+     * This generator can be used when the user needs fast random access to the orbit
+     * state at any time between the initial and target times. A typical example is the
+     * implementation of search and iterative algorithms that may navigate forward and
+     * backward inside the propagation range before finding their result even if the
+     * propagator used is integration-based and only goes from one initial time to one
+     * target time.
+     * </p>
+     * <p>
+     * Beware that when used with integration-based propagators, the generator will
+     * store <strong>all</strong> intermediate results. It is therefore memory intensive
+     * for long integration-based ranges and high precision/short time steps. When
+     * used with analytical propagators, the generator only stores start/stop time
+     * and a reference to the analytical propagator itself to call it back as needed,
+     * so it is less memory intensive.
+     * </p>
+     * <p>
+     * The returned ephemeris generator will be initially empty, it will be filled
+     * with propagation data when a subsequent call to either {@link #propagate(AbsoluteDate)
+     * propagate(target)} or {@link #propagate(AbsoluteDate, AbsoluteDate)
+     * propagate(start, target)} is called. The proper way to use this method is
+     * therefore to do:
+     * </p>
+     * <pre>
+     *   EphemerisGenerator generator = propagator.getEphemerisGenerator();
+     *   propagator.propagate(target);
+     *   BoundedPropagator ephemeris = generator.getGeneratedEphemeris();
+     * </pre>
      *
-     * @see #setMasterMode(double, OrekitFixedStepHandler)
-     * @see #setMasterMode(OrekitStepHandler)
-     * @see #setEphemerisMode()
-     * @see #getMode()
-     * @see #SLAVE_MODE
+     * @return ephemeris generator
      */
     @Override
-    public native void setSlaveMode();
-
-    /**
-     * Set the propagator to master mode with fixed steps.
-     * <p>This mode is used when the user needs to have some custom function called at the
-     * end of each finalized step during integration. The (master) propagator integration
-     * loop calls the (slave) application callback methods at each finalized step.</p>
-     *
-     * @param h       fixed stepsize (s)
-     * @param handler handler called at the end of each finalized step
-     * @see #setSlaveMode()
-     * @see #setMasterMode(OrekitStepHandler)
-     * @see #setEphemerisMode()
-     * @see #getMode()
-     * @see #MASTER_MODE
-     */
-    @Override
-    public void setMasterMode(double h, OrekitFixedStepHandler handler) {
-        setMasterMode_2p(h, handler);
-    }
-
-
-    /**
-     * Set the propagator to master mode with fixed steps.
-     * <p>This mode is used when the user needs to have some custom function called at the
-     * end of each finalized step during integration. The (master) propagator integration
-     * loop calls the (slave) application callback methods at each finalized step.</p>
-     *
-     * @param h       fixed stepsize (s)
-     * @param handler handler called at the end of each finalized step
-     * @see #setSlaveMode()
-     * @see #setMasterMode(OrekitStepHandler)
-     * @see #setEphemerisMode()
-     * @see #getMode()
-     * @see #MASTER_MODE
-     */
-    public native void setMasterMode_2p(double h, OrekitFixedStepHandler handler);
-
-    /**
-     * Set the propagator to master mode with variable steps.
-     * <p>This mode is used when the user needs to have some custom function called at the
-     * end of each finalized step during integration. The (master) propagator integration
-     * loop calls the (slave) application callback methods at each finalized step.</p>
-     *
-     * @param handler handler called at the end of each finalized step
-     * @see #setSlaveMode()
-     * @see #setMasterMode(double, OrekitFixedStepHandler)
-     * @see #setEphemerisMode()
-     * @see #getMode()
-     * @see #MASTER_MODE
-     */
-    @Override
-    public native void setMasterMode(OrekitStepHandler handler);
-
-    /**
-     * Set the propagator to ephemeris generation mode.
-     * <p>This mode is used when the user needs random access to the orbit state at any time
-     * between the initial and target times, and in no sequential order. A typical example is
-     * the implementation of search and iterative algorithms that may navigate forward and
-     * backward inside the propagation range before finding their result.</p>
-     * <p>Beware that since this mode stores <strong>all</strong> intermediate results,
-     * it may be memory intensive for long integration ranges and high precision/short
-     * time steps.</p>
-     *
-     * @see #getGeneratedEphemeris()
-     * @see #setSlaveMode()
-     * @see #setMasterMode(double, OrekitFixedStepHandler)
-     * @see #setMasterMode(OrekitStepHandler)
-     * @see #getMode()
-     * @see #EPHEMERIS_GENERATION_MODE
-     */
-    @Override
-    public native void setEphemerisMode();
-
-    /**
-     * Set the propagator to ephemeris generation mode with the specified handler for each
-     * integration step.
-     *
-     * <p>This mode is used when the user needs random access to the orbit state at any
-     * time between the initial and target times, as well as access to the steps computed
-     * by the integrator as in Master Mode. A typical example is the implementation of
-     * search and iterative algorithms that may navigate forward and backward inside the
-     * propagation range before finding their result.</p>
-     *
-     * <p>Beware that since this mode stores <strong>all</strong> intermediate results, it
-     * may be memory intensive for long integration ranges and high precision/short time
-     * steps.</p>
-     *
-     * @param handler handler called at the end of each finalized step
-     * @see #setEphemerisMode()
-     * @see #getGeneratedEphemeris()
-     * @see #setSlaveMode()
-     * @see #setMasterMode(double, OrekitFixedStepHandler)
-     * @see #setMasterMode(OrekitStepHandler)
-     * @see #getMode()
-     * @see #EPHEMERIS_GENERATION_MODE
-     */
-    @Override
-    public native void setEphemerisMode(OrekitStepHandler handler);
-
-    /**
-     * Get the ephemeris generated during propagation.
-     *
-     * @return generated ephemeris
-     * @throws IllegalStateException if the propagator was not set in ephemeris
-     *                               generation mode before propagation
-     * @see #setEphemerisMode()
-     */
-    @Override
-    public native BoundedPropagator getGeneratedEphemeris() throws IllegalStateException;
+    public native EphemerisGenerator getEphemerisGenerator();
 
     /**
      * Get the propagator initial state.

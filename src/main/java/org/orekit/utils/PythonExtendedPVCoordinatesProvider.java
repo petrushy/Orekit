@@ -23,9 +23,6 @@ import org.hipparchus.CalculusFieldElement;
 import org.orekit.frames.Frame;
 import org.orekit.time.AbsoluteDate;
 import org.orekit.time.FieldAbsoluteDate;
-import org.orekit.utils.ExtendedPVCoordinatesProvider;
-import org.orekit.utils.TimeStampedFieldPVCoordinates;
-import org.orekit.utils.TimeStampedPVCoordinates;
 
 public class PythonExtendedPVCoordinatesProvider implements ExtendedPVCoordinatesProvider {
 
