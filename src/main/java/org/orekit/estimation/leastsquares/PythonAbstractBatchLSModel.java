@@ -15,7 +15,7 @@ import org.orekit.utils.ParameterDriversList;
 
 import java.util.List;
 
-public class PythonBatchLSODModel extends AbstractBatchLSModel {
+public class PythonAbstractBatchLSModel extends AbstractBatchLSModel {
 
     /** Part of JCC Python interface to object */
     private long pythonObject;
@@ -29,7 +29,7 @@ public class PythonBatchLSODModel extends AbstractBatchLSModel {
      * @param mappers                         jacobian mappers
      * @param observer                        observer to be notified at model calls
      */
-    public PythonBatchLSODModel(OrbitDeterminationPropagatorBuilder[] propagatorBuilders, List<ObservedMeasurement<?>> measurements, ParameterDriversList estimatedMeasurementsParameters, AbstractJacobiansMapper[] mappers, ModelObserver observer) {
+    public PythonAbstractBatchLSModel(OrbitDeterminationPropagatorBuilder[] propagatorBuilders, List<ObservedMeasurement<?>> measurements, ParameterDriversList estimatedMeasurementsParameters, AbstractJacobiansMapper[] mappers, ModelObserver observer) {
         super(propagatorBuilders, measurements, estimatedMeasurementsParameters, mappers, observer);
     }
 

@@ -1,5 +1,5 @@
-/* Copyright 2002-2019 CS Systèmes d'Information
- * Licensed to CS Systèmes d'Information (CS) under one or more
+/* Copyright 2002-2021 CS GROUP
+ * Licensed to CS GROUP (CS) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
  * CS licenses this file to You under the Apache License, Version 2.0
@@ -15,20 +15,28 @@
  * limitations under the License.
  */
 
-// this file was created by SCC 2019 and is largely a derived work from the
-// original java class/interface
+// this file was created by SSC 2021 and is largely a derived work from the
+// original java class
 
-package org.orekit.models.earth.displacement;
 
-import org.hipparchus.geometry.euclidean.threed.Vector3D;
-import org.orekit.data.BodiesElements;
-import org.orekit.frames.Frame;
-import org.orekit.models.earth.displacement.StationDisplacement;
+package org.orekit.files.ccsds.utils.parsing;
 
-public class PythonStationDisplacement implements StationDisplacement {
+import org.orekit.files.ccsds.utils.FileFormat;
+
+public class PythonAbstractMessageParser<T> extends AbstractMessageParser<T> {
 
     /** Part of JCC Python interface to object */
     private long pythonObject;
+
+    /**
+     * Simple constructor.
+     *
+     * @param root             root element for XML files
+     * @param formatVersionKey key for format version
+     */
+    protected PythonAbstractMessageParser(String root, String formatVersionKey) {
+        super(root, formatVersionKey);
+    }
 
     /** Part of JCC Python interface to object */
     public void pythonExtension(long pythonObject)
@@ -53,15 +61,19 @@ public class PythonStationDisplacement implements StationDisplacement {
     public native void pythonDecRef();
 
 
-
     /**
-     * Compute displacement of a ground reference point.
+     * Reset parser to initial state before parsing.
      *
-     * @param elements       elements affecting Earth orientation
-     * @param earthFrame     Earth frame in which reference point is defined
-     * @param referencePoint reference point position in {@code earthFrame}
-     * @return displacement vector to be <em>added</em> to {@code referencePoint}
+     * @param fileFormat format of the file ready to be parsed
      */
     @Override
-    public native Vector3D displacement(BodiesElements elements, Frame earthFrame, Vector3D referencePoint);
+    public native void reset(FileFormat fileFormat);
+
+    /**
+     * Build the file from parsed entries.
+     *
+     * @return parsed file
+     */
+    @Override
+    public native T build();
 }

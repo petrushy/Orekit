@@ -1,5 +1,5 @@
-/* Copyright 2002-2019 CS Systèmes d'Information
- * Licensed to CS Systèmes d'Information (CS) under one or more
+/* Copyright 2002-2021 CS GROUP
+ * Licensed to CS GROUP (CS) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
  * CS licenses this file to You under the Apache License, Version 2.0
@@ -15,17 +15,15 @@
  * limitations under the License.
  */
 
-// this file was created by SCC 2019 and is largely a derived work from the
+
+package org.orekit.files.ccsds.ndm.tdm;
+
+
+// this file was created by SSC 2021 and is largely a derived work from the
 // original java class/interface
+import org.orekit.time.AbsoluteDate;
 
-package org.orekit.models.earth.displacement;
-
-import org.hipparchus.geometry.euclidean.threed.Vector3D;
-import org.orekit.data.BodiesElements;
-import org.orekit.frames.Frame;
-import org.orekit.models.earth.displacement.StationDisplacement;
-
-public class PythonStationDisplacement implements StationDisplacement {
+public class PythonRangeUnitsConverter implements RangeUnitsConverter {
 
     /** Part of JCC Python interface to object */
     private long pythonObject;
@@ -52,16 +50,25 @@ public class PythonStationDisplacement implements StationDisplacement {
     /** Part of JCC Python interface to object */
     public native void pythonDecRef();
 
-
-
     /**
-     * Compute displacement of a ground reference point.
+     * Convert a range expressed in {@link RangeUnits#RU Range Units}.
      *
-     * @param elements       elements affecting Earth orientation
-     * @param earthFrame     Earth frame in which reference point is defined
-     * @param referencePoint reference point position in {@code earthFrame}
-     * @return displacement vector to be <em>added</em> to {@code referencePoint}
+     * @param metadata metadata corresponding to the observation
+     * @param date     observation date
+     * @param range    range value in {@link RangeUnits#RU Range Units}
+     * @return range range value in meters
      */
     @Override
-    public native Vector3D displacement(BodiesElements elements, Frame earthFrame, Vector3D referencePoint);
+    public native double ruToMeters(TdmMetadata metadata, AbsoluteDate date, double range);
+
+    /**
+     * Convert a range expressed in meters.
+     *
+     * @param metadata metadata corresponding to the observation
+     * @param date     observation date
+     * @param range    range value in meters
+     * @return range range value in {@link RangeUnits#RU Range Units}
+     */
+    @Override
+    public native double metersToRu(TdmMetadata metadata, AbsoluteDate date, double range);
 }

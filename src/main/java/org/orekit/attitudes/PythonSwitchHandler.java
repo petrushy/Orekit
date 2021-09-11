@@ -1,5 +1,5 @@
-/* Copyright 2002-2019 CS Systèmes d'Information
- * Licensed to CS Systèmes d'Information (CS) under one or more
+/* Copyright 2002-2021 CS GROUP
+ * Licensed to CS GROUP (CS) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
  * CS licenses this file to You under the Apache License, Version 2.0
@@ -15,17 +15,16 @@
  * limitations under the License.
  */
 
-// this file was created by SCC 2019 and is largely a derived work from the
-// original java class/interface
+// this file was created by SSC 2021 and is largely a derived work from the
+// original java class
 
-package org.orekit.models.earth.displacement;
 
-import org.hipparchus.geometry.euclidean.threed.Vector3D;
-import org.orekit.data.BodiesElements;
-import org.orekit.frames.Frame;
-import org.orekit.models.earth.displacement.StationDisplacement;
+package org.orekit.attitudes;
 
-public class PythonStationDisplacement implements StationDisplacement {
+import org.orekit.propagation.SpacecraftState;
+
+public class PythonSwitchHandler implements AttitudesSequence.SwitchHandler {
+
 
     /** Part of JCC Python interface to object */
     private long pythonObject;
@@ -53,15 +52,17 @@ public class PythonStationDisplacement implements StationDisplacement {
     public native void pythonDecRef();
 
 
-
     /**
-     * Compute displacement of a ground reference point.
+     * Method called when attitude is switched from one law to another law.
      *
-     * @param elements       elements affecting Earth orientation
-     * @param earthFrame     Earth frame in which reference point is defined
-     * @param referencePoint reference point position in {@code earthFrame}
-     * @return displacement vector to be <em>added</em> to {@code referencePoint}
+     * @param preceding attitude law used preceding the switch (i.e. in the past
+     *                  of the switch event for a forward propagation, or in the future
+     *                  of the switch event for a backward propagation)
+     * @param following attitude law used following the switch (i.e. in the future
+     *                  of the switch event for a forward propagation, or in the past
+     *                  of the switch event for a backward propagation)
+     * @param state     state at switch time (with attitude computed using the {@code preceding} law)
      */
     @Override
-    public native Vector3D displacement(BodiesElements elements, Frame earthFrame, Vector3D referencePoint);
+    public native void switchOccurred(AttitudeProvider preceding, AttitudeProvider following, SpacecraftState state);
 }

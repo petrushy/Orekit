@@ -1,5 +1,5 @@
-/* Copyright 2002-2019 CS Systèmes d'Information
- * Licensed to CS Systèmes d'Information (CS) under one or more
+/* Copyright 2002-2021 CS GROUP
+ * Licensed to CS GROUP (CS) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
  * CS licenses this file to You under the Apache License, Version 2.0
@@ -15,17 +15,18 @@
  * limitations under the License.
  */
 
-// this file was created by SCC 2019 and is largely a derived work from the
-// original java class/interface
+// this file was created by SSC 2021 and is largely a derived work from the
+// original java class
+//
+//
 
-package org.orekit.models.earth.displacement;
+package org.orekit.forces.gravity.potential;
 
-import org.hipparchus.geometry.euclidean.threed.Vector3D;
-import org.orekit.data.BodiesElements;
-import org.orekit.frames.Frame;
-import org.orekit.models.earth.displacement.StationDisplacement;
+import org.orekit.time.AbsoluteDate;
 
-public class PythonStationDisplacement implements StationDisplacement {
+public class PythonUnnormalizedSphericalHarmonics implements UnnormalizedSphericalHarmonicsProvider.UnnormalizedSphericalHarmonics {
+
+
 
     /** Part of JCC Python interface to object */
     private long pythonObject;
@@ -52,16 +53,31 @@ public class PythonStationDisplacement implements StationDisplacement {
     /** Part of JCC Python interface to object */
     public native void pythonDecRef();
 
-
-
     /**
-     * Compute displacement of a ground reference point.
+     * Get a spherical harmonic cosine coefficient.
      *
-     * @param elements       elements affecting Earth orientation
-     * @param earthFrame     Earth frame in which reference point is defined
-     * @param referencePoint reference point position in {@code earthFrame}
-     * @return displacement vector to be <em>added</em> to {@code referencePoint}
+     * @param n degree of the coefficient
+     * @param m order of the coefficient
+     * @return un-normalized coefficient Cnm
      */
     @Override
-    public native Vector3D displacement(BodiesElements elements, Frame earthFrame, Vector3D referencePoint);
+    public native double getUnnormalizedCnm(int n, int m);
+
+    /**
+     * Get a spherical harmonic sine coefficient.
+     *
+     * @param n degree of the coefficient
+     * @param m order of the coefficient
+     * @return un-normalized coefficient Snm
+     */
+    @Override
+    public native double getUnnormalizedSnm(int n, int m);
+
+    /**
+     * Get the date.
+     *
+     * @return date attached to the object
+     */
+    @Override
+    public native AbsoluteDate getDate();
 }
