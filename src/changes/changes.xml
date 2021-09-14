@@ -20,7 +20,7 @@
     <title>Orekit Changes</title>
   </properties>
   <body>
-    <release version="11.0" date="2021-09-13"
+    <release version="11.0" date="2021-09-20"
              description="Orekit 11.0 is a major new release.
              It includes both new features and bug fixes. New features introduced
              in 11.0 are: orbit determination using SGP4/SDP4 models, a sequential
@@ -35,6 +35,13 @@
              to add several step handlers for the same orbit propagation, a new
              event detector for angular separation as seen from the spacecraft.
              See the list below for a full description of the changes.">
+   	  <action dev="bryan" type="update" issue="766" due-to="Gowtham Sivaraman">
+        Allowed setting of AttitudeProvider to the BoundedPropagator
+        generated via propagation.
+      </action>
+   	  <action dev="bryan" type="fix" issue="835">
+        Fixed format symbols for year, month, day in DateComponents#toString().
+      </action>
    	  <action dev="thomas" type="fix" issue="668">
         Added a new event detector for angular separation as seen from the spacecraft.
       </action>
