@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-// this file was created by SCC 2020 and is largely a derived work from the
+// this file was created by SSC 2020 and is largely a derived work from the
 // original java class/interface
 
 

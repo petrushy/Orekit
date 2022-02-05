@@ -20,15 +20,9 @@
 
 package org.orekit.forces.maneuvers.trigger;
 
-import org.hipparchus.CalculusFieldElement;
-import org.hipparchus.Field;
 import org.orekit.propagation.SpacecraftState;
-import org.orekit.propagation.events.EventDetector;
-import org.orekit.propagation.events.FieldEventDetector;
 
-import java.util.stream.Stream;
-
-public class PythonAbstractManeuverTriggers extends AbstractManeuverTriggers {
+public class PythonManeuverTriggersResetter implements ManeuverTriggersResetter {
     /** Part of JCC Python interface to object */
     private long pythonObject;
 
@@ -54,31 +48,33 @@ public class PythonAbstractManeuverTriggers extends AbstractManeuverTriggers {
     /** Part of JCC Python interface to object */
     public native void pythonDecRef();
 
-    /**
-     * Method to check if the thruster is firing on initialization. can be called by
-     * sub classes
-     *
-     * @param initialState initial spacecraft state
-     * @param isForward    if true, propagation will be in the forward direction
-     * @return true if firing in propagation direction
-     */
-    @Override
-    public native boolean isFiringOnInitialState(SpacecraftState initialState, boolean isForward);
 
     /**
-     * Get the event detectors associated with the triggers.
+     * Observe a maneuver trigger.
+     * <p>
+     * The {@code start} parameter corresponds to physical flow of time
+     * from past to future, not to propagation direction which can be backward.
+     * This means that during forward propagations, the first call will have
+     * {@code start} set to {@code true} and the second call will have
+     * {@code start} set to {@code false}, whereas in backward propagation,
+     * the first call will have {@code start} set to {@code false} and the second
+     * call will have {@code start} set to {@code true}.
+     * </p>
      *
-     * @return the event detectors
+     * @param state spacecraft state at trigger date (before applying the maneuver)
+     * @param start if true, the trigger is the start of the maneuver
      */
     @Override
-    public native Stream<EventDetector> getEventsDetectors();
+    public void maneuverTriggered(SpacecraftState state, boolean start) {
+
+    }
 
     /**
-     * Get the event detectors associated with the triggers.
+     * Reset state as a maneuver triggers.
      *
-     * @param field field to which the state belongs
-     * @return the event detectors
+     * @param state spacecraft state at trigger date
+     * @return reset state taking into account maneuver start/stop
      */
     @Override
-    public native <T extends CalculusFieldElement<T>> Stream<FieldEventDetector<T>> getFieldEventsDetectors(Field<T> field);
+    public native SpacecraftState resetState(SpacecraftState state);
 }
