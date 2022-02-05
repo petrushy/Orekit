@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-// this file was created by Petrus Hyvönen, SSC
+// this file was created by Petrus Hyvönen, SSC, 2022
 
 package org.orekit.python;
 import java.util.function.Supplier;
