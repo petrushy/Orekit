@@ -1,4 +1,4 @@
-/* Copyright 2002-2021 CS GROUP
+/* Copyright 2002-2022 CS GROUP
  * Licensed to CS GROUP (CS) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -18,9 +18,13 @@ package org.orekit.propagation.analytical.tle;
 
 
 import java.io.BufferedReader;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.text.ParseException;
 
 import org.hipparchus.geometry.euclidean.threed.Vector3D;
@@ -28,7 +32,9 @@ import org.hipparchus.util.CombinatoricsUtils;
 import org.hipparchus.util.FastMath;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.TemporaryFolder;
 import org.orekit.Utils;
 import org.orekit.errors.OrekitException;
 import org.orekit.errors.OrekitMessages;
@@ -47,6 +53,9 @@ import org.orekit.utils.TimeStampedPVCoordinates;
 
 
 public class TLETest {
+
+    @Rule
+    public TemporaryFolder tempFolder = new TemporaryFolder();
 
     private TLE geoTLE;
 
@@ -646,6 +655,76 @@ public class TLETest {
         // Verify
         Assert.assertEquals(tleISS.getLine1(), rebuilt.getLine1());
         Assert.assertEquals(tleISS.getLine2(), rebuilt.getLine2());
+    }
+
+    @Test
+    public void testIssue851() throws IOException, ClassNotFoundException {
+
+        // Initialize TLE
+        final TLE tleISS = new TLE("1 25544U 98067A   21035.14486477  .00001026  00000-0  26816-4 0  9998",
+                                   "2 25544  51.6455 280.7636 0002243 335.6496 186.1723 15.48938788267977");
+        String filename = tempFolder.newFile("file.ser").toString();
+
+        // Serialization 
+        FileOutputStream fileSer = new FileOutputStream(filename);
+        ObjectOutputStream outSer = new ObjectOutputStream(fileSer);
+        outSer.writeObject(tleISS);
+        outSer.close();
+        fileSer.close();
+
+        // Deserialization
+        TLE rebuilt = null;
+        FileInputStream file = new FileInputStream(filename);
+        ObjectInputStream in = new ObjectInputStream(file);
+        rebuilt = (TLE) in.readObject();
+        in.close();
+        file.close();
+
+        // Verify
+        Assert.assertEquals(tleISS.getLine1(), rebuilt.getLine1());
+        Assert.assertEquals(tleISS.getLine2(), rebuilt.getLine2());
+        Assert.assertEquals(tleISS.getBStar(), rebuilt.getBStar(), 1.0e-15);
+
+    }
+
+    @Test
+    public void testIssue864() {
+
+        // Initialize TLE
+        final TLE tleISS = new TLE("1 25544U 98067A   21035.14486477  .00001026  00000-0  26816-4 0  9998",
+                                   "2 25544  51.6455 280.7636 0002243 335.6496 186.1723 15.48938788267977");
+
+        // TLE propagator
+        final TLEPropagator propagator = TLEPropagator.selectExtrapolator(tleISS);
+
+        // State at TLE epoch
+        final SpacecraftState state = propagator.propagate(tleISS.getDate());
+
+        // Set the BStar driver to selected
+        tleISS.getParametersDrivers().forEach(driver -> driver.setSelected(true));
+
+        // Convert to TLE
+        final TLE rebuilt = TLE.stateToTLE(state, tleISS);
+
+        // Verify if driver is still selected
+        rebuilt.getParametersDrivers().forEach(driver -> Assert.assertTrue(driver.isSelected()));
+
+    }
+
+    @Test
+    public void testUnknowParameter() {
+
+        // Initialize TLE
+        final TLE tleISS = new TLE("1 25544U 98067A   21035.14486477  .00001026  00000-0  26816-4 0  9998",
+                                   "2 25544  51.6455 280.7636 0002243 335.6496 186.1723 15.48938788267977");
+
+        try {
+            tleISS.getParameterDriver("MyWonderfulDriver");
+            Assert.fail("an exception should have been thrown");
+        } catch (OrekitException oe) {
+            Assert.assertEquals(OrekitMessages.UNSUPPORTED_PARAMETER_NAME, oe.getSpecifier());
+        }
+
     }
 
     @Before

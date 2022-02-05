@@ -1,4 +1,4 @@
-/* Copyright 2002-2021 CS GROUP
+/* Copyright 2002-2022 CS GROUP
  * Licensed to CS GROUP (CS) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -458,7 +458,7 @@ public class TLE implements TimeStamped, Serializable {
      */
     private void buildLine1() {
 
-        final StringBuffer buffer = new StringBuffer();
+        final StringBuilder buffer = new StringBuilder();
 
         buffer.append('1');
 
@@ -500,7 +500,7 @@ public class TLE implements TimeStamped, Serializable {
         buffer.append(' ');
         buffer.append(ParseUtils.addPadding("elementNumber", elementNumber, ' ', 4, true, satelliteNumber));
 
-        buffer.append(Integer.toString(checksum(buffer)));
+        buffer.append(checksum(buffer));
 
         line1 = buffer.toString();
 
@@ -542,7 +542,7 @@ public class TLE implements TimeStamped, Serializable {
      */
     private void buildLine2() {
 
-        final StringBuffer buffer = new StringBuffer();
+        final StringBuilder buffer = new StringBuilder();
         final DecimalFormat f34   = new DecimalFormat("##0.0000", SYMBOLS);
         final DecimalFormat f211  = new DecimalFormat("#0.00000000", SYMBOLS);
 
@@ -566,7 +566,7 @@ public class TLE implements TimeStamped, Serializable {
         buffer.append(ParseUtils.addPadding(MEAN_MOTION, f211.format(meanMotion * 43200.0 / FastMath.PI), ' ', 11, true, satelliteNumber));
         buffer.append(ParseUtils.addPadding("revolutionNumberAtEpoch", revolutionNumberAtEpoch, ' ', 5, true, satelliteNumber));
 
-        buffer.append(Integer.toString(checksum(buffer)));
+        buffer.append(checksum(buffer));
 
         line2 = buffer.toString();
 
@@ -819,6 +819,15 @@ public class TLE implements TimeStamped, Serializable {
                 FastMath.abs(deltaHy)  < thrH &&
                 FastMath.abs(deltaLv)  < thrV) {
 
+                // Verify if parameters are estimated
+                for (final ParameterDriver templateDrivers : templateTLE.getParametersDrivers()) {
+                    if (templateDrivers.isSelected()) {
+                        // Set to selected for the new TLE
+                        current.getParameterDriver(templateDrivers.getName()).setSelected(true);
+                    }
+                }
+
+                // Return
                 return current;
             }
 
@@ -881,7 +890,7 @@ public class TLE implements TimeStamped, Serializable {
         // Updates revolutionNumberAtEpoch
         final int revolutionNumberAtEpoch = templateTLE.getRevolutionNumberAtEpoch();
         final double dt = epoch.durationFrom(templateTLE.getDate());
-        final int newRevolutionNumberAtEpoch = (int) ((int) revolutionNumberAtEpoch + FastMath.floor((MathUtils.normalizeAngle(meanAnomaly, FastMath.PI) + dt * meanMotion) / (2 * FastMath.PI)));
+        final int newRevolutionNumberAtEpoch = (int) (revolutionNumberAtEpoch + FastMath.floor((MathUtils.normalizeAngle(meanAnomaly, FastMath.PI) + dt * meanMotion) / (2 * FastMath.PI)));
         // Gets B*
         final double bStar = templateTLE.getBStar();
         // Gets Mean Motion derivatives
@@ -1012,6 +1021,75 @@ public class TLE implements TimeStamped, Serializable {
      */
     public List<ParameterDriver> getParametersDrivers() {
         return Collections.singletonList(bStarParameterDriver);
+    }
+
+    /** Get parameter driver from its name.
+     * @param name parameter name
+     * @return parameter driver
+     * @since 11.1
+     */
+    public ParameterDriver getParameterDriver(final String name) {
+        // Loop on known drivers
+        for (final ParameterDriver driver : getParametersDrivers()) {
+            if (name.equals(driver.getName())) {
+                // we have found a parameter with that name
+                return driver;
+            }
+        }
+
+        // build the list of supported parameters
+        final StringBuilder sBuilder = new StringBuilder();
+        for (final ParameterDriver driver : getParametersDrivers()) {
+            if (sBuilder.length() > 0) {
+                sBuilder.append(", ");
+            }
+            sBuilder.append(driver.getName());
+        }
+        throw new OrekitException(OrekitMessages.UNSUPPORTED_PARAMETER_NAME,
+                                  name, sBuilder.toString());
+
+    }
+
+    /** Replace the instance with a data transfer object for serialization.
+     * @return data transfer object that will be serialized
+     */
+    private Object writeReplace() {
+        return new DataTransferObject(line1, line2, utc);
+    }
+
+    /** Internal class used only for serialization. */
+    private static class DataTransferObject implements Serializable {
+
+        /** Serializable UID. */
+        private static final long serialVersionUID = -1596648022319057689L;
+
+        /** First line. */
+        private String line1;
+
+        /** Second line. */
+        private String line2;
+
+        /** The UTC scale. */
+        private final TimeScale utc;
+
+        /** Simple constructor.
+         * @param line1 the first element (69 char String)
+         * @param line2 the second element (69 char String)
+         * @param utc the UTC time scale
+         */
+        DataTransferObject(final String line1, final String line2, final TimeScale utc) {
+            this.line1 = line1;
+            this.line2 = line2;
+            this.utc   = utc;
+        }
+
+        /** Replace the deserialized data transfer object with a {@link TLE}.
+         * @return replacement {@link TLE}
+         */
+        private Object readResolve() {
+            return new TLE(line1, line2, utc);
+        }
+
     }
 
 }
