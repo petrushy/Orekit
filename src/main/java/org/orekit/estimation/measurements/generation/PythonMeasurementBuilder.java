@@ -29,7 +29,7 @@ import org.orekit.time.AbsoluteDate;
 
 import java.util.List;
 
-public class PythonMeasurementBuilderI<T extends ObservedMeasurement<T>> implements MeasurementBuilder<T> {
+public class PythonMeasurementBuilder<T extends ObservedMeasurement<T>> implements MeasurementBuilder<T> {
     /** Part of JCC Python interface to object */
     private long pythonObject;
 
