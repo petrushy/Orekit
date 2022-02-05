@@ -19,9 +19,6 @@
 
 package org.orekit.bodies;
 
-import org.orekit.bodies.CelestialBody;
-import org.orekit.bodies.CelestialBodyLoader;
-
 public class PythonCelestialBodyLoader implements CelestialBodyLoader {
 
     /** Part of JCC Python interface to object */

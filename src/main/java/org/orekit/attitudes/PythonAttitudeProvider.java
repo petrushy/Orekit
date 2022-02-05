@@ -22,9 +22,6 @@ package org.orekit.attitudes;
 
 
 import org.hipparchus.CalculusFieldElement;
-import org.orekit.attitudes.Attitude;
-import org.orekit.attitudes.AttitudeProvider;
-import org.orekit.attitudes.FieldAttitude;
 import org.orekit.frames.Frame;
 import org.orekit.time.AbsoluteDate;
 import org.orekit.time.FieldAbsoluteDate;

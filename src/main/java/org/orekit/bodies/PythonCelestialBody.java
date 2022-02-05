@@ -21,7 +21,6 @@ package org.orekit.bodies;
 
 import org.hipparchus.Field;
 import org.hipparchus.CalculusFieldElement;
-import org.orekit.bodies.CelestialBody;
 import org.orekit.frames.Frame;
 import org.orekit.time.AbsoluteDate;
 import org.orekit.time.FieldAbsoluteDate;

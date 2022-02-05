@@ -7,6 +7,7 @@ import org.hipparchus.util.Pair;
 import org.orekit.estimation.measurements.EstimatedMeasurement;
 import org.orekit.estimation.measurements.ObservedMeasurement;
 import org.orekit.orbits.Orbit;
+import org.orekit.propagation.MatricesHarvester;
 import org.orekit.propagation.Propagator;
 import org.orekit.propagation.conversion.OrbitDeterminationPropagatorBuilder;
 import org.orekit.propagation.integration.AbstractIntegratedPropagator;
@@ -131,19 +132,9 @@ public class PythonAbstractBatchLSModel extends AbstractBatchLSModel {
     @Override
     public native AbstractJacobiansMapper configureDerivatives(Propagator propagators);
 
-    /**
-     * Configure the current estimated orbits.
-     * <p>
-     * For DSST orbit determination, short period derivatives are also calculated.
-     * </p>
-     *
-     * @param mapper     Jacobian mapper
-     * @param propagator the orbit propagator
-     * @return the current estimated orbits
-     */
-    @Override
-    public native Orbit configureOrbits(AbstractJacobiansMapper mapper, Propagator propagator);
-
     @Override
     public native Pair<RealVector, RealMatrix> value(RealVector realVector);
+
+    @Override
+    public native Orbit configureOrbits(MatricesHarvester harvester, Propagator propagator);
 }

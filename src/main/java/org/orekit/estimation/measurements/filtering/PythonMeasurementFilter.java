@@ -21,12 +21,8 @@
 
 package org.orekit.estimation.measurements.filtering;
 
-import org.orekit.estimation.measurements.ObservableSatellite;
 import org.orekit.estimation.measurements.ObservedMeasurement;
 import org.orekit.propagation.SpacecraftState;
-import org.orekit.time.AbsoluteDate;
-
-import java.util.List;
 
 /** Interface for measurement pre-processing filter.
  * <p>

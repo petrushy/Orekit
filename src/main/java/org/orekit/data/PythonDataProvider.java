@@ -19,9 +19,6 @@
 
 package org.orekit.data;
 
-import org.orekit.data.DataLoader;
-import org.orekit.data.DataProvider;
-
 import java.util.regex.Pattern;
 
 public class PythonDataProvider implements DataProvider {
