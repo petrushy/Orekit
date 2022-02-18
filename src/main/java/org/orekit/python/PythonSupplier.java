@@ -23,7 +23,7 @@ import java.util.function.Supplier;
 /** A wrapper of the import java.util.function.Supplier Interface **/
 
 
-public class PythonSupplier implements Supplier
+public class PythonSupplier<T> implements Supplier<T>
 		{
 
 	static final long serialVersionUID = 1L;
@@ -60,6 +60,6 @@ public class PythonSupplier implements Supplier
 			 * @return a result
 			 */
 			@Override
-			public native Object get();
+			public native T get();
 		}
 
