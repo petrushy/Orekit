@@ -70,4 +70,15 @@ public class PythonAbstractWriter extends AbstractWriter {
      */
     @Override
     public native void writeContent(Generator generator) throws IOException;
+
+    /**
+     * Convert an array of integer to a comma-separated list.
+     *
+     * @param integers integers to write
+     * @return arrays as a string
+     */
+    @Override
+    public String intArrayToString(int[] integers) {
+        return super.intArrayToString(integers);
+    }
 }

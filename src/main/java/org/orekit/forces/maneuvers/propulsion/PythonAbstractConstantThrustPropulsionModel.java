@@ -48,6 +48,16 @@ public class PythonAbstractConstantThrustPropulsionModel extends AbstractConstan
         super(thrust, isp, direction, name);
     }
 
+    @Override
+    public Vector3D getInitialThrustVector() {
+        return super.getInitialThrustVector();
+    }
+
+    @Override
+    public double getInitialFlowrate() {
+        return super.getInitialFlowrate();
+    }
+
     /**
      * Get the thrust vector in spacecraft frame (N).
      * Here it does not depend on current S/C state.
