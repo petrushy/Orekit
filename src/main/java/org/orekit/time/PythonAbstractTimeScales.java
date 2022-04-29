@@ -51,6 +51,27 @@ public class PythonAbstractTimeScales extends AbstractTimeScales {
     public native void pythonDecRef();
 
     /**
+     * Get the Universal Time 1 scale.
+     * <p>
+     * As this method allow associating any history with the time scale, it may involve
+     * large data sets. So this method does <em>not</em> cache the resulting {@link
+     * UT1Scale UT1Scale} instance, a new instance will be returned each time. In order to
+     * avoid wasting memory, calling {@link #getUT1(IERSConventions, boolean)} with the
+     * single enumerate corresponding to the conventions may be a better solution. This
+     * method is made available only for expert use.
+     * </p>
+     *
+     * @param history EOP parameters providing dUT1 (may be null if no correction is
+     *                desired)
+     * @return Universal Time 1 scale
+     * @see #getUT1(IERSConventions, boolean)
+     */
+    @Override
+    public UT1Scale getUT1(EOPHistory history) {
+        return super.getUT1(history);
+    }
+
+    /**
      * Get the EOP history for the given conventions.
      *
      * @param conventions to use in computing the EOP history.

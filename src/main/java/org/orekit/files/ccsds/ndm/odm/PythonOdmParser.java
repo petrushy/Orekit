@@ -47,8 +47,38 @@ public class PythonOdmParser<T extends NdmConstituent<?, ?>, P extends OdmParser
      * @param mu                   gravitational coefficient
      * @param parsedUnitsBehavior  behavior to adopt for handling parsed units
      */
-    protected PythonOdmParser(String root, String formatVersionKey, IERSConventions conventions, boolean simpleEOP, DataContext dataContext, AbsoluteDate missionReferenceDate, double mu, ParsedUnitsBehavior parsedUnitsBehavior) {
+    public PythonOdmParser(String root, String formatVersionKey, IERSConventions conventions, boolean simpleEOP, DataContext dataContext, AbsoluteDate missionReferenceDate, double mu, ParsedUnitsBehavior parsedUnitsBehavior) {
         super(root, formatVersionKey, conventions, simpleEOP, dataContext, missionReferenceDate, mu, parsedUnitsBehavior);
+    }
+
+    /**
+     * Get the gravitational coefficient set at construction.
+     *
+     * @return gravitational coefficient set at construction
+     */
+    @Override
+    public double getMuSet() {
+        return super.getMuSet();
+    }
+
+    /**
+     * Set the gravitational coefficient parsed in the ODM File.
+     *
+     * @param muParsed the coefficient to be set
+     */
+    @Override
+    public void setMuParsed(double muParsed) {
+        super.setMuParsed(muParsed);
+    }
+
+    /**
+     * Set the gravitational coefficient created from the knowledge of the central body.
+     *
+     * @param muCreated the coefficient to be set
+     */
+    @Override
+    public void setMuCreated(double muCreated) {
+        super.setMuCreated(muCreated);
     }
 
     /** Part of JCC Python interface to object */
@@ -169,4 +199,14 @@ public class PythonOdmParser<T extends NdmConstituent<?, ?>, P extends OdmParser
      */
     @Override
     public native boolean finalizeData();
+
+    /**
+     * Get the file format.
+     *
+     * @return file format
+     */
+    @Override
+    public FileFormat getFileFormat() {
+        return super.getFileFormat();
+    }
 }

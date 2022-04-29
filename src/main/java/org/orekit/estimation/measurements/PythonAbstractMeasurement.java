@@ -2,6 +2,7 @@ package org.orekit.estimation.measurements;
 
 import org.orekit.propagation.SpacecraftState;
 import org.orekit.time.AbsoluteDate;
+import org.orekit.utils.ParameterDriver;
 
 import java.util.List;
 
@@ -25,6 +26,8 @@ public class PythonAbstractMeasurement<T extends ObservedMeasurement<T>> extends
     public PythonAbstractMeasurement(AbsoluteDate date, double observed, double sigma, double baseWeight, List<ObservableSatellite> satellites) {
         super(date, observed, sigma, baseWeight, satellites);
     }
+
+
 
     /** Part of JCC Python interface to object */
     public void pythonExtension(long pythonObject)
@@ -64,4 +67,14 @@ public class PythonAbstractMeasurement<T extends ObservedMeasurement<T>> extends
     @Override
     public native EstimatedMeasurement<T> theoreticalEvaluation(int iteration, int evaluation, SpacecraftState[] states);
 
+    /**
+     * Add a parameter driver.
+     *
+     * @param driver parameter driver to add
+     * @since 9.3
+     */
+    @Override
+    public void addParameterDriver(ParameterDriver driver) {
+        super.addParameterDriver(driver);
+    }
 }

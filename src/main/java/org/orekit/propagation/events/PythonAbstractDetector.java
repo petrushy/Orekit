@@ -58,12 +58,20 @@ public class PythonAbstractDetector<T extends AbstractDetector<T>> extends Abstr
   	/** Part of JCC Python interface to object */
   	public native void pythonDecRef();
 
-	public PythonAbstractDetector(double maxCheck, double threshold,
-			int maxIter, EventHandler<T> handler) {
+
+	/**
+	 * Build a new instance.
+	 *
+	 * @param maxCheck  maximum checking interval (s)
+	 * @param threshold convergence threshold (s)
+	 * @param maxIter   maximum number of iterations in the event time search
+	 * @param handler   event handler to call at event occurrences
+	 */
+	public PythonAbstractDetector(double maxCheck, double threshold, int maxIter, EventHandler<? super T> handler) {
 		super(maxCheck, threshold, maxIter, handler);
 	}
 
-    /** {@inheritDoc} */
+	/** {@inheritDoc} */
     @Override
     public native double g(SpacecraftState s);
 
