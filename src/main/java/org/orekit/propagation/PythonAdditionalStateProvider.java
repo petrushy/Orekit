@@ -22,6 +22,7 @@ package org.orekit.propagation;
 
 import org.orekit.propagation.AdditionalStateProvider;
 import org.orekit.propagation.SpacecraftState;
+import org.orekit.time.AbsoluteDate;
 
 public class PythonAdditionalStateProvider implements AdditionalStateProvider {
 
@@ -58,6 +59,16 @@ public class PythonAdditionalStateProvider implements AdditionalStateProvider {
      */
     @Override
     public native String getName();
+
+    /**
+     * Initialize the additional state provider at the start of propagation.
+     *
+     * @param initialState initial state information at the start of propagation
+     * @param target       date of propagation
+     * @since 11.2
+     */
+    @Override
+    public native void init(SpacecraftState initialState, AbsoluteDate target);
 
     /** Check if this provider should yield so another provider has an opportunity to add missing parts.
      * <p>

@@ -22,6 +22,7 @@ package org.orekit.propagation;
 import org.hipparchus.CalculusFieldElement;
 import org.orekit.propagation.FieldAdditionalStateProvider;
 import org.orekit.propagation.FieldSpacecraftState;
+import org.orekit.time.FieldAbsoluteDate;
 
 public class PythonFieldAdditionalStateProvider<T extends CalculusFieldElement<T>> implements FieldAdditionalStateProvider<T> {
     /** Part of JCC Python interface to object */
@@ -56,6 +57,16 @@ public class PythonFieldAdditionalStateProvider<T extends CalculusFieldElement<T
      */
     @Override
     public native String getName();
+
+    /**
+     * Initialize the additional state provider at the start of propagation.
+     *
+     * @param initialState initial state information at the start of propagation
+     * @param target       date of propagation
+     * @since 11.2
+     */
+    @Override
+    public native void init(FieldSpacecraftState<T> initialState, FieldAbsoluteDate<T> target);
 
     /** Check if this provider should yield so another provider has an opportunity to add missing parts.
      * <p>
