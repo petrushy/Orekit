@@ -120,7 +120,6 @@ public class PythonObservedMeasurement<T extends ObservedMeasurement<T>> impleme
      *
      * @return base weight
      * @see #getTheoreticalStandardDeviation()
-     * @see EstimatedMeasurement#getCurrentWeight()
      */
     @Override
     public native double[] getBaseWeight();
@@ -214,4 +213,12 @@ public class PythonObservedMeasurement<T extends ObservedMeasurement<T>> impleme
      */
     @Override
     public native AbsoluteDate getDate();
+
+    /**
+     * Get the type of measurement.
+     * <p>
+     * @return type of measurement
+     */
+    public native String getMeasurementType();
 }
+

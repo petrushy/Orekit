@@ -600,7 +600,7 @@ public abstract class TLEPropagator extends AbstractAnalyticalPropagator {
         addAdditionalStateProvider(harvester);
         // Return the configured harvester
         return harvester;
-    }
+    }  //TODO Check if this may be needed to subclass in Python?
 
     /**
      * Get the names of the parameters in the matrix returned by {@link MatricesHarvester#getParametersJacobian}.
