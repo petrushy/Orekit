@@ -1,4 +1,4 @@
-/* Copyright 2002-2021 CS GROUP
+/* Copyright 2002-2022 CS GROUP
  * Licensed to CS GROUP (CS) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -16,7 +16,6 @@
  */
 package org.orekit.forces.drag;
 
-
 import org.hipparchus.Field;
 import org.hipparchus.analysis.differentiation.DSFactory;
 import org.hipparchus.analysis.differentiation.DerivativeStructure;
@@ -25,6 +24,7 @@ import org.hipparchus.analysis.differentiation.GradientField;
 import org.hipparchus.geometry.euclidean.threed.FieldRotation;
 import org.hipparchus.geometry.euclidean.threed.FieldVector3D;
 import org.hipparchus.geometry.euclidean.threed.Vector3D;
+import org.hipparchus.linear.RealMatrix;
 import org.hipparchus.ode.AbstractIntegrator;
 import org.hipparchus.ode.nonstiff.AdaptiveStepsizeFieldIntegrator;
 import org.hipparchus.ode.nonstiff.AdaptiveStepsizeIntegrator;
@@ -33,11 +33,10 @@ import org.hipparchus.ode.nonstiff.ClassicalRungeKuttaIntegrator;
 import org.hipparchus.ode.nonstiff.DormandPrince853FieldIntegrator;
 import org.hipparchus.ode.nonstiff.DormandPrince853Integrator;
 import org.hipparchus.util.FastMath;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.orekit.Utils;
-import org.orekit.attitudes.AttitudeProvider;
 import org.orekit.attitudes.LofOffset;
 import org.orekit.bodies.BodyShape;
 import org.orekit.bodies.CelestialBodyFactory;
@@ -61,10 +60,10 @@ import org.orekit.orbits.Orbit;
 import org.orekit.orbits.OrbitType;
 import org.orekit.orbits.PositionAngle;
 import org.orekit.propagation.FieldSpacecraftState;
+import org.orekit.propagation.MatricesHarvester;
 import org.orekit.propagation.SpacecraftState;
 import org.orekit.propagation.numerical.FieldNumericalPropagator;
 import org.orekit.propagation.numerical.NumericalPropagator;
-import org.orekit.propagation.numerical.PartialDerivativesEquations;
 import org.orekit.time.AbsoluteDate;
 import org.orekit.time.DateComponents;
 import org.orekit.time.FieldAbsoluteDate;
@@ -78,16 +77,13 @@ import org.orekit.utils.TimeStampedPVCoordinates;
 
 public class DragForceTest extends AbstractLegacyForceModelTest {
 
-    private static final AttitudeProvider DEFAULT_LAW = Utils.defaultLaw();
-
     @Override
     protected FieldVector3D<DerivativeStructure> accelerationDerivatives(final ForceModel forceModel,
                                                                          final AbsoluteDate date, final  Frame frame,
                                                                          final FieldVector3D<DerivativeStructure> position,
                                                                          final FieldVector3D<DerivativeStructure> velocity,
                                                                          final FieldRotation<DerivativeStructure> rotation,
-                                                                         final DerivativeStructure mass)
-        {
+                                                                         final DerivativeStructure mass) {
         try {
 
             java.lang.reflect.Field atmosphereField = DragForce.class.getDeclaredField("atmosphere");
@@ -164,8 +160,7 @@ public class DragForceTest extends AbstractLegacyForceModelTest {
                                                                       final FieldVector3D<Gradient> position,
                                                                       final FieldVector3D<Gradient> velocity,
                                                                       final FieldRotation<Gradient> rotation,
-                                                                      final Gradient mass)
-        {
+                                                                      final Gradient mass) {
         try {
 
             java.lang.reflect.Field atmosphereField = DragForce.class.getDeclaredField("atmosphere");
@@ -249,7 +244,7 @@ public class DragForceTest extends AbstractLegacyForceModelTest {
                                                                       FramesFactory.getITRF(IERSConventions.IERS_2010, true))),
                               new IsotropicDrag(2.5, 1.2));
 
-        Assert.assertFalse(forceModel.dependsOnPositionOnly());
+        Assertions.assertFalse(forceModel.dependsOnPositionOnly());
 
         checkParameterDerivative(state, forceModel, DragSensitive.DRAG_COEFFICIENT, 1.0e-4, 2.0e-12);
 
@@ -273,15 +268,14 @@ public class DragForceTest extends AbstractLegacyForceModelTest {
                                                                       FramesFactory.getITRF(IERSConventions.IERS_2010, true))),
                               new IsotropicDrag(2.5, 1.2));
 
-        Assert.assertFalse(forceModel.dependsOnPositionOnly());
+        Assertions.assertFalse(forceModel.dependsOnPositionOnly());
 
         checkParameterDerivativeGradient(state, forceModel, DragSensitive.DRAG_COEFFICIENT, 1.0e-4, 2.0e-12);
 
     }
 
     @Test
-    public void testStateJacobianSphere()
-        {
+    public void testStateJacobianSphere() {
 
         // initialization
         AbsoluteDate date = new AbsoluteDate(new DateComponents(2003, 03, 01),
@@ -365,8 +359,7 @@ public class DragForceTest extends AbstractLegacyForceModelTest {
     }
 
     @Test
-    public void testJacobianBoxVs80Implementation()
-        {
+    public void testJacobianBoxVs80Implementation() {
 
         // initialization
         AbsoluteDate date = new AbsoluteDate(new DateComponents(2003, 03, 01),
@@ -394,8 +387,7 @@ public class DragForceTest extends AbstractLegacyForceModelTest {
     }
 
     @Test
-    public void testJacobianBoxVs80ImplementationGradient()
-        {
+    public void testJacobianBoxVs80ImplementationGradient() {
 
         // initialization
         AbsoluteDate date = new AbsoluteDate(new DateComponents(2003, 03, 01),
@@ -423,8 +415,7 @@ public class DragForceTest extends AbstractLegacyForceModelTest {
     }
 
     @Test
-    public void testJacobianBoxVsFiniteDifferences()
-        {
+    public void testJacobianBoxVsFiniteDifferences() {
 
         // initialization
         AbsoluteDate date = new AbsoluteDate(new DateComponents(2003, 03, 01),
@@ -450,8 +441,7 @@ public class DragForceTest extends AbstractLegacyForceModelTest {
     }
 
     @Test
-    public void testJacobianBoxVsFiniteDifferencesGradient()
-        {
+    public void testJacobianBoxVsFiniteDifferencesGradient() {
 
         // initialization
         AbsoluteDate date = new AbsoluteDate(new DateComponents(2003, 03, 01),
@@ -471,14 +461,13 @@ public class DragForceTest extends AbstractLegacyForceModelTest {
                               new BoxAndSolarArraySpacecraft(1.5, 2.0, 1.8, CelestialBodyFactory.getSun(), 20.0,
                                                              Vector3D.PLUS_J, 1.2, 0.7, 0.2));
         SpacecraftState state = new SpacecraftState(orbit,
-                                                    DEFAULT_LAW.getAttitude(orbit, orbit.getDate(), orbit.getFrame()));
+                                                    Utils.defaultLaw().getAttitude(orbit, orbit.getDate(), orbit.getFrame()));
         checkStateJacobianVsFiniteDifferencesGradient(state, forceModel, Utils.defaultLaw(), 1.0, 5.0e-6, false);
 
     }
 
     @Test
-    public void testGlobalStateJacobianBox()
-        {
+    public void testGlobalStateJacobianBox() {
 
         // initialization
         AbsoluteDate date = new AbsoluteDate(new DateComponents(2003, 03, 01),
@@ -539,17 +528,18 @@ public class DragForceTest extends AbstractLegacyForceModelTest {
         propagator.setOrbitType(OrbitType.CARTESIAN);
         propagator.setMu(orbit.getMu());
         propagator.addForceModel(new DragForce(atmosphere, shape));
-        PartialDerivativesEquations partials = new PartialDerivativesEquations("partials", propagator);
-        propagator.setInitialState(partials.setInitialJacobians(new SpacecraftState(orbit, mass)));
+        MatricesHarvester harvester = propagator.setupMatricesComputation("partials", null, null);
+        propagator.setInitialState(new SpacecraftState(orbit, mass));
 
         SpacecraftState state = propagator.propagate(new AbsoluteDate(2004, 1, 1, 1, 30, 0., TimeScalesFactory.getUTC()));
+        RealMatrix dYdY0 = harvester.getStateTransitionMatrix(state);
 
         double delta = 0.1;
         Orbit shifted = new CartesianOrbit(new TimeStampedPVCoordinates(orbit.getDate(),
                                                                         orbit.getPVCoordinates().getPosition().add(new Vector3D(delta, 0, 0)),
                                                                         orbit.getPVCoordinates().getVelocity()),
                                            orbit.getFrame(), orbit.getMu());
-        propagator.setInitialState(partials.setInitialJacobians(new SpacecraftState(shifted, mass)));
+        propagator.setInitialState(new SpacecraftState(shifted, mass));
         SpacecraftState newState = propagator.propagate(new AbsoluteDate(2004, 1, 1, 1, 30, 0., TimeScalesFactory.getUTC()));
         double[] dPVdX = new double[] {
             (newState.getPVCoordinates().getPosition().getX() - state.getPVCoordinates().getPosition().getX()) / delta,
@@ -560,10 +550,8 @@ public class DragForceTest extends AbstractLegacyForceModelTest {
             (newState.getPVCoordinates().getVelocity().getZ() - state.getPVCoordinates().getVelocity().getZ()) / delta,
         };
 
-        double[][] dYdY0 = new double[6][6];
-        partials.getMapper().getStateJacobian(state, dYdY0);
         for (int i = 0; i < 6; ++i) {
-            Assert.assertEquals(dPVdX[i], dYdY0[i][0], 6.2e-6 * FastMath.abs(dPVdX[i]));
+            Assertions.assertEquals(dPVdX[i], dYdY0.getEntry(i, 0), 6.2e-6 * FastMath.abs(dPVdX[i]));
         }
 
     }
@@ -575,7 +563,7 @@ public class DragForceTest extends AbstractLegacyForceModelTest {
      * expansion of dX to the result.*/
     @Test
     public void RealFieldTest() {
-        
+
         // Initial field Keplerian orbit
         // The variables are the six orbital parameters
         DSFactory factory = new DSFactory(6, 4);
@@ -591,7 +579,7 @@ public class DragForceTest extends AbstractLegacyForceModelTest {
 
         // Initial date = J2000 epoch
         FieldAbsoluteDate<DerivativeStructure> J2000 = new FieldAbsoluteDate<>(field);
-        
+
         // J2000 frame
         Frame EME = FramesFactory.getEME2000();
 
@@ -601,7 +589,7 @@ public class DragForceTest extends AbstractLegacyForceModelTest {
                                                                                  EME,
                                                                                  J2000,
                                                                                  zero.add(Constants.EIGEN5C_EARTH_MU));
-        
+
         // Initial field and classical S/Cs
         FieldSpacecraftState<DerivativeStructure> initialState = new FieldSpacecraftState<>(FKO);
         SpacecraftState iSR = initialState.toSpacecraftState();
@@ -612,7 +600,7 @@ public class DragForceTest extends AbstractLegacyForceModelTest {
         ClassicalRungeKuttaIntegrator RIntegrator =
                         new ClassicalRungeKuttaIntegrator(6);
         OrbitType type = OrbitType.EQUINOCTIAL;
-        
+
         // Field and classical numerical propagators
         FieldNumericalPropagator<DerivativeStructure> FNP = new FieldNumericalPropagator<>(field, integrator);
         FNP.setOrbitType(type);
@@ -632,7 +620,7 @@ public class DragForceTest extends AbstractLegacyForceModelTest {
                                                                      Vector3D.PLUS_J, 1.2, 0.7, 0.2));
         FNP.addForceModel(forceModel);
         NP.addForceModel(forceModel);
-        
+
         // Do the test
         checkRealFieldPropagation(FKO, PositionAngle.MEAN, 1000., NP, FNP,
                                   1.0e-30, 9.0e-9, 9.0e-11, 9.0e-11,
@@ -646,7 +634,7 @@ public class DragForceTest extends AbstractLegacyForceModelTest {
      * expansion of dX to the result.*/
     @Test
     public void RealFieldGradientTest() {
-        
+
         // Initial field Keplerian orbit
         // The variables are the six orbital parameters
         final int freeParameters = 6;
@@ -662,7 +650,7 @@ public class DragForceTest extends AbstractLegacyForceModelTest {
 
         // Initial date = J2000 epoch
         FieldAbsoluteDate<Gradient> J2000 = new FieldAbsoluteDate<>(field);
-        
+
         // J2000 frame
         Frame EME = FramesFactory.getEME2000();
 
@@ -672,7 +660,7 @@ public class DragForceTest extends AbstractLegacyForceModelTest {
                                                                                  EME,
                                                                                  J2000,
                                                                                  zero.add(Constants.EIGEN5C_EARTH_MU));
-        
+
         // Initial field and classical S/Cs
         FieldSpacecraftState<Gradient> initialState = new FieldSpacecraftState<>(FKO);
         SpacecraftState iSR = initialState.toSpacecraftState();
@@ -683,7 +671,7 @@ public class DragForceTest extends AbstractLegacyForceModelTest {
         ClassicalRungeKuttaIntegrator RIntegrator =
                         new ClassicalRungeKuttaIntegrator(6);
         OrbitType type = OrbitType.EQUINOCTIAL;
-        
+
         // Field and classical numerical propagators
         FieldNumericalPropagator<Gradient> FNP = new FieldNumericalPropagator<>(field, integrator);
         FNP.setOrbitType(type);
@@ -703,7 +691,7 @@ public class DragForceTest extends AbstractLegacyForceModelTest {
                                                                      Vector3D.PLUS_J, 1.2, 0.7, 0.2));
         FNP.addForceModel(forceModel);
         NP.addForceModel(forceModel);
-        
+
         // Do the test
         checkRealFieldPropagationGradient(FKO, PositionAngle.MEAN, 1000., NP, FNP,
                                   1.0e-30, 3.2e-2, 7.7e-5, 2.8e-4,
@@ -714,7 +702,7 @@ public class DragForceTest extends AbstractLegacyForceModelTest {
     * it is a test to validate the previous test.
     * (to test if the ForceModel it's actually
     * doing something in the Propagator and the FieldPropagator).
-    */ 
+    */
     @Test
     public void RealFieldExpectErrorTest() {
         DSFactory factory = new DSFactory(6, 5);
@@ -776,16 +764,14 @@ public class DragForceTest extends AbstractLegacyForceModelTest {
         FieldPVCoordinates<DerivativeStructure> finPVC_DS = finalState_DS.getPVCoordinates();
         PVCoordinates finPVC_R = finalState_R.getPVCoordinates();
 
-        Assert.assertFalse(FastMath.abs(finPVC_DS.toPVCoordinates().getPosition().getX() - finPVC_R.getPosition().getX()) < FastMath.abs(finPVC_R.getPosition().getX()) * 1e-11);
-        Assert.assertFalse(FastMath.abs(finPVC_DS.toPVCoordinates().getPosition().getY() - finPVC_R.getPosition().getY()) < FastMath.abs(finPVC_R.getPosition().getY()) * 1e-11);
-        Assert.assertFalse(FastMath.abs(finPVC_DS.toPVCoordinates().getPosition().getZ() - finPVC_R.getPosition().getZ()) < FastMath.abs(finPVC_R.getPosition().getZ()) * 1e-11);
+        Assertions.assertFalse(FastMath.abs(finPVC_DS.toPVCoordinates().getPosition().getX() - finPVC_R.getPosition().getX()) < FastMath.abs(finPVC_R.getPosition().getX()) * 1e-11);
+        Assertions.assertFalse(FastMath.abs(finPVC_DS.toPVCoordinates().getPosition().getY() - finPVC_R.getPosition().getY()) < FastMath.abs(finPVC_R.getPosition().getY()) * 1e-11);
+        Assertions.assertFalse(FastMath.abs(finPVC_DS.toPVCoordinates().getPosition().getZ() - finPVC_R.getPosition().getZ()) < FastMath.abs(finPVC_R.getPosition().getZ()) * 1e-11);
     }
 
-    @Before
+    @BeforeEach
     public void setUp() {
         Utils.setDataRoot("regular-data");
     }
 
 }
-
-

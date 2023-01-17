@@ -1,4 +1,4 @@
-/* Copyright 2002-2021 CS GROUP
+/* Copyright 2002-2022 CS GROUP
  * Licensed to CS GROUP (CS) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -16,11 +16,10 @@
  */
 package org.orekit.utils;
 
-
 import org.hipparchus.util.FastMath;
 import org.hipparchus.util.Precision;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 public class DifferentiationTest {
 
@@ -51,7 +50,7 @@ public class DifferentiationTest {
 
         for (double x = -3.0; x < 3.0; x += 0.125) {
             driver.setValue(x);
-            Assert.assertEquals(f1Ref.value(driver), f1Diff.value(driver), tolerance);
+            Assertions.assertEquals(f1Ref.value(driver), f1Diff.value(driver), tolerance);
         }
 
     }

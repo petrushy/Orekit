@@ -20,14 +20,14 @@
 
 package org.orekit.propagation.events.handlers;
 
-import org.hipparchus.RealFieldElement;
+import org.hipparchus.CalculusFieldElement;
 import org.hipparchus.ode.events.Action;
 import org.orekit.propagation.FieldSpacecraftState;
 import org.orekit.propagation.events.FieldEventDetector;
 import org.orekit.propagation.events.EventDetector;
 import org.orekit.time.FieldAbsoluteDate;
 
-public class PythonFieldEventHandler<KK extends FieldEventDetector<T>, T extends RealFieldElement<T>> implements FieldEventHandler<KK, T> {
+public class PythonFieldEventHandler<KK extends FieldEventDetector<T>, T extends CalculusFieldElement<T>> implements FieldEventHandler<KK, T> {
     /** Part of JCC Python interface to object */
     private long pythonObject;
 

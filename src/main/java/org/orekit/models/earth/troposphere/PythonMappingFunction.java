@@ -19,14 +19,11 @@
 
 package org.orekit.models.earth.troposphere;
 
-import org.hipparchus.Field;
-import org.hipparchus.RealFieldElement;
-import org.orekit.models.earth.troposphere.MappingFunction;
+import org.hipparchus.CalculusFieldElement;
+import org.orekit.bodies.FieldGeodeticPoint;
+import org.orekit.bodies.GeodeticPoint;
 import org.orekit.time.AbsoluteDate;
 import org.orekit.time.FieldAbsoluteDate;
-import org.orekit.utils.ParameterDriver;
-
-import java.util.List;
 
 public class PythonMappingFunction implements MappingFunction {
 
@@ -72,7 +69,7 @@ public class PythonMappingFunction implements MappingFunction {
      * @return a two components array containing the hydrostatic and wet mapping functions.
      */
     @Override
-    public native double[] mappingFactors(double elevation, double height, double[] parameters, AbsoluteDate date);
+    public native double[] mappingFactors(double elevation, GeodeticPoint point, AbsoluteDate date);
 
     /**
      * This method allows the computation of the hydrostatic and
@@ -89,8 +86,8 @@ public class PythonMappingFunction implements MappingFunction {
      * @return a two components array containing the hydrostatic and wet mapping functions.
      */
     @Override
-    public <T extends RealFieldElement<T>> T[] mappingFactors(T elevation, T height, T[] parameters, FieldAbsoluteDate<T> date) {
-        return this.mappingFactors_TTTF(elevation, height, parameters, date);
+    public <T extends CalculusFieldElement<T>> T[] mappingFactors(T elevation, FieldGeodeticPoint<T> point, FieldAbsoluteDate<T> date) {
+        return this.mappingFactors_TTTF(elevation, point, date);
     }
 
 
@@ -108,41 +105,8 @@ public class PythonMappingFunction implements MappingFunction {
      * @param date       current date
      * @return a two components array containing the hydrostatic and wet mapping functions.
      */
-    public native <T extends RealFieldElement<T>> T[] mappingFactors_TTTF(T elevation, T height, T[] parameters, FieldAbsoluteDate<T> date);
+    public native <T extends CalculusFieldElement<T>> T[] mappingFactors_TTTF(T elevation, FieldGeodeticPoint<T> point, FieldAbsoluteDate<T> date);
 
 
-    /**
-     * Get the drivers for tropospheric model parameters.
-     *
-     * @return drivers for tropospheric model parameters
-     */
-    @Override
-    public native List<ParameterDriver> getParametersDrivers();
 
-    /**
-     * Get tropospheric model parameters.
-     *
-     * @return tropospheric model parameters
-     */
-    @Override
-    public native double[] getParameters();
-
-    /**
-     * Get tropospheric model parameters.
-     *
-     * @param field field to which the elements belong
-     * @return tropospheric model parameters
-     */
-    @Override
-    public <T extends RealFieldElement<T>> T[] getParameters(Field<T> field) {
-        return this.getParameters_F(field);
-    }
-
-    /**
-     * Get tropospheric model parameters.
-     *
-     * @param field field to which the elements belong
-     * @return tropospheric model parameters
-     */
-    public native <T extends RealFieldElement<T>> T[] getParameters_F(Field<T> field);
 }

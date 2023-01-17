@@ -1,4 +1,4 @@
-/* Copyright 2002-2021 CS GROUP
+/* Copyright 2002-2022 CS GROUP
  * Licensed to CS GROUP (CS) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -54,7 +54,7 @@ public class Aem extends NdmConstituent<Header, AemSegment>
      * @param dataContext used for creating frames, time scales, etc.
      */
     public Aem(final Header header, final List<AemSegment> segments,
-                   final IERSConventions conventions, final DataContext dataContext) {
+               final IERSConventions conventions, final DataContext dataContext) {
         super(header, segments, conventions, dataContext);
     }
 

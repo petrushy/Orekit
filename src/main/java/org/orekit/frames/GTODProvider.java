@@ -1,4 +1,4 @@
-/* Copyright 2002-2021 CS GROUP
+/* Copyright 2002-2022 CS GROUP
  * Licensed to CS GROUP (CS) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -120,6 +120,20 @@ public class GTODProvider implements EOPBasedTransformProvider {
 
         // set up the transform from parent TOD
         return new Transform(date, new Rotation(Vector3D.PLUS_K, gast, RotationConvention.FRAME_TRANSFORM), rotationRate);
+
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public StaticTransform getStaticTransform(final AbsoluteDate date) {
+
+        // compute Greenwich apparent sidereal time, in radians
+        final double gast = gastFunction.value(date);
+
+        // set up the transform from parent TOD
+        return StaticTransform.of(
+                date,
+                new Rotation(Vector3D.PLUS_K, gast, RotationConvention.FRAME_TRANSFORM));
 
     }
 

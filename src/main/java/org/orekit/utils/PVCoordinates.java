@@ -1,4 +1,4 @@
-/* Copyright 2002-2021 CS GROUP
+/* Copyright 2002-2022 CS GROUP
  * Licensed to CS GROUP (CS) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -200,6 +200,16 @@ public class PVCoordinates implements TimeShiftable<PVCoordinates>, Serializable
         }
     }
 
+    /**
+     * Builds PV coordinates with the givne position, zero velocity, and zero
+     * acceleration.
+     *
+     * @param position position vector (m)
+     */
+    public PVCoordinates(final Vector3D position) {
+        this(position, Vector3D.ZERO);
+    }
+
     /** Transform the instance to a {@link FieldVector3D}&lt;{@link DerivativeStructure}&gt;.
      * <p>
      * The {@link DerivativeStructure} coordinates correspond to time-derivatives up
@@ -214,7 +224,7 @@ public class PVCoordinates implements TimeShiftable<PVCoordinates>, Serializable
         final DerivativeStructure x;
         final DerivativeStructure y;
         final DerivativeStructure z;
-        switch(order) {
+        switch (order) {
             case 0 :
                 factory = new DSFactory(1, order);
                 x = factory.build(position.getX());
@@ -310,7 +320,7 @@ public class PVCoordinates implements TimeShiftable<PVCoordinates>, Serializable
         final DerivativeStructure x2;
         final DerivativeStructure y2;
         final DerivativeStructure z2;
-        switch(order) {
+        switch (order) {
             case 0 :
                 factory = new DSFactory(1, order);
                 x0 = factory.build(position.getX());
@@ -475,9 +485,27 @@ public class PVCoordinates implements TimeShiftable<PVCoordinates>, Serializable
      * @return a new state, shifted with respect to the instance (which is immutable)
      */
     public PVCoordinates shiftedBy(final double dt) {
-        return new PVCoordinates(new Vector3D(1, position, dt, velocity, 0.5 * dt * dt, acceleration),
+        return new PVCoordinates(positionShiftedBy(dt),
                                  new Vector3D(1, velocity, dt, acceleration),
                                  acceleration);
+    }
+
+    /**
+     * Get a time-shifted position. Same as {@link #shiftedBy(double)} except
+     * that only the sifted position is returned.
+     * <p>
+     * The state can be slightly shifted to close dates. This shift is based on
+     * a simple Taylor expansion. It is <em>not</em> intended as a replacement
+     * for proper orbit propagation (it is not even Keplerian!) but should be
+     * sufficient for either small time shifts or coarse accuracy.
+     * </p>
+     *
+     * @param dt time shift in seconds
+     * @return a new state, shifted with respect to the instance (which is
+     * immutable)
+     */
+    public Vector3D positionShiftedBy(final double dt) {
+        return new Vector3D(1, position, dt, velocity, 0.5 * dt * dt, acceleration);
     }
 
     /** Gets the position.
@@ -584,7 +612,7 @@ public class PVCoordinates implements TimeShiftable<PVCoordinates>, Serializable
      */
     public String toString() {
         final String comma = ", ";
-        return new StringBuffer().append('{').append("P(").
+        return new StringBuilder().append('{').append("P(").
                 append(position.getX()).append(comma).
                 append(position.getY()).append(comma).
                 append(position.getZ()).append("), V(").

@@ -35,11 +35,13 @@ public class PythonAbstractPropagator extends AbstractPropagator {
     /** Part of JCC Python interface to object */
     public native void pythonDecRef();
 
+
     /**
+     * Extension point for Python.
      * {@inheritDoc}
      */
     @Override
-    public native BoundedPropagator getGeneratedEphemeris();
+    public native EphemerisGenerator getEphemerisGenerator();
 
     /**
      * Extension point for Python.

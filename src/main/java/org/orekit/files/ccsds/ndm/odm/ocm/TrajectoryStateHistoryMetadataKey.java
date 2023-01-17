@@ -1,4 +1,4 @@
-/* Copyright 2002-2021 CS GROUP
+/* Copyright 2002-2022 CS GROUP
  * Licensed to CS GROUP (CS) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -54,8 +54,10 @@ public enum TrajectoryStateHistoryMetadataKey {
     /** Interpolation degree. */
     INTERPOLATION_DEGREE((token, context, container) -> token.processAsInteger(container::setInterpolationDegree)),
 
-    /** Type of averaging (Osculating, mean Brouwer, other...). */
-    ORB_AVERAGING((token, context, container) -> token.processAsUppercaseString(container::setOrbAveraging)),
+    /** Orbit propagator used to generate this trajectory.
+     * @since 11.2
+     */
+    PROPAGATOR((token, context, container) -> token.processAsNormalizedString(container::setPropagator)),
 
     /** Origin of the reference frame of the trajectory. */
     CENTER_NAME((token, context, container) -> token.processAsCenter(container::setCenter,
@@ -78,6 +80,9 @@ public enum TrajectoryStateHistoryMetadataKey {
 
     /** Basis for orbit revolution number entry. */
     ORB_REVNUM_BASIS((token, context, container) -> token.processAsInteger(container::setOrbRevNumBasis)),
+
+    /** Type of averaging (Osculating, mean Brouwer, other...). */
+    ORB_AVERAGING((token, context, container) -> token.processAsUppercaseString(container::setOrbAveraging)),
 
     /** Trajectory element set type.
      * @see ElementsType

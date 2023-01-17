@@ -63,7 +63,5 @@ public class PythonStationDisplacement implements StationDisplacement {
      * @return displacement vector to be <em>added</em> to {@code referencePoint}
      */
     @Override
-    public Vector3D displacement(BodiesElements elements, Frame earthFrame, Vector3D referencePoint) {
-        return null;
-    }
+    public native Vector3D displacement(BodiesElements elements, Frame earthFrame, Vector3D referencePoint);
 }

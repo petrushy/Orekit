@@ -65,8 +65,22 @@ public class PythonOrekitFixedStepHandler implements OrekitFixedStepHandler {
     @Override
     public native void init(SpacecraftState s0, AbsoluteDate t, double step);
 
-   /** {@inheritDoc} */
+    /**
+     * Handle the current step.
+     *
+     * @param currentState current state at step time
+     */
     @Override
-    public native void handleStep(final SpacecraftState currentState, final boolean isLast);
+    public native void handleStep(SpacecraftState currentState);
+
+    /**
+     * Finalize propagation.
+     *
+     * @param finalState state at propagation end
+     * @since 11.0
+     */
+    @Override
+    public native void finish(SpacecraftState finalState);
+
 
 }

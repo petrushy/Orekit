@@ -1,4 +1,4 @@
-/* Copyright 2002-2021 CS GROUP
+/* Copyright 2002-2022 CS GROUP
  * Licensed to CS GROUP (CS) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -16,9 +16,6 @@
  */
 package org.orekit.estimation;
 
-import java.util.List;
-import java.util.Map;
-
 import org.hipparchus.util.FastMath;
 import org.orekit.bodies.CelestialBody;
 import org.orekit.bodies.GeodeticPoint;
@@ -34,7 +31,10 @@ import org.orekit.time.TimeScale;
 import org.orekit.time.UT1Scale;
 import org.orekit.utils.IERSConventions;
 
-public class TLEContext {
+import java.util.List;
+import java.util.Map;
+
+public class TLEContext implements StationDataProvider {
     public IERSConventions                      conventions;
     public OneAxisEllipsoid                     earth;
     public CelestialBody                        sun;
@@ -66,6 +66,11 @@ public class TLEContext {
                                                    altitude);
         return new GroundStation(new TopocentricFrame(earth, gp, name),
                                  ut1.getEOPHistory(), displacements);
+    }
+
+    @Override
+    public List<GroundStation> getStations() {
+        return stations;
     }
 
 }

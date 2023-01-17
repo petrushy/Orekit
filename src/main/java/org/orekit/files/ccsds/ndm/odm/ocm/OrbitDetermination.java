@@ -1,4 +1,4 @@
-/* Copyright 2002-2021 CS GROUP
+/* Copyright 2002-2022 CS GROUP
  * Licensed to CS GROUP (CS) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -73,7 +73,7 @@ public class OrbitDetermination extends CommentsContainer {
     private double epochEigenMaj;
 
     /** Positional error ellipsoid 1σ intermediate eigenvalue at the epoch of OD. */
-    private double epochEigenMed;
+    private double epochEigenInt;
 
     /** Positional error ellipsoid 1σ minor eigenvalue at the epoch of OD. */
     private double epochEigenMin;
@@ -216,15 +216,15 @@ public class OrbitDetermination extends CommentsContainer {
         this.timeSinceLastObservation = timeSinceLastObservation;
     }
 
-    /** Get sime span of observation recommended for the OD of the object.
-     * @return sime span of observation recommended for the OD of the object
+    /** Get time span of observation recommended for the OD of the object.
+     * @return time span of observation recommended for the OD of the object
      */
     public double getRecommendedOdSpan() {
         return recommendedOdSpan;
     }
 
-    /** Set sime span of observation recommended for the OD of the object.
-     * @param recommendedOdSpan sime span of observation recommended for the OD of the object
+    /** Set time span of observation recommended for the OD of the object.
+     * @param recommendedOdSpan time span of observation recommended for the OD of the object
      */
     public void setRecommendedOdSpan(final double recommendedOdSpan) {
         this.recommendedOdSpan = recommendedOdSpan;
@@ -331,15 +331,15 @@ public class OrbitDetermination extends CommentsContainer {
     /** Get positional error ellipsoid 1σ intermediate eigenvalue at the epoch of OD.
      * @return positional error ellipsoid 1σ intermediate eigenvalue at the epoch of OD
      */
-    public double getEpochEigenMed() {
-        return epochEigenMed;
+    public double getEpochEigenInt() {
+        return epochEigenInt;
     }
 
     /** Set positional error ellipsoid 1σ intermediate eigenvalue at the epoch of OD.
-     * @param epochEigenMed positional error ellipsoid 1σ intermediate eigenvalue at the epoch of OD
+     * @param epochEigenInt positional error ellipsoid 1σ intermediate eigenvalue at the epoch of OD
      */
-    public void setEpochEigenMed(final double epochEigenMed) {
-        this.epochEigenMed = epochEigenMed;
+    public void setEpochEigenInt(final double epochEigenInt) {
+        this.epochEigenInt = epochEigenInt;
     }
 
     /** Get positional error ellipsoid 1σ minor eigenvalue at the epoch of OD.

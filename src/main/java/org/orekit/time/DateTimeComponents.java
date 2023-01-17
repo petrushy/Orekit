@@ -1,4 +1,4 @@
-/* Copyright 2002-2021 CS GROUP
+/* Copyright 2002-2022 CS GROUP
  * Licensed to CS GROUP (CS) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -243,6 +243,7 @@ public class DateTimeComponents implements Serializable, Comparable<DateTimeComp
      * format used is ISO6801, except without the offset from UTC.
      *
      * @return a string representation of the date-time.
+     * @see #toStringWithoutUtcOffset(int, int)
      * @see #toString(int, int)
      * @see #toStringRfc3339()
      */
@@ -260,7 +261,7 @@ public class DateTimeComponents implements Serializable, Comparable<DateTimeComp
      * @param minuteDuration 60, 61, or 62 seconds depending on the date being close to a
      *                       leap second introduction and the magnitude of the leap
      *                       second.
-     * @return string representation of this date, time, & UTC offset
+     * @return string representation of this date, time, and UTC offset
      * @see #toString(int, int)
      */
     public String toString(final int minuteDuration) {
@@ -276,21 +277,72 @@ public class DateTimeComponents implements Serializable, Comparable<DateTimeComp
      *                       to a leap second introduction and the magnitude of the leap
      *                       second.
      * @param fractionDigits the number of digits to include after the decimal point in
-     *                       the string representation of the seconds. The date & time is
-     *                       first rounded as necessary. {@code fractionDigits} must be
-     *                       greater than or equal to {@code 0}.
-     * @return string representation of this date, time, & UTC offset
+     *                       the string representation of the seconds. The date and time
+     *                       is first rounded as necessary. {@code fractionDigits} must
+     *                       be greater than or equal to {@code 0}.
+     * @return string representation of this date, time, and UTC offset
      * @see #toStringRfc3339()
      * @see #toStringWithoutUtcOffset()
+     * @see #toStringWithoutUtcOffset(int, int)
      * @since 11.0
      */
     public String toString(final int minuteDuration, final int fractionDigits) {
+        return toStringWithoutUtcOffset(minuteDuration, fractionDigits) +
+                time.formatUtcOffset();
+    }
+
+    /**
+     * Return a string representation of this date-time, rounded to the given precision.
+     *
+     * <p>The format used is ISO8601 without the UTC offset.</p>
+     *
+     * @param minuteDuration 59, 60, 61, or 62 seconds depending on the date being close
+     *                       to a leap second introduction and the magnitude of the leap
+     *                       second.
+     * @param fractionDigits the number of digits to include after the decimal point in
+     *                       the string representation of the seconds. The date and time
+     *                       is first rounded as necessary. {@code fractionDigits} must
+     *                       be greater than or equal to {@code 0}.
+     * @return string representation of this date, time, and UTC offset
+     * @see #toStringRfc3339()
+     * @see #toStringWithoutUtcOffset()
+     * @see #toString(int, int)
+     * @since 11.1
+     */
+    public String toStringWithoutUtcOffset(final int minuteDuration,
+                                           final int fractionDigits) {
         final DecimalFormat secondsFormat =
                 new DecimalFormat("00", new DecimalFormatSymbols(Locale.US));
         secondsFormat.setMaximumFractionDigits(fractionDigits);
         secondsFormat.setMinimumFractionDigits(fractionDigits);
-        DateComponents roundedDate = this.date;
-        TimeComponents roundedTime = this.time;
+        final DateTimeComponents rounded = roundIfNeeded(minuteDuration, fractionDigits);
+        return rounded.getDate().toString() + 'T' +
+                rounded.getTime().toStringWithoutUtcOffset(secondsFormat);
+    }
+
+    /**
+     * Round this date-time to the given precision if needed to prevent rounding up to an
+     * invalid seconds number. This is useful, for example, when writing custom date-time
+     * formatting methods so one does not, e.g., end up with "60.0" seconds during a
+     * normal minute when the value of seconds is {@code 59.999}. This method will instead
+     * round up the minute, hour, day, month, and year as needed.
+     *
+     * @param minuteDuration 59, 60, 61, or 62 seconds depending on the date being close
+     *                       to a leap second introduction and the magnitude of the leap
+     *                       second.
+     * @param fractionDigits the number of decimal digits after the decimal point in the
+     *                       seconds number that will be printed. This date-time is
+     *                       rounded to {@code fractionDigits} after the decimal point if
+     *                       necessary to prevent rounding up to {@code minuteDuration}.
+     *                       {@code fractionDigits} must be greater than or equal to
+     *                       {@code 0}.
+     * @return a date-time within {@code 0.5 * 10**-fractionDigits} seconds of this, and
+     * with a seconds number that will not round up to {@code minuteDuration} when rounded
+     * to {@code fractionDigits} after the decimal point.
+     * @since 11.3
+     */
+    public DateTimeComponents roundIfNeeded(final int minuteDuration,
+                                            final int fractionDigits) {
         double second = time.getSecond();
         final double wrap = minuteDuration - 0.5 * FastMath.pow(10, -fractionDigits);
         if (second >= wrap) {
@@ -308,12 +360,11 @@ public class DateTimeComponents implements Serializable, Comparable<DateTimeComp
                     ++j2000;
                 }
             }
-            roundedDate = new DateComponents(j2000);
-            roundedTime = new TimeComponents(hour, minute, second);
+            return new DateTimeComponents(
+                    new DateComponents(j2000),
+                    new TimeComponents(hour, minute, second));
         }
-        return roundedDate.toString() + 'T' +
-                roundedTime.toStringWithoutUtcOffset(secondsFormat) +
-                roundedTime.formatUtcOffset();
+        return this;
     }
 
     /**

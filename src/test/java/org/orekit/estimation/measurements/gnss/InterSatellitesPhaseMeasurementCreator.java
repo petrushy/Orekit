@@ -1,4 +1,4 @@
-/* Copyright 2002-2021 CS GROUP
+/* Copyright 2002-2022 CS GROUP
  * Licensed to CS GROUP (CS) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -42,7 +42,7 @@ public class InterSatellitesPhaseMeasurementCreator extends MeasurementCreator {
 
     public InterSatellitesPhaseMeasurementCreator(final BoundedPropagator ephemeris,
                                                   final Frequency frequency,
-                                                  final int ambiguity, 
+                                                  final int ambiguity,
                                                   final double localClockOffset,
                                                   final double remoteClockOffset) {
         this(ephemeris, frequency, ambiguity, localClockOffset, remoteClockOffset, Vector3D.ZERO, Vector3D.ZERO);
@@ -50,7 +50,7 @@ public class InterSatellitesPhaseMeasurementCreator extends MeasurementCreator {
 
     public InterSatellitesPhaseMeasurementCreator(final BoundedPropagator ephemeris,
                                                   final Frequency frequency,
-                                                  final int ambiguity, 
+                                                  final int ambiguity,
                                                   final double localClockOffset,
                                                   final double remoteClockOffset,
                                                   final Vector3D antennaPhaseCenter1,

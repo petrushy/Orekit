@@ -1,4 +1,4 @@
-/* Copyright 2002-2021 CS GROUP
+/* Copyright 2002-2022 CS GROUP
  * Licensed to CS GROUP (CS) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -356,7 +356,7 @@ public class FieldPVCoordinates<T extends CalculusFieldElement<T>>
         final FieldDerivativeStructure<T> x;
         final FieldDerivativeStructure<T> y;
         final FieldDerivativeStructure<T> z;
-        switch(order) {
+        switch (order) {
             case 0 :
                 factory = new FDSFactory<>(getPosition().getX().getField(), 1, order);
                 x = factory.build(position.getX());
@@ -452,7 +452,7 @@ public class FieldPVCoordinates<T extends CalculusFieldElement<T>>
         final FieldDerivativeStructure<T> x2;
         final FieldDerivativeStructure<T> y2;
         final FieldDerivativeStructure<T> z2;
-        switch(order) {
+        switch (order) {
             case 0 :
                 factory = new FDSFactory<>(getPosition().getX().getField(), 1, order);
                 x0 = factory.build(position.getX());
@@ -764,7 +764,7 @@ public class FieldPVCoordinates<T extends CalculusFieldElement<T>>
      */
     public String toString() {
         final String comma = ", ";
-        return new StringBuffer().append('{').append("P(").
+        return new StringBuilder().append('{').append("P(").
                                   append(position.getX().getReal()).append(comma).
                                   append(position.getY().getReal()).append(comma).
                                   append(position.getZ().getReal()).append("), V(").

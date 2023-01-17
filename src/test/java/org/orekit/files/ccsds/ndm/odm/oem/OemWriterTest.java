@@ -1,4 +1,4 @@
-/* Copyright 2002-2021 CS GROUP
+/* Copyright 2002-2022 CS GROUP
  * Licensed to CS GROUP (CS) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -16,7 +16,7 @@
  */
 package org.orekit.files.ccsds.ndm.odm.oem;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.orekit.files.ccsds.ndm.AbstractWriterTest;
 import org.orekit.files.ccsds.ndm.ParsedUnitsBehavior;
 import org.orekit.files.ccsds.ndm.ParserBuilder;
@@ -37,7 +37,9 @@ public class OemWriterTest extends AbstractWriterTest<Header, OemSegment, Oem> {
     }
 
     protected OemWriter getWriter() {
-        return new WriterBuilder().buildOemWriter();
+        return new WriterBuilder().
+                   withMissionReferenceDate(new AbsoluteDate("1996-12-17T00:00:00.000", TimeScalesFactory.getUTC())).
+                   buildOemWriter();
     }
 
     @Test
@@ -78,6 +80,16 @@ public class OemWriterTest extends AbstractWriterTest<Header, OemSegment, Oem> {
     @Test
     public void testWriteExample8() {
         doTest("/ccsds/odm/oem/OEMExample8.txt");
+    }
+
+    @Test
+    public void testWriteExample9() {
+        doTest("/ccsds/odm/oem/OEMExample9.txt");
+    }
+
+    @Test
+    public void testIssue839() {
+        doTest("/ccsds/odm/oem/OEM-Issue839.txt");
     }
 
 }

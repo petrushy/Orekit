@@ -1,4 +1,4 @@
-/* Copyright 2002-2021 CS GROUP
+/* Copyright 2002-2022 CS GROUP
  * Licensed to CS GROUP (CS) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -46,7 +46,7 @@ import org.orekit.forces.gravity.potential.UnnormalizedSphericalHarmonicsProvide
 import org.orekit.forces.gravity.potential.UnnormalizedSphericalHarmonicsProvider.UnnormalizedSphericalHarmonics;
 import org.orekit.frames.FieldTransform;
 import org.orekit.frames.Frame;
-import org.orekit.frames.Transform;
+import org.orekit.frames.StaticTransform;
 import org.orekit.orbits.FieldOrbit;
 import org.orekit.orbits.Orbit;
 import org.orekit.propagation.FieldSpacecraftState;
@@ -199,9 +199,6 @@ public class DSSTTesseral implements DSSTForceModel {
     /** Hansen objects for field elements. */
     private Map<Field<?>, FieldHansenObjects<?>> fieldHansen;
 
-    /** Flag for force model initialization with field elements. */
-    private boolean pendingInitialization;
-
     /** Simple constructor with default reference values.
      * <p>
      * When this constructor is used, maximum allowed values are used
@@ -305,8 +302,6 @@ public class DSSTTesseral implements DSSTForceModel {
         this.resOrders    = new ArrayList<Integer>();
         this.nonResOrders = new TreeMap<Integer, List <Integer>>();
 
-        pendingInitialization = true;
-
         // Initialize default values
         this.fieldShortPeriodTerms = new HashMap<>();
         this.fieldHansen           = new HashMap<>();
@@ -374,32 +369,27 @@ public class DSSTTesseral implements DSSTForceModel {
         // Field used by default
         final Field<T> field = auxiliaryElements.getDate().getField();
 
-        if (pendingInitialization == true) {
+        // Initializes specific parameters.
+        final FieldDSSTTesseralContext<T> context = initializeStep(auxiliaryElements, parameters);
 
-            // Initializes specific parameters.
-            final FieldDSSTTesseralContext<T> context = initializeStep(auxiliaryElements, parameters);
+        // Set the highest power of the eccentricity in the analytical power
+        // series expansion for the averaged high order resonant central body
+        // spherical harmonic perturbation
+        maxEccPow = getMaxEccPow(auxiliaryElements.getEcc().getReal());
 
-            // Set the highest power of the eccentricity in the analytical power
-            // series expansion for the averaged high order resonant central body
-            // spherical harmonic perturbation
-            maxEccPow = getMaxEccPow(auxiliaryElements.getEcc().getReal());
+        // Set the maximum power of the eccentricity to use in Hansen coefficient Kernel expansion.
+        maxHansen = maxEccPow / 2;
 
-            // Set the maximum power of the eccentricity to use in Hansen coefficient Kernel expansion.
-            maxHansen = maxEccPow / 2;
+        // The following terms are only used for hansen objects initialization
+        final T ratio = context.getRatio();
 
-            // The following terms are only used for hansen objects initialization
-            final T ratio = context.getRatio();
+        // Compute the non resonant tesseral harmonic terms if not set by the user
+        // Field information is not important here
+        getResonantAndNonResonantTerms(type, context.getOrbitPeriod().getReal(), ratio.getReal());
 
-            // Compute the non resonant tesseral harmonic terms if not set by the user
-            // Field information is not important here
-            getResonantAndNonResonantTerms(type, context.getOrbitPeriod().getReal(), ratio.getReal());
+        mMax = FastMath.max(maxOrderTesseralSP, maxOrderMdailyTesseralSP);
 
-            mMax = FastMath.max(maxOrderTesseralSP, maxOrderMdailyTesseralSP);
-
-            fieldHansen.put(field, new FieldHansenObjects<>(ratio, type));
-
-            pendingInitialization = false;
-        }
+        fieldHansen.put(field, new FieldHansenObjects<>(ratio, type));
 
         final FieldTesseralShortPeriodicCoefficients<T> ftspc =
                         new FieldTesseralShortPeriodicCoefficients<>(bodyFrame, maxOrderMdailyTesseralSP,
@@ -1735,12 +1725,12 @@ public class DSSTTesseral implements DSSTForceModel {
             final AbsoluteDate last  = meanStates[meanStates.length - 1].getDate();
             final int compare = first.compareTo(last);
             if (compare < 0) {
-                slots.addValidAfter(slot, first);
+                slots.addValidAfter(slot, first, false);
             } else if (compare > 0) {
-                slots.addValidBefore(slot, first);
+                slots.addValidBefore(slot, first, false);
             } else {
                 // single date, valid for all time
-                slots.addValidAfter(slot, AbsoluteDate.PAST_INFINITY);
+                slots.addValidAfter(slot, AbsoluteDate.PAST_INFINITY, false);
             }
             return slot;
         }
@@ -1763,7 +1753,9 @@ public class DSSTTesseral implements DSSTForceModel {
                 final AuxiliaryElements auxiliaryElements = new AuxiliaryElements(meanOrbit, I);
 
                 // Central body rotation angle from equation 2.7.1-(3)(4).
-                final Transform t = bodyFrame.getTransformTo(auxiliaryElements.getFrame(), auxiliaryElements.getDate());
+                final StaticTransform t = bodyFrame.getStaticTransformTo(
+                        auxiliaryElements.getFrame(),
+                        auxiliaryElements.getDate());
                 final Vector3D xB = t.transformVector(Vector3D.PLUS_I);
                 final Vector3D yB = t.transformVector(Vector3D.PLUS_J);
                 final Vector3D  f = auxiliaryElements.getVectorF();

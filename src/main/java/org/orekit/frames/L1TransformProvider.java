@@ -1,4 +1,4 @@
-/* Copyright 2002-2021 CS GROUP
+/* Copyright 2002-2022 CS GROUP
  * Licensed to CS GROUP (CS) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -87,6 +87,19 @@ public class L1TransformProvider implements TransformProvider {
         final Rotation      rotation    = new Rotation(pv21.getPosition(), pv21.getVelocity(),
                                                        Vector3D.PLUS_I, Vector3D.PLUS_J);
         return new Transform(date, new Transform(date, translation), new Transform(date, rotation));
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public StaticTransform getStaticTransform(final AbsoluteDate date) {
+        final PVCoordinates pv21        = secondaryBody.getPVCoordinates(date, frame);
+        final Vector3D      translation = getL1(pv21.getPosition()).negate();
+        final Rotation      rotation    = new Rotation(pv21.getPosition(), pv21.getVelocity(),
+                Vector3D.PLUS_I, Vector3D.PLUS_J);
+        return StaticTransform.compose(
+                date,
+                StaticTransform.of(date, translation),
+                StaticTransform.of(date, rotation));
     }
 
     /** {@inheritDoc} */

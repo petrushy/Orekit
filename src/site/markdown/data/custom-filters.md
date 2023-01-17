@@ -1,4 +1,4 @@
-<!--- Copyright 2002-2021 CS GROUP
+<!--- Copyright 2002-2022 CS GROUP
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
   You may obtain a copy of the License at
@@ -44,7 +44,7 @@ to open (or not) the returned value and that a `DataSource` can be opened only o
 principle of lazy-opening provided by `DataSource`.
 
 A consequence of this caveat is that a filter cannot peek on the few bytes of the data stream that is
-referenced by a `DataSource`, for example in an attempt to look at a magic number in a header. This is
+referenced by a `DataSource`, for example in an attempt to look for a magic number in a header. This is
 the reason why for example the `GzipFilter` looks for a `.gz` suffix in the name and does _not_
 look for the `0x1f8B` magic number at file start.
 

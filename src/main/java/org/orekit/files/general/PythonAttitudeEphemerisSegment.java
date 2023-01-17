@@ -65,31 +65,7 @@ public class PythonAttitudeEphemerisSegment implements AttitudeEphemerisFile.Att
     @Override
     public native List<? extends TimeStampedAngularCoordinates> getAngularCoordinates();
 
-    /**
-     * Get the name of the center of the coordinate system the ephemeris is provided
-     * in. This may be a natural origin, such as the center of the Earth, another
-     * satellite, etc.
-     *
-     * @return the name of the frame center
-     */
-    @Override
-    public native String getFrameCenterString();
 
-    /**
-     * Get the reference frame A specifier as it appeared in the file.
-     *
-     * @return the frame name as it appeared in the file (A).
-     */
-    @Override
-    public native String getRefFrameAString();
-
-    /**
-     * Get the reference frame B specifier as it appeared in the file.
-     *
-     * @return the frame name as it appeared in the file (B).
-     */
-    @Override
-    public native String getRefFrameBString();
 
     /**
      * Get the reference frame from which attitude is defined.
@@ -98,55 +74,6 @@ public class PythonAttitudeEphemerisSegment implements AttitudeEphemerisFile.Att
      */
     @Override
     public native Frame getReferenceFrame();
-
-    /**
-     * Get the rotation direction of the attitude.
-     *
-     * @return the rotation direction of the attitude
-     */
-    @Override
-    public native String getAttitudeDirection();
-
-    /**
-     * Get the format of the data lines in the message.
-     *
-     * @return the format of the data lines in the message
-     */
-    @Override
-    public native String getAttitudeType();
-
-    /**
-     * Get the flag for the placement of the quaternion QC in the attitude data.
-     *
-     * @return true if QC is the first element in the attitude data
-     */
-    @Override
-    public native boolean isFirst();
-
-    /**
-     * Get the rotation order for Euler angles.
-     *
-     * @return rotation order
-     */
-    @Override
-    public native RotationOrder getRotationOrder();
-
-    /**
-     * Get the time scale for this ephemeris segment.
-     *
-     * @return the time scale identifier, as specified in the ephemeris file, or
-     * {@code null} if the ephemeris file does not specify a time scale.
-     */
-    @Override
-    public native String getTimeScaleString();
-
-    /**
-     * Get the time scale for this ephemeris segment.
-     *
-     * @return the time scale for this segment. Never {@code null}.
-     */
-    @Override
-    public native TimeScale getTimeScale();
 
     /**
      * Get the start date of this ephemeris segment.

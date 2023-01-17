@@ -5,8 +5,10 @@ import org.hipparchus.Field;
 import org.orekit.attitudes.AttitudeProvider;
 import org.orekit.orbits.FieldOrbit;
 import org.orekit.propagation.FieldSpacecraftState;
-import org.orekit.propagation.analytical.FieldAbstractAnalyticalPropagator;
 import org.orekit.time.FieldAbsoluteDate;
+import org.orekit.utils.ParameterDriver;
+
+import java.util.List;
 
 public class PythonFieldAbstractAnalyticalPropagator<T extends CalculusFieldElement<T>> extends FieldAbstractAnalyticalPropagator<T> {
     /** Part of JCC Python interface to object */
@@ -65,9 +67,20 @@ public class PythonFieldAbstractAnalyticalPropagator<T extends CalculusFieldElem
     /**
      * Extrapolate an orbit up to a specific target date.
      *
-     * @param date target date for the orbit
+     * @param date       target date for the orbit
+     * @param parameters model parameters
      * @return extrapolated parameters
      */
     @Override
-    public native FieldOrbit<T> propagateOrbit(FieldAbsoluteDate<T> date);
+    public native FieldOrbit<T> propagateOrbit(FieldAbsoluteDate<T> date, T[] parameters);
+
+    /**
+     * Get the parameters driver for propagation model.
+     *
+     * @return drivers for propagation model
+     */
+    @Override
+    public native List<ParameterDriver> getParametersDrivers();
+
+
 }

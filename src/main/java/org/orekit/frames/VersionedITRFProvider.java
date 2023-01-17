@@ -1,4 +1,4 @@
-/* Copyright 2002-2021 CS GROUP
+/* Copyright 2002-2022 CS GROUP
  * Licensed to CS GROUP (CS) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -98,6 +98,26 @@ class VersionedITRFProvider implements EOPBasedTransformProvider {
             return rawTransform;
         } else {
             return new Transform(date, rawTransform, converterForDate.getTransform(date));
+        }
+
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public StaticTransform getStaticTransform(final AbsoluteDate date) {
+
+        // get the transform from the current EOP
+        final StaticTransform rawTransform = rawProvider.getStaticTransform(date);
+
+        // add the conversion layer
+        final ITRFVersion.Converter converterForDate = getConverter(date);
+        if (converterForDate == null) {
+            return rawTransform;
+        } else {
+            return StaticTransform.compose(
+                    date,
+                    rawTransform,
+                    converterForDate.getStaticTransform(date));
         }
 
     }

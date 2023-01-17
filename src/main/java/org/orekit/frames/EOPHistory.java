@@ -1,4 +1,4 @@
-/* Copyright 2002-2021 CS GROUP
+/* Copyright 2002-2022 CS GROUP
  * Licensed to CS GROUP (CS) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -28,6 +28,7 @@ import java.util.stream.Stream;
 import org.hipparchus.CalculusFieldElement;
 import org.hipparchus.analysis.interpolation.FieldHermiteInterpolator;
 import org.hipparchus.analysis.interpolation.HermiteInterpolator;
+import org.hipparchus.util.FastMath;
 import org.hipparchus.util.MathArrays;
 import org.orekit.annotation.DefaultDataContext;
 import org.orekit.data.DataContext;
@@ -126,9 +127,9 @@ public class EOPHistory implements Serializable {
         this.conventions      = conventions;
         this.tidalCorrection  = tidalCorrection;
         this.timeScales = timeScales;
-        if (data.size() >= INTERPOLATION_POINTS) {
+        if (data.size() >= 1) {
             // enough data to interpolate
-            cache = new ImmutableTimeStampedCache<EOPEntry>(INTERPOLATION_POINTS, data);
+            cache = new ImmutableTimeStampedCache<EOPEntry>(FastMath.min(INTERPOLATION_POINTS, data.size()), data);
             hasData = true;
         } else {
             // not enough data to interpolate -> always use null correction

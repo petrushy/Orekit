@@ -1,4 +1,4 @@
-/* Copyright 2002-2021 CS GROUP
+/* Copyright 2002-2022 CS GROUP
  * Licensed to CS GROUP (CS) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -16,22 +16,16 @@
  */
 package org.orekit.propagation.numerical;
 
-import static org.hamcrest.CoreMatchers.is;
-
-import java.util.Collections;
-import java.util.List;
-import java.util.stream.Stream;
-
 import org.hamcrest.MatcherAssert;
-import org.hipparchus.Field;
 import org.hipparchus.CalculusFieldElement;
+import org.hipparchus.Field;
 import org.hipparchus.analysis.differentiation.DerivativeStructure;
 import org.hipparchus.geometry.euclidean.threed.FieldRotation;
 import org.hipparchus.geometry.euclidean.threed.FieldVector3D;
 import org.hipparchus.geometry.euclidean.threed.Vector3D;
 import org.hipparchus.ode.nonstiff.DormandPrince54Integrator;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.orekit.forces.AbstractForceModel;
 import org.orekit.forces.ForceModel;
 import org.orekit.frames.Frame;
@@ -46,7 +40,14 @@ import org.orekit.utils.Constants;
 import org.orekit.utils.PVCoordinates;
 import org.orekit.utils.ParameterDriver;
 
+import java.util.Collections;
+import java.util.List;
+import java.util.stream.Stream;
+
+import static org.hamcrest.CoreMatchers.is;
+
 /** Unit tests for {@link PartialDerivativesEquations}. */
+@Deprecated
 public class PartialDerivativesEquationsTest {
 
     /** arbitrary date */
@@ -70,7 +71,7 @@ public class PartialDerivativesEquationsTest {
     /**
      * set up {@link #pde} and dependencies.
      */
-    @Before
+    @BeforeEach
     public void setUp() {
         propagator = new NumericalPropagator(new DormandPrince54Integrator(1, 500, 0.001, 0.001));
         forceModel = new MockForceModel();
@@ -86,16 +87,12 @@ public class PartialDerivativesEquationsTest {
     }
 
     /**
-     * check {@link PartialDerivativesEquations#computeDerivatives(SpacecraftState,
-     * double[])} correctly sets the satellite velocity.
+     * check {@link PartialDerivativesEquations#derivatives(SpacecraftState)} correctly sets the satellite velocity.
      */
     @Test
-    public void testComputeDerivativesStateVelocity() {
-        //setup
-        double[] pdot = new double[36];
-
+    public void testDerivativesStateVelocity() {
         //action
-        pde.computeDerivatives(state, pdot);
+        pde.derivatives(state);
 
         //verify
         MatcherAssert.assertThat(forceModel.accelerationDerivativesPosition.toVector3D(), is(pv.getPosition()));

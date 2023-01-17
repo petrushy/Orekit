@@ -19,16 +19,17 @@
 
 package org.orekit.forces.drag;
 
-import org.hipparchus.RealFieldElement;
+import org.hipparchus.CalculusFieldElement;
 import org.hipparchus.geometry.euclidean.threed.FieldRotation;
 import org.hipparchus.geometry.euclidean.threed.FieldVector3D;
 import org.hipparchus.geometry.euclidean.threed.Rotation;
 import org.hipparchus.geometry.euclidean.threed.Vector3D;
-import org.orekit.forces.drag.DragSensitive;
 import org.orekit.frames.Frame;
 import org.orekit.time.AbsoluteDate;
 import org.orekit.time.FieldAbsoluteDate;
 import org.orekit.utils.ParameterDriver;
+
+import java.util.List;
 
 public class PythonDragSensitive implements DragSensitive {
 
@@ -65,7 +66,7 @@ public class PythonDragSensitive implements DragSensitive {
      * @since 8.0
      */
     @Override
-    public native ParameterDriver[] getDragParametersDrivers();
+    public native List<ParameterDriver> getDragParametersDrivers();
 
     /**
      * Compute the acceleration due to drag.
@@ -111,12 +112,12 @@ public class PythonDragSensitive implements DragSensitive {
      * @since 9.0
      */
     @Override
-    public <T extends RealFieldElement<T>> FieldVector3D<T> dragAcceleration(FieldAbsoluteDate<T> date, Frame frame, FieldVector3D<T> position, FieldRotation<T> rotation, T mass, T density, FieldVector3D<T> relativeVelocity, T[] parameters) {
+    public <T extends CalculusFieldElement<T>> FieldVector3D<T> dragAcceleration(FieldAbsoluteDate<T> date, Frame frame, FieldVector3D<T> position, FieldRotation<T> rotation, T mass, T density, FieldVector3D<T> relativeVelocity, T[] parameters) {
         return this.dragAcceleration_FFFFTTFT(date,frame, position, rotation, mass, density, relativeVelocity, parameters);
     }
 
     /* Extension point for Python. Connected to dragAcceleration(...)*/
-    public native <T extends RealFieldElement<T>> FieldVector3D<T> dragAcceleration_FFFFTTFT(FieldAbsoluteDate<T> date, Frame frame, FieldVector3D<T> position, FieldRotation<T> rotation, T mass, T density, FieldVector3D<T> relativeVelocity, T[] parameters);
+    public native <T extends CalculusFieldElement<T>> FieldVector3D<T> dragAcceleration_FFFFTTFT(FieldAbsoluteDate<T> date, Frame frame, FieldVector3D<T> position, FieldRotation<T> rotation, T mass, T density, FieldVector3D<T> relativeVelocity, T[] parameters);
 
 
 }

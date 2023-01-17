@@ -19,7 +19,7 @@
 
 package org.orekit.time;
 
-//import org.hipparchus.RealFieldElement;
+//import org.hipparchus.CalculusFieldElement;
 import org.hipparchus.CalculusFieldElement;
 import org.orekit.time.AbsoluteDate;
 import org.orekit.time.FieldAbsoluteDate;

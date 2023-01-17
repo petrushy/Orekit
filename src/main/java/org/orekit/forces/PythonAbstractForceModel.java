@@ -1,16 +1,16 @@
 package org.orekit.forces;
 
 import org.hipparchus.Field;
-import org.hipparchus.RealFieldElement;
+import org.hipparchus.CalculusFieldElement;
 import org.hipparchus.geometry.euclidean.threed.FieldVector3D;
 import org.hipparchus.geometry.euclidean.threed.Vector3D;
-import org.orekit.forces.AbstractForceModel;
 import org.orekit.propagation.FieldSpacecraftState;
 import org.orekit.propagation.SpacecraftState;
 import org.orekit.propagation.events.EventDetector;
 import org.orekit.propagation.events.FieldEventDetector;
 import org.orekit.utils.ParameterDriver;
 
+import java.util.List;
 import java.util.stream.Stream;
 
 public class PythonAbstractForceModel extends AbstractForceModel {
@@ -71,7 +71,7 @@ public class PythonAbstractForceModel extends AbstractForceModel {
      * @since 9.0
      */
     @Override
-    public <T extends RealFieldElement<T>> FieldVector3D<T> acceleration(FieldSpacecraftState<T> s, T[] parameters) {
+    public <T extends CalculusFieldElement<T>> FieldVector3D<T> acceleration(FieldSpacecraftState<T> s, T[] parameters) {
         return this.acceleration_FT(s,parameters);
     }
 
@@ -84,7 +84,7 @@ public class PythonAbstractForceModel extends AbstractForceModel {
      * @return acceleration in same frame as state
      * @since 9.0
      */
-    public native <T extends RealFieldElement<T>> FieldVector3D<T> acceleration_FT(FieldSpacecraftState<T> s, T[] parameters);
+    public native <T extends CalculusFieldElement<T>> FieldVector3D<T> acceleration_FT(FieldSpacecraftState<T> s, T[] parameters);
 
     /**
      * Get the discrete events related to the model.
@@ -103,7 +103,7 @@ public class PythonAbstractForceModel extends AbstractForceModel {
      * @return stream of events detectors
      */
     @Override
-    public native <T extends RealFieldElement<T>> Stream<FieldEventDetector<T>> getFieldEventsDetectors(Field<T> field);
+    public native <T extends CalculusFieldElement<T>> Stream<FieldEventDetector<T>> getFieldEventsDetectors(Field<T> field);
 
     /**
      * Get the drivers for force model parameters.
@@ -113,6 +113,6 @@ public class PythonAbstractForceModel extends AbstractForceModel {
      * @since 8.0
      */
     @Override
-    public native ParameterDriver[] getParametersDrivers();
+    public native List<ParameterDriver> getParametersDrivers();
 
     }

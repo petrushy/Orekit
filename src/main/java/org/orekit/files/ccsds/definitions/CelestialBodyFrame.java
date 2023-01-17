@@ -1,4 +1,4 @@
-/* Copyright 2002-2021 CS GROUP
+/* Copyright 2002-2022 CS GROUP
  * Licensed to CS GROUP (CS) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -120,6 +120,22 @@ public enum CelestialBodyFrame {
 
     },
 
+    /** International Terrestrial Reference Frame 2020. */
+    ITRF2020 {
+
+        /** {@inheritDoc} */
+        @Override
+        public Frame getFrame(final IERSConventions conventions,
+                              final boolean simpleEOP,
+                              final DataContext dataContext) {
+            if (conventions == null) {
+                throw new OrekitException(OrekitMessages.CCSDS_UNKNOWN_CONVENTIONS);
+            }
+            return dataContext.getFrames().getITRF(ITRFVersion.ITRF_2020, conventions, simpleEOP);
+        }
+
+    },
+
     /** International Terrestrial Reference Frame 2014. */
     ITRF2014 {
 
@@ -189,6 +205,12 @@ public enum CelestialBodyFrame {
 
         /** {@inheritDoc} */
         @Override
+        public String getName() {
+            return "ITRF-97";
+        }
+
+        /** {@inheritDoc} */
+        @Override
         public Frame getFrame(final IERSConventions conventions,
                               final boolean simpleEOP,
                               final DataContext dataContext) {
@@ -202,6 +224,12 @@ public enum CelestialBodyFrame {
 
     /** International Terrestrial Reference Frame 1996. */
     ITRF1996 {
+
+        /** {@inheritDoc} */
+        @Override
+        public String getName() {
+            return "ITRF-96";
+        }
 
         /** {@inheritDoc} */
         @Override
@@ -221,6 +249,12 @@ public enum CelestialBodyFrame {
 
         /** {@inheritDoc} */
         @Override
+        public String getName() {
+            return "ITRF-94";
+        }
+
+        /** {@inheritDoc} */
+        @Override
         public Frame getFrame(final IERSConventions conventions,
                               final boolean simpleEOP,
                               final DataContext dataContext) {
@@ -234,6 +268,12 @@ public enum CelestialBodyFrame {
 
     /** International Terrestrial Reference Frame 1993. */
     ITRF1993 {
+
+        /** {@inheritDoc} */
+        @Override
+        public String getName() {
+            return "ITRF-93";
+        }
 
         /** {@inheritDoc} */
         @Override
@@ -253,6 +293,12 @@ public enum CelestialBodyFrame {
 
         /** {@inheritDoc} */
         @Override
+        public String getName() {
+            return "ITRF-92";
+        }
+
+        /** {@inheritDoc} */
+        @Override
         public Frame getFrame(final IERSConventions conventions,
                               final boolean simpleEOP,
                               final DataContext dataContext) {
@@ -266,6 +312,12 @@ public enum CelestialBodyFrame {
 
     /** International Terrestrial Reference Frame 1991. */
     ITRF1991 {
+
+        /** {@inheritDoc} */
+        @Override
+        public String getName() {
+            return "ITRF-91";
+        }
 
         /** {@inheritDoc} */
         @Override
@@ -285,6 +337,12 @@ public enum CelestialBodyFrame {
 
         /** {@inheritDoc} */
         @Override
+        public String getName() {
+            return "ITRF-90";
+        }
+
+        /** {@inheritDoc} */
+        @Override
         public Frame getFrame(final IERSConventions conventions,
                               final boolean simpleEOP,
                               final DataContext dataContext) {
@@ -301,6 +359,12 @@ public enum CelestialBodyFrame {
 
         /** {@inheritDoc} */
         @Override
+        public String getName() {
+            return "ITRF-89";
+        }
+
+        /** {@inheritDoc} */
+        @Override
         public Frame getFrame(final IERSConventions conventions,
                               final boolean simpleEOP,
                               final DataContext dataContext) {
@@ -314,6 +378,12 @@ public enum CelestialBodyFrame {
 
     /** International Terrestrial Reference Frame 1988. */
     ITRF1988 {
+
+        /** {@inheritDoc} */
+        @Override
+        public String getName() {
+            return "ITRF-88";
+        }
 
         /** {@inheritDoc} */
         @Override
@@ -408,6 +478,15 @@ public enum CelestialBodyFrame {
      * @since 10.1
      */
     public abstract Frame getFrame(IERSConventions conventions, boolean simpleEOP, DataContext dataContext);
+
+    /**
+     * Get the name of celestial body frame.
+     * @return the name of celestial body frame
+     * @since 11.1
+     */
+    public String getName() {
+        return name();
+    }
 
     /** Parse a CCSDS frame.
      * @param frameName name of the frame, as the value of a CCSDS key=value line

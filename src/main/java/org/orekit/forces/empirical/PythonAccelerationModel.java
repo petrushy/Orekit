@@ -26,6 +26,8 @@ import org.orekit.propagation.FieldSpacecraftState;
 import org.orekit.propagation.SpacecraftState;
 import org.orekit.utils.ParameterDriver;
 
+import java.util.List;
+
 public class PythonAccelerationModel implements AccelerationModel {
 
     /** Part of JCC Python interface to object */
@@ -93,5 +95,5 @@ public class PythonAccelerationModel implements AccelerationModel {
      * @return drivers for acceleration model parameters
      */
     @Override
-    public native ParameterDriver[] getParametersDrivers();
+    public native List<ParameterDriver> getParametersDrivers();
 }

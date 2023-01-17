@@ -1,4 +1,4 @@
-/* Copyright 2002-2021 CS GROUP
+/* Copyright 2002-2022 CS GROUP
  * Licensed to CS GROUP (CS) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -379,7 +379,7 @@ public class FieldAngularCoordinates<T extends CalculusFieldElement<T>> {
         final FieldDerivativeStructure<T> q1DS;
         final FieldDerivativeStructure<T> q2DS;
         final FieldDerivativeStructure<T> q3DS;
-        switch(order) {
+        switch (order) {
             case 0 :
                 factory = new FDSFactory<>(q0.getField(), 1, order);
                 q0DS = factory.build(q0);

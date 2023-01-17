@@ -1,7 +1,7 @@
 package org.orekit.propagation.integration;
 
 import org.hipparchus.Field;
-import org.hipparchus.RealFieldElement;
+import org.hipparchus.CalculusFieldElement;
 import org.hipparchus.ode.FieldODEIntegrator;
 import org.orekit.attitudes.AttitudeProvider;
 import org.orekit.frames.Frame;
@@ -12,7 +12,7 @@ import org.orekit.propagation.integration.FieldAbstractIntegratedPropagator;
 import org.orekit.propagation.integration.FieldStateMapper;
 import org.orekit.time.FieldAbsoluteDate;
 
-public class PythonFieldAbstractIntegratedPropagator<T extends RealFieldElement<T>> extends FieldAbstractIntegratedPropagator<T> {
+public class PythonFieldAbstractIntegratedPropagator<T extends CalculusFieldElement<T>> extends FieldAbstractIntegratedPropagator<T> {
     /** Part of JCC Python interface to object */
     private long pythonObject;
 

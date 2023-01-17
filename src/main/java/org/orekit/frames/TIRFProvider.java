@@ -1,4 +1,4 @@
-/* Copyright 2002-2021 CS GROUP
+/* Copyright 2002-2022 CS GROUP
  * Licensed to CS GROUP (CS) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -98,6 +98,19 @@ class TIRFProvider implements EOPBasedTransformProvider {
         final Rotation rotation     = new Rotation(Vector3D.PLUS_K, correctedERA, RotationConvention.FRAME_TRANSFORM);
         return new Transform(date, rotation, rotationRate);
 
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public StaticTransform getStaticTransform(final AbsoluteDate date) {
+        // compute proper rotation
+        final double correctedERA = era.value(date);
+        // set up the transform from parent CIRF
+        final Rotation rotation = new Rotation(
+                Vector3D.PLUS_K,
+                correctedERA,
+                RotationConvention.FRAME_TRANSFORM);
+        return StaticTransform.of(date, rotation);
     }
 
     /** {@inheritDoc} */

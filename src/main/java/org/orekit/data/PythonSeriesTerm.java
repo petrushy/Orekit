@@ -20,7 +20,7 @@
 
 package org.orekit.data;
 
-import org.hipparchus.RealFieldElement;
+import org.hipparchus.CalculusFieldElement;
 
 public class PythonSeriesTerm extends SeriesTerm {
     /** Part of JCC Python interface to object */
@@ -74,7 +74,7 @@ public class PythonSeriesTerm extends SeriesTerm {
      * @return current value of the argument
      */
     @Override
-    public <T extends RealFieldElement<T>> T argument(FieldBodiesElements<T> elements) {
+    public <T extends CalculusFieldElement<T>> T argument(FieldBodiesElements<T> elements) {
         return this.argument_F(elements);
     }
 
@@ -84,7 +84,7 @@ public class PythonSeriesTerm extends SeriesTerm {
      * @param elements luni-solar and planetary elements for the current date
      * @return current value of the argument
      */
-    public native <T extends RealFieldElement<T>> T argument_F(FieldBodiesElements<T> elements);
+    public native <T extends CalculusFieldElement<T>> T argument_F(FieldBodiesElements<T> elements);
 
     /**
      * Compute the time derivative of the argument for the current date.
@@ -93,7 +93,7 @@ public class PythonSeriesTerm extends SeriesTerm {
      * @return current time derivative of the argument
      */
     @Override
-    public <T extends RealFieldElement<T>> T argumentDerivative(FieldBodiesElements<T> elements) {
+    public <T extends CalculusFieldElement<T>> T argumentDerivative(FieldBodiesElements<T> elements) {
         return this.argumentDerivative_F(elements);
     }
 
@@ -104,5 +104,5 @@ public class PythonSeriesTerm extends SeriesTerm {
      * @return current time derivative of the argument
      */
 
-    public native <T extends RealFieldElement<T>> T argumentDerivative_F(FieldBodiesElements<T> elements);
+    public native <T extends CalculusFieldElement<T>> T argumentDerivative_F(FieldBodiesElements<T> elements);
 }

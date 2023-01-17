@@ -1,4 +1,4 @@
-/* Copyright 2002-2021 CS GROUP
+/* Copyright 2002-2022 CS GROUP
  * Licensed to CS GROUP (CS) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -65,8 +65,8 @@ public class Ocm extends NdmConstituent<Header, Segment<OcmMetadata, OcmData>>
      * @param mu Gravitational coefficient to use for building Cartesian/Keplerian orbits.
      */
     public Ocm(final Header header, final List<Segment<OcmMetadata, OcmData>> segments,
-                   final IERSConventions conventions, final DataContext dataContext,
-                   final double mu) {
+               final IERSConventions conventions, final DataContext dataContext,
+               final double mu) {
         super(header, segments, conventions, dataContext);
         this.mu = mu;
     }
@@ -90,14 +90,12 @@ public class Ocm extends NdmConstituent<Header, Segment<OcmMetadata, OcmData>>
      * The metadata entries checked for use as the key are the following ones,
      * the first non-null being used. The map from OCM files always contains only
      * one object.
-     * <p>
      * <ul>
      *   <li>{@link org.orekit.files.ccsds.ndm.odm.OdmMetadata#getObjectName() OBJECT_NAME}</li>
      *   <li>{@link OcmMetadata#getInternationalDesignator() INTERNATIONAL_DESIGNATOR}</li>
      *   <li>{@link OcmMetadata#getObjectDesignator() OBJECT_DESIGNATOR}</li>
      *   <li>the default name {@link #UNKNOWN_OBJECT} for unknown objects</li>
      * </ul>
-     * </p>
      */
     @Override
     public Map<String, OcmSatelliteEphemeris> getSatellites() {
@@ -114,7 +112,7 @@ public class Ocm extends NdmConstituent<Header, Segment<OcmMetadata, OcmData>>
             name = UNKNOWN_OBJECT;
         }
         final List<TrajectoryStateHistory> histories = getSegments().get(0).getData().getOTrajectoryBlocks();
-        final OcmSatelliteEphemeris   ose       = new OcmSatelliteEphemeris(name, mu, histories);
+        final OcmSatelliteEphemeris        ose       = new OcmSatelliteEphemeris(name, mu, histories);
         return Collections.singletonMap(name, ose);
     }
 

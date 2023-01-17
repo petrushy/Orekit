@@ -16,7 +16,7 @@
  */
 /**
  *
- * This package provides an interface to python based on JCC as an interface.
+ * This package provides an interface to python based on JCC as an interface for classes outside the org.orekit domain.
  * <p>
  * Description
  * </p>

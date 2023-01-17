@@ -1,4 +1,4 @@
-/* Copyright 2002-2021 CS GROUP
+/* Copyright 2002-2022 CS GROUP
  * Licensed to CS GROUP (CS) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -20,6 +20,7 @@ import org.orekit.annotation.DefaultDataContext;
 import org.orekit.data.DataContext;
 import org.orekit.files.ccsds.ndm.adm.aem.AemParser;
 import org.orekit.files.ccsds.ndm.adm.apm.ApmParser;
+import org.orekit.files.ccsds.ndm.cdm.CdmParser;
 import org.orekit.files.ccsds.ndm.odm.ocm.OcmParser;
 import org.orekit.files.ccsds.ndm.odm.oem.OemParser;
 import org.orekit.files.ccsds.ndm.odm.omm.OmmParser;
@@ -73,7 +74,6 @@ public class ParserBuilder extends AbstractBuilder<ParserBuilder> {
      *   <li>{@link #getParsedUnitsBehavior() parsed unit behavior} set to {@link ParsedUnitsBehavior#CONVERT_COMPATIBLE}</li>
      *   <li>{@link #getRangeUnitsConverter() converter for range units} set to {@link IdentityConverter}</li>
      * </ul>
-     * </p>
      */
     @DefaultDataContext
     public ParserBuilder() {
@@ -94,7 +94,6 @@ public class ParserBuilder extends AbstractBuilder<ParserBuilder> {
      *   <li>{@link #getParsedUnitsBehavior() parsed unit behavior} set to {@link ParsedUnitsBehavior#CONVERT_COMPATIBLE}</li>
      *   <li>{@link #getRangeUnitsConverter() converter for range units} set to {@link IdentityConverter}</li>
      * </ul>
-     * </p>
      * @param dataContext data context used to retrieve frames, time scales, etc.
      */
     public ParserBuilder(final DataContext dataContext) {
@@ -287,6 +286,14 @@ public class ParserBuilder extends AbstractBuilder<ParserBuilder> {
     public TdmParser buildTdmParser() {
         return new TdmParser(getConventions(), isSimpleEOP(), getDataContext(),
                              getParsedUnitsBehavior(), getRangeUnitsConverter());
+    }
+
+    /** Build a parser for {@link org.orekit.files.ccsds.ndm.cdm.Cdm Conjunction Data Messages}.
+     * @return a new parser
+     */
+    public CdmParser buildCdmParser() {
+        return new CdmParser(getConventions(), isSimpleEOP(), getDataContext(),
+                             getParsedUnitsBehavior());
     }
 
 }

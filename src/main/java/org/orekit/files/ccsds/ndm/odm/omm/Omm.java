@@ -1,4 +1,4 @@
-/* Copyright 2002-2021 CS GROUP
+/* Copyright 2002-2022 CS GROUP
  * Licensed to CS GROUP (CS) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -53,7 +53,7 @@ public class Omm extends NdmConstituent<Header, Segment<OmmMetadata, OmmData>> i
      * @param dataContext used for creating frames, time scales, etc.
      */
     public Omm(final Header header, final List<Segment<OmmMetadata, OmmData>> segments,
-                   final IERSConventions conventions, final DataContext dataContext) {
+               final IERSConventions conventions, final DataContext dataContext) {
         super(header, segments, conventions, dataContext);
     }
 

@@ -20,7 +20,7 @@
 
 package org.orekit.attitudes;
 
-import org.hipparchus.RealFieldElement;
+import org.hipparchus.CalculusFieldElement;
 import org.orekit.frames.Frame;
 import org.orekit.time.AbsoluteDate;
 import org.orekit.time.FieldAbsoluteDate;
@@ -76,7 +76,7 @@ public class PythonBoundedAttitudeProvider implements BoundedAttitudeProvider {
      * @since 9.0
      */
     @Override
-    public <T extends RealFieldElement<T>> FieldAttitude<T> getAttitude(FieldPVCoordinatesProvider<T> pvProv, FieldAbsoluteDate<T> date, Frame frame) {
+    public <T extends CalculusFieldElement<T>> FieldAttitude<T> getAttitude(FieldPVCoordinatesProvider<T> pvProv, FieldAbsoluteDate<T> date, Frame frame) {
         return this.getAttitude_FFF(pvProv, date, frame);
     }
 
@@ -89,7 +89,7 @@ public class PythonBoundedAttitudeProvider implements BoundedAttitudeProvider {
      * @return attitude attitude on the specified date and position-velocity state
      * @since 9.0
      */
-    public native <T extends RealFieldElement<T>> FieldAttitude<T> getAttitude_FFF(FieldPVCoordinatesProvider<T> pvProv, FieldAbsoluteDate<T> date, Frame frame);
+    public native <T extends CalculusFieldElement<T>> FieldAttitude<T> getAttitude_FFF(FieldPVCoordinatesProvider<T> pvProv, FieldAbsoluteDate<T> date, Frame frame);
 
     /**
      * Get the first date of the range.

@@ -19,12 +19,12 @@
 
 package org.orekit.propagation.sampling;
 
-import org.hipparchus.RealFieldElement;
+import org.hipparchus.CalculusFieldElement;
 import org.orekit.propagation.FieldSpacecraftState;
 import org.orekit.propagation.sampling.FieldOrekitFixedStepHandler;
 import org.orekit.time.FieldAbsoluteDate;
 
-public class PythonFieldOrekitFixedStepHandler<T extends RealFieldElement<T>> implements FieldOrekitFixedStepHandler<T> {
+public class PythonFieldOrekitFixedStepHandler<T extends CalculusFieldElement<T>> implements FieldOrekitFixedStepHandler<T> {
 
     /** Part of JCC Python interface to object */
     private long pythonObject;
@@ -70,8 +70,18 @@ public class PythonFieldOrekitFixedStepHandler<T extends RealFieldElement<T>> im
      * Handle the current step.
      *
      * @param currentState current state at step time
-     * @param isLast       if true, this is the last integration step
      */
     @Override
-    public native void handleStep(FieldSpacecraftState<T> currentState, boolean isLast);
+    public native void handleStep(FieldSpacecraftState<T> currentState);
+
+    /**
+     * Finalize propagation.
+     *
+     * @param finalState state at propagation end
+     * @since 11.0
+     */
+    @Override
+    public native void finish(FieldSpacecraftState<T> finalState);
+
+
 }

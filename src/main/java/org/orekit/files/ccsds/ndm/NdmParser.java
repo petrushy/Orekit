@@ -1,4 +1,4 @@
-/* Copyright 2002-2021 CS GROUP
+/* Copyright 2002-2022 CS GROUP
  * Licensed to CS GROUP (CS) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -73,6 +73,7 @@ public class NdmParser extends AbstractMessageParser<Ndm> {
         builders.putAll(builder.buildOcmParser().getSpecialXmlElementsBuilders());
         builders.putAll(builder.buildApmParser().getSpecialXmlElementsBuilders());
         builders.putAll(builder.buildAemParser().getSpecialXmlElementsBuilders());
+        builders.putAll(builder.buildCdmParser().getSpecialXmlElementsBuilders());
 
         return builders;
 
@@ -154,6 +155,13 @@ public class NdmParser extends AbstractMessageParser<Ndm> {
      */
     boolean manageAemConstituent() {
         return manageConstituent(builder::buildAemParser);
+    }
+
+    /** Prepare parsing of a CDM constituent.
+     * @return always return true
+     */
+    boolean manageCdmConstituent() {
+        return manageConstituent(builder::buildCdmParser);
     }
 
     /** Prepare parsing of a constituent.

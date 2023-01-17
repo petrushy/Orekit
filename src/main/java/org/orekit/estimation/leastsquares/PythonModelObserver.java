@@ -1,6 +1,5 @@
 package org.orekit.estimation.leastsquares;
 
-import org.orekit.estimation.leastsquares.ModelObserver;
 import org.orekit.estimation.measurements.EstimatedMeasurement;
 import org.orekit.estimation.measurements.ObservedMeasurement;
 import org.orekit.orbits.Orbit;

@@ -71,11 +71,18 @@ public class PythonOrekitStepHandler implements OrekitStepHandler {
 
     /**
      * Handle the current step.
-     * Extension point for Python.
      *
      * @param interpolator interpolator set up for the current step
-     * @param isLast       if true, this is the last integration step
      */
     @Override
-    public native void handleStep(OrekitStepInterpolator interpolator, boolean isLast);
+    public native void handleStep(OrekitStepInterpolator interpolator);
+
+    /**
+     * Finalize propagation.
+     *
+     * @param finalState state at propagation end
+     * @since 11.0
+     */
+    @Override
+    public native void finish(SpacecraftState finalState);
 }

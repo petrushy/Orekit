@@ -1,4 +1,4 @@
-/* Copyright 2002-2021 CS GROUP
+/* Copyright 2002-2022 CS GROUP
  * Licensed to CS GROUP (CS) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -93,7 +93,6 @@ import org.orekit.utils.units.Unit;
  *        </tr>
  *    </tbody>
  *    </table>
- * </p>
  *
  * <p> The AEM metadata for the AEM file is set when calling {@link #writeSegmentContent(Generator, double, AemSegment)},
  * the entries are defined in tables 4-3, 4-4 and annex A of the ADM standard.
@@ -269,7 +268,7 @@ public class AemWriter extends AbstractMessageWriter<Header, AemSegment, Aem> {
      * as new segments are written (with at least the segment start and stop will change,
      * but some other parts may change too). The {@code template} argument itself is not
      * changed.
-     * </>
+     * </p>
      * @param conventions IERS Conventions
      * @param dataContext used to retrieve frames, time scales, etc.
      * @param missionReferenceDate reference date for Mission Elapsed Time or Mission Relative Time time systems

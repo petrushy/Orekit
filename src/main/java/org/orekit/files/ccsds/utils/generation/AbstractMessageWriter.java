@@ -1,4 +1,4 @@
-/* Copyright 2002-2021 CS GROUP
+/* Copyright 2002-2022 CS GROUP
  * Licensed to CS GROUP (CS) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -38,6 +38,7 @@ import org.orekit.time.TimeScale;
  * Base class for Navigation Data Message (NDM) files.
  * @param <H> type of the header
  * @param <S> type of the segments
+ * @param <F> type of the NDM constituent
  * @author Luc Maisonobe
  * @since 11.0
  */

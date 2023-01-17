@@ -213,7 +213,7 @@ public class OemWriter extends AbstractMessageWriter<Header, OemSegment, Oem> {
      * as new segments are written (with at least the segment start and stop will change,
      * but some other parts may change too). The {@code template} argument itself is not
      * changed.
-     * </>
+     * </p>
      * <p>
      * Calling this constructor directly is not recommended. Users should rather use
      * {@link org.orekit.files.ccsds.ndm.WriterBuilder#buildOemWriter()
@@ -276,6 +276,16 @@ public class OemWriter extends AbstractMessageWriter<Header, OemSegment, Oem> {
         // add an empty line for presentation
         generator.newLine();
 
+        final ContextBinding oldContext = getContext();
+        setContext(new ContextBinding(oldContext::getConventions,
+                                      oldContext::isSimpleEOP,
+                                      oldContext::getDataContext,
+                                      oldContext::getParsedUnitsBehavior,
+                                      oldContext::getReferenceDate,
+                                      metadata::getTimeSystem,
+                                      oldContext::getClockCount,
+                                      oldContext::getClockRate));
+
         // Start metadata
         generator.enterSection(generator.getFormat() == FileFormat.KVN ?
                                KvnStructureKey.META.name() :
@@ -309,9 +319,12 @@ public class OemWriter extends AbstractMessageWriter<Header, OemSegment, Oem> {
 
         // interpolation
         generator.writeEntry(OemMetadataKey.INTERPOLATION.name(), metadata.getInterpolationMethod(), false);
-        generator.writeEntry(OemMetadataKey.INTERPOLATION_DEGREE.name(),
-                             Integer.toString(metadata.getInterpolationDegree()),
-                             null, false);
+        // treat degree < 0 as equivalent to null
+        if (metadata.getInterpolationDegree() >= 0) {
+            generator.writeEntry(OemMetadataKey.INTERPOLATION_DEGREE.name(),
+                    Integer.toString(metadata.getInterpolationDegree()),
+                    null, false);
+        }
 
         // Stop metadata
         generator.exitSection();

@@ -1,4 +1,4 @@
-/* Copyright 2002-2021 CS GROUP
+/* Copyright 2002-2022 CS GROUP
  * Licensed to CS GROUP (CS) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -16,14 +16,12 @@
  */
 package org.orekit.estimation.measurements;
 
-import java.util.Arrays;
-
 import org.hipparchus.analysis.UnivariateFunction;
 import org.hipparchus.analysis.solvers.BracketingNthOrderBrentSolver;
 import org.hipparchus.analysis.solvers.UnivariateSolver;
 import org.hipparchus.geometry.euclidean.threed.Vector3D;
 import org.hipparchus.util.FastMath;
-import org.orekit.estimation.Context;
+import org.orekit.estimation.StationDataProvider;
 import org.orekit.frames.Frame;
 import org.orekit.frames.Transform;
 import org.orekit.propagation.SpacecraftState;
@@ -32,26 +30,28 @@ import org.orekit.utils.Constants;
 import org.orekit.utils.PVCoordinates;
 import org.orekit.utils.ParameterDriver;
 
+import java.util.Arrays;
+
 public class RangeRateMeasurementCreator extends MeasurementCreator {
 
-    private final Context context;
+    private final StationDataProvider context;
     private final boolean twoWay;
     private final ObservableSatellite satellite;
 
-    public RangeRateMeasurementCreator(final Context context, boolean twoWay,
+    public RangeRateMeasurementCreator(final StationDataProvider context, boolean twoWay,
                                        final double satClockDrift) {
         this.context   = context;
         this.twoWay    = twoWay;
         this.satellite = new ObservableSatellite(0);
         this.satellite.getClockDriftDriver().setValue(satClockDrift);
     }
-    
+
     public ObservableSatellite getSatellite() {
         return satellite;
     }
 
     public void init(SpacecraftState s0, AbsoluteDate t, double step) {
-        for (final GroundStation station : context.stations) {
+        for (final GroundStation station : context.getStations()) {
             for (ParameterDriver driver : Arrays.asList(station.getClockOffsetDriver(),
                                                         station.getClockDriftDriver(),
                                                         station.getEastOffsetDriver(),
@@ -74,7 +74,7 @@ public class RangeRateMeasurementCreator extends MeasurementCreator {
     }
 
     public void handleStep(final SpacecraftState currentState) {
-        for (final GroundStation station : context.stations) {
+        for (final GroundStation station : context.getStations()) {
             final double           groundDft = station.getClockDriftDriver().getValue();
             final double           satDft    = satellite.getClockDriftDriver().getValue();
             final double           deltaD    = Constants.SPEED_OF_LIGHT * (groundDft - satDft);
@@ -125,9 +125,7 @@ public class RangeRateMeasurementCreator extends MeasurementCreator {
                                           0.5 * (deltaVr.dotProduct(receptionLOS) + deltaVe.dotProduct(emissionLOS)) :
                                               deltaVr.dotProduct(receptionLOS) + deltaD;
 
-                                          addMeasurement(new RangeRate(station, receptionDate,
-                                                                       rr,
-                                                                       1.0, 10, twoWay, satellite));
+                addMeasurement(new RangeRate(station, receptionDate, rr, 1.0, 10, twoWay, satellite));
             }
 
         }

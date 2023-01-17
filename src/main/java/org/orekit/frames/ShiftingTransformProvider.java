@@ -1,4 +1,4 @@
-/* Copyright 2002-2021 CS GROUP
+/* Copyright 2002-2022 CS GROUP
  * Licensed to CS GROUP (CS) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -127,6 +127,16 @@ public class ShiftingTransformProvider implements TransformProvider {
             FastMath.abs(date.durationFrom(t0.getDate())) < FastMath.abs(date.durationFrom(t1.getDate())) ? t0 : t1
         ).get();
         return closest.shiftedBy(date.durationFrom(closest.getDate()));
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public StaticTransform getStaticTransform(final AbsoluteDate date) {
+        // retrieve a sample from the thread-safe cache
+        final Transform closest = cache.getNeighbors(date).reduce((t0, t1) ->
+                FastMath.abs(date.durationFrom(t0.getDate())) < FastMath.abs(date.durationFrom(t1.getDate())) ? t0 : t1
+        ).get();
+        return closest.staticShiftedBy(date.durationFrom(closest.getDate()));
     }
 
     /** {@inheritDoc} */

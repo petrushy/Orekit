@@ -1,4 +1,4 @@
-/* Copyright 2002-2021 CS GROUP
+/* Copyright 2002-2022 CS GROUP
  * Licensed to CS GROUP (CS) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -62,8 +62,8 @@ public class Oem extends NdmConstituent<Header, OemSegment>
      * @param mu gravitational coefficient
      */
     public Oem(final Header header, final List<OemSegment> segments,
-                   final IERSConventions conventions, final DataContext dataContext,
-                   final double mu) {
+               final IERSConventions conventions, final DataContext dataContext,
+               final double mu) {
         super(header, segments, conventions, dataContext);
         this.mu = mu;
     }

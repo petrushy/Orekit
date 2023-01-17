@@ -1,4 +1,4 @@
-/* Copyright 2002-2021 CS GROUP
+/* Copyright 2002-2022 CS GROUP
  * Licensed to CS GROUP (CS) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -183,7 +183,7 @@ public class TopocentricFrame extends Frame implements PVCoordinatesProvider {
                                final AbsoluteDate date) {
 
         // Transform given point from given frame to topocentric frame
-        final Transform t = frame.getTransformTo(this, date);
+        final StaticTransform t = frame.getStaticTransformTo(this, date);
         final Vector3D extPointTopo = t.transformPosition(extPoint);
 
         // Elevation angle is PI/2 - angle between zenith and given point direction
@@ -224,7 +224,7 @@ public class TopocentricFrame extends Frame implements PVCoordinatesProvider {
                              final AbsoluteDate date) {
 
         // Transform given point from given frame to topocentric frame
-        final Transform t = getTransformTo(frame, date).getInverse();
+        final StaticTransform t = frame.getStaticTransformTo(this, date);
         final Vector3D extPointTopo = t.transformPosition(extPoint);
 
         // Compute azimuth
@@ -273,7 +273,7 @@ public class TopocentricFrame extends Frame implements PVCoordinatesProvider {
                            final AbsoluteDate date) {
 
         // Transform given point from given frame to topocentric frame
-        final Transform t = frame.getTransformTo(this, date);
+        final StaticTransform t = frame.getStaticTransformTo(this, date);
         final Vector3D extPointTopo = t.transformPosition(extPoint);
 
         // Compute range

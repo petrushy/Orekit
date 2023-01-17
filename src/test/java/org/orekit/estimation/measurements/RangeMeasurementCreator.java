@@ -1,4 +1,4 @@
-/* Copyright 2002-2021 CS GROUP
+/* Copyright 2002-2022 CS GROUP
  * Licensed to CS GROUP (CS) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -16,14 +16,12 @@
  */
 package org.orekit.estimation.measurements;
 
-import java.util.Arrays;
-
 import org.hipparchus.analysis.UnivariateFunction;
 import org.hipparchus.analysis.solvers.BracketingNthOrderBrentSolver;
 import org.hipparchus.analysis.solvers.UnivariateSolver;
 import org.hipparchus.geometry.euclidean.threed.Vector3D;
 import org.hipparchus.util.FastMath;
-import org.orekit.estimation.Context;
+import org.orekit.estimation.StationDataProvider;
 import org.orekit.frames.Frame;
 import org.orekit.frames.Transform;
 import org.orekit.propagation.SpacecraftState;
@@ -31,24 +29,40 @@ import org.orekit.time.AbsoluteDate;
 import org.orekit.utils.Constants;
 import org.orekit.utils.ParameterDriver;
 
+import java.util.Arrays;
+
 public class RangeMeasurementCreator extends MeasurementCreator {
 
-    private final Context             context;
+    private final StationDataProvider provider;
     private final Vector3D            antennaPhaseCenter;
     private final ObservableSatellite satellite;
+    private final double              bias;
 
-    public RangeMeasurementCreator(final Context context) {
-        this(context, Vector3D.ZERO);
+    public RangeMeasurementCreator(final StationDataProvider context) {
+        this(context, 0.0);
     }
 
-    public RangeMeasurementCreator(final Context context, final Vector3D antennaPhaseCenter) {
-        this.context            = context;
+    public RangeMeasurementCreator(final StationDataProvider context, final double bias) {
+        this(context, Vector3D.ZERO, bias);
+    }
+
+    public RangeMeasurementCreator(final StationDataProvider provider, final Vector3D antennaPhaseCenter) {
+        this(provider, antennaPhaseCenter, 0.0);
+    }
+
+    public StationDataProvider getStationDataProvider() {
+    	return provider;
+    }
+
+    public RangeMeasurementCreator(final StationDataProvider provider, final Vector3D antennaPhaseCenter, final double bias) {
+        this.provider           = provider;
         this.antennaPhaseCenter = antennaPhaseCenter;
         this.satellite          = new ObservableSatellite(0);
+        this.bias               = bias;
     }
 
     public void init(SpacecraftState s0, AbsoluteDate t, double step) {
-        for (final GroundStation station : context.stations) {
+        for (final GroundStation station : provider.getStations()) {
             for (ParameterDriver driver : Arrays.asList(station.getClockOffsetDriver(),
                                                         station.getEastOffsetDriver(),
                                                         station.getNorthOffsetDriver(),
@@ -67,7 +81,7 @@ public class RangeMeasurementCreator extends MeasurementCreator {
     }
 
     public void handleStep(final SpacecraftState currentState) {
-        for (final GroundStation station : context.stations) {
+        for (final GroundStation station : provider.getStations()) {
             final AbsoluteDate     date      = currentState.getDate();
             final Frame            inertial  = currentState.getFrame();
             final Vector3D         position  = currentState.toTransform().getInverse().transformPosition(antennaPhaseCenter);
@@ -100,7 +114,7 @@ public class RangeMeasurementCreator extends MeasurementCreator {
                                 station.getOffsetToInertial(inertial, emissionDate.shiftedBy(clockOffset)).transformPosition(Vector3D.ZERO);
                 final double upLinkDistance = Vector3D.distance(position, stationAtEmission);
                 addMeasurement(new Range(station, true, receptionDate.shiftedBy(clockOffset),
-                                         0.5 * (downLinkDistance + upLinkDistance), 1.0, 10, satellite));
+                                         0.5 * (downLinkDistance + upLinkDistance) + bias, 1.0, 10, satellite));
             }
 
         }

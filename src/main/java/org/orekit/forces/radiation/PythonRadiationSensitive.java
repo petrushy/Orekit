@@ -19,16 +19,17 @@
 
 package org.orekit.forces.radiation;
 
-import org.hipparchus.RealFieldElement;
+import org.hipparchus.CalculusFieldElement;
 import org.hipparchus.geometry.euclidean.threed.FieldRotation;
 import org.hipparchus.geometry.euclidean.threed.FieldVector3D;
 import org.hipparchus.geometry.euclidean.threed.Rotation;
 import org.hipparchus.geometry.euclidean.threed.Vector3D;
-import org.orekit.forces.radiation.RadiationSensitive;
 import org.orekit.frames.Frame;
 import org.orekit.time.AbsoluteDate;
 import org.orekit.time.FieldAbsoluteDate;
 import org.orekit.utils.ParameterDriver;
+
+import java.util.List;
 
 public class PythonRadiationSensitive implements RadiationSensitive {
 
@@ -64,7 +65,7 @@ public class PythonRadiationSensitive implements RadiationSensitive {
      * @since 8.0
      */
     @Override
-    public native ParameterDriver[] getRadiationParametersDrivers();
+    public native List<ParameterDriver> getRadiationParametersDrivers();
 
     /**
      * Compute the acceleration due to radiation pressure.
@@ -94,7 +95,7 @@ public class PythonRadiationSensitive implements RadiationSensitive {
      * @return spacecraft acceleration in the same inertial frame as spacecraft orbit (m/s²)
      */
     @Override
-    public <T extends RealFieldElement<T>> FieldVector3D<T> radiationPressureAcceleration(FieldAbsoluteDate<T> date, Frame frame, FieldVector3D<T> position, FieldRotation<T> rotation, T mass, FieldVector3D<T> flux, T[] parameters) {
+    public <T extends CalculusFieldElement<T>> FieldVector3D<T> radiationPressureAcceleration(FieldAbsoluteDate<T> date, Frame frame, FieldVector3D<T> position, FieldRotation<T> rotation, T mass, FieldVector3D<T> flux, T[] parameters) {
         return this.radiationPressureAcceleration_FFFFTFT(date, frame, position, rotation, mass, flux, parameters);
     }
 
@@ -111,7 +112,7 @@ public class PythonRadiationSensitive implements RadiationSensitive {
      * @param parameters values of the force model parameters
      * @return spacecraft acceleration in the same inertial frame as spacecraft orbit (m/s²)
      */
-    public native <T extends RealFieldElement<T>> FieldVector3D<T> radiationPressureAcceleration_FFFFTFT(FieldAbsoluteDate<T> date, Frame frame, FieldVector3D<T> position, FieldRotation<T> rotation, T mass, FieldVector3D<T> flux, T[] parameters);
+    public native <T extends CalculusFieldElement<T>> FieldVector3D<T> radiationPressureAcceleration_FFFFTFT(FieldAbsoluteDate<T> date, Frame frame, FieldVector3D<T> position, FieldRotation<T> rotation, T mass, FieldVector3D<T> flux, T[] parameters);
 
 
 }

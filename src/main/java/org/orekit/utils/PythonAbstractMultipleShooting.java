@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-// this file was created by SCC 2020 and is largely a derived work from the
+// this file was created by SSC 2020 and is largely a derived work from the
 // original java class/interface
 
 
@@ -54,20 +54,20 @@ public class PythonAbstractMultipleShooting extends AbstractMultipleShooting {
     /** Part of JCC Python interface to object */
     public native void pythonDecRef();
 
-    /**
-     * Simple Constructor.
+
+    /** Simple Constructor.
      * <p> Standard constructor for multiple shooting </p>
-     *
-     * @param initialGuessList    initial patch points to be corrected.
-     * @param propagatorList      list of propagators associated to each patch point.
-     * @param additionalEquations list of additional equations linked to propagatorList.
-     * @param arcDuration         initial guess of the duration of each arc.
-     * @param tolerance           convergence tolerance on the constraint vector.
-     * @param additionalName      name of the additional equations
+     * @param initialGuessList initial patch points to be corrected.
+     * @param propagatorList list of propagators associated to each patch point.
+     * @param arcDuration initial guess of the duration of each arc.
+     * @param tolerance convergence tolerance on the constraint vector.
+     * @param maxIter maximum number of iterations
+     * @param additionalName name of the additional equations
+     * @since 11.1
      */
-    protected PythonAbstractMultipleShooting(List<SpacecraftState> initialGuessList, List<NumericalPropagator> propagatorList, List<AdditionalEquations> additionalEquations, double arcDuration, double tolerance, String additionalName) {
-        super(initialGuessList, propagatorList, additionalEquations, arcDuration, tolerance, additionalName);
-    }
+    public PythonAbstractMultipleShooting(final List<SpacecraftState> initialGuessList, final List<NumericalPropagator> propagatorList,
+                                          final double arcDuration, final double tolerance, final int maxIter, final String additionalName)
+    { super(initialGuessList, propagatorList, arcDuration, tolerance, maxIter, additionalName); }
 
     /**
      * Compute the additional constraints.

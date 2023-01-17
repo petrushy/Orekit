@@ -1,4 +1,4 @@
-/* Copyright 2002-2021 CS GROUP
+/* Copyright 2002-2022 CS GROUP
  * Licensed to CS GROUP (CS) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -69,7 +69,7 @@ public class AttitudeWriter implements AttitudeEphemerisFileWriter {
      * as new segments are written (with at least the segment start and stop will change,
      * but some other parts may change too). The {@code template} argument itself is not
      * changed.
-     * </>
+     * </p>
      * <p>
      * Calling this constructor directly is not recommended. Users should rather use
      * {@link org.orekit.files.ccsds.ndm.WriterBuilder#buildAemWriter()}.

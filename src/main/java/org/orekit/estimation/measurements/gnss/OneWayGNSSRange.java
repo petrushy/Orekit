@@ -1,4 +1,4 @@
-/* Copyright 2002-2021 CS GROUP
+/* Copyright 2002-2022 CS GROUP
  * Licensed to CS GROUP (CS) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -55,6 +55,9 @@ import org.orekit.utils.TimeStampedPVCoordinates;
  * @since 10.3
  */
 public class OneWayGNSSRange extends AbstractMeasurement<OneWayGNSSRange> {
+
+    /** Type of the measurement. */
+    public static final String MEASUREMENT_TYPE = "OneWayGNSSRange";
 
     /** Emitting satellite. */
     private final PVCoordinatesProvider remote;

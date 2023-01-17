@@ -1,4 +1,4 @@
-/* Copyright 2002-2021 CS GROUP
+/* Copyright 2002-2022 CS GROUP
  * Licensed to CS GROUP (CS) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -478,7 +478,7 @@ public class CPFParser implements EphemerisFileParser<CPF> {
 
                 // CPF coordinate
                 final CPF.CPFCoordinate coordinate = new CPF.CPFCoordinate(date, position, leap);
-                pi.file.addSatelliteCoordinate(coordinate);
+                pi.file.addSatelliteCoordinate(pi.file.getHeader().getIlrsSatelliteId(), coordinate);
 
             }
 
@@ -496,7 +496,18 @@ public class CPFParser implements EphemerisFileParser<CPF> {
             /** {@inheritDoc} */
             @Override
             public void parse(final String line, final ParseInfo pi) {
-                // Not implemented yet
+
+                // Data contained in the line
+                final String[] values = SEPARATOR.split(line);
+
+                // Coordinates
+                final double x = Double.parseDouble(values[2]);
+                final double y = Double.parseDouble(values[3]);
+                final double z = Double.parseDouble(values[4]);
+                final Vector3D velocity = new Vector3D(x, y, z);
+
+                // CPF coordinate
+                pi.file.addSatelliteVelocityToCPFCoordinate(pi.file.getHeader().getIlrsSatelliteId(), velocity);
             }
 
             /** {@inheritDoc} */

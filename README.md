@@ -11,8 +11,8 @@ elements (orbits, dates, attitude, frames, ...) and various algorithms to
 handle them (conversions, propagations, pointing, events detection, orbit determination ...).
 
 [![](http://img.shields.io/:license-apache-blue.svg)](http://www.apache.org/licenses/LICENSE-2.0.html)
-[![](https://sonar.orekit.org/api/project_badges/measure?project=orekit%3Aorekit&metric=alert_status)](https://sonar.orekit.org/dashboard?id=org.orekit%3Aorekit)
-[![](https://sonar.orekit.org/api/project_badges/measure?project=orekit%3Aorekit&metric=coverage)](https://sonar.orekit.org/dashboard?id=org.orekit%3Aorekit)
+[![](https://sonar.orekit.org/api/project_badges/measure?project=orekit%3Aorekit&metric=alert_status)](https://sonar.orekit.org/dashboard?id=orekit%3Aorekit)
+[![](https://sonar.orekit.org/api/project_badges/measure?project=orekit%3Aorekit&metric=coverage)](https://sonar.orekit.org/dashboard?id=orekit%3Aorekit)
 
 ## Download
 
@@ -69,11 +69,11 @@ all released under business friendly FOSS licenses.
 ### Compile-time/run-time dependencies
 
 * [Hipparchus](https://hipparchus.org/), a mathematics library released under
-  the Apache License, version 2.0.
+  the Apache License, version 2.1.
 
 ### Test-time dependencies
 
-* [JUnit 4](http://www.junit.org/), a widely used unit test framework released
+* [JUnit 5](http://www.junit.org/), a widely used unit test framework released
   under the Eclipse Public License, version 1.0.
 
 * [Mockito](https://site.mockito.org/), a mocking framework for unit tests,
