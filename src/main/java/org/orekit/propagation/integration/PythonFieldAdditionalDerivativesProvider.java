@@ -104,15 +104,13 @@ public class PythonFieldAdditionalDerivativesProvider<T extends CalculusFieldEle
     @Override
     public native boolean yield(FieldSpacecraftState<T> state);
 
-    /**
-     * Compute the derivatives related to the additional state parameters.
-     *
+    /** Compute the derivatives related to the additional state parameters.
      * @param s current state information: date, kinematics, attitude, and
-     *          additional states this equations depend on (according to the
-     *          {@link #yield(FieldSpacecraftState) yield} method)
+     * additional states this equations depend on (according to the
+     * {@link #yield(FieldSpacecraftState) yield} method)
      * @return computed derivatives
+     * @deprecated as of 11.2, replaced by {@link #combinedDerivatives(FieldSpacecraftState)}
      */
-
     @Override
     public native T[] derivatives(FieldSpacecraftState<T> s);
 

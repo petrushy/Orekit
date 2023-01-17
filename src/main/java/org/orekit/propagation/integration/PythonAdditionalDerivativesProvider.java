@@ -91,7 +91,6 @@ public class PythonAdditionalDerivativesProvider implements AdditionalDerivative
      * @return computed derivatives
      * @deprecated as of 11.2, replaced by {@link #combinedDerivatives(SpacecraftState)}
      */
-
     @Override
     public native double[] derivatives(SpacecraftState s);
 
