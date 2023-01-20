@@ -90,7 +90,7 @@ public class PythonFieldAdditionalStateProvider<T extends CalculusFieldElement<T
      * as the state is incrementally built up
      * @since 11.1
      */
-    public native boolean yield(FieldSpacecraftState<T> state);
+    public native boolean yield_(FieldSpacecraftState<T> state);
 
     /**
      * Get the additional state.

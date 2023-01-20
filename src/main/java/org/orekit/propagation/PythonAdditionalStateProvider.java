@@ -92,7 +92,7 @@ public class PythonAdditionalStateProvider implements AdditionalStateProvider {
      * as the state is incrementally built up
      * @since 11.1
      */
-    public native boolean yield(SpacecraftState state);
+    public native boolean yield_(SpacecraftState state);
 
 
     /**

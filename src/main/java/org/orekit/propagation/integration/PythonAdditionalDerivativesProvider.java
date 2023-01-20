@@ -80,7 +80,7 @@ public class PythonAdditionalDerivativesProvider implements AdditionalDerivative
      * as the state is incrementally built up
      */
     @Override
-    public native boolean yield(SpacecraftState state);
+    public native boolean yield_(SpacecraftState state);
 
     /**
      * Compute the derivatives related to the additional state parameters.
