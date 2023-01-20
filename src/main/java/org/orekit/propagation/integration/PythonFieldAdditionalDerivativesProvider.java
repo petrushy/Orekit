@@ -23,6 +23,7 @@ package org.orekit.propagation.integration;
 
 import org.hipparchus.CalculusFieldElement;
 import org.orekit.propagation.FieldSpacecraftState;
+import org.orekit.propagation.SpacecraftState;
 import org.orekit.time.FieldAbsoluteDate;
 
 public class PythonFieldAdditionalDerivativesProvider<T extends CalculusFieldElement<T>> implements FieldAdditionalDerivativesProvider<T> {
@@ -101,8 +102,13 @@ public class PythonFieldAdditionalDerivativesProvider<T extends CalculusFieldEle
      * @return true if this provider should yield so another provider has an opportunity to add missing parts
      * as the state is incrementally built up
      */
-    @Override
     public native boolean yield_(FieldSpacecraftState<T> state);
+
+    @Override
+    public boolean yield(FieldSpacecraftState<T>  state)
+    {
+        return this.yield_(state);
+    }
 
     /** Compute the derivatives related to the additional state parameters.
      * @param s current state information: date, kinematics, attitude, and

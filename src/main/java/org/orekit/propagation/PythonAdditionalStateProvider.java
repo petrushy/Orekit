@@ -94,6 +94,11 @@ public class PythonAdditionalStateProvider implements AdditionalStateProvider {
      */
     public native boolean yield_(SpacecraftState state);
 
+    public boolean yield(SpacecraftState state)
+    {
+        return this.yield_(state);
+    }
+
 
     /**
      * Get the additional state.

@@ -79,8 +79,13 @@ public class PythonAdditionalDerivativesProvider implements AdditionalDerivative
      * @return true if this provider should yield so another provider has an opportunity to add missing parts
      * as the state is incrementally built up
      */
-    @Override
     public native boolean yield_(SpacecraftState state);
+
+    @Override
+    public boolean yield(SpacecraftState state)
+    {
+        return this.yield_(state);
+    }
 
     /**
      * Compute the derivatives related to the additional state parameters.

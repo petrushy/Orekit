@@ -92,6 +92,11 @@ public class PythonFieldAdditionalStateProvider<T extends CalculusFieldElement<T
      */
     public native boolean yield_(FieldSpacecraftState<T> state);
 
+    public boolean yield(FieldSpacecraftState<T> state)
+    {
+        return this.yield_(state);
+    }
+
     /**
      * Get the additional state.
      *
