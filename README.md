@@ -2,6 +2,8 @@
 
 # Orekit
 
+**This branch is the special branch containing the modifications needed for the Orekit Python Wrapper.**
+
 > An accurate and efficient core layer for space flight dynamics applications
 
 [Orekit](https://www.orekit.org) is a low level space dynamics library written
@@ -10,7 +12,6 @@ quick studies up to critical operations. As a library, Orekit provides basic
 elements (orbits, dates, attitude, frames, ...) and various algorithms to
 handle them (conversions, propagations, pointing, events detection, orbit determination ...).
 
-*This branch is the special branch containing the modifications needed for the Orekit Python Wrapper.*
 
 [![](http://img.shields.io/:license-apache-blue.svg)](http://www.apache.org/licenses/LICENSE-2.0.html)
 [![](https://sonar.orekit.org/api/project_badges/measure?project=orekit%3Aorekit&metric=alert_status)](https://sonar.orekit.org/dashboard?id=orekit%3Aorekit)
