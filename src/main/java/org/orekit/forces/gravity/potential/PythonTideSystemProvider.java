@@ -19,9 +19,6 @@
 
 package org.orekit.forces.gravity.potential;
 
-import org.orekit.forces.gravity.potential.TideSystem;
-import org.orekit.forces.gravity.potential.TideSystemProvider;
-
 public class PythonTideSystemProvider implements TideSystemProvider {
     /** Part of JCC Python interface to object */
     private long pythonObject;

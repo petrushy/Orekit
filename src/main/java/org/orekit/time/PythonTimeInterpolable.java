@@ -19,9 +19,6 @@
 
 package org.orekit.time;
 
-import org.orekit.time.AbsoluteDate;
-import org.orekit.time.TimeInterpolable;
-
 import java.util.stream.Stream;
 
 public class PythonTimeInterpolable<T extends TimeInterpolable<T>> implements TimeInterpolable<T> {

@@ -20,9 +20,6 @@
 package org.orekit.frames;
 
 import org.hipparchus.CalculusFieldElement;
-import org.orekit.frames.FieldTransform;
-import org.orekit.frames.Transform;
-import org.orekit.frames.TransformProvider;
 import org.orekit.time.AbsoluteDate;
 import org.orekit.time.FieldAbsoluteDate;
 

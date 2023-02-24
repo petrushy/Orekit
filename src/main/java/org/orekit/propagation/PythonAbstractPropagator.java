@@ -1,8 +1,5 @@
 package org.orekit.propagation;
 
-import org.orekit.propagation.AbstractPropagator;
-import org.orekit.propagation.BoundedPropagator;
-import org.orekit.propagation.SpacecraftState;
 import org.orekit.propagation.events.EventDetector;
 import org.orekit.time.AbsoluteDate;
 

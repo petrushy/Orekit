@@ -19,9 +19,6 @@
 
 package org.orekit.time;
 
-import org.orekit.time.AbsoluteDate;
-import org.orekit.time.TimeStamped;
-
 public class PythonTimeStamped implements TimeStamped {
 
     /** Part of JCC Python interface to object */

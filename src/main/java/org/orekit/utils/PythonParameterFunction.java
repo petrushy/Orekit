@@ -19,9 +19,6 @@
 
 package org.orekit.utils;
 
-import org.orekit.utils.ParameterDriver;
-import org.orekit.utils.ParameterFunction;
-
 public class PythonParameterFunction implements ParameterFunction {
     /** Part of JCC Python interface to object */
     private long pythonObject;

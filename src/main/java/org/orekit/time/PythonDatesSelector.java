@@ -19,9 +19,6 @@
 
 package org.orekit.time;
 
-import org.orekit.time.AbsoluteDate;
-import org.orekit.time.DatesSelector;
-
 import java.util.List;
 
 public class PythonDatesSelector implements DatesSelector {

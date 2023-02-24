@@ -21,8 +21,6 @@ package org.orekit.utils;
 
 import org.orekit.frames.Frame;
 import org.orekit.time.AbsoluteDate;
-import org.orekit.utils.PVCoordinatesProvider;
-import org.orekit.utils.TimeStampedPVCoordinates;
 
 public class PythonPVCoordinatesProvider implements PVCoordinatesProvider {
 

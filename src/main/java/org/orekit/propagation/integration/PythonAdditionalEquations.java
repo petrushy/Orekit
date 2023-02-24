@@ -22,7 +22,6 @@
 package org.orekit.propagation.integration;
 
 import org.orekit.propagation.SpacecraftState;
-import org.orekit.propagation.integration.AdditionalEquations;
 import org.orekit.time.AbsoluteDate;
 
 /** This interface allows users to add their own differential equations to a numerical propagator.

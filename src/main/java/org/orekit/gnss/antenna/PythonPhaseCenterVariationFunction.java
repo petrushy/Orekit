@@ -19,8 +19,6 @@
 
 package org.orekit.gnss.antenna;
 
-import org.orekit.gnss.antenna.PhaseCenterVariationFunction;
-
 public class PythonPhaseCenterVariationFunction implements PhaseCenterVariationFunction {
     /** Part of JCC Python interface to object */
     private long pythonObject;

@@ -27,8 +27,6 @@ import org.hipparchus.geometry.euclidean.threed.Vector3D;
 import org.orekit.bodies.FieldGeodeticPoint;
 import org.orekit.bodies.GeodeticPoint;
 import org.orekit.frames.Frame;
-import org.orekit.models.earth.EarthShape;
-import org.orekit.models.earth.ReferenceEllipsoid;
 import org.orekit.time.AbsoluteDate;
 import org.orekit.time.FieldAbsoluteDate;
 import org.orekit.utils.TimeStampedPVCoordinates;

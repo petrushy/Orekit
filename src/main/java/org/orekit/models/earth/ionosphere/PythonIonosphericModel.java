@@ -22,7 +22,6 @@ package org.orekit.models.earth.ionosphere;
 import org.hipparchus.Field;
 import org.hipparchus.CalculusFieldElement;
 import org.orekit.frames.TopocentricFrame;
-import org.orekit.models.earth.ionosphere.IonosphericModel;
 import org.orekit.propagation.FieldSpacecraftState;
 import org.orekit.propagation.SpacecraftState;
 import org.orekit.utils.ParameterDriver;

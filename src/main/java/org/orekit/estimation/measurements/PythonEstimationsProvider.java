@@ -19,9 +19,6 @@
 
 package org.orekit.estimation.measurements;
 
-import org.orekit.estimation.measurements.EstimatedMeasurement;
-import org.orekit.estimation.measurements.EstimationsProvider;
-
 public class PythonEstimationsProvider implements EstimationsProvider {
 
     /** Part of JCC Python interface to object */

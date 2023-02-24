@@ -2,8 +2,6 @@ package org.orekit.propagation.conversion;
 
 import org.hipparchus.analysis.MultivariateVectorFunction;
 import org.hipparchus.optim.nonlinear.vector.leastsquares.MultivariateJacobianFunction;
-import org.orekit.propagation.conversion.AbstractPropagatorConverter;
-import org.orekit.propagation.conversion.PropagatorBuilder;
 
 public class PythonAbstractPropagatorConverter extends AbstractPropagatorConverter {
 

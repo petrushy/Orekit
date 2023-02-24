@@ -20,8 +20,6 @@
 package org.orekit.propagation.events;
 
 import org.orekit.propagation.SpacecraftState;
-import org.orekit.propagation.events.EnablingPredicate;
-import org.orekit.propagation.events.EventDetector;
 
 public class PythonEnablingPredicate<S extends EventDetector> implements EnablingPredicate<S> {
 

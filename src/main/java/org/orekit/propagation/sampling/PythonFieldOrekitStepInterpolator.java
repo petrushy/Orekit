@@ -21,7 +21,6 @@ package org.orekit.propagation.sampling;
 
 import org.hipparchus.CalculusFieldElement;
 import org.orekit.propagation.FieldSpacecraftState;
-import org.orekit.propagation.sampling.FieldOrekitStepInterpolator;
 import org.orekit.time.FieldAbsoluteDate;
 
 public class PythonFieldOrekitStepInterpolator<T extends CalculusFieldElement<T>> implements FieldOrekitStepInterpolator<T> {

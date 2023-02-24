@@ -19,9 +19,6 @@
 
 package org.orekit.estimation.measurements;
 
-import org.orekit.estimation.measurements.EstimatedMeasurement;
-import org.orekit.estimation.measurements.EstimationModifier;
-import org.orekit.estimation.measurements.ObservedMeasurement;
 import org.orekit.utils.ParameterDriver;
 
 import java.util.List;

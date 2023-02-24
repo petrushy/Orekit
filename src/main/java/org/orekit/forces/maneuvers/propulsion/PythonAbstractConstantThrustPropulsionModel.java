@@ -23,12 +23,8 @@ package org.orekit.forces.maneuvers.propulsion;
 import org.hipparchus.CalculusFieldElement;
 import org.hipparchus.geometry.euclidean.threed.FieldVector3D;
 import org.hipparchus.geometry.euclidean.threed.Vector3D;
-import org.orekit.attitudes.Attitude;
-import org.orekit.attitudes.FieldAttitude;
-import org.orekit.propagation.FieldSpacecraftState;
 import org.orekit.propagation.SpacecraftState;
 import org.orekit.time.AbsoluteDate;
-import org.orekit.utils.ParameterDriver;
 
 public class PythonAbstractConstantThrustPropulsionModel extends AbstractConstantThrustPropulsionModel implements ThrustPropulsionModel  {
 

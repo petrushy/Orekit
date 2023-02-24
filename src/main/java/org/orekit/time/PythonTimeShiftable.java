@@ -19,8 +19,6 @@
 
 package org.orekit.time;
 
-import org.orekit.time.TimeShiftable;
-
 public class PythonTimeShiftable<T extends TimeShiftable<T>> implements TimeShiftable<T> {
 
     /** Part of JCC Python interface to object */

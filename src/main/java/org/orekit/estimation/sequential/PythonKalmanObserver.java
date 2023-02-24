@@ -19,9 +19,6 @@
 
 package org.orekit.estimation.sequential;
 
-import org.orekit.estimation.sequential.KalmanEstimation;
-import org.orekit.estimation.sequential.KalmanObserver;
-
 public class PythonKalmanObserver implements KalmanObserver {
 
     /** Part of JCC Python interface to object */
