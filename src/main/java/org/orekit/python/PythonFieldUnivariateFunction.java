@@ -23,7 +23,7 @@ package org.orekit.python;
 import org.hipparchus.CalculusFieldElement;
 import org.hipparchus.analysis.FieldUnivariateFunction;
 
-public class PythonFieldUnivariateFunction implements org.hipparchus.analysis.FieldUnivariateFunction  {
+public class PythonFieldUnivariateFunction implements FieldUnivariateFunction  {
     static final long serialVersionUID = 1L;
 
     /** Part of JCC Python interface to object */
