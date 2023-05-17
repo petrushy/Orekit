@@ -16,46 +16,42 @@
  */
 
 // this file was created by SSC and is largely a derived work from the
-// original file UnivariateFunction.java
+// original file FieldUnivariateFunction.java
 
 package org.orekit.python;
 
-/** import org.hipparchus.analysis.UnivariateFunction; **/
+import org.hipparchus.CalculusFieldElement;
+import org.hipparchus.analysis.FieldUnivariateFunction;
 
-
-public class PythonUnivariateFunction implements org.hipparchus.analysis.UnivariateFunction {
-
-	static final long serialVersionUID = 1L;
+public class PythonFieldUnivariateFunction implements org.hipparchus.analysis.FieldUnivariateFunction  {
+    static final long serialVersionUID = 1L;
 
     /** Part of JCC Python interface to object */
     private long pythonObject;
 
     /** Part of JCC Python interface to object */
-  	public void pythonExtension(long pythonObject)
-  	{
-  		this.pythonObject = pythonObject;
-  	}
+    public void pythonExtension(long pythonObject)
+    {
+        this.pythonObject = pythonObject;
+    }
 
-  	/** Part of JCC Python interface to object */
-  	public long pythonExtension()
-  	{
-  		return this.pythonObject;
-  	}
+    /** Part of JCC Python interface to object */
+    public long pythonExtension()
+    {
+        return this.pythonObject;
+    }
 
-  	/** Part of JCC Python interface to object */
-  	public void finalize()
-  			throws Throwable
-  			{
-  				pythonDecRef();
-  			}
+    /** Part of JCC Python interface to object */
+    public void finalize()
+            throws Throwable
+    {
+        pythonDecRef();
+    }
 
-  	/** Part of JCC Python interface to object */
-  	public native void pythonDecRef();
+    /** Part of JCC Python interface to object */
+    public native void pythonDecRef();
 
 
-	/** {@inheritDoc} */
-	@Override
-	public native double value(double x);
-
+    @Override
+    public native <T extends CalculusFieldElement<T>> T value(T t);
 }
-
