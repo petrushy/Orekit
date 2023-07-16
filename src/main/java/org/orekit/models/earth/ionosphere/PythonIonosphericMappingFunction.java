@@ -67,9 +67,7 @@ public class PythonIonosphericMappingFunction implements IonosphericMappingFunct
      * @return the ionospheric mapping factor.
      */
     @Override
-    public <T extends CalculusFieldElement<T>> T mappingFactor(T elevation) {
-        return this.mappingFactor(elevation);
-    }
+    public native <T extends CalculusFieldElement<T>> T mappingFactor(T elevation);
 
     /**
      * This method allows the computation of the ionospheric mapping factor.
