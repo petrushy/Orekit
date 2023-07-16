@@ -34,9 +34,7 @@ public class PythonAbstractRadiationForceModel extends AbstractRadiationForceMod
      * @param target       date of propagation. Not equal to {@code initialState.getDate()}.
      */
     @Override
-    public void init(SpacecraftState initialState, AbsoluteDate target) {
-
-    }
+    public native void init(SpacecraftState initialState, AbsoluteDate target);
 
     /**
      * Compute acceleration.
