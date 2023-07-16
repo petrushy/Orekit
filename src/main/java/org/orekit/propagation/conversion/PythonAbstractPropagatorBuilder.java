@@ -85,14 +85,7 @@ public class PythonAbstractPropagatorBuilder extends AbstractPropagatorBuilder {
         super(templateOrbit, positionAngle, positionScale, addDriverForCentralAttraction);
     }
 
-    /**
-     * Build a propagator.
-     * Extension point for Python.
-     *
-     *
-     * @param normalizedParameters normalized values for the selected parameters
-     * @return an initialized propagator
-     */
+    /** {@inheritDoc} */
     @Override
     public native Propagator buildPropagator(double[] normalizedParameters);
 }

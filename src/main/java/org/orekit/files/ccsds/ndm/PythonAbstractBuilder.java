@@ -65,15 +65,7 @@ public class PythonAbstractBuilder<T extends AbstractBuilder<T>> extends Abstrac
     /** Part of JCC Python interface to object */
     public native void pythonDecRef();
 
-    /**
-     * Build an instance.
-     *
-     * @param newConventions          IERS Conventions
-     * @param newDataContext          used to retrieve frames, time scales, etc.
-     * @param newMissionReferenceDate reference date for Mission Elapsed Time or Mission Relative Time time systems
-     * @param newRangeUnitsConverter  converter for {@link RangeUnits#RU Range Units}
-     * @return new instance
-     */
+    /** {@inheritDoc} */
     @Override
     public native T create(IERSConventions newConventions, DataContext newDataContext, AbsoluteDate newMissionReferenceDate, RangeUnitsConverter newRangeUnitsConverter);
 }
