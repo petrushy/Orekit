@@ -51,7 +51,7 @@ public class PythonFieldUnivariateFunction implements FieldUnivariateFunction  {
     /** Part of JCC Python interface to object */
     public native void pythonDecRef();
 
-
+    /** {@inheritDoc} */
     @Override
     public native <T extends CalculusFieldElement<T>> T value(T t);
 }
