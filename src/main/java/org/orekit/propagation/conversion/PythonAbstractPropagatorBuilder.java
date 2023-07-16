@@ -24,6 +24,7 @@ import org.orekit.orbits.Orbit;
 import org.orekit.orbits.PositionAngle;
 import org.orekit.propagation.Propagator;
 import org.orekit.propagation.conversion.AbstractPropagatorBuilder;
+import org.orekit.utils.ParameterDriver;
 
 // TODO: Not sure about which methods shall be exposed to Python
 

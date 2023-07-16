@@ -21,6 +21,7 @@
 package org.orekit.files.ccsds.ndm;
 
 import org.orekit.data.DataContext;
+import org.orekit.files.ccsds.ndm.tdm.RangeUnits;
 import org.orekit.files.ccsds.ndm.tdm.RangeUnitsConverter;
 import org.orekit.time.AbsoluteDate;
 import org.orekit.utils.IERSConventions;
