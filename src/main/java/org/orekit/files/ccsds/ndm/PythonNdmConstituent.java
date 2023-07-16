@@ -65,6 +65,9 @@ public class PythonNdmConstituent<H extends Header, S extends Segment<?, ?>> ext
         pythonDecRef();
     }
 
+    /** Part of JCC Python interface to object */
+    public native void pythonDecRef();
+
     /**
      * Get the header.
      *
@@ -109,8 +112,7 @@ public class PythonNdmConstituent<H extends Header, S extends Segment<?, ?>> ext
     @Override
     public native void validate();
 
-    /** Part of JCC Python interface to object */
-    public native void pythonDecRef();
+
 
     // no abstract methods in super, TODO: check which to implement
 
