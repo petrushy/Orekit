@@ -42,23 +42,6 @@ public class PythonAbstractForceModel extends AbstractForceModel {
     /** Part of JCC Python interface to object */
     public native void pythonDecRef();
 
-    @Override
-    public native void addContribution(SpacecraftState s, TimeDerivativesEquations adder);
-
-    @Override
-    public <T extends CalculusFieldElement<T>> void addContribution(FieldSpacecraftState<T> s, FieldTimeDerivativesEquations<T> adder) {
-        this.addContribution_FF(s, adder);
-    }
-
-    /** Compute the contribution of the force model to the perturbing
-     * acceleration.
-     * @param s current state information: date, kinematics, attitude
-     * @param adder object where the contribution should be added
-     * @param <T> type of the elements
-     */
-    public native <T extends CalculusFieldElement<T>> void addContribution_FF(FieldSpacecraftState<T> s, FieldTimeDerivativesEquations<T> adder);
-
-
 
         /**
          * Check if force models depends on position only.
