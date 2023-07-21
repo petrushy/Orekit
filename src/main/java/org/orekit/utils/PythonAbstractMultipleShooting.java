@@ -87,13 +87,7 @@ public class PythonAbstractMultipleShooting extends AbstractMultipleShooting {
     @Override
     public native  double[][] computeAdditionalJacobianMatrix(List<SpacecraftState> propagatedSP);
 
-    /**
-     * Compute the additional state from the additionalEquations.
-     *
-     * @param initialState         SpacecraftState without the additional state
-     * @param additionalEquations2 Additional Equations.
-     * @return augmentedSP SpacecraftState with the additional state within.
-     */
+    /** {@inheritDoc} */
     @Override
     public native SpacecraftState getAugmentedInitialState(SpacecraftState initialState, AdditionalEquations additionalEquations2);
 }

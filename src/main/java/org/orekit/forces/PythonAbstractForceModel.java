@@ -8,6 +8,8 @@ import org.orekit.propagation.FieldSpacecraftState;
 import org.orekit.propagation.SpacecraftState;
 import org.orekit.propagation.events.EventDetector;
 import org.orekit.propagation.events.FieldEventDetector;
+import org.orekit.propagation.numerical.FieldTimeDerivativesEquations;
+import org.orekit.propagation.numerical.TimeDerivativesEquations;
 import org.orekit.utils.ParameterDriver;
 
 import java.util.List;
@@ -40,14 +42,15 @@ public class PythonAbstractForceModel extends AbstractForceModel {
     /** Part of JCC Python interface to object */
     public native void pythonDecRef();
 
-    /**
-     * Check if force models depends on position only.
-     * Extension point for Python.
-     * @return true if force model depends on position only, false
-     * if it depends on velocity, either directly or due to a dependency
-     * on attitude
-     * @since 9.0
-     */
+
+        /**
+         * Check if force models depends on position only.
+         * Extension point for Python.
+         * @return true if force model depends on position only, false
+         * if it depends on velocity, either directly or due to a dependency
+         * on attitude
+         * @since 9.0
+         */
     @Override
     public native boolean dependsOnPositionOnly();
 

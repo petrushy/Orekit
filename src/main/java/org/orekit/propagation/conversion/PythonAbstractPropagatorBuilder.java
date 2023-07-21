@@ -24,6 +24,7 @@ import org.orekit.orbits.Orbit;
 import org.orekit.orbits.PositionAngle;
 import org.orekit.propagation.Propagator;
 import org.orekit.propagation.conversion.AbstractPropagatorBuilder;
+import org.orekit.utils.ParameterDriver;
 
 // TODO: Not sure about which methods shall be exposed to Python
 
@@ -84,14 +85,7 @@ public class PythonAbstractPropagatorBuilder extends AbstractPropagatorBuilder {
         super(templateOrbit, positionAngle, positionScale, addDriverForCentralAttraction);
     }
 
-    /**
-     * Build a propagator.
-     * Extension point for Python.
-     *
-     *
-     * @param normalizedParameters normalized values for the selected parameters
-     * @return an initialized propagator
-     */
+    /** {@inheritDoc} */
     @Override
     public native Propagator buildPropagator(double[] normalizedParameters);
 }

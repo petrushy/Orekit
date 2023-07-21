@@ -56,85 +56,47 @@ public class PythonAbstractBatchLSModel extends AbstractBatchLSModel {
     /** Part of JCC Python interface to object */
     public native void pythonDecRef();
 
-    /**
-     * Get the selected propagation drivers for a propagatorBuilder.
-     *
-     * @param iBuilder index of the builder in the builders' array
-     * @return the list of selected propagation drivers for propagatorBuilder of index iBuilder
-     */
+    /** {@inheritDoc} */
     @Override
     public native ParameterDriversList getSelectedPropagationDriversForBuilder(int iBuilder);
 
-    /**
-     * Create the propagators and parameters corresponding to an evaluation point.
-     *
-     * @param point evaluation point
-     * @return an array of new propagators
-     */
+    /** {@inheritDoc} */
     @Override
     public native AbstractIntegratedPropagator[] createPropagators(RealVector point);
 
-    /**
-     * Fetch a measurement that was evaluated during propagation.
-     *
-     * @param index      index of the measurement first component
-     * @param evaluation measurement evaluation
-     */
+    /** {@inheritDoc} */
     @Override
     public native void fetchEvaluatedMeasurement(int index, EstimatedMeasurement<?> evaluation);
 
-    /**
-     * Set the counter for evaluations.
-     *
-     * @param evaluationsCounter counter for evaluations
-     */
+    /** {@inheritDoc} */
     @Override
     public native void setEvaluationsCounter(Incrementor evaluationsCounter);
 
-    /**
-     * Set the counter for iterations.
-     *
-     * @param iterationsCounter counter for iterations
-     */
+    /** {@inheritDoc} */
     @Override
     public native void setIterationsCounter(Incrementor iterationsCounter);
 
-    /**
-     * Get the iterations count.
-     *
-     * @return iterations count
-     */
+    /** {@inheritDoc} */
     @Override
     public native int getIterationsCount();
 
-    /**
-     * Get the evaluations count.
-     *
-     * @return evaluations count
-     */
+    /** {@inheritDoc} */
     @Override
     public native int getEvaluationsCount();
 
-    /**
-     * Return the forward propagation flag.
-     *
-     * @return the forward propagation flag
-     */
+    /** {@inheritDoc} */
     @Override
     public native boolean isForwardPropagation();
 
-    /**
-     * Configure the propagator to compute derivatives.
-     *
-     * @param propagators {@link Propagator} to configure
-     * @return mapper for this propagator
-     */
+    /** {@inheritDoc} */
     @Override
     public native AbstractJacobiansMapper configureDerivatives(Propagator propagators);
 
+    /** {@inheritDoc} */
     @Override
     public native Pair<RealVector, RealMatrix> value(RealVector realVector);
 
+    /** {@inheritDoc} */
     @Override
     public native Orbit configureOrbits(MatricesHarvester harvester, Propagator propagator);
 }

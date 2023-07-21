@@ -55,20 +55,7 @@ public class PythonFieldEventHandler<KK extends FieldEventDetector<T>, T extends
 
 
 
-    /**
-     * Initialize event handler at the start of a propagation.
-     * <p>
-     * This method is called once at the start of the propagation. It
-     * may be used by the event handler to initialize some internal data
-     * if needed.
-     * </p>
-     * <p>
-     * The default implementation does nothing
-     * </p>
-     *
-     * @param initialState initial state
-     * @param target       target date for the propagation
-     */
+    /** {@inheritDoc} */
     @Override
     public native void init(FieldSpacecraftState<T> initialState, FieldAbsoluteDate<T> target);
 
