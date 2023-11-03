@@ -26,36 +26,25 @@ import org.hipparchus.CalculusFieldElement;
 import org.orekit.propagation.SpacecraftState;
 import org.orekit.propagation.events.EventDetector;
 import org.orekit.propagation.events.FieldEventDetector;
+import org.orekit.python.JCCBase;
 import org.orekit.time.AbsoluteDate;
 import org.orekit.time.FieldAbsoluteDate;
+import org.orekit.utils.ParameterDriver;
 
+import java.util.List;
 import java.util.stream.Stream;
 
 public class PythonManeuverTriggers implements ManeuverTriggers {
 
     /** Part of JCC Python interface to object */
-    private long pythonObject;
-
-    /** Part of JCC Python interface to object */
-    public void pythonExtension(long pythonObject)
-    {
+    protected long pythonObject;
+    public void pythonExtension(long pythonObject) {
         this.pythonObject = pythonObject;
     }
-
-    /** Part of JCC Python interface to object */
-    public long pythonExtension()
-    {
+    public long pythonExtension() {
         return this.pythonObject;
     }
-
-    /** Part of JCC Python interface to object */
-    public void finalize()
-            throws Throwable
-    {
-        pythonDecRef();
-    }
-
-    /** Part of JCC Python interface to object */
+    public void finalize() throws Throwable { pythonDecRef(); }
     public native void pythonDecRef();
 
     /**
@@ -68,22 +57,6 @@ public class PythonManeuverTriggers implements ManeuverTriggers {
     @Override
     public native void init(SpacecraftState initialState, AbsoluteDate target);
 
-    /**
-     * Get the event detectors associated with the triggers.
-     *
-     * @return the event detectors
-     */
-    @Override
-    public native Stream<EventDetector> getEventsDetectors();
-
-    /**
-     * Get the event detectors associated with the triggers.
-     *
-     * @param field field to which the state belongs
-     * @return the event detectors
-     */
-    @Override
-    public native <T extends CalculusFieldElement<T>> Stream<FieldEventDetector<T>> getFieldEventsDetectors(Field<T> field);
 
     /**
      * Find out if the maneuver is firing or not.
@@ -107,7 +80,22 @@ public class PythonManeuverTriggers implements ManeuverTriggers {
         return this.isFiring_FT(date, parameters);
     }
 
+    @Override
+    public native void addResetter(ManeuverTriggersResetter resetter);
+
+    // TODO add separation
+    @Override
+    public native <T extends CalculusFieldElement<T>> void addResetter(Field<T> field, FieldManeuverTriggersResetter<T> resetter);
+
     public native <T extends CalculusFieldElement<T>> boolean isFiring_FT(FieldAbsoluteDate<T> date, T[] parameters);
 
+    @Override
+    public native Stream<EventDetector> getEventDetectors();
+
+    @Override
+    public native <T extends CalculusFieldElement<T>> Stream<FieldEventDetector<T>> getFieldEventDetectors(Field<T> field);
+
+    @Override
+    public native List<ParameterDriver> getParametersDrivers();
 }
 

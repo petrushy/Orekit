@@ -25,33 +25,16 @@ package org.orekit.python;
 
 public class PythonUnivariateFunction implements org.hipparchus.analysis.UnivariateFunction {
 
-	static final long serialVersionUID = 1L;
-
-    /** Part of JCC Python interface to object */
-    private long pythonObject;
-
-    /** Part of JCC Python interface to object */
-  	public void pythonExtension(long pythonObject)
-  	{
-  		this.pythonObject = pythonObject;
-  	}
-
-  	/** Part of JCC Python interface to object */
-  	public long pythonExtension()
-  	{
-  		return this.pythonObject;
-  	}
-
-  	/** Part of JCC Python interface to object */
-  	public void finalize()
-  			throws Throwable
-  			{
-  				pythonDecRef();
-  			}
-
-  	/** Part of JCC Python interface to object */
-  	public native void pythonDecRef();
-
+	/** Part of JCC Python interface to object */
+	protected long pythonObject;
+	public void pythonExtension(long pythonObject) {
+		this.pythonObject = pythonObject;
+	}
+	public long pythonExtension() {
+		return this.pythonObject;
+	}
+	public void finalize() throws Throwable { pythonDecRef(); }
+	public native void pythonDecRef();
 
 	/** {@inheritDoc} */
 	@Override

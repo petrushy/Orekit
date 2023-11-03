@@ -22,12 +22,15 @@
 package org.orekit.estimation.measurements.generation;
 
 import org.orekit.estimation.measurements.EstimationModifier;
+import org.orekit.estimation.measurements.ObservableSatellite;
 import org.orekit.estimation.measurements.ObservedMeasurement;
 import org.orekit.propagation.SpacecraftState;
 
+import org.orekit.propagation.sampling.OrekitStepInterpolator;
 import org.orekit.time.AbsoluteDate;
 
 import java.util.List;
+import java.util.Map;
 
 public class PythonMeasurementBuilder<T extends ObservedMeasurement<T>> implements MeasurementBuilder<T> {
     /** Part of JCC Python interface to object */
@@ -86,12 +89,10 @@ public class PythonMeasurementBuilder<T extends ObservedMeasurement<T>> implemen
     @Override
     public native List<EstimationModifier<T>> getModifiers();
 
-    /**
-     * Generate a single measurement.
-     *
-     * @param states all spacecraft states (i.e. including ones that may not be relevant for the current builder)
-     * @return generated measurement
-     */
     @Override
-    public native T build(SpacecraftState[] states);
+    public native ObservableSatellite[] getSatellites();
+
+    @Override
+    public native T build(AbsoluteDate date, Map<ObservableSatellite, OrekitStepInterpolator> interpolators);
+
 }

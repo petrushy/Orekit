@@ -9,9 +9,8 @@ import org.orekit.estimation.measurements.ObservedMeasurement;
 import org.orekit.orbits.Orbit;
 import org.orekit.propagation.MatricesHarvester;
 import org.orekit.propagation.Propagator;
-import org.orekit.propagation.conversion.OrbitDeterminationPropagatorBuilder;
+import org.orekit.propagation.conversion.PropagatorBuilder;
 import org.orekit.propagation.integration.AbstractIntegratedPropagator;
-import org.orekit.propagation.integration.AbstractJacobiansMapper;
 import org.orekit.utils.ParameterDriversList;
 
 import java.util.List;
@@ -21,17 +20,8 @@ public class PythonAbstractBatchLSModel extends AbstractBatchLSModel {
     /** Part of JCC Python interface to object */
     private long pythonObject;
 
-    /**
-     * Constructor.
-     *
-     * @param propagatorBuilders              builders to use for propagation
-     * @param measurements                    measurements
-     * @param estimatedMeasurementsParameters estimated measurements parameters
-     * @param mappers                         jacobian mappers
-     * @param observer                        observer to be notified at model calls
-     */
-    public PythonAbstractBatchLSModel(OrbitDeterminationPropagatorBuilder[] propagatorBuilders, List<ObservedMeasurement<?>> measurements, ParameterDriversList estimatedMeasurementsParameters, AbstractJacobiansMapper[] mappers, ModelObserver observer) {
-        super(propagatorBuilders, measurements, estimatedMeasurementsParameters, mappers, observer);
+    public PythonAbstractBatchLSModel(PropagatorBuilder[] propagatorBuilders, List<ObservedMeasurement<?>> measurements, ParameterDriversList estimatedMeasurementsParameters,  ModelObserver observer) {
+        super(propagatorBuilders, measurements, estimatedMeasurementsParameters, observer);
     }
 
     /** Part of JCC Python interface to object */
@@ -90,7 +80,7 @@ public class PythonAbstractBatchLSModel extends AbstractBatchLSModel {
 
     /** {@inheritDoc} */
     @Override
-    public native AbstractJacobiansMapper configureDerivatives(Propagator propagators);
+    public native MatricesHarvester configureHarvester(Propagator propagator);
 
     /** {@inheritDoc} */
     @Override

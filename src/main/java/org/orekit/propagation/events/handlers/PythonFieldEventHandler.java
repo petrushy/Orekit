@@ -27,7 +27,7 @@ import org.orekit.propagation.events.FieldEventDetector;
 import org.orekit.propagation.events.EventDetector;
 import org.orekit.time.FieldAbsoluteDate;
 
-public class PythonFieldEventHandler<KK extends FieldEventDetector<T>, T extends CalculusFieldElement<T>> implements FieldEventHandler<KK, T> {
+public class PythonFieldEventHandler<KK extends FieldEventDetector<T>, T extends CalculusFieldElement<T>> implements FieldEventHandler<T> {
     /** Part of JCC Python interface to object */
     private long pythonObject;
 
@@ -57,40 +57,15 @@ public class PythonFieldEventHandler<KK extends FieldEventDetector<T>, T extends
 
     /** {@inheritDoc} */
     @Override
-    public native void init(FieldSpacecraftState<T> initialState, FieldAbsoluteDate<T> target);
+    public native void init(FieldSpacecraftState<T> initialState, FieldAbsoluteDate<T> target, FieldEventDetector<T> detector);
 
-    /**
-     * eventOccurred method mirrors the same interface method as in {@link EventDetector}
-     * and its subclasses, but with an additional parameter that allows the calling
-     * method to pass in an object from the detector which would have potential
-     * additional data to allow the implementing class to determine the correct
-     * return state.
-     *
-     * @param s          SpaceCraft state to be used in the evaluation
-     * @param detector   object with appropriate type that can be used in determining correct return state
-     * @param increasing with the event occurred in an "increasing" or "decreasing" slope direction
-     * @return the Action that the calling detector should pass back to the evaluation system
-     */
-    @Override
-    public native Action eventOccurred(FieldSpacecraftState<T> s, KK detector, boolean increasing);
 
-    /**
-     * Reset the state prior to continue propagation.
-     * <p>This method is called after the step handler has returned and
-     * before the next step is started, but only when {@link
-     * #eventOccurred} has itself returned the {@link Action#RESET_STATE}
-     * indicator. It allows the user to reset the state for the next step,
-     * without perturbing the step handler of the finishing step. If the
-     * {@link #eventOccurred} never returns the {@link Action#RESET_STATE}
-     * indicator, this function will never be called, and it is safe to simply return null.</p>
-     * <p>
-     * The default implementation simply return its argument.
-     * </p>
-     *
-     * @param detector object with appropriate type that can be used in determining correct return state
-     * @param oldState old state
-     * @return new state
-     */
+    /** {@inheritDoc} */
     @Override
-    public native FieldSpacecraftState<T> resetState(KK detector, FieldSpacecraftState<T> oldState);
+    public native Action eventOccurred(FieldSpacecraftState<T> s, FieldEventDetector<T> detector, boolean increasing);
+
+
+    /** {@inheritDoc} */
+    @Override
+    public native FieldSpacecraftState<T> resetState(FieldEventDetector<T> detector, FieldSpacecraftState<T> oldState);
 }

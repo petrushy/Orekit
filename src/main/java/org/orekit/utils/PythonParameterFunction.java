@@ -19,38 +19,23 @@
 
 package org.orekit.utils;
 
+import org.orekit.python.JCCBase;
+import org.orekit.time.AbsoluteDate;
+
 public class PythonParameterFunction implements ParameterFunction {
-    /** Part of JCC Python interface to object */
-    private long pythonObject;
 
     /** Part of JCC Python interface to object */
-    public void pythonExtension(long pythonObject)
-    {
+    protected long pythonObject;
+    public void pythonExtension(long pythonObject) {
         this.pythonObject = pythonObject;
     }
-
-    /** Part of JCC Python interface to object */
-    public long pythonExtension()
-    {
+    public long pythonExtension() {
         return this.pythonObject;
     }
-
-    /** Part of JCC Python interface to object */
-    public void finalize()
-            throws Throwable
-    {
-        pythonDecRef();
-    }
-
-    /** Part of JCC Python interface to object */
+    public void finalize() throws Throwable { pythonDecRef(); }
     public native void pythonDecRef();
 
-    /**
-     * Evaluate the function.
-     *
-     * @param parameterDriver driver for the parameter.
-     * @return scalar value of the function
-     */
+    /** {@inheritDoc} */
     @Override
-    public native double value(ParameterDriver parameterDriver);
+    public native double value(ParameterDriver parameterDriver, AbsoluteDate date);
 }

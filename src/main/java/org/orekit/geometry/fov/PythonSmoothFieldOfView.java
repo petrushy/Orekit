@@ -60,59 +60,19 @@ public class PythonSmoothFieldOfView extends SmoothFieldOfView {
      * @param margin          angular margin to apply to the zone (if positive,
      *                        the Field Of View will consider points slightly outside of the
      */
-    protected PythonSmoothFieldOfView(Vector3D center, Vector3D primaryMeridian, double margin) {
+    public PythonSmoothFieldOfView(Vector3D center, Vector3D primaryMeridian, double margin) {
         super(center, primaryMeridian, margin);
     }
 
-    /**
-     * Get boundary direction at angle.
-     *
-     * @param angle phase angle of the boundary direction
-     * @return boundary direction at phase angle in spacecraft frame
-     */
+    /** {@inheritDoc} */
     @Override
-    protected native Vector3D directionAt(double angle);
+    public native Vector3D directionAt(double angle);
 
-    /**
-     * Get the offset of target body with respect to the Field Of View Boundary.
-     * <p>
-     * The offset is the signed angular distance between target body and closest boundary
-     * point, taking into account {@link VisibilityTrigger} and {@link #getMargin() margin}.
-     * </p>
-     * <p>
-     * As Field Of View can have complex shapes that may require long computation,
-     * when the target point can be proven to be outside of the Field Of View, a
-     * faster but approximate computation can be used. This approximation is only
-     * performed about 0.01 radians outside of the Field Of View augmented by the
-     * deadband defined by target body radius and Field Of View margin and should be
-     * designed to still return a positive value if the full accurate computation
-     * would return a positive value. When target point is close to the zone (and
-     * furthermore when it is inside the zone), the full accurate computation is
-     * performed. This design allows this offset to be used as a reliable way to
-     * detect Field Of View boundary crossings (taking {@link VisibilityTrigger}
-     * and {@link #getMargin() margin} into account), which correspond to sign
-     * changes of the offset.
-     * </p>
-     *
-     * @param lineOfSight   line of sight from the center of the Field Of View support
-     *                      unit sphere to the target in spacecraft frame
-     * @param angularRadius target body angular radius
-     * @param trigger       visibility trigger for spherical bodies
-     * @return an offset negative if the target is visible within the Field Of
-     * View and positive if it is outside of the Field Of View
-     * (note that this cannot take into account interposing bodies)
-     * @see #offsetFromBoundary(Vector3D, double, VisibilityTrigger)
-     */
+    /** {@inheritDoc} */
     @Override
     public native double offsetFromBoundary(Vector3D lineOfSight, double angularRadius, VisibilityTrigger trigger);
 
-    /**
-     * Find the direction on Field Of View Boundary closest to a line of sight.
-     *
-     * @param lineOfSight line of sight from the center of the Field Of View support
-     *                    unit sphere to the target in spacecraft frame
-     * @return direction on Field Of View Boundary closest to a line of sight
-     */
+    /** {@inheritDoc} */
     @Override
     public native Vector3D projectToBoundary(Vector3D lineOfSight);
 }

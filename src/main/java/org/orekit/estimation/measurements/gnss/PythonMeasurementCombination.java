@@ -19,9 +19,8 @@
 // original java class/interface
 
 package org.orekit.estimation.measurements.gnss;
+import org.orekit.files.rinex.observation.ObservationDataSet;
 
-import org.orekit.gnss.CombinedObservationDataSet;
-import org.orekit.gnss.ObservationDataSet;
 
 public class PythonMeasurementCombination implements MeasurementCombination {
     /** Part of JCC Python interface to object */

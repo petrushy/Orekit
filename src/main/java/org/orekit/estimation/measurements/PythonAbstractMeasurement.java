@@ -51,30 +51,17 @@ public class PythonAbstractMeasurement<T extends ObservedMeasurement<T>> extends
     /** Part of JCC Python interface to object */
     public native void pythonDecRef();
 
-    /**
-     * Estimate the theoretical value.
-     * Extension point for Python.
-     * <p>
-     * The theoretical value does not have <em>any</em> modifiers applied.
-     * </p>
-     *
-     * @param iteration  iteration number
-     * @param evaluation evaluation number
-     * @param states     orbital states at measurement date
-     * @return theoretical value
-     * @see #estimate(int, int, SpacecraftState[])
-     */
+    /** {@inheritDoc} */
     @Override
     public native EstimatedMeasurement<T> theoreticalEvaluation(int iteration, int evaluation, SpacecraftState[] states);
 
-    /**
-     * Add a parameter driver.
-     *
-     * @param driver parameter driver to add
-     * @since 9.3
-     */
+    /** {@inheritDoc} */
     @Override
     public void addParameterDriver(ParameterDriver driver) {
         super.addParameterDriver(driver);
     }
+
+    /** {@inheritDoc} */
+    @Override
+    public native EstimatedMeasurementBase<T> theoreticalEvaluationWithoutDerivatives(int iteration, int evaluation, SpacecraftState[] states);
 }

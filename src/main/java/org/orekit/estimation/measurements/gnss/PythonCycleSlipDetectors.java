@@ -21,7 +21,7 @@
 
 package org.orekit.estimation.measurements.gnss;
 
-import org.orekit.gnss.ObservationDataSet;
+import org.orekit.files.rinex.observation.ObservationDataSet;
 
 import java.util.List;
 

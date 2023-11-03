@@ -25,6 +25,9 @@ import org.hipparchus.geometry.euclidean.threed.FieldVector3D;
 import org.hipparchus.geometry.euclidean.threed.Vector3D;
 import org.orekit.propagation.SpacecraftState;
 import org.orekit.time.AbsoluteDate;
+import org.orekit.utils.ParameterDriver;
+
+import java.util.List;
 
 public class PythonAbstractConstantThrustPropulsionModel extends AbstractConstantThrustPropulsionModel implements ThrustPropulsionModel  {
 
@@ -49,91 +52,48 @@ public class PythonAbstractConstantThrustPropulsionModel extends AbstractConstan
         return super.getInitialThrustVector();
     }
 
-    @Override
-    public double getInitialFlowrate() {
-        return super.getInitialFlowrate();
-    }
 
-    /**
-     * Get the thrust vector in spacecraft frame (N).
-     * Here it does not depend on current S/C state.
-     *
-     * @return thrust vector in spacecraft frame (N)
-     */
+    /** {@inheritDoc} */
     @Override
     public native Vector3D getThrustVector();
 
-    /**
-     * Get the flow rate (kg/s).
-     * Here it does not depend on current S/C.
-     *
-     * @return flow rate (kg/s)
-     */
+    // TODO: Check how to implement difference on these
+    @Override
+    public native Vector3D getThrustVector(AbsoluteDate date);
+
+    /** {@inheritDoc} */
     @Override
     public native double getFlowRate();
 
-    /**
-     * Get the thrust vector in spacecraft frame (N).
-     * Here it does not depend on current S/C state.
-     *
-     * @param parameters propulsion model parameters
-     * @return thrust vector in spacecraft frame (N)
-     */
+    /** {@inheritDoc} */
+    @Override
+    public native double getFlowRate(AbsoluteDate date);
+
+    /** {@inheritDoc} */
     @Override
     public native Vector3D getThrustVector(double[] parameters);
 
-    /**
-     * Get the flow rate (kg/s).
-     * Here it does not depend on current S/C state.
-     *
-     * @param parameters propulsion model parameters
-     * @return flow rate (kg/s)
-     */
+    /** {@inheritDoc} */
     @Override
     public native double getFlowRate(double[] parameters);
 
-    /**
-     * Get the thrust vector in spacecraft frame (N).
-     * Here it does not depend on current S/C state.
-     *
-     * @param parameters propulsion model parameters
-     * @return thrust vector in spacecraft frame (N)
-     */
+    /** {@inheritDoc} */
     @Override
     public <T extends CalculusFieldElement<T>> FieldVector3D<T> getThrustVector(T[] parameters) {
         return this.getThrustVector_T(parameters);
     }
 
-    /**
-     * Get the thrust vector in spacecraft frame (N).
-     * Here it does not depend on current S/C state.
-     *
-     * @param parameters propulsion model parameters
-     * @return thrust vector in spacecraft frame (N)
-     */
-
+    /** {@inheritDoc} */
     public native <T extends CalculusFieldElement<T>> FieldVector3D<T> getThrustVector_T(T[] parameters);
 
-    /**
-     * Get the flow rate (kg/s).
-     * Here it does not depend on current S/C state.
-     *
-     * @param parameters propulsion model parameters
-     * @return flow rate (kg/s)
-     */
+    /** {@inheritDoc} */
     @Override
     public <T extends CalculusFieldElement<T>> T getFlowRate(T[] parameters) {
         return this.getFlowRate_T(parameters);
     }
 
 
-    /**
-     * Get the flow rate (kg/s).
-     * Here it does not depend on current S/C state.
-     *
-     * @param parameters propulsion model parameters
-     * @return flow rate (kg/s)
-     */
+    /** {@inheritDoc} */
     public native <T extends CalculusFieldElement<T>> T getFlowRate_T(T[] parameters);
 
     /** Part of JCC Python interface to object */
@@ -159,15 +119,13 @@ public class PythonAbstractConstantThrustPropulsionModel extends AbstractConstan
     public native void pythonDecRef();
 
 
-    /**
-     * Initialization method.
-     * Called in when Maneuver.init(...) is called (from ForceModel.init(...))
-     *
-     * @param initialState initial spacecraft state (at the start of propagation).
-     * @param target       date of propagation. Not equal to {@code initialState.getDate()}.
-     */
+    /** {@inheritDoc} */
     @Override
-    public void init(SpacecraftState initialState, AbsoluteDate target) {
+    public native void init(SpacecraftState initialState, AbsoluteDate target);
 
+    /** {@inheritDoc} */
+    @Override
+    public List<ParameterDriver> getParametersDrivers() {
+        return null;
     }
 }

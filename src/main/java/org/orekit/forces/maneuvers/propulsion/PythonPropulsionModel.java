@@ -25,6 +25,7 @@ import org.hipparchus.geometry.euclidean.threed.FieldVector3D;
 import org.hipparchus.geometry.euclidean.threed.Vector3D;
 import org.orekit.attitudes.Attitude;
 import org.orekit.attitudes.FieldAttitude;
+import org.orekit.forces.maneuvers.Control3DVectorCostType;
 import org.orekit.propagation.FieldSpacecraftState;
 import org.orekit.propagation.SpacecraftState;
 import org.orekit.time.AbsoluteDate;
@@ -135,4 +136,7 @@ public class PythonPropulsionModel implements PropulsionModel {
      */
     @Override
     public native String getName();
+
+    @Override
+    public native Control3DVectorCostType getControl3DVectorCostType();
 }

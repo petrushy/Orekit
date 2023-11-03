@@ -3,6 +3,7 @@ package org.orekit.forces.radiation;
 import org.hipparchus.CalculusFieldElement;
 import org.hipparchus.geometry.euclidean.threed.FieldVector3D;
 import org.hipparchus.geometry.euclidean.threed.Vector3D;
+import org.orekit.bodies.OneAxisEllipsoid;
 import org.orekit.propagation.FieldSpacecraftState;
 import org.orekit.propagation.SpacecraftState;
 import org.orekit.propagation.numerical.FieldTimeDerivativesEquations;
@@ -14,14 +15,9 @@ import org.orekit.utils.ParameterDriver;
 import java.util.List;
 
 public class PythonAbstractRadiationForceModel extends AbstractRadiationForceModel {
-    /**
-     * Constructor.
-     *
-     * @param sun              Sun model
-     * @param equatorialRadius spherical shape model (for umbra/penumbra computation)
-     */
-    protected PythonAbstractRadiationForceModel(ExtendedPVCoordinatesProvider sun, double equatorialRadius) {
-        super(sun, equatorialRadius);
+
+    public PythonAbstractRadiationForceModel(final ExtendedPVCoordinatesProvider sun, final OneAxisEllipsoid centralBody) {
+        super(sun, centralBody);
     }
 
     /** {@inheritDoc} */

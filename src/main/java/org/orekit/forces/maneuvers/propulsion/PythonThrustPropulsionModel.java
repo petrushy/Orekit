@@ -25,84 +25,53 @@ package org.orekit.forces.maneuvers.propulsion;
 import org.hipparchus.CalculusFieldElement;
 import org.hipparchus.geometry.euclidean.threed.FieldVector3D;
 import org.hipparchus.geometry.euclidean.threed.Vector3D;
+import org.orekit.forces.maneuvers.Control3DVectorCostType;
 import org.orekit.propagation.FieldSpacecraftState;
 import org.orekit.propagation.SpacecraftState;
+import org.orekit.python.JCCBase;
 import org.orekit.time.AbsoluteDate;
+import org.orekit.utils.ParameterDriver;
+
+import java.util.List;
 
 public class PythonThrustPropulsionModel implements ThrustPropulsionModel {
-    /** Part of JCC Python interface to object */
-    private long pythonObject;
 
     /** Part of JCC Python interface to object */
-    public void pythonExtension(long pythonObject)
-    {
+    protected long pythonObject;
+    public void pythonExtension(long pythonObject) {
         this.pythonObject = pythonObject;
     }
-
-    /** Part of JCC Python interface to object */
-    public long pythonExtension()
-    {
+    public long pythonExtension() {
         return this.pythonObject;
     }
-
-    /** Part of JCC Python interface to object */
-    public void finalize()
-            throws Throwable
-    {
-        pythonDecRef();
-    }
-
-    /** Part of JCC Python interface to object */
+    public void finalize() throws Throwable { pythonDecRef(); }
     public native void pythonDecRef();
 
+    /** {@inheritDoc} */
     @Override
     public native void init(SpacecraftState initialState, AbsoluteDate target);
 
-    /**
-     * Get the thrust vector in spacecraft frame (N).
-     *
-     * @param s current spacecraft state
-     * @return thrust vector in spacecraft frame (N)
-     */
+    /** {@inheritDoc} */
+    @Override
+    public native Control3DVectorCostType getControl3DVectorCostType();
+
+    /** {@inheritDoc} */
     @Override
     public native Vector3D getThrustVector(SpacecraftState s);
 
-    /**
-     * Get the flow rate (kg/s).
-     *
-     * @param s current spacecraft state
-     * @return flow rate (kg/s)
-     */
+    /** {@inheritDoc} */
     @Override
     public native double getFlowRate(SpacecraftState s);
 
-    /**
-     * Get the thrust vector in spacecraft frame (N).
-     *
-     * @param s          current spacecraft state
-     * @param parameters propulsion model parameters
-     * @return thrust vector in spacecraft frame (N)
-     */
+    /** {@inheritDoc} */
     @Override
     public native Vector3D getThrustVector(SpacecraftState s, double[] parameters);
 
-    /**
-     * Get the flow rate (kg/s).
-     *
-     * @param s          current spacecraft state
-     * @param parameters propulsion model parameters
-     * @return flow rate (kg/s)
-     */
+    /** {@inheritDoc} */
     @Override
     public native double getFlowRate(SpacecraftState s, double[] parameters);
 
-    /**
-     * Get the thrust vector in spacecraft frame (N).
-     *
-     * @param s          current spacecraft state
-     * @param parameters propulsion model parameters
-     * @return thrust vector in spacecraft frame (N)
-     */
+    /** {@inheritDoc} */
     @Override
     public <T extends CalculusFieldElement<T>> FieldVector3D<T> getThrustVector(FieldSpacecraftState<T> s, T[] parameters) {
         return this.getThrustVector_FT(s, parameters);
@@ -110,17 +79,16 @@ public class PythonThrustPropulsionModel implements ThrustPropulsionModel {
 
     public native <T extends CalculusFieldElement<T>> FieldVector3D<T> getThrustVector_FT(FieldSpacecraftState<T> s, T[] parameters);
 
-    /**
-     * Get the flow rate (kg/s).
-     *
-     * @param s          current spacecraft state
-     * @param parameters propulsion model parameters
-     * @return flow rate (kg/s)
-     */
+    /** {@inheritDoc} */
     @Override
     public <T extends CalculusFieldElement<T>> T getFlowRate(FieldSpacecraftState<T> s, T[] parameters) {
         return this.getFlowRate_FT(s, parameters);
     }
 
     public native <T extends CalculusFieldElement<T>> T getFlowRate_FT(FieldSpacecraftState<T> s, T[] parameters);
+
+    @Override
+    public List<ParameterDriver> getParametersDrivers() {
+        return null;
+    }
 }

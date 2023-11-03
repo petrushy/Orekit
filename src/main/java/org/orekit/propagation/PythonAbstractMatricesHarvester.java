@@ -22,7 +22,7 @@ package org.orekit.propagation;
 
 import org.hipparchus.linear.RealMatrix;
 import org.orekit.orbits.OrbitType;
-import org.orekit.orbits.PositionAngle;
+import org.orekit.orbits.PositionAngleType;
 import org.orekit.utils.DoubleArrayDictionary;
 
 import java.util.List;
@@ -57,7 +57,7 @@ public class PythonAbstractMatricesHarvester extends AbstractMatricesHarvester {
      * Simple constructor.
      * <p>
      * The arguments for initial matrices <em>must</em> be compatible with the {@link OrbitType orbit type}
-     * and {@link PositionAngle position angle} that will be used by propagator
+     * and {@link PositionAngleType position angle} that will be used by propagator
      * </p>
      *
      * @param stmName                State Transition Matrix state name
@@ -66,34 +66,23 @@ public class PythonAbstractMatricesHarvester extends AbstractMatricesHarvester {
      * @param initialJacobianColumns initial columns of the Jacobians matrix with respect to parameters,
      *                               if null or if some selected parameters are missing from the dictionary, the corresponding
      */
-    protected PythonAbstractMatricesHarvester(String stmName, RealMatrix initialStm, DoubleArrayDictionary initialJacobianColumns) {
+    public PythonAbstractMatricesHarvester(String stmName, RealMatrix initialStm, DoubleArrayDictionary initialJacobianColumns) {
         super(stmName, initialStm, initialJacobianColumns);
     }
 
-    /**
-     * Freeze the names of the Jacobian columns.
-     * <p>
-     * This method is called when propagation starts, i.e. when configuration is completed
-     * </p>
-     */
+    /** {@inheritDoc} */
     @Override
     public native void freezeColumnsNames();
 
-    /**
-     * Get the names of the parameters in the matrix returned by {@link #getParametersJacobian}.
-     * <p>
-     * Beware that the names of the parameters are fully known only once all force models have
-     * been set up and their parameters properly selected. Applications that retrieve the matrices
-     * harvester first and select the force model parameters to retrieve afterwards (but obviously
-     * before starting propagation) must take care to wait until the parameters have been set up
-     * before they call this method. Calling the method too early would return wrong results.
-     * </p>
-     * <p>
-     * The names are returned in the Jacobians matrix columns order
-     * </p>
-     *
-     * @return names of the parameters (i.e. columns) of the Jacobian matrix
-     */
+    /** {@inheritDoc} */
     @Override
     public native List<String> getJacobiansColumnsNames();
+
+    /** {@inheritDoc} */
+    @Override
+    public native OrbitType getOrbitType();
+
+    /** {@inheritDoc} */
+    @Override
+    public native PositionAngleType getPositionAngleType();
 }

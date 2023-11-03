@@ -58,7 +58,7 @@ public class PythonAbstractAnalyticalGradientConverter extends AbstractAnalytica
      * @param mu                  central attraction coefficient
      * @param freeStateParameters number of free parameters
      */
-    protected PythonAbstractAnalyticalGradientConverter(AbstractAnalyticalPropagator propagator, double mu, int freeStateParameters) {
+    public PythonAbstractAnalyticalGradientConverter(AbstractAnalyticalPropagator propagator, double mu, int freeStateParameters) {
         super(propagator, mu, freeStateParameters);
     }
 

@@ -1,10 +1,7 @@
-package org.orekit.utils;
+package org.orekit.gnss.metric.parser;
 
-import java.util.List;
-
-public class PythonParametersDriversProvider implements ParametersDriversProvider {
+public class PythonAbstractEncodedMessage extends AbstractEncodedMessage {
     /** Part of JCC Python interface to object */
-
     private long pythonObject;
 
     /** Part of JCC Python interface to object */
@@ -29,11 +26,7 @@ public class PythonParametersDriversProvider implements ParametersDriversProvide
     /** Part of JCC Python interface to object */
     public native void pythonDecRef();
 
-    /**
-     * Get the drivers for parameters.
-     *
-     * @return drivers for parameters
-     */
+    /** {@inheritDoc} */
     @Override
-    public native List<ParameterDriver> getParametersDrivers();
+    public native int fetchByte();
 }

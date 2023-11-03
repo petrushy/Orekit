@@ -5,7 +5,10 @@ import org.orekit.estimation.measurements.ObservableSatellite;
 import org.orekit.estimation.measurements.ObservedMeasurement;
 import org.orekit.estimation.measurements.generation.AbstractMeasurementBuilder;
 import org.orekit.propagation.SpacecraftState;
+import org.orekit.propagation.sampling.OrekitStepInterpolator;
 import org.orekit.time.AbsoluteDate;
+
+import java.util.Map;
 
 public class PythonAbstractMeasurementBuilder<T extends ObservedMeasurement<T>> extends AbstractMeasurementBuilder<T> {
     /** Part of JCC Python interface to object */
@@ -135,14 +138,7 @@ public class PythonAbstractMeasurementBuilder<T extends ObservedMeasurement<T>> 
         return super.getSatellites();
     }
 
-
-    /**
-     * Generate a single measurement.
-     * Extension point for Python.
-     *
-     * @param states spacecraft states
-     * @return generated measurement
-     */
     @Override
-    public native T build(SpacecraftState[] states);
+    public native T build(AbsoluteDate date, Map<ObservableSatellite, OrekitStepInterpolator> interpolators);
+
 }

@@ -39,8 +39,12 @@ public class PythonAbstractBuilder<T extends AbstractBuilder<T>> extends Abstrac
      * @param missionReferenceDate reference date for Mission Elapsed Time or Mission Relative Time time systems
      * @param rangeUnitsConverter  converter for {@link RangeUnits#RU Range Units}
      */
-    protected PythonAbstractBuilder(IERSConventions conventions, DataContext dataContext, AbsoluteDate missionReferenceDate, RangeUnitsConverter rangeUnitsConverter) {
-        super(conventions, dataContext, missionReferenceDate, rangeUnitsConverter);
+    public PythonAbstractBuilder(final IERSConventions conventions,
+                                    final double equatorialRadius, final double flattening,
+                                    final DataContext dataContext,
+                                    final AbsoluteDate missionReferenceDate,
+                                    final RangeUnitsConverter rangeUnitsConverter) {
+        super(conventions, equatorialRadius, flattening, dataContext, missionReferenceDate, rangeUnitsConverter);
     }
 
     /** Part of JCC Python interface to object */
@@ -67,5 +71,5 @@ public class PythonAbstractBuilder<T extends AbstractBuilder<T>> extends Abstrac
 
     /** {@inheritDoc} */
     @Override
-    public native T create(IERSConventions newConventions, DataContext newDataContext, AbsoluteDate newMissionReferenceDate, RangeUnitsConverter newRangeUnitsConverter);
+    public native T create(IERSConventions newConventions, double newEquatorialRadius, double newFlattening, DataContext newDataContext, AbsoluteDate newMissionReferenceDate, RangeUnitsConverter newRangeUnitsConverter);
 }

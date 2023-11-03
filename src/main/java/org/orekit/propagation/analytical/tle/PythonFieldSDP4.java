@@ -18,7 +18,7 @@ public class PythonFieldSDP4<T extends CalculusFieldElement<T>> extends FieldSDP
      * @param teme             the TEME frame to use for propagation.
      * @param parameters       SGP4 and SDP4 model parameters
      */
-    protected PythonFieldSDP4(FieldTLE<T> initialTLE, AttitudeProvider attitudeProvider, T mass, Frame teme, T[] parameters) {
+    public PythonFieldSDP4(FieldTLE<T> initialTLE, AttitudeProvider attitudeProvider, T mass, Frame teme, T[] parameters) {
         super(initialTLE, attitudeProvider, mass, teme, parameters);
     }
 

@@ -20,79 +20,33 @@
 
 package org.orekit.forces.gravity.potential;
 
+import org.orekit.python.JCCBase;
+import org.orekit.time.AbsoluteDate;
+
 import java.util.List;
 
 public class PythonGravityFields implements GravityFields {
-    /** Part of JCC Python interface to object */
-    private long pythonObject;
 
     /** Part of JCC Python interface to object */
-    public void pythonExtension(long pythonObject)
-    {
+    protected long pythonObject;
+    public void pythonExtension(long pythonObject) {
         this.pythonObject = pythonObject;
     }
-
-    /** Part of JCC Python interface to object */
-    public long pythonExtension()
-    {
+    public long pythonExtension() {
         return this.pythonObject;
     }
-
-    /** Part of JCC Python interface to object */
-    public void finalize()
-            throws Throwable
-    {
-        pythonDecRef();
-    }
-
-    /** Part of JCC Python interface to object */
+    public void finalize() throws Throwable { pythonDecRef(); }
     public native void pythonDecRef();
 
-    /**
-     * Get a constant gravity field normalized coefficients provider.
-     *
-     * @param degree maximal degree
-     * @param order  maximal order
-     * @return a gravity field coefficients provider containing already loaded data
-     * @see #getNormalizedProvider(int, int)
-     * @since 6.0
-     */
     @Override
-    public native NormalizedSphericalHarmonicsProvider getConstantNormalizedProvider(int degree, int order);
+    public native NormalizedSphericalHarmonicsProvider getConstantNormalizedProvider(int degree, int order, AbsoluteDate freezingDate);
 
-    /**
-     * Get a gravity field normalized coefficients provider.
-     *
-     * @param degree maximal degree
-     * @param order  maximal order
-     * @return a gravity field coefficients provider containing already loaded data
-     * @see #getConstantNormalizedProvider(int, int)
-     * @since 6.0
-     */
     @Override
     public native NormalizedSphericalHarmonicsProvider getNormalizedProvider(int degree, int order);
 
-    /**
-     * Get a constant gravity field unnormalized coefficients provider.
-     *
-     * @param degree maximal degree
-     * @param order  maximal order
-     * @return a gravity field coefficients provider containing already loaded data
-     * @see #getUnnormalizedProvider(int, int)
-     * @since 6.0
-     */
     @Override
-    public native UnnormalizedSphericalHarmonicsProvider getConstantUnnormalizedProvider(int degree, int order);
+    public native UnnormalizedSphericalHarmonicsProvider getConstantUnnormalizedProvider(int degree, int order, AbsoluteDate freezingDate);
 
-    /**
-     * Get a gravity field unnormalized coefficients provider.
-     *
-     * @param degree maximal degree
-     * @param order  maximal order
-     * @return a gravity field coefficients provider containing already loaded data
-     * @see #getConstantUnnormalizedProvider(int, int)
-     * @since 6.0
-     */
     @Override
     public native UnnormalizedSphericalHarmonicsProvider getUnnormalizedProvider(int degree, int order);
 

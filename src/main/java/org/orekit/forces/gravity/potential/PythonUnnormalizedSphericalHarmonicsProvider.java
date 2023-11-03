@@ -21,60 +21,31 @@ package org.orekit.forces.gravity.potential;
 // original java class
 
 
+import org.orekit.python.JCCBase;
 import org.orekit.time.AbsoluteDate;
 
 public class PythonUnnormalizedSphericalHarmonicsProvider implements UnnormalizedSphericalHarmonicsProvider {
 
-
-
-
     /** Part of JCC Python interface to object */
-    private long pythonObject;
-
-    /** Part of JCC Python interface to object */
-    public void pythonExtension(long pythonObject)
-    {
+    protected long pythonObject;
+    public void pythonExtension(long pythonObject) {
         this.pythonObject = pythonObject;
     }
-
-    /** Part of JCC Python interface to object */
-    public long pythonExtension()
-    {
+    public long pythonExtension() {
         return this.pythonObject;
     }
-
-    /** Part of JCC Python interface to object */
-    public void finalize()
-            throws Throwable
-    {
-        pythonDecRef();
-    }
-
-    /** Part of JCC Python interface to object */
+    public void finalize() throws Throwable { pythonDecRef(); }
     public native void pythonDecRef();
 
-
-    /**
-     * Get the maximal supported degree.
-     *
-     * @return maximal supported degree
-     */
+    /** {@inheritDoc} */
     @Override
     public native int getMaxDegree();
 
-    /**
-     * Get the maximal supported order.
-     *
-     * @return maximal supported order
-     */
+    /** {@inheritDoc} */
     @Override
     public  native int getMaxOrder();
 
-    /**
-     * Get the central body attraction coefficient.
-     *
-     * @return mu (m³/s²)
-     */
+    /** {@inheritDoc} */
     @Override
     public  native double getMu();
 
@@ -94,16 +65,6 @@ public class PythonUnnormalizedSphericalHarmonicsProvider implements Unnormalize
     @Override
     public  native AbsoluteDate getReferenceDate();
 
-    /**
-     * Get the offset from {@link #getReferenceDate reference date} for the harmonics.
-     *
-     * @param date current date
-     * @return offset between current date and reference date if there is a reference
-     * date, or 0.0 if there are no reference dates (i.e. if {@link #getReferenceDate}
-     * returns null)
-     */
-    @Override
-    public  native double getOffset(AbsoluteDate date);
 
     /**
      * Get the {@link TideSystem} used in the gravity field.

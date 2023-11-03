@@ -53,63 +53,29 @@ public class PythonAbstractGenerator extends AbstractGenerator {
     /** Part of JCC Python interface to object */
     public native void pythonDecRef();
 
-    /**
-     * Simple constructor.
-     *
-     * @param output     destination of generated output
-     * @param outputName output name for error messages
-     * @param writeUnits if true, units must be written
-     */
-    public PythonAbstractGenerator(Appendable output, String outputName, boolean writeUnits) {
-        super(output, outputName, writeUnits);
+
+    public PythonAbstractGenerator( Appendable output,  String outputName,
+                                    double maxRelativeOffset,  boolean writeUnits) {
+        super(output, outputName, maxRelativeOffset, writeUnits);
     }
 
-    /**
-     * Get the generated file format.
-     *
-     * @return generated file format
-     */
+    /** {@inheritDoc} */
     @Override
     public native FileFormat getFormat();
 
-    /**
-     * Start CCSDS message.
-     *
-     * @param root           root element for XML files
-     * @param messageTypeKey key for message type
-     * @param version        format version
-     * @throws IOException if an I/O error occurs.
-     */
+    /** {@inheritDoc} */
     @Override
     public native void startMessage(String root, String messageTypeKey, double version) throws IOException;
 
-    /**
-     * End CCSDS message.
-     *
-     * @param root root element for XML files
-     * @throws IOException if an I/O error occurs.
-     */
+    /** {@inheritDoc} */
     @Override
     public native void endMessage(String root) throws IOException;
 
-    /**
-     * Write comment lines.
-     *
-     * @param comments comments to write
-     * @throws IOException if an I/O error occurs.
-     */
+    /** {@inheritDoc} */
     @Override
     public native void writeComments(List<String> comments) throws IOException;
 
-    /**
-     * Write a single key/value entry.
-     *
-     * @param key       the keyword to write
-     * @param value     the value to write
-     * @param unit      output unit (may be null)
-     * @param mandatory if true, null values triggers exception, otherwise they are silently ignored
-     * @throws IOException if an I/O error occurs.
-     */
+    /** {@inheritDoc} */
     @Override
     public native void writeEntry(String key, String value, Unit unit, boolean mandatory) throws IOException;
 }

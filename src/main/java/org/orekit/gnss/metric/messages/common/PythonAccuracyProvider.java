@@ -18,7 +18,7 @@
 // this file was created by SSC 2021 and is largely a derived work from the
 // original java class
 
-package org.orekit.gnss.metric.messages.rtcm.ephemeris.utils;
+package org.orekit.gnss.metric.messages.common;
 
 public class PythonAccuracyProvider implements AccuracyProvider {
     /** Part of JCC Python interface to object */

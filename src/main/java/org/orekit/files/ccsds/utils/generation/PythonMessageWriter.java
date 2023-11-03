@@ -24,33 +24,21 @@ package org.orekit.files.ccsds.utils.generation;
 import org.orekit.files.ccsds.ndm.NdmConstituent;
 import org.orekit.files.ccsds.section.Header;
 import org.orekit.files.ccsds.section.Segment;
+import org.orekit.python.JCCBase;
 
 import java.io.IOException;
 
 public class PythonMessageWriter<H extends Header, S extends Segment<?, ?>, F extends NdmConstituent<H, S>> implements MessageWriter<H, S, F> {
-    /** Part of JCC Python interface to object */
-    private long pythonObject;
 
     /** Part of JCC Python interface to object */
-    public void pythonExtension(long pythonObject)
-    {
+    protected long pythonObject;
+    public void pythonExtension(long pythonObject) {
         this.pythonObject = pythonObject;
     }
-
-    /** Part of JCC Python interface to object */
-    public long pythonExtension()
-    {
+    public long pythonExtension() {
         return this.pythonObject;
     }
-
-    /** Part of JCC Python interface to object */
-    public void finalize()
-            throws Throwable
-    {
-        pythonDecRef();
-    }
-
-    /** Part of JCC Python interface to object */
+    public void finalize() throws Throwable { pythonDecRef(); }
     public native void pythonDecRef();
 
     /**
@@ -81,4 +69,13 @@ public class PythonMessageWriter<H extends Header, S extends Segment<?, ?>, F ex
      */
     @Override
     public native void writeFooter(Generator generator) throws IOException;
+
+    @Override
+    public native String getRoot();
+
+    @Override
+    public native String getFormatVersionKey();
+
+    @Override
+    public native double getVersion();
 }

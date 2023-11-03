@@ -21,37 +21,23 @@ package org.orekit.estimation.measurements;
 import org.orekit.propagation.SpacecraftState;
 import org.orekit.time.AbsoluteDate;
 import org.orekit.utils.ParameterDriver;
-
+import org.orekit.python.JCCBase;
 import java.util.List;
 import java.util.SortedSet;
 
-public class PythonObservedMeasurement<T extends ObservedMeasurement<T>> implements ObservedMeasurement<T> {
+public class PythonObservedMeasurement<T extends ObservedMeasurement<T>> implements ObservedMeasurement<T>  {
 
     /** Part of JCC Python interface to object */
-    private long pythonObject;
-
-    /** Part of JCC Python interface to object */
-    public void pythonExtension(long pythonObject)
-    {
+    protected long pythonObject;
+    public void pythonExtension(long pythonObject) {
         this.pythonObject = pythonObject;
     }
-
-    /** Part of JCC Python interface to object */
-    public long pythonExtension()
-    {
+    public long pythonExtension() {
         return this.pythonObject;
     }
-
-    /** Part of JCC Python interface to object */
-    public void finalize()
-            throws Throwable
-    {
-        pythonDecRef();
-    }
-
-    /** Part of JCC Python interface to object */
+    public void finalize() throws Throwable { pythonDecRef(); }
     public native void pythonDecRef();
-    
+
     /**
      * Enable or disable a measurement.
      * <p>
@@ -162,7 +148,10 @@ public class PythonObservedMeasurement<T extends ObservedMeasurement<T>> impleme
     @Override
     public native List<ObservableSatellite> getSatellites();
 
-    /**
+    @Override
+    public native EstimatedMeasurementBase<T> estimateWithoutDerivatives(int iteration, int evaluation, SpacecraftState[] states);
+
+        /**
      * Estimate the theoretical value of the measurement.
      * <p>
      * The estimated value is the <em>combination</em> of the raw estimated

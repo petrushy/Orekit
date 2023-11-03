@@ -22,11 +22,14 @@
 package org.orekit.files.ccsds.utils.parsing;
 
 import org.orekit.files.ccsds.utils.FileFormat;
+import org.orekit.files.ccsds.utils.lexical.ParseToken;
+
+import java.util.List;
+import java.util.function.Function;
 
 public class PythonAbstractMessageParser<T> extends AbstractMessageParser<T> {
 
-    /** Part of JCC Python interface to object */
-    private long pythonObject;
+
 
     /**
      * Simple constructor.
@@ -34,8 +37,9 @@ public class PythonAbstractMessageParser<T> extends AbstractMessageParser<T> {
      * @param root             root element for XML files
      * @param formatVersionKey key for format version
      */
-    protected PythonAbstractMessageParser(String root, String formatVersionKey) {
-        super(root, formatVersionKey);
+    public PythonAbstractMessageParser(final String root, final String formatVersionKey,
+                                          final Function<ParseToken, List<ParseToken>>[] filters) {
+        super(root, formatVersionKey, filters);
     }
 
     /** Part of JCC Python interface to object */
@@ -49,6 +53,9 @@ public class PythonAbstractMessageParser<T> extends AbstractMessageParser<T> {
     {
         return this.pythonObject;
     }
+
+    /** Part of JCC Python interface to object */
+    private long pythonObject;
 
     /** Part of JCC Python interface to object */
     public void finalize()

@@ -100,16 +100,6 @@ public class PythonNormalizedSphericalHarmonicsProvider implements NormalizedSph
     @Override
     public native AbsoluteDate getReferenceDate();
 
-    /**
-     * Get the offset from {@link #getReferenceDate reference date} for the harmonics.
-     *
-     * @param date current date
-     * @return offset between current date and reference date if there is a reference
-     * date, or 0.0 if there are no reference dates (i.e. if {@link #getReferenceDate}
-     * returns null)
-     */
-    @Override
-    public native double getOffset(AbsoluteDate date);
 
     /**
      * Get the {@link TideSystem} used in the gravity field.

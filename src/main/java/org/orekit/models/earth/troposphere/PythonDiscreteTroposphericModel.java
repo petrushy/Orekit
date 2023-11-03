@@ -33,8 +33,6 @@ import java.util.List;
 
 public class PythonDiscreteTroposphericModel implements DiscreteTroposphericModel {
 
-    private static final long serialVersionUID = -3910892044583856313L;
-    
     /** Part of JCC Python interface to object */
     private long pythonObject;
 

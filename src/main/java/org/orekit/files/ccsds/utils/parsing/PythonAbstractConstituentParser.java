@@ -26,24 +26,26 @@ import org.orekit.files.ccsds.ndm.NdmConstituent;
 import org.orekit.files.ccsds.ndm.ParsedUnitsBehavior;
 import org.orekit.files.ccsds.section.Header;
 import org.orekit.files.ccsds.utils.FileFormat;
+import org.orekit.files.ccsds.utils.lexical.ParseToken;
 import org.orekit.utils.IERSConventions;
 
-public class PythonAbstractConstituentParser<T extends NdmConstituent<?, ?>, P extends AbstractConstituentParser<T, ?>> extends AbstractConstituentParser<T, P> {
+import java.util.List;
+import java.util.function.Function;
+
+public class PythonAbstractConstituentParser<H extends Header, T extends NdmConstituent<H, ?>, P extends AbstractConstituentParser<H, T, ?>> extends AbstractConstituentParser<H, T, P> {
     /** Part of JCC Python interface to object */
     private long pythonObject;
 
-    /**
-     * Complete constructor.
-     *
-     * @param root                root element for XML files
-     * @param formatVersionKey    key for format version
-     * @param conventions         IERS Conventions
-     * @param simpleEOP           if true, tidal effects are ignored when interpolating EOP
-     * @param dataContext         used to retrieve frames and time scales
-     * @param parsedUnitsBehavior behavior to adopt for handling parsed units
-     */
-    protected PythonAbstractConstituentParser(String root, String formatVersionKey, IERSConventions conventions, boolean simpleEOP, DataContext dataContext, ParsedUnitsBehavior parsedUnitsBehavior) {
-        super(root, formatVersionKey, conventions, simpleEOP, dataContext, parsedUnitsBehavior);
+
+    public PythonAbstractConstituentParser(final String root,
+                                           final String formatVersionKey,
+                                           final IERSConventions conventions,
+                                           final boolean simpleEOP,
+                                           final DataContext dataContext,
+                                           final ParsedUnitsBehavior parsedUnitsBehavior,
+                                           final Function<ParseToken, List<ParseToken>>[] filters)
+    {
+        super(root, formatVersionKey, conventions, simpleEOP, dataContext, parsedUnitsBehavior, filters);
     }
 
     /** Part of JCC Python interface to object */
@@ -69,99 +71,51 @@ public class PythonAbstractConstituentParser<T extends NdmConstituent<?, ?>, P e
     public native void pythonDecRef();
 
 
-    /**
-     * Reset parser to initial state before parsing.
-     *
-     * @param fileFormat format of the file ready to be parsed
-     */
+    /** {@inheritDoc} */
     @Override
     public native void reset(FileFormat fileFormat);
 
-    /**
-     * Build the file from parsed entries.
-     *
-     * @return parsed file
-     */
+    /** {@inheritDoc} */
     @Override
     public native T build();
 
-    /**
-     * Get file header to fill.
-     *
-     * @return file header to fill
-     */
+    /** {@inheritDoc} */
     @Override
-    public native Header getHeader();
+    public native H getHeader();
 
-    /**
-     * Prepare header for parsing.
-     *
-     * @return true if parser was able to perform the action
-     */
+    /** {@inheritDoc} */
     @Override
     public native boolean prepareHeader();
 
-    /**
-     * Acknowledge header parsing has started.
-     *
-     * @return true if parser was able to perform the action
-     */
+    /** {@inheritDoc} */
     @Override
     public native boolean inHeader();
 
-    /**
-     * Finalize header after parsing.
-     *
-     * @return true if parser was able to perform the action
-     */
+    /** {@inheritDoc} */
     @Override
     public native boolean finalizeHeader();
 
-    /**
-     * Prepare metadata for parsing.
-     *
-     * @return true if parser was able to perform the action
-     */
+    /** {@inheritDoc} */
     @Override
     public native boolean prepareMetadata();
 
-    /**
-     * Acknowledge metada parsing has started.
-     *
-     * @return true if parser was able to perform the action
-     */
+    /** {@inheritDoc} */
     @Override
     public native boolean inMetadata();
 
-    /**
-     * Finalize metadata after parsing.
-     *
-     * @return true if parser was able to perform the action
-     */
+    /** {@inheritDoc} */
     @Override
     public native boolean finalizeMetadata();
 
-    /**
-     * Prepare data for parsing.
-     *
-     * @return true if parser was able to perform the action
-     */
+    /** {@inheritDoc} */
     @Override
     public native boolean prepareData();
 
-    /**
-     * Acknowledge data parsing has started.
-     *
-     * @return true if parser was able to perform the action
-     */
+    /** {@inheritDoc} */
     @Override
     public native boolean inData();
 
-    /**
-     * Finalize data after parsing.
-     *
-     * @return true if parser was able to perform the action
-     */
+    /** {@inheritDoc} */
     @Override
     public native boolean finalizeData();
 }

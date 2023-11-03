@@ -19,135 +19,26 @@
 
 package org.orekit.utils;
 
+import org.orekit.python.JCCBase;
 import org.orekit.time.AbsoluteDate;
 import org.orekit.utils.ParameterDriver;
 import org.orekit.utils.ParameterObserver;
 
 public class PythonParameterObserver implements ParameterObserver {
-
     /** Part of JCC Python interface to object */
-    private long pythonObject;
-
-    /** Part of JCC Python interface to object */
-    public void pythonExtension(long pythonObject)
-    {
+    protected long pythonObject;
+    public void pythonExtension(long pythonObject) {
         this.pythonObject = pythonObject;
     }
-
-    /** Part of JCC Python interface to object */
-    public long pythonExtension()
-    {
+    public long pythonExtension() {
         return this.pythonObject;
     }
-
-    /** Part of JCC Python interface to object */
-    public void finalize()
-            throws Throwable
-    {
-        pythonDecRef();
-    }
-
-    /** Part of JCC Python interface to object */
+    public void finalize() throws Throwable { pythonDecRef(); }
     public native void pythonDecRef();
 
-    /**
-     * Notify that a parameter value has been changed.
-     *
-     * @param previousValue previous value
-     * @param driver        parameter driver that has been changed
-     */
     @Override
-    public native void valueChanged(double previousValue, ParameterDriver driver);
+    public native void valueChanged(double previousValue, ParameterDriver driver, AbsoluteDate date);
 
-    /**
-     * Notify that a parameter reference date has been changed.
-     * <p>
-     * The default implementation does nothing
-     * </p>
-     *
-     * @param previousReferenceDate previous date (null if it is the first time
-     *                              the reference date is changed)
-     * @param driver                parameter driver that has been changed
-     * @since 9.0
-     */
     @Override
-    public native void referenceDateChanged(AbsoluteDate previousReferenceDate, ParameterDriver driver);
-
-    /**
-     * Notify that a parameter name has been changed.
-     * <p>
-     * The default implementation does nothing
-     * </p>
-     *
-     * @param previousName previous name
-     * @param driver       parameter driver that has been changed
-     * @since 9.0
-     */
-    @Override
-    public native void nameChanged(String previousName, ParameterDriver driver);
-
-    /**
-     * Notify that a parameter selection status has been changed.
-     * <p>
-     * The default implementation does nothing
-     * </p>
-     *
-     * @param previousSelection previous selection
-     * @param driver            parameter driver that has been changed
-     * @since 9.0
-     */
-    @Override
-    public native void selectionChanged(boolean previousSelection, ParameterDriver driver);
-
-    /**
-     * Notify that a parameter reference value has been changed.
-     * <p>
-     * The default implementation does nothing
-     * </p>
-     *
-     * @param previousReferenceValue previous reference value
-     * @param driver                 parameter driver that has been changed
-     * @since 9.0
-     */
-    @Override
-    public native void referenceValueChanged(double previousReferenceValue, ParameterDriver driver);
-
-    /**
-     * Notify that a parameter minimum value has been changed.
-     * <p>
-     * The default implementation does nothing
-     * </p>
-     *
-     * @param previousMinValue previous minimum value
-     * @param driver           parameter driver that has been changed
-     * @since 9.0
-     */
-    @Override
-    public native void minValueChanged(double previousMinValue, ParameterDriver driver);
-
-    /**
-     * Notify that a parameter maximum value has been changed.
-     * <p>
-     * The default implementation does nothing
-     * </p>
-     *
-     * @param previousMaxValue previous maximum value
-     * @param driver           parameter driver that has been changed
-     * @since 9.0
-     */
-    @Override
-    public native void maxValueChanged(double previousMaxValue, ParameterDriver driver);
-
-    /**
-     * Notify that a parameter scale has been changed.
-     * <p>
-     * The default implementation does nothing
-     * </p>
-     *
-     * @param previousScale previous scale
-     * @param driver        parameter driver that has been changed
-     * @since 9.0
-     */
-    @Override
-    public native void scaleChanged(double previousScale, ParameterDriver driver);
+    public native void valueSpanMapChanged(TimeSpanMap<Double> previousValueSpanMap, ParameterDriver driver);
 }

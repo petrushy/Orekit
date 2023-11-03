@@ -30,6 +30,9 @@ import org.orekit.propagation.events.AbstractDetector;
 import org.orekit.propagation.events.FieldAbstractDetector;
 import org.orekit.propagation.events.FieldEventDetector;
 import org.orekit.propagation.events.handlers.FieldEventHandler;
+import org.orekit.utils.ParameterDriver;
+
+import java.util.List;
 
 public class PythonStartStopEventsTrigger<A extends AbstractDetector<A>, O extends AbstractDetector<O>> extends StartStopEventsTrigger<A, O> {
     /** Part of JCC Python interface to object */
@@ -58,93 +61,19 @@ public class PythonStartStopEventsTrigger<A extends AbstractDetector<A>, O exten
     /** Part of JCC Python interface to object */
     public native void pythonDecRef();
 
-    /**
-     * Simple constructor.
-     * <p>
-     * Note that the {@code startDetector} and {@code stopDetector} passed as an argument are used only
-     * as a <em>prototypes</em> from which new detectors will be built using their
-     * {@link AbstractDetector#withHandler(EventHandler) withHandler} methods to
-     * set up internal handlers. The original event handlers from the prototype
-     * will be <em>ignored</em> and never called.
-     * </p>
-     * <p>
-     * If the trigger is used in a {@link FieldPropagator field-based propagation},
-     * the detector will be automatically converted to a field equivalent. Beware however that the
-     * {@link FieldEventHandler#eventOccurred(FieldSpacecraftState, FieldEventDetector, boolean) eventOccurred}
-     * of the converted propagator <em>will</em> call the method with the same name in the prototype
-     * detector, in order to get the correct return value.
-     * </p>
-     *
-     * @param prototypeStartDetector prototype detector for firing start
-     * @param prototypeStopDetector  prototype detector for firing stop
-     */
     public PythonStartStopEventsTrigger(A prototypeStartDetector, O prototypeStopDetector) {
         super(prototypeStartDetector, prototypeStopDetector);
     }
 
-    /**
-     * Convert a primitive firing start detector into a field firing start detector.
-     * <p>
-     * There is not need to set up {@link FieldAbstractDetector#withMaxCheck(CalculusFieldElement) withMaxCheck},
-     * {@link FieldAbstractDetector#withThreshold(CalculusFieldElement) withThreshold}, or
-     * {@link FieldAbstractDetector#withHandler(FieldEventHandler) withHandler}
-     * in the converted detector, this will be done by caller.
-     * </p>
-     * <p>
-     * A skeleton implementation of this method to convert some {@code XyzDetector} into {@code FieldXyzDetector},
-     * considering these detectors are created from a date and a number parameter is:
-     * </p>
-     * <pre>{@code
-     *     protected <D extends FieldEventDetector<S>, S extends CalculusFieldElement<S>>
-     *         FieldAbstractDetector<D, S> convertStartDetector(final Field<S> field, final XyzDetector detector) {
-     *
-     *         final FieldAbsoluteDate<S> date  = new FieldAbsoluteDate<>(field, detector.getDate());
-     *         final S                    param = field.getZero().newInstance(detector.getParam());
-     *
-     *         final FieldAbstractDetector<D, S> converted = (FieldAbstractDetector<D, S>) new FieldXyzDetector<>(date, param);
-     *         return converted;
-     *
-     *     }
-     * }
-     * </pre>
-     *
-     * @param field    field to which the state belongs
-     * @param detector primitive firing start detector to convert
-     * @return converted firing start detector
-     */
+    /** {@inheritDoc} */
     @Override
-    public native <D extends FieldEventDetector<S>, S extends CalculusFieldElement<S>> FieldAbstractDetector<D, S> convertStartDetector(Field<S> field, A detector);
+    public native  <D extends FieldAbstractDetector<D, S>, S extends CalculusFieldElement<S>> FieldAbstractDetector<D, S> convertStartDetector(Field<S> field, A detector);
 
-    /**
-     * Convert a primitive firing stop detector into a field firing stop detector.
-     * <p>
-     * There is not need to set up {@link FieldAbstractDetector#withMaxCheck(CalculusFieldElement) withMaxCheck},
-     * {@link FieldAbstractDetector#withThreshold(CalculusFieldElement) withThreshold}, or
-     * {@link FieldAbstractDetector#withHandler(FieldEventHandler) withHandler}
-     * in the converted detector, this will be done by caller.
-     * </p>
-     * <p>
-     * A skeleton implementation of this method to convert some {@code XyzDetector} into {@code FieldXyzDetector},
-     * considering these detectors are created from a date and a number parameter is:
-     * </p>
-     * <pre>{@code
-     *     protected <D extends FieldEventDetector<S>, S extends CalculusFieldElement<S>>
-     *         FieldAbstractDetector<D, S> convertStopDetector(final Field<S> field, final XyzDetector detector) {
-     *
-     *         final FieldAbsoluteDate<S> date  = new FieldAbsoluteDate<>(field, detector.getDate());
-     *         final S                    param = field.getZero().newInstance(detector.getParam());
-     *
-     *         final FieldAbstractDetector<D, S> converted = (FieldAbstractDetector<D, S>) new FieldXyzDetector<>(date, param);
-     *         return converted;
-     *
-     *     }
-     * }
-     * </pre>
-     *
-     * @param field    field to which the state belongs
-     * @param detector primitive firing stop detector to convert
-     * @return converted firing stop detector
-     */
+    /** {@inheritDoc} */
     @Override
-    public native <D extends FieldEventDetector<S>, S extends CalculusFieldElement<S>> FieldAbstractDetector<D, S> convertStopDetector(Field<S> field, O detector);
+    public native <D extends FieldAbstractDetector<D, S>, S extends CalculusFieldElement<S>> FieldAbstractDetector<D, S> convertStopDetector(Field<S> field, O detector);
+
+    /** {@inheritDoc} */
+    @Override
+    public native List<ParameterDriver> getParametersDrivers();
 }

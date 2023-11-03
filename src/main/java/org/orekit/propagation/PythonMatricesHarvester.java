@@ -22,6 +22,7 @@ package org.orekit.propagation;
 
 import org.hipparchus.linear.RealMatrix;
 import org.orekit.orbits.OrbitType;
+import org.orekit.orbits.PositionAngleType;
 
 import java.util.List;
 
@@ -106,4 +107,10 @@ public class PythonMatricesHarvester implements MatricesHarvester {
      */
     @Override
     public native List<String> getJacobiansColumnsNames();
+
+    @Override
+    public native OrbitType getOrbitType();
+
+    @Override
+    public native PositionAngleType getPositionAngleType();
 }

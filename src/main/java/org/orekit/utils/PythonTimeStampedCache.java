@@ -19,6 +19,7 @@
 
 package org.orekit.utils;
 
+import org.orekit.python.JCCBase;
 import org.orekit.time.AbsoluteDate;
 import org.orekit.time.TimeStamped;
 import org.orekit.utils.TimeStampedCache;
@@ -28,74 +29,34 @@ import java.util.stream.Stream;
 public class PythonTimeStampedCache<T extends TimeStamped> implements TimeStampedCache<T> {
 
     /** Part of JCC Python interface to object */
-    private long pythonObject;
-
-    /** Part of JCC Python interface to object */
-    public void pythonExtension(long pythonObject)
-    {
+    protected long pythonObject;
+    public void pythonExtension(long pythonObject) {
         this.pythonObject = pythonObject;
     }
-
-    /** Part of JCC Python interface to object */
-    public long pythonExtension()
-    {
+    public long pythonExtension() {
         return this.pythonObject;
     }
-
-    /** Part of JCC Python interface to object */
-    public void finalize()
-            throws Throwable
-    {
-        pythonDecRef();
-    }
-
-    /** Part of JCC Python interface to object */
+    public void finalize() throws Throwable { pythonDecRef(); }
     public native void pythonDecRef();
 
-    /**
-     * Get the entries surrounding a central date.
-     * <p>
-     * If the central date is well within covered range, the returned array will
-     * be balanced with half the points before central date and half the points
-     * after it (depending on n parity, of course). If the central date is near
-     * the boundary, then the returned array will be unbalanced and will contain
-     * only the n earliest (or latest) entries. A typical example of the later
-     * case is leap seconds cache, since the number of leap seconds cannot be
-     * arbitrarily increased.
-     * <p>
-     * This method is safe for multiple threads to execute concurrently.
-     *
-     * @param central central date
-     * @return list of cached entries surrounding the specified date. The size
-     * of the list is guaranteed to be {@link #getNeighborsSize()}.
-     */
+    /** {@inheritDoc} */
     @Override
     public native Stream<T> getNeighbors(AbsoluteDate central);
 
-    /**
-     * Get the fixed size of the lists returned by
-     * {@link #getNeighbors(AbsoluteDate)}.
-     *
-     * @return size of the list
-     */
+    /** {@inheritDoc} */
     @Override
-    public native int getNeighborsSize();
+    public native Stream<T> getNeighbors(AbsoluteDate central, int n);
 
-    /**
-     * Get the earliest entry in this cache.
-     *
-     * @return earliest cached entry
-     * @throws IllegalStateException if this cache is empty
-     */
+    /** {@inheritDoc} */
+    @Override
+    public native int getMaxNeighborsSize();
+
+
+    /** {@inheritDoc} */
     @Override
     public native T getEarliest() throws IllegalStateException;
 
-    /**
-     * Get the latest entry in this cache.
-     *
-     * @return latest cached entry
-     * @throws IllegalStateException if this cache is empty
-     */
+    /** {@inheritDoc} */
     @Override
     public native T getLatest() throws IllegalStateException;
 }

@@ -95,11 +95,9 @@ public class PythonMessageParser<T> implements MessageParser<T> {
     @Override
     public native void process(ParseToken token);
 
-    /**
-     * Build the file from parsed entries.
-     *
-     * @return parsed file
-     */
     @Override
     public native T build();
+
+    @Override
+    public native FileFormat getFileFormat();
 }

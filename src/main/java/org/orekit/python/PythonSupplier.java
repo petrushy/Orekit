@@ -23,43 +23,20 @@ import java.util.function.Supplier;
 /** A wrapper of the import java.util.function.Supplier Interface **/
 
 
-public class PythonSupplier<T> implements Supplier<T>
-		{
+public class PythonSupplier<T> implements Supplier<T> {
+	/** Part of JCC Python interface to object */
+	protected long pythonObject;
+	public void pythonExtension(long pythonObject) {
+		this.pythonObject = pythonObject;
+	}
+	public long pythonExtension() {
+		return this.pythonObject;
+	}
+	public void finalize() throws Throwable { pythonDecRef(); }
+	public native void pythonDecRef();
 
-	static final long serialVersionUID = 1L;
-
-    /** Part of JCC Python interface to object */
-    private long pythonObject;
-
-    /** Part of JCC Python interface to object */
-  	public void pythonExtension(long pythonObject)
-  	{
-  		this.pythonObject = pythonObject;
-  	}
-
-  	/** Part of JCC Python interface to object */
-  	public long pythonExtension()
-  	{
-  		return this.pythonObject;
-  	}
-
-  	/** Part of JCC Python interface to object */
-  	public void finalize()
-  			throws Throwable
-  			{
-  				pythonDecRef();
-  			}
-
-  	/** Part of JCC Python interface to object */
-  	public native void pythonDecRef();
-
-
-			/**
-			 * Gets a result.
-			 *
-			 * @return a result
-			 */
-			@Override
-			public native T get();
-		}
+	/** {@inheritDoc} */
+	@Override
+	public native T get();
+}
 

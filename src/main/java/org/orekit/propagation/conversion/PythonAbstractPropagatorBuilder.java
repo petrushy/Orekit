@@ -20,11 +20,17 @@
 
 package org.orekit.propagation.conversion;
 
+import org.orekit.estimation.leastsquares.AbstractBatchLSModel;
+import org.orekit.estimation.leastsquares.ModelObserver;
+import org.orekit.estimation.measurements.ObservedMeasurement;
 import org.orekit.orbits.Orbit;
-import org.orekit.orbits.PositionAngle;
+import org.orekit.orbits.PositionAngleType;
 import org.orekit.propagation.Propagator;
 import org.orekit.propagation.conversion.AbstractPropagatorBuilder;
 import org.orekit.utils.ParameterDriver;
+import org.orekit.utils.ParameterDriversList;
+
+import java.util.List;
 
 // TODO: Not sure about which methods shall be exposed to Python
 
@@ -74,18 +80,26 @@ public class PythonAbstractPropagatorBuilder extends AbstractPropagatorBuilder {
      * </p>
      *
      * @param templateOrbit                 reference orbit from which real orbits will be built
-     * @param positionAngle                 position angle type to use
+     * @param PositionAngleType                 position angle type to use
      * @param positionScale                 scaling factor used for orbital parameters normalization
      *                                      (typically set to the expected standard deviation of the position)
      * @param addDriverForCentralAttraction if true, a {@link ParameterDriver} should
      *                                      be set up for central attraction coefficient
      * @since 8.0
      */
-    public PythonAbstractPropagatorBuilder(Orbit templateOrbit, PositionAngle positionAngle, double positionScale, boolean addDriverForCentralAttraction) {
-        super(templateOrbit, positionAngle, positionScale, addDriverForCentralAttraction);
+    public PythonAbstractPropagatorBuilder(Orbit templateOrbit, PositionAngleType PositionAngleType, double positionScale, boolean addDriverForCentralAttraction) {
+        super(templateOrbit, PositionAngleType, positionScale, addDriverForCentralAttraction);
     }
 
     /** {@inheritDoc} */
     @Override
+    public native PropagatorBuilder copy();
+
+    /** {@inheritDoc} */
+    @Override
     public native Propagator buildPropagator(double[] normalizedParameters);
+
+    /** {@inheritDoc} */
+    @Override
+    public native AbstractBatchLSModel buildLeastSquaresModel(PropagatorBuilder[] builders, List<ObservedMeasurement<?>> measurements, ParameterDriversList estimatedMeasurementsParameters, ModelObserver observer);
 }

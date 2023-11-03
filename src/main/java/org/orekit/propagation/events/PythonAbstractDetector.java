@@ -21,8 +21,6 @@
 package org.orekit.propagation.events;
 
 import org.orekit.propagation.SpacecraftState;
-import org.orekit.propagation.events.AbstractDetector;
-import org.orekit.propagation.events.EventDetector;
 import org.orekit.propagation.events.handlers.EventHandler;
 
 /** Common parts shared by several orbital events finders.
@@ -30,9 +28,6 @@ import org.orekit.propagation.events.handlers.EventHandler;
  * @author Luc Maisonobe
  */
 public class PythonAbstractDetector<T extends AbstractDetector<T>> extends AbstractDetector<T> {
-
-	/** Serializable UID. */
-    private static final long serialVersionUID = -334171965326514174L;
 
     private long pythonObject;
 
@@ -59,15 +54,13 @@ public class PythonAbstractDetector<T extends AbstractDetector<T>> extends Abstr
   	public native void pythonDecRef();
 
 
-	/**
-	 * Build a new instance.
-	 *
-	 * @param maxCheck  maximum checking interval (s)
+	/** Build a new instance.
+	 * @param maxCheck maximum checking interval, must be strictly positive (s)
 	 * @param threshold convergence threshold (s)
-	 * @param maxIter   maximum number of iterations in the event time search
-	 * @param handler   event handler to call at event occurrences
+	 * @param maxIter maximum number of iterations in the event time search
+	 * @param handler event handler to call at event occurrences
 	 */
-	public PythonAbstractDetector(double maxCheck, double threshold, int maxIter, EventHandler<? super T> handler) {
+	public PythonAbstractDetector(double maxCheck, double threshold, int maxIter, EventHandler handler) {
 		super(maxCheck, threshold, maxIter, handler);
 	}
 
@@ -75,10 +68,8 @@ public class PythonAbstractDetector<T extends AbstractDetector<T>> extends Abstr
     @Override
     public native double g(SpacecraftState s);
 
-    /** {@inheritDoc} */
+	/** {@inheritDoc} */
 	@Override
-	public native T create(double newMaxCheck, double newThreshold, int newMaxIter,
-			EventHandler<? super T> newHandler);
-	
+	public native T create(AdaptableInterval newMaxCheck, double newThreshold, int newMaxIter, EventHandler newHandler);
 
 }

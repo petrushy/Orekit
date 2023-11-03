@@ -19,116 +19,78 @@
 
 package org.orekit.propagation.conversion;
 
+import org.orekit.estimation.leastsquares.AbstractBatchLSModel;
+import org.orekit.estimation.leastsquares.ModelObserver;
+import org.orekit.estimation.measurements.ObservedMeasurement;
 import org.orekit.frames.Frame;
+import org.orekit.orbits.Orbit;
 import org.orekit.orbits.OrbitType;
-import org.orekit.orbits.PositionAngle;
+import org.orekit.orbits.PositionAngleType;
 import org.orekit.propagation.Propagator;
-import org.orekit.propagation.conversion.PropagatorBuilder;
+import org.orekit.python.JCCBase;
 import org.orekit.time.AbsoluteDate;
 import org.orekit.utils.ParameterDriversList;
+
+import java.util.List;
 
 public class PythonPropagatorBuilder implements PropagatorBuilder {
 
     /** Part of JCC Python interface to object */
-    private long pythonObject;
-
-    /** Part of JCC Python interface to object */
-    public void pythonExtension(long pythonObject)
-    {
+    protected long pythonObject;
+    public void pythonExtension(long pythonObject) {
         this.pythonObject = pythonObject;
     }
-
-    /** Part of JCC Python interface to object */
-    public long pythonExtension()
-    {
+    public long pythonExtension() {
         return this.pythonObject;
     }
-
-    /** Part of JCC Python interface to object */
-    public void finalize()
-            throws Throwable
-    {
-        pythonDecRef();
-    }
-
-    /** Part of JCC Python interface to object */
+    public void finalize() throws Throwable { pythonDecRef(); }
     public native void pythonDecRef();
 
-    /**
-     * Build a propagator.
-     *
-     * @param normalizedParameters normalized values for the selected parameters
-     * @return an initialized propagator
-     */
+    /** {@inheritDoc} */
+    @Override
+    public native PropagatorBuilder copy();
+
+    /** {@inheritDoc} */
     @Override
     public native Propagator buildPropagator(double[] normalizedParameters);
 
-    /**
-     * Get the current value of selected normalized parameters.
-     *
-     * @return current value of selected normalized parameters
-     */
+    /** {@inheritDoc} */
+    @Override
+    public native AbstractBatchLSModel buildLeastSquaresModel(PropagatorBuilder[] builders, List<ObservedMeasurement<?>> measurements, ParameterDriversList estimatedMeasurementsParameters, ModelObserver observer);
+
+    /** {@inheritDoc} */
     @Override
     public native double[] getSelectedNormalizedParameters();
 
-    /**
-     * Get the orbit type expected for the 6 first parameters in
-     * {@link #buildPropagator(double[])}.
-     *
-     * @return orbit type to use in {@link #buildPropagator(double[])}
-     * @see #buildPropagator(double[])
-     * @see #getPositionAngle()
-     * @since 7.1
-     */
+    /** {@inheritDoc} */
     @Override
     public native OrbitType getOrbitType();
 
-    /**
-     * Get the position angle type expected for the 6 first parameters in
-     * {@link #buildPropagator(double[])}.
-     *
-     * @return position angle type to use in {@link #buildPropagator(double[])}
-     * @see #buildPropagator(double[])
-     * @see #getOrbitType()
-     * @since 7.1
-     */
+    /** {@inheritDoc} */
     @Override
-    public native PositionAngle getPositionAngle();
+    public native PositionAngleType getPositionAngleType();
 
-    /**
-     * Get the date of the initial orbit.
-     *
-     * @return date of the initial orbit
-     */
+    /** {@inheritDoc} */
     @Override
     public native AbsoluteDate getInitialOrbitDate();
 
-    /**
-     * Get the frame in which the orbit is propagated.
-     *
-     * @return frame in which the orbit is propagated
-     */
+    /** {@inheritDoc} */
     @Override
     public native Frame getFrame();
 
-    /**
-     * Get the drivers for the configurable orbital parameters.
-     *
-     * @return drivers for the configurable orbital parameters
-     * @since 8.0
-     */
+    /** {@inheritDoc} */
+    @Override
+    public native double getMu();
+
+    /** {@inheritDoc} */
     @Override
     public native ParameterDriversList getOrbitalParametersDrivers();
 
-    /**
-     * Get the drivers for the configurable propagation parameters.
-     * <p>
-     * The parameters typically correspond to force models.
-     * </p>
-     *
-     * @return drivers for the configurable propagation parameters
-     * @since 8.0
-     */
+    /** {@inheritDoc} */
     @Override
     public native ParameterDriversList getPropagationParametersDrivers();
+
+    /** {@inheritDoc} */
+    @Override
+    public native void resetOrbit(Orbit newOrbit);
 }

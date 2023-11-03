@@ -4,11 +4,10 @@ import org.hipparchus.ode.ODEIntegrator;
 import org.orekit.attitudes.AttitudeProvider;
 import org.orekit.frames.Frame;
 import org.orekit.orbits.OrbitType;
-import org.orekit.orbits.PositionAngle;
-import org.orekit.propagation.PropagationType;
-import org.orekit.propagation.integration.AbstractIntegratedPropagator;
-import org.orekit.propagation.integration.StateMapper;
+import org.orekit.orbits.PositionAngleType;
 import org.orekit.time.AbsoluteDate;
+import org.orekit.propagation.PropagationType;
+
 
 public class PythonAbstractIntegratedPropagator extends AbstractIntegratedPropagator {
     /** Part of JCC Python interface to object */
@@ -43,7 +42,7 @@ public class PythonAbstractIntegratedPropagator extends AbstractIntegratedPropag
 
     /** {@inheritDoc} */
     @Override
-    public native StateMapper createMapper(AbsoluteDate referenceDate, double mu, OrbitType orbitType, PositionAngle positionAngleType, AttitudeProvider attitudeProvider, Frame frame);
+    public native StateMapper createMapper(AbsoluteDate referenceDate, double mu, OrbitType orbitType, PositionAngleType positionAngleType, AttitudeProvider attitudeProvider, Frame frame);
 
     /** {@inheritDoc} */
     @Override

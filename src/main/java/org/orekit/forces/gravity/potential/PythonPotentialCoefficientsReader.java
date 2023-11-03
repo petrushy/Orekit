@@ -67,7 +67,7 @@ public class PythonPotentialCoefficientsReader extends PotentialCoefficientsRead
      */
 
     @DefaultDataContext
-    protected PythonPotentialCoefficientsReader(String supportedNames, boolean missingCoefficientsAllowed) {
+    public PythonPotentialCoefficientsReader(String supportedNames, boolean missingCoefficientsAllowed) {
         super(supportedNames, missingCoefficientsAllowed);
     }
 
@@ -80,7 +80,7 @@ public class PythonPotentialCoefficientsReader extends PotentialCoefficientsRead
      * @param timeScale                  to use when parsing dates.
      * @since 10.1
      */
-    protected PythonPotentialCoefficientsReader(String supportedNames, boolean missingCoefficientsAllowed, TimeScale timeScale) {
+    public PythonPotentialCoefficientsReader(String supportedNames, boolean missingCoefficientsAllowed, TimeScale timeScale) {
         super(supportedNames, missingCoefficientsAllowed, timeScale);
     }
 

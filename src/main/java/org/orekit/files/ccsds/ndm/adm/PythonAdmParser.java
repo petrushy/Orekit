@@ -25,31 +25,35 @@ import org.orekit.files.ccsds.ndm.NdmConstituent;
 import org.orekit.files.ccsds.ndm.ParsedUnitsBehavior;
 import org.orekit.files.ccsds.section.Header;
 import org.orekit.files.ccsds.utils.FileFormat;
+import org.orekit.files.ccsds.utils.lexical.ParseToken;
 import org.orekit.files.ccsds.utils.parsing.AbstractConstituentParser;
 import org.orekit.time.AbsoluteDate;
 import org.orekit.utils.IERSConventions;
 
-public class PythonAdmParser<T extends NdmConstituent<?, ?>, P extends AbstractConstituentParser<T, ?>> extends AdmParser<T, P> {
+import java.util.List;
+import java.util.function.Function;
 
+public class PythonAdmParser<T extends NdmConstituent<AdmHeader, ?>, P extends AbstractConstituentParser<AdmHeader,T, ?>> extends AdmParser<T, P>
+{
 
     /** Part of JCC Python interface to object */
 
     private long pythonObject;
 
-    /**
-     * Complete constructor.
-     *
-     * @param root                 root element for XML files
-     * @param formatVersionKey     key for format version
-     * @param conventions          IERS Conventions
-     * @param simpleEOP            if true, tidal effects are ignored when interpolating EOP
-     * @param dataContext          used to retrieve frames, time scales, etc.
+    /** Complete constructor.
+     * @param root root element for XML files
+     * @param formatVersionKey key for format version
+     * @param conventions IERS Conventions
+     * @param simpleEOP if true, tidal effects are ignored when interpolating EOP
+     * @param dataContext used to retrieve frames, time scales, etc.
      * @param missionReferenceDate reference date for Mission Elapsed Time or Mission Relative Time time systems
-     *                             (may be null if time system is absolute)
-     * @param parsedUnitsBehavior  behavior to adopt for handling parsed units
+     * (may be null if time system is absolute)
+     * @param parsedUnitsBehavior behavior to adopt for handling parsed units
+     * @param filters filters to apply to parse tokens
+     * @since 12.0
      */
-    protected PythonAdmParser(String root, String formatVersionKey, IERSConventions conventions, boolean simpleEOP, DataContext dataContext, AbsoluteDate missionReferenceDate, ParsedUnitsBehavior parsedUnitsBehavior) {
-        super(root, formatVersionKey, conventions, simpleEOP, dataContext, missionReferenceDate, parsedUnitsBehavior);
+    public PythonAdmParser(String root, String formatVersionKey, IERSConventions conventions, boolean simpleEOP, DataContext dataContext, AbsoluteDate missionReferenceDate, ParsedUnitsBehavior parsedUnitsBehavior, Function<ParseToken, List<ParseToken>>[] filters) {
+        super(root, formatVersionKey, conventions, simpleEOP, dataContext, missionReferenceDate, parsedUnitsBehavior, filters);
     }
 
     /** Part of JCC Python interface to object */
@@ -82,21 +86,12 @@ public class PythonAdmParser<T extends NdmConstituent<?, ?>, P extends AbstractC
     @Override
     public native void reset(FileFormat fileFormat);
 
-    /**
-     * Build the file from parsed entries.
-     *
-     * @return parsed file
-     */
     @Override
     public native T build();
 
-    /**
-     * Get file header to fill.
-     *
-     * @return file header to fill
-     */
+
     @Override
-    public native Header getHeader();
+    public native AdmHeader getHeader();
 
     /**
      * Prepare header for parsing.

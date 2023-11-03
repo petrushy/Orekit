@@ -73,25 +73,11 @@ public class PythonAbstractDragForceModel extends AbstractDragForceModel {
         super(atmosphere);
     }
 
-    /**
-     * Compute acceleration.
-     *
-     * @param s          current state information: date, kinematics, attitude
-     * @param parameters values of the force model parameters
-     * @return acceleration in same frame as state
-     * @since 9.0
-     */
+    /** {@inheritDoc} */
     @Override
     public native Vector3D acceleration(SpacecraftState s, double[] parameters);
 
-    /**
-     * Compute acceleration.
-     *
-     * @param s          current state information: date, kinematics, attitude
-     * @param parameters values of the force model parameters
-     * @return acceleration in same frame as state
-     * @since 9.0
-     */
+    /** {@inheritDoc} */
     @Override
     public <T extends CalculusFieldElement<T>> FieldVector3D<T> acceleration(FieldSpacecraftState<T> s, T[] parameters) {
         return this.acceleration_FT(s, parameters);
@@ -107,29 +93,9 @@ public class PythonAbstractDragForceModel extends AbstractDragForceModel {
      */
     public native <T extends CalculusFieldElement<T>> FieldVector3D<T> acceleration_FT(FieldSpacecraftState<T> s, T[] parameters);
 
-    /**
-     * Get the discrete events related to the model.
-     *
-     * @return stream of events detectors
-     */
-    @Override
-    public native Stream<EventDetector> getEventsDetectors();
 
-    /**
-     * Get the discrete events related to the model.
-     *
-     * @param field field to which the state belongs
-     * @return stream of events detectors
-     */
-    @Override
-    public native <T extends CalculusFieldElement<T>> Stream<FieldEventDetector<T>> getFieldEventsDetectors(Field<T> field);
 
-    /**
-     * Get the drivers for force model parameters.
-     *
-     * @return drivers for force model parameters
-     * @since 8.0
-     */
+    /** {@inheritDoc} */
     @Override
     public native List<ParameterDriver> getParametersDrivers();
 }

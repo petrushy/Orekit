@@ -20,9 +20,25 @@
 package org.orekit.time;
 
 import org.hipparchus.CalculusFieldElement;
+import org.orekit.python.JCCBase;
+
+import java.util.Collection;
+import java.util.List;
 import java.util.stream.Stream;
 
-public class PythonFieldTimeInterpolable<T extends FieldTimeInterpolable<T, KK>, KK extends CalculusFieldElement<KK>> implements FieldTimeInterpolable<T, KK> {
+public class PythonFieldTimeInterpolator<T extends FieldTimeInterpolator<T, KK> & FieldTimeStamped<KK>, KK extends CalculusFieldElement<KK>> implements FieldTimeInterpolator<T, KK> {
+
+    /** Part of JCC Python interface to object */
+    protected long pythonObject;
+    public void pythonExtension(long pythonObject) {
+        this.pythonObject = pythonObject;
+    }
+    public long pythonExtension() {
+        return this.pythonObject;
+    }
+    public void finalize() throws Throwable { pythonDecRef(); }
+    public native void pythonDecRef();
+
     /**
      * Get an interpolated instance.
      * <p>
@@ -49,4 +65,17 @@ public class PythonFieldTimeInterpolable<T extends FieldTimeInterpolable<T, KK>,
      */
     @Override
     public native T interpolate(FieldAbsoluteDate<KK> date, Stream<T> sample);
+
+    // TODO Fix
+    @Override
+    public native T interpolate(FieldAbsoluteDate<KK> interpolationDate, Collection<T> sample);
+
+    @Override
+    public native List<FieldTimeInterpolator<? extends FieldTimeStamped<KK>, KK>> getSubInterpolators();
+
+    @Override
+    public native int getNbInterpolationPoints();
+
+    @Override
+    public native double getExtrapolationThreshold();
 }

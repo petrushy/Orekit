@@ -21,7 +21,7 @@ package org.orekit.propagation.events;
 
 import org.orekit.propagation.SpacecraftState;
 
-public class PythonEnablingPredicate<S extends EventDetector> implements EnablingPredicate<S> {
+public class PythonEnablingPredicate implements EnablingPredicate {
 
     /** Part of JCC Python interface to object */
     private long pythonObject;
@@ -58,5 +58,5 @@ public class PythonEnablingPredicate<S extends EventDetector> implements Enablin
      * triggered), false if it should be ignored
      */
     @Override
-    public native boolean eventIsEnabled(SpacecraftState state, S eventDetector, double g);
+    public native boolean eventIsEnabled(SpacecraftState state, EventDetector eventDetector, double g);
 }

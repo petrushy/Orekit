@@ -3,7 +3,7 @@ package org.orekit.propagation.integration;
 import org.orekit.attitudes.AttitudeProvider;
 import org.orekit.frames.Frame;
 import org.orekit.orbits.OrbitType;
-import org.orekit.orbits.PositionAngle;
+import org.orekit.orbits.PositionAngleType;
 import org.orekit.propagation.PropagationType;
 import org.orekit.propagation.SpacecraftState;
 import org.orekit.time.AbsoluteDate;
@@ -28,7 +28,7 @@ public class PythonStateMapper extends StateMapper {
      * @param attitudeProvider  attitude provider
      * @param frame             inertial frame
      */
-    public PythonStateMapper(AbsoluteDate referenceDate, double mu, OrbitType orbitType, PositionAngle positionAngleType, AttitudeProvider attitudeProvider, Frame frame) {
+    public PythonStateMapper(AbsoluteDate referenceDate, double mu, OrbitType orbitType, PositionAngleType positionAngleType, AttitudeProvider attitudeProvider, Frame frame) {
         super(referenceDate, mu, orbitType, positionAngleType, attitudeProvider, frame);
     }
 

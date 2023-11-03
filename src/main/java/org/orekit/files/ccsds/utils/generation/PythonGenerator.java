@@ -23,6 +23,7 @@ package org.orekit.files.ccsds.utils.generation;
 
 import org.orekit.files.ccsds.definitions.TimeConverter;
 import org.orekit.files.ccsds.utils.FileFormat;
+import org.orekit.python.JCCBase;
 import org.orekit.time.AbsoluteDate;
 import org.orekit.utils.units.Unit;
 
@@ -32,29 +33,17 @@ import java.util.List;
 public class PythonGenerator implements Generator {
 
     /** Part of JCC Python interface to object */
-    private long pythonObject;
-
-    /** Part of JCC Python interface to object */
-    public void pythonExtension(long pythonObject)
-    {
+    protected long pythonObject;
+    public void pythonExtension(long pythonObject) {
         this.pythonObject = pythonObject;
     }
-
-    /** Part of JCC Python interface to object */
-    public long pythonExtension()
-    {
+    public long pythonExtension() {
         return this.pythonObject;
     }
-
-    /** Part of JCC Python interface to object */
-    public void finalize()
-            throws Throwable
-    {
-        pythonDecRef();
-    }
-
-    /** Part of JCC Python interface to object */
+    public void finalize() throws Throwable { pythonDecRef(); }
     public native void pythonDecRef();
+
+    // TODO: make some sane way of pythonizing this class
 
     /**
      * Get the name of the output (for error messages).
@@ -135,17 +124,9 @@ public class PythonGenerator implements Generator {
     @Override
     public native void writeEntry(String key, Enum<?> value, boolean mandatory) throws IOException;
 
-    /**
-     * Write a single key/value entry.
-     *
-     * @param key       the keyword to write
-     * @param converter converter to use for dates
-     * @param date      the date to write
-     * @param mandatory if true, null values triggers exception, otherwise they are silently ignored
-     * @throws IOException if an I/O error occurs.
-     */
     @Override
-    public native void writeEntry(String key, TimeConverter converter, AbsoluteDate date, boolean mandatory) throws IOException;
+    public native void writeEntry(String key, TimeConverter converter, AbsoluteDate date, boolean forceCalendar, boolean mandatory) throws IOException;
+
 
     /**
      * Write a single key/value entry.
@@ -254,6 +235,9 @@ public class PythonGenerator implements Generator {
      */
     @Override
     public native String dateToString(TimeConverter converter, AbsoluteDate date);
+
+    @Override
+    public native String dateToCalendarString(TimeConverter converter, AbsoluteDate date);
 
     /**
      * Convert a date to string value with high precision.

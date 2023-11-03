@@ -50,46 +50,21 @@ public class PythonTLEPropagator extends TLEPropagator {
     /** Part of JCC Python interface to object */
     public native void pythonDecRef();
 
-    /**
-     * Protected constructor for derived classes.
-     *
-     * <p>This constructor uses the {@link DataContext#getDefault() default data context}.
-     *
-     * @param initialTLE       the unique TLE to propagate
-     * @param attitudeProvider provider for attitude computation
-     * @param mass             spacecraft mass (kg)
-     * @see #TLEPropagator(TLE, AttitudeProvider, double, Frame)
-     */
 
     @DefaultDataContext
     public PythonTLEPropagator(TLE initialTLE, AttitudeProvider attitudeProvider, double mass) {
         super(initialTLE, attitudeProvider, mass);
     }
 
-    /**
-     * Protected constructor for derived classes.
-     *
-     * @param initialTLE       the unique TLE to propagate
-     * @param attitudeProvider provider for attitude computation
-     * @param mass             spacecraft mass (kg)
-     * @param teme             the TEME frame to use for propagation.
-     * @since 10.1
-     */
     public PythonTLEPropagator(TLE initialTLE, AttitudeProvider attitudeProvider, double mass, Frame teme) {
         super(initialTLE, attitudeProvider, mass, teme);
     }
 
-    /**
-     * Initialization proper to each propagator (SGP or SDP).
-     */
+    /** {@inheritDoc} */
     @Override
     public native void sxpInitialize();
 
-    /**
-     * Propagation proper to each propagator (SGP or SDP).
-     *
-     * @param t the offset from initial epoch (min)
-     */
+    /** {@inheritDoc} */
     @Override
     public native void sxpPropagate(double t);
 }

@@ -20,11 +20,15 @@
 
 package org.orekit.orbits;
 
+import org.hipparchus.geometry.euclidean.threed.Vector3D;
 import org.orekit.frames.Frame;
 import org.orekit.time.AbsoluteDate;
+import org.orekit.orbits.PositionAngleType;
 import org.orekit.utils.TimeStampedPVCoordinates;
 
 import java.util.stream.Stream;
+
+// TODO more abstract classes in this package to be subclassed
 
 public class PythonOrbit extends Orbit {
 
@@ -307,6 +311,9 @@ public class PythonOrbit extends Orbit {
     @Override
     public native double getIDot();
 
+    @Override
+    public native Vector3D initPosition();
+
     /**
      * Compute the position/velocity coordinates from the canonical parameters.
      *
@@ -345,7 +352,7 @@ public class PythonOrbit extends Orbit {
      * @see #computeJacobianTrueWrtCartesian()
      */
     @Override
-    protected native double[][] computeJacobianMeanWrtCartesian();
+    public native double[][] computeJacobianMeanWrtCartesian();
 
     /**
      * Compute the Jacobian of the orbital parameters with eccentric angle with respect to the Cartesian parameters.
@@ -360,7 +367,7 @@ public class PythonOrbit extends Orbit {
      * @see #computeJacobianTrueWrtCartesian()
      */
     @Override
-    protected native double[][] computeJacobianEccentricWrtCartesian();
+    public native double[][] computeJacobianEccentricWrtCartesian();
 
     /**
      * Compute the Jacobian of the orbital parameters with true angle with respect to the Cartesian parameters.
@@ -375,48 +382,9 @@ public class PythonOrbit extends Orbit {
      * @see #computeJacobianEccentricWrtCartesian()
      */
     @Override
-    protected native double[][] computeJacobianTrueWrtCartesian();
+    public native double[][] computeJacobianTrueWrtCartesian();
 
-    /**
-     * Add the contribution of the Keplerian motion to parameters derivatives
-     * <p>
-     * This method is used by integration-based propagators to evaluate the part of Keplerian
-     * motion to evolution of the orbital state.
-     * </p>
-     *
-     * @param type type of the position angle in the state
-     * @param gm   attraction coefficient to use
-     * @param pDot array containing orbital state derivatives to update (the Keplerian
-     *             part must be <em>added</em> to the array components, as the array may already
-     */
     @Override
-    public native void addKeplerContribution(PositionAngle type, double gm, double[] pDot);
+    public native void addKeplerContribution(PositionAngleType type, double gm, double[] pDot);
 
-    /**
-     * Get an interpolated instance.
-     * <p>
-     * Note that the state of the current instance may not be used
-     * in the interpolation process, only its type and non interpolable
-     * fields are used (for example central attraction coefficient or
-     * frame when interpolating orbits). The interpolable fields taken
-     * into account are taken only from the states of the sample points.
-     * So if the state of the instance must be used, the instance should
-     * be included in the sample points.
-     * </p>
-     * <p>
-     * Note that this method is designed for small samples only (say up
-     * to about 10-20 points) so it can be implemented using polynomial
-     * interpolation (typically Hermite interpolation). Using too much
-     * points may induce <a
-     * href="http://en.wikipedia.org/wiki/Runge%27s_phenomenon">Runge's
-     * phenomenon</a> and numerical problems (including NaN appearing).
-     * </p>
-     *
-     * @param date   interpolation date
-     * @param sample sample points on which interpolation should be done
-     * @return a new instance, interpolated at specified date
-     * @since 9.0
-     */
-    @Override
-    public native Orbit interpolate(AbsoluteDate date, Stream<Orbit> sample);
 }

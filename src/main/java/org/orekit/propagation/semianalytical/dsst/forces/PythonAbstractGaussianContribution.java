@@ -54,36 +54,15 @@ public class PythonAbstractGaussianContribution extends AbstractGaussianContribu
         super(coefficientsKeyPrefix, threshold, contribution, mu);
     }
 
-    /**
-     * Get the drivers for force model parameters except the one for the central attraction coefficient.
-     * <p>
-     * The driver for central attraction coefficient is automatically
-     * added at the last element of the {@link ParameterDriver} array
-     * into {@link #getParametersDrivers()} method.
-     * </p>
-     *
-     * @return drivers for force model parameters
-     */
+    /** {@inheritDoc} */
     @Override
     public native List<ParameterDriver> getParametersDriversWithoutMu();
 
-    /**
-     * Compute the limits in L, the true longitude, for integration.
-     *
-     * @param state   current state information: date, kinematics, attitude
-     * @param auxiliaryElements auxiliary elements related to the current orbit
-     * @return the integration limits in L
-     */
+    /** {@inheritDoc} */
     @Override
     public native double[] getLLimits(SpacecraftState state, AuxiliaryElements auxiliaryElements);
 
-    /**
-     * Compute the limits in L, the true longitude, for integration.
-     *
-     * @param state   current state information: date, kinematics, attitude
-     * @param auxiliaryElements auxiliary elements related to the current orbit
-     * @return the integration limits in L
-     */
+    /** {@inheritDoc} */
     @Override
     public <T extends CalculusFieldElement<T>> T[] getLLimits(FieldSpacecraftState<T> state, FieldAuxiliaryElements<T> auxiliaryElements) {
         return this.getLLimits_FF(state, auxiliaryElements);
@@ -91,24 +70,4 @@ public class PythonAbstractGaussianContribution extends AbstractGaussianContribu
 
     public native <T extends CalculusFieldElement<T>> T[] getLLimits_FF(FieldSpacecraftState<T> state, FieldAuxiliaryElements<T> auxiliaryElements);
 
-
-    /**
-     * Get the discrete events related to the model.
-     * Extension point for Python.
-     *
-     * @return array of events detectors or null if the model is not
-     * related to any discrete events
-     */
-    @Override
-    public native EventDetector[] getEventsDetectors();
-
-    /**
-     * Get the discrete events related to the model.
-     *
-     * @param field field used by default
-     * @return array of events detectors or null if the model is not
-     * related to any discrete events
-     */
-    @Override
-    public native <T extends CalculusFieldElement<T>> FieldEventDetector<T>[] getFieldEventsDetectors(Field<T> field);
 }

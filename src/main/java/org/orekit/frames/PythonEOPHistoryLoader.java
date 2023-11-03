@@ -19,13 +19,12 @@
 
 package org.orekit.frames;
 
-import org.orekit.frames.EOPEntry;
-import org.orekit.frames.EOPHistoryLoader;
+
 import org.orekit.utils.IERSConventions;
 
 import java.util.SortedSet;
 
-public class PythonEOPHistoryLoader implements EOPHistoryLoader {
+public class PythonEOPHistoryLoader implements EopHistoryLoader {
 
     /** Part of JCC Python interface to object */
     private long pythonObject;

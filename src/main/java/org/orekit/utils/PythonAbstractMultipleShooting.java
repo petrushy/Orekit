@@ -22,7 +22,6 @@
 package org.orekit.utils;
 
 import org.orekit.propagation.SpacecraftState;
-import org.orekit.propagation.integration.AdditionalEquations;
 import org.orekit.propagation.numerical.NumericalPropagator;
 
 import java.util.List;
@@ -55,19 +54,13 @@ public class PythonAbstractMultipleShooting extends AbstractMultipleShooting {
     public native void pythonDecRef();
 
 
-    /** Simple Constructor.
-     * <p> Standard constructor for multiple shooting </p>
-     * @param initialGuessList initial patch points to be corrected.
-     * @param propagatorList list of propagators associated to each patch point.
-     * @param arcDuration initial guess of the duration of each arc.
-     * @param tolerance convergence tolerance on the constraint vector.
-     * @param maxIter maximum number of iterations
-     * @param additionalName name of the additional equations
-     * @since 11.1
-     */
-    public PythonAbstractMultipleShooting(final List<SpacecraftState> initialGuessList, final List<NumericalPropagator> propagatorList,
-                                          final double arcDuration, final double tolerance, final int maxIter, final String additionalName)
-    { super(initialGuessList, propagatorList, arcDuration, tolerance, maxIter, additionalName); }
+
+    public PythonAbstractMultipleShooting(final List<SpacecraftState> initialGuessList,
+                                          final List<NumericalPropagator> propagatorList,
+                                          final double tolerance, final int maxIter,
+                                          final boolean isAutonomous, final String additionalName) {
+        super(initialGuessList, propagatorList, tolerance, maxIter, isAutonomous, additionalName);
+    }
 
     /**
      * Compute the additional constraints.
@@ -87,7 +80,7 @@ public class PythonAbstractMultipleShooting extends AbstractMultipleShooting {
     @Override
     public native  double[][] computeAdditionalJacobianMatrix(List<SpacecraftState> propagatedSP);
 
-    /** {@inheritDoc} */
     @Override
-    public native SpacecraftState getAugmentedInitialState(SpacecraftState initialState, AdditionalEquations additionalEquations2);
-}
+    public native SpacecraftState getAugmentedInitialState(int i);
+
+   }

@@ -20,60 +20,38 @@
 
 package org.orekit.estimation.measurements.generation;
 
+import org.orekit.estimation.measurements.ObservableSatellite;
 import org.orekit.estimation.measurements.ObservedMeasurement;
 import org.orekit.propagation.sampling.OrekitStepInterpolator;
+import org.orekit.python.JCCBase;
 import org.orekit.time.AbsoluteDate;
 
 import java.util.List;
+import java.util.Map;
 import java.util.SortedSet;
 
 public class PythonScheduler<T extends ObservedMeasurement<T>> implements Scheduler<T> {
-    /** Part of JCC Python interface to object */
-    private long pythonObject;
 
     /** Part of JCC Python interface to object */
-    public void pythonExtension(long pythonObject)
-    {
+    protected long pythonObject;
+    public void pythonExtension(long pythonObject) {
         this.pythonObject = pythonObject;
     }
-
-    /** Part of JCC Python interface to object */
-    public long pythonExtension()
-    {
+    public long pythonExtension() {
         return this.pythonObject;
     }
-
-    /** Part of JCC Python interface to object */
-    public void finalize()
-            throws Throwable
-    {
-        pythonDecRef();
-    }
-
-    /** Part of JCC Python interface to object */
+    public void finalize() throws Throwable { pythonDecRef(); }
     public native void pythonDecRef();
 
-    /**
-     * Initialize scheduler at the start of a measurements generation.
-     * <p>
-     * This method is called once at the start of the measurements generation. It
-     * may be used by the scheduler to initialize some internal data
-     * if needed, typically {@link MeasurementBuilder#init(AbsoluteDate, AbsoluteDate)
-     * initializing builders}.
-     * </p>
-     *
-     * @param start start of the measurements time span
-     * @param end   end of the measurements time span
-     */
+    /** {@inheritDoc} */
+    @Override
+    public native MeasurementBuilder<T> getBuilder();
+
+    /** {@inheritDoc} */
     @Override
     public native void init(AbsoluteDate start, AbsoluteDate end);
 
-    /**
-     * Generate a sequence of measurements.
-     *
-     * @param interpolators interpolators for spacecraft states
-     * @return generated measurements
-     */
+    /** {@inheritDoc} */
     @Override
-    public native SortedSet<T> generate(List<OrekitStepInterpolator> interpolators);
+    public native SortedSet<T> generate(Map<ObservableSatellite, OrekitStepInterpolator> interpolators);
 }

@@ -54,7 +54,7 @@ public class PythonAbstractSingleFrequencyCombination extends AbstractSingleFreq
      * @param type   combination of measurements type
      * @param system satellite system
      */
-    protected PythonAbstractSingleFrequencyCombination(CombinationType type, SatelliteSystem system) {
+    public PythonAbstractSingleFrequencyCombination(CombinationType type, SatelliteSystem system) {
         super(type, system);
     }
 

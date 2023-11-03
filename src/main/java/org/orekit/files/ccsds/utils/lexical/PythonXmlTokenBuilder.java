@@ -20,48 +20,26 @@
 
 package org.orekit.files.ccsds.utils.lexical;
 
+import org.orekit.python.JCCBase;
 import org.xml.sax.Attributes;
 
 import java.util.List;
+import java.util.Map;
 
 public class PythonXmlTokenBuilder implements XmlTokenBuilder {
 
     /** Part of JCC Python interface to object */
-    private long pythonObject;
-
-    /** Part of JCC Python interface to object */
-    public void pythonExtension(long pythonObject)
-    {
+    protected long pythonObject;
+    public void pythonExtension(long pythonObject) {
         this.pythonObject = pythonObject;
     }
-
-    /** Part of JCC Python interface to object */
-    public long pythonExtension()
-    {
+    public long pythonExtension() {
         return this.pythonObject;
     }
-
-    /** Part of JCC Python interface to object */
-    public void finalize()
-            throws Throwable
-    {
-        pythonDecRef();
-    }
-
-    /** Part of JCC Python interface to object */
+    public void finalize() throws Throwable { pythonDecRef(); }
     public native void pythonDecRef();
 
-    /**
-     * Create a list of parse tokens.
-     *
-     * @param startTag   if true we are parsing the start tag from an XML element
-     * @param qName      element qualified name
-     * @param content    element content
-     * @param attributes element attributes
-     * @param lineNumber number of the line in the CCSDS data message
-     * @param fileName   name of the file
-     * @return list of parse tokens
-     */
+    /** {@inheritDoc} */
     @Override
-    public native List<ParseToken> buildTokens(boolean startTag, String qName, String content, Attributes attributes, int lineNumber, String fileName);
+    public native List<ParseToken> buildTokens(boolean startTag, boolean isLeaf, String qName, String content, Map<String, String> attributes, int lineNumber, String fileName);
 }

@@ -19,9 +19,9 @@
 // original java class created by CS Systèmes d'Information
 
 package org.orekit.propagation.sampling;
-import org.orekit.propagation.sampling.OrekitFixedStepHandler;
 
 import org.orekit.propagation.SpacecraftState;
+import org.orekit.python.JCCBase;
 import org.orekit.time.AbsoluteDate;
 
 /** This interface is a space-dynamics aware fixed size step handler.
@@ -34,53 +34,26 @@ import org.orekit.time.AbsoluteDate;
 
 public class PythonOrekitFixedStepHandler implements OrekitFixedStepHandler {
 
-	private static final long serialVersionUID = 1L;
-
-	/** Part of JCC Python interface to object */
-	private long pythonObject;
-
-	/** Part of JCC Python interface to object */
-    public void pythonExtension(long pythonObject)
-    {
+    /** Part of JCC Python interface to object */
+    protected long pythonObject;
+    public void pythonExtension(long pythonObject) {
         this.pythonObject = pythonObject;
     }
-
-    /** Part of JCC Python interface to object */
-    public long pythonExtension()
-    {
+    public long pythonExtension() {
         return this.pythonObject;
     }
-
-    /** Part of JCC Python interface to object */
-    public void finalize()
-            throws Throwable
-    {
-        pythonDecRef();
-    }
-
-    /** Part of JCC Python interface to object */
+    public void finalize() throws Throwable { pythonDecRef(); }
     public native void pythonDecRef();
 
     /** {@inheritDoc} */
     @Override
     public native void init(SpacecraftState s0, AbsoluteDate t, double step);
 
-    /**
-     * Handle the current step.
-     *
-     * @param currentState current state at step time
-     */
+    /** {@inheritDoc} */
     @Override
     public native void handleStep(SpacecraftState currentState);
 
-    /**
-     * Finalize propagation.
-     *
-     * @param finalState state at propagation end
-     * @since 11.0
-     */
+    /** {@inheritDoc} */
     @Override
     public native void finish(SpacecraftState finalState);
-
-
 }

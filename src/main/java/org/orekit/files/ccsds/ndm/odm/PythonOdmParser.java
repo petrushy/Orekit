@@ -21,34 +21,38 @@
 
 package org.orekit.files.ccsds.ndm.odm;
 
+import java.util.List;
+import java.util.function.Function;
 import org.orekit.data.DataContext;
 import org.orekit.files.ccsds.ndm.NdmConstituent;
 import org.orekit.files.ccsds.ndm.ParsedUnitsBehavior;
-import org.orekit.files.ccsds.section.Header;
 import org.orekit.files.ccsds.utils.FileFormat;
 import org.orekit.time.AbsoluteDate;
 import org.orekit.utils.IERSConventions;
+import org.orekit.files.ccsds.utils.lexical.ParseToken;
 
-public class PythonOdmParser<T extends NdmConstituent<?, ?>, P extends OdmParser<T, ?>> extends OdmParser<T, P> {
+public class PythonOdmParser<T extends NdmConstituent<OdmHeader, ?>, P extends OdmParser<T, ?>> extends OdmParser<T, P>
+{
 
     /** Part of JCC Python interface to object */
 
     private long pythonObject;
 
-    /**
-     * Complete constructor.
-     *
-     * @param root                 root element for XML files
-     * @param formatVersionKey     key for format version
-     * @param conventions          IERS Conventions
-     * @param simpleEOP            if true, tidal effects are ignored when interpolating EOP
-     * @param dataContext          used to retrieve frames and time scales
+    /** Complete constructor.
+     * @param root root element for XML files
+     * @param formatVersionKey key for format version
+     * @param conventions IERS Conventions
+     * @param simpleEOP if true, tidal effects are ignored when interpolating EOP
+     * @param dataContext used to retrieve frames and time scales
      * @param missionReferenceDate reference date for Mission Elapsed Time or Mission Relative Time time systems
-     * @param mu                   gravitational coefficient
-     * @param parsedUnitsBehavior  behavior to adopt for handling parsed units
+     * @param mu gravitational coefficient
+     * @param parsedUnitsBehavior behavior to adopt for handling parsed units
+     * @param filters filters to apply to parse tokens
+     * @since 12.0
      */
-    public PythonOdmParser(String root, String formatVersionKey, IERSConventions conventions, boolean simpleEOP, DataContext dataContext, AbsoluteDate missionReferenceDate, double mu, ParsedUnitsBehavior parsedUnitsBehavior) {
-        super(root, formatVersionKey, conventions, simpleEOP, dataContext, missionReferenceDate, mu, parsedUnitsBehavior);
+    public PythonOdmParser(String root, String formatVersionKey, IERSConventions conventions, boolean simpleEOP, DataContext dataContext, AbsoluteDate missionReferenceDate, double mu, ParsedUnitsBehavior parsedUnitsBehavior, Function<ParseToken, List<ParseToken>>[] filters)
+    {
+        super(root, formatVersionKey, conventions, simpleEOP, dataContext, missionReferenceDate, mu, parsedUnitsBehavior, filters);
     }
 
     /**
@@ -126,7 +130,7 @@ public class PythonOdmParser<T extends NdmConstituent<?, ?>, P extends OdmParser
      * @return file header to fill
      */
     @Override
-    public native Header getHeader();
+    public native OdmHeader getHeader();
 
     /**
      * Prepare header for parsing.

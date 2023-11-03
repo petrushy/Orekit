@@ -6,7 +6,7 @@ import org.hipparchus.ode.FieldODEIntegrator;
 import org.orekit.attitudes.AttitudeProvider;
 import org.orekit.frames.Frame;
 import org.orekit.orbits.OrbitType;
-import org.orekit.orbits.PositionAngle;
+import org.orekit.orbits.PositionAngleType;
 import org.orekit.propagation.PropagationType;
 import org.orekit.propagation.integration.FieldAbstractIntegratedPropagator;
 import org.orekit.propagation.integration.FieldStateMapper;
@@ -67,7 +67,7 @@ public class PythonFieldAbstractIntegratedPropagator<T extends CalculusFieldElem
      * @return new mapper
      */
     @Override
-    public native FieldStateMapper<T> createMapper(FieldAbsoluteDate<T> referenceDate, T mu, OrbitType orbitType, PositionAngle positionAngleType, AttitudeProvider attitudeProvider, Frame frame);
+    public native FieldStateMapper<T> createMapper(FieldAbsoluteDate<T> referenceDate, T mu, OrbitType orbitType, PositionAngleType positionAngleType, AttitudeProvider attitudeProvider, Frame frame);
 
 
     /**

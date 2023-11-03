@@ -21,8 +21,8 @@
 
 package org.orekit.estimation.measurements.gnss;
 
+import org.orekit.files.rinex.observation.ObservationDataSet;
 import org.orekit.gnss.Frequency;
-import org.orekit.gnss.ObservationDataSet;
 import org.orekit.gnss.SatelliteSystem;
 import org.orekit.time.AbsoluteDate;
 
@@ -76,66 +76,37 @@ public class PythonAbstractCycleSlipDetector extends AbstractCycleSlipDetector {
     @Override
     public native void manageData(ObservationDataSet observation);
 
-    /**
-     * Get the minimum number of measurement needed before being able to figure out cycle-slip occurrence.
-     *
-     * @return the minimum number of measurement needed before being able to figure out cycle-slip occurrence.
-     */
+    /** {@inheritDoc} */
     @Override
     public int getMinMeasurementNumber() {
         return super.getMinMeasurementNumber();
     }
 
-    /**
-     * Get the maximum time lapse between 2 measurements without considering a cycle-slip has occurring between both.
-     *
-     * @return the maximum time lapse between 2 measurements
-     */
+    /** {@inheritDoc} */
     @Override
     public double getMaxTimeBeetween2Measurement() {
         return super.getMaxTimeBeetween2Measurement();
     }
 
-    /**
-     * Get on all the results computed by the detector (e.g.: dates of cycle-slip).
-     *
-     * @return all the results computed by the detector (e.g.: dates of cycle-slip).
-     */
+    /** {@inheritDoc} */
     @Override
     public List<CycleSlipDetectorResults> getResults() {
         return super.getResults();
     }
 
-    /**
-     * Get the stuff (all the things needed for, the detector).
-     *
-     * @return return stuff
-     */
+    /** {@inheritDoc} */
     @Override
     public List<Map<Frequency, DataForDetection>> getStuffReference() {
         return super.getStuffReference();
     }
 
-    /**
-     * Set the data: collect data at the current Date, at the current frequency, for a given satellite, add it within the attributes data and stuff.
-     *
-     * @param nameSat name of the satellite (e.g. "GPS - 7")
-     * @param date    date of the measurement
-     * @param value   measurement at the current date
-     * @param freq    frequency used
-     */
+    /** {@inheritDoc} */
     @Override
     public void cycleSlipDataSet(String nameSat, AbsoluteDate date, double value, Frequency freq) {
         super.cycleSlipDataSet(nameSat, date, value, freq);
     }
 
-    /**
-     * Create the name of a satellite from its PRN number and satellite System it belongs to.
-     *
-     * @param numSat satellite PRN number
-     * @param sys    Satellite System of the satellite
-     * @return the satellite name on a specified format (e.g.: "GPS - 7")
-     */
+    /** {@inheritDoc} */
     @Override
     public String setName(int numSat, SatelliteSystem sys) {
         return super.setName(numSat, sys);

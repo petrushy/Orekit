@@ -25,7 +25,9 @@ import org.hipparchus.Field;
 import org.orekit.propagation.SpacecraftState;
 import org.orekit.propagation.events.EventDetector;
 import org.orekit.propagation.events.FieldEventDetector;
+import org.orekit.utils.ParameterDriver;
 
+import java.util.List;
 import java.util.stream.Stream;
 
 public class PythonAbstractManeuverTriggers extends AbstractManeuverTriggers {
@@ -54,31 +56,19 @@ public class PythonAbstractManeuverTriggers extends AbstractManeuverTriggers {
     /** Part of JCC Python interface to object */
     public native void pythonDecRef();
 
-    /**
-     * Method to check if the thruster is firing on initialization. can be called by
-     * sub classes
-     *
-     * @param initialState initial spacecraft state
-     * @param isForward    if true, propagation will be in the forward direction
-     * @return true if firing in propagation direction
-     */
+    /** {@inheritDoc} */
     @Override
     public native boolean isFiringOnInitialState(SpacecraftState initialState, boolean isForward);
 
-    /**
-     * Get the event detectors associated with the triggers.
-     *
-     * @return the event detectors
-     */
+    /** {@inheritDoc} */
     @Override
-    public native Stream<EventDetector> getEventsDetectors();
+    public native Stream<EventDetector> getEventDetectors();
 
-    /**
-     * Get the event detectors associated with the triggers.
-     *
-     * @param field field to which the state belongs
-     * @return the event detectors
-     */
+    /** {@inheritDoc} */
     @Override
-    public native <T extends CalculusFieldElement<T>> Stream<FieldEventDetector<T>> getFieldEventsDetectors(Field<T> field);
+    public native <T extends CalculusFieldElement<T>> Stream<FieldEventDetector<T>> getFieldEventDetectors(Field<T> field);
+
+    /** {@inheritDoc} */
+    @Override
+    public native List<ParameterDriver> getParametersDrivers();
 }

@@ -42,7 +42,7 @@ public class PythonNdmConstituent<H extends Header, S extends Segment<?, ?>> ext
      * @param conventions IERS conventions
      * @param dataContext used for creating frames, time scales, etc.
      */
-    protected PythonNdmConstituent(H header, List<S> segments, IERSConventions conventions, DataContext dataContext) {
+    public PythonNdmConstituent(H header, List<S> segments, IERSConventions conventions, DataContext dataContext) {
         super(header, segments, conventions, dataContext);
     }
 

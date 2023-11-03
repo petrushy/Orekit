@@ -18,90 +18,43 @@
 // original java class/interface
 
 package org.orekit.forces.gravity.potential;
+import org.orekit.python.JCCBase;
 import org.orekit.time.AbsoluteDate;
 
 public class PythonSphericalHarmonicsProvider implements SphericalHarmonicsProvider {
-    /** Part of JCC Python interface to object */
-    private long pythonObject;
 
     /** Part of JCC Python interface to object */
-    public void pythonExtension(long pythonObject)
-    {
+    protected long pythonObject;
+    public void pythonExtension(long pythonObject) {
         this.pythonObject = pythonObject;
     }
-
-    /** Part of JCC Python interface to object */
-    public long pythonExtension()
-    {
+    public long pythonExtension() {
         return this.pythonObject;
     }
-
-    /** Part of JCC Python interface to object */
-    public void finalize()
-            throws Throwable
-    {
-        pythonDecRef();
-    }
-
-    /** Part of JCC Python interface to object */
+    public void finalize() throws Throwable { pythonDecRef(); }
     public native void pythonDecRef();
 
-    /**
-     * Get the maximal supported degree.
-     *
-     * @return maximal supported degree
-     */
     @Override
     public native int getMaxDegree();
 
-    /**
-     * Get the maximal supported order.
-     *
-     * @return maximal supported order
-     */
+    /** {@inheritDoc} */
     @Override
     public native int getMaxOrder();
 
-    /**
-     * Get the central body attraction coefficient.
-     *
-     * @return mu (m³/s²)
-     */
+    /** {@inheritDoc} */
     @Override
     public native double getMu();
 
-    /**
-     * Get the value of the central body reference radius.
-     *
-     * @return ae (m)
-     */
+    /** {@inheritDoc} */
     @Override
     public native double getAe();
 
-    /**
-     * Get the reference date for the harmonics.
-     *
-     * @return reference date for the harmonics
-     */
+    /** {@inheritDoc} */
     @Override
     public native AbsoluteDate getReferenceDate();
 
-    /**
-     * Get the offset from {@link #getReferenceDate reference date} for the harmonics.
-     *
-     * @param date current date
-     * @return offset between current date and reference date if there is a reference
-     * date, or 0.0 if there are no reference dates (i.e. if {@link #getReferenceDate}
-     * returns null)
-     */
-    @Override
-    public native double getOffset(AbsoluteDate date);
 
-    /**
-     * Get the {@link TideSystem} used in the gravity field.
-     *
-     * @return tide system used in the gravity field
-     */
+    /** {@inheritDoc} */
     @Override
     public native TideSystem getTideSystem();
 }

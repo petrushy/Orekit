@@ -22,7 +22,7 @@ package org.orekit.propagation.analytical;
 
 import org.hipparchus.linear.RealMatrix;
 import org.orekit.orbits.OrbitType;
-import org.orekit.orbits.PositionAngle;
+import org.orekit.orbits.PositionAngleType;
 import org.orekit.utils.DoubleArrayDictionary;
 
 public class PythonAbstractAnalyticalMatricesHarvester extends AbstractAnalyticalMatricesHarvester {
@@ -57,7 +57,7 @@ public class PythonAbstractAnalyticalMatricesHarvester extends AbstractAnalytica
      * <p>
      * The arguments for initial matrices <em>must</em> be compatible with the
      * {@link OrbitType orbit type}
-     * and {@link PositionAngle position angle} that will be used by propagator
+     * and {@link PositionAngleType position angle} that will be used by propagator
      * </p>
      *
      * @param propagator             propagator bound to this harvester
@@ -67,15 +67,11 @@ public class PythonAbstractAnalyticalMatricesHarvester extends AbstractAnalytica
      * @param initialJacobianColumns initial columns of the Jacobians matrix with respect to parameters,
      *                               if null or if some selected parameters are missing from the dictionary, the corresponding
      */
-    protected PythonAbstractAnalyticalMatricesHarvester(AbstractAnalyticalPropagator propagator, String stmName, RealMatrix initialStm, DoubleArrayDictionary initialJacobianColumns) {
+    public PythonAbstractAnalyticalMatricesHarvester(AbstractAnalyticalPropagator propagator, String stmName, RealMatrix initialStm, DoubleArrayDictionary initialJacobianColumns) {
         super(propagator, stmName, initialStm, initialJacobianColumns);
     }
 
-    /**
-     * Get the gradient converter related to the analytical orbit propagator.
-     *
-     * @return the gradient converter
-     */
+    /** {@inheritDoc} */
     @Override
     public native AbstractAnalyticalGradientConverter getGradientConverter();
 }

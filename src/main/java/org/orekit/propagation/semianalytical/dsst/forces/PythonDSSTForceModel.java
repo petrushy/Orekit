@@ -122,25 +122,6 @@ public class PythonDSSTForceModel implements DSSTForceModel {
 
 
     /**
-     * Get the discrete events related to the model.
-     *
-     * @return array of events detectors or null if the model is not
-     * related to any discrete events
-     */
-    @Override
-    public native EventDetector[] getEventsDetectors();
-
-    /**
-     * Get the discrete events related to the model.
-     *
-     * @param field field used by default
-     * @return array of events detectors or null if the model is not
-     * related to any discrete events
-     */
-    @Override
-    public native <T extends CalculusFieldElement<T>> FieldEventDetector<T>[] getFieldEventsDetectors(Field<T> field);
-
-    /**
      * Register an attitude provider.
      * <p>
      * Register an attitude provider that can be used by the force model.

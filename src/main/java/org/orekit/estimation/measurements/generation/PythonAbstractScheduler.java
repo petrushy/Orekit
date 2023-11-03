@@ -4,6 +4,7 @@ import org.orekit.estimation.measurements.ObservedMeasurement;
 import org.orekit.estimation.measurements.generation.AbstractScheduler;
 import org.orekit.estimation.measurements.generation.MeasurementBuilder;
 import org.orekit.propagation.sampling.OrekitStepInterpolator;
+import org.orekit.time.AbsoluteDate;
 import org.orekit.time.DatesSelector;
 
 import java.util.List;
@@ -22,6 +23,7 @@ public class PythonAbstractScheduler<T extends ObservedMeasurement<T>> extends A
     public PythonAbstractScheduler(MeasurementBuilder<T> builder, DatesSelector selector) {
         super(builder, selector);
     }
+
 
     /** Part of JCC Python interface to object */
     public void pythonExtension(long pythonObject)
@@ -45,13 +47,7 @@ public class PythonAbstractScheduler<T extends ObservedMeasurement<T>> extends A
     /** Part of JCC Python interface to object */
     public native void pythonDecRef();
 
-    /**
-     * Generate a sequence of measurements.
-     * Extension point for Python.
-     *
-     * @param interpolators interpolators for spacecraft states
-     * @return generated measurements
-     */
     @Override
-    public native SortedSet<T> generate(List<OrekitStepInterpolator> interpolators);
+    public native boolean measurementIsFeasible(AbsoluteDate date);
+
 }
