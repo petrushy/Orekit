@@ -20,9 +20,6 @@
 
 package org.orekit.files.ccsds.utils.lexical;
 
- ;
-import org.xml.sax.Attributes;
-
 import java.util.List;
 import java.util.Map;
 

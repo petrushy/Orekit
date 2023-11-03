@@ -1,4 +1,4 @@
-/* Copyright 2002-2021 CS GROUP
+/* Copyright SSC 2023
  * Licensed to CS GROUP (CS) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -15,8 +15,8 @@
  * limitations under the License.
  */
 
-// this file was created by SSC 2021 and is largely a derived work from the
-// original java class
+// This file was created by SSC and updated by SSC in 2023 and is largely a derived work from the
+// original java class/interface that it inherits/implements
 
 
 package org.orekit.files.ccsds.utils.generation;

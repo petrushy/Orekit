@@ -18,12 +18,12 @@
 // This file was created by SSC and updated by SSC in 2023 and is largely a derived work from the
 // original java class/interface that it inherits/implements
 
-package org.orekit.python;
 
+package org.orekit.propagation.events;
 
-import java.util.function.Function;
+import org.orekit.propagation.SpacecraftState;
 
-public class PythonFunction<T, R> implements Function<T, R> {
+public class PythonAdaptableInterval implements AdaptableInterval {
 
     /** Part of JCC Python interface to object */
     protected long pythonObject;
@@ -36,6 +36,7 @@ public class PythonFunction<T, R> implements Function<T, R> {
     public void finalize() throws Throwable { pythonDecRef(); }
     public native void pythonDecRef();
 
+    /** {@inheritDoc} */
     @Override
-    public native R apply(T t);
+    public native double currentInterval(SpacecraftState state);
 }

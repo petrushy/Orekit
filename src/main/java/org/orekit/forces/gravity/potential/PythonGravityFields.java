@@ -1,5 +1,5 @@
-/* Contributed in the public domain.
- * Licensed to CS Group (CS) under one or more
+/* Copyright SSC 2023
+ * Licensed to CS GROUP (CS) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
  * CS licenses this file to You under the Apache License, Version 2.0
@@ -15,8 +15,8 @@
  * limitations under the License.
  */
 
-// this file was created by SCC 2020 and is largely a derived work from the
-// original java class/interface
+// This file was created by SSC and updated by SSC in 2023 and is largely a derived work from the
+// original java class/interface that it inherits/implements
 
 package org.orekit.forces.gravity.potential;
 

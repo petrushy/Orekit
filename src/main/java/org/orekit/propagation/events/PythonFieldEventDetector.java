@@ -1,5 +1,5 @@
-/* Copyright 2002-2019 CS Systèmes d'Information
- * Licensed to CS Systèmes d'Information (CS) under one or more
+/* Copyright SSC 2019-2023
+ * Licensed to CS GROUP (CS) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
  * CS licenses this file to You under the Apache License, Version 2.0
@@ -14,8 +14,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-// this file was created by SCC 2019 and is largely a derived work from the
-// original java class/interface
+
+// This file was created by SSC and updated by SSC in 2023 and is largely a derived work from the
+// original java class/interface that it inherits/implements
 
 package org.orekit.propagation.events;
 

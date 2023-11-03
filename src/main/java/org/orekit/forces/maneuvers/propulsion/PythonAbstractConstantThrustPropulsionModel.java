@@ -1,4 +1,4 @@
-/* Copyright 2002-2020 CS GROUP
+/* Copyright SSC 2023
  * Licensed to CS GROUP (CS) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -15,25 +15,33 @@
  * limitations under the License.
  */
 
-// this file was created by SCC 2020 and is largely a derived work from the
-// original java class/interface
+// This file was created by SSC and updated by SSC in 2023 and is largely a derived work from the
+// original java class/interface that it inherits/implements
+
 
 package org.orekit.forces.maneuvers.propulsion;
 
 import org.hipparchus.CalculusFieldElement;
 import org.hipparchus.geometry.euclidean.threed.FieldVector3D;
 import org.hipparchus.geometry.euclidean.threed.Vector3D;
-import org.orekit.propagation.SpacecraftState;
+import org.orekit.forces.maneuvers.Control3DVectorCostType;
 import org.orekit.time.AbsoluteDate;
 import org.orekit.utils.ParameterDriver;
 
 import java.util.List;
 
-public class PythonAbstractConstantThrustPropulsionModel extends AbstractConstantThrustPropulsionModel implements ThrustPropulsionModel  {
-
+public class PythonAbstractConstantThrustPropulsionModel extends AbstractConstantThrustPropulsionModel  {
 
     /** Part of JCC Python interface to object */
-    private long pythonObject;
+    protected long pythonObject;
+    public void pythonExtension(long pythonObject) {
+        this.pythonObject = pythonObject;
+    }
+    public long pythonExtension() {
+        return this.pythonObject;
+    }
+    public void finalize() throws Throwable { pythonDecRef(); }
+    public native void pythonDecRef();
 
     /**
      * Generic constructor.
@@ -43,13 +51,8 @@ public class PythonAbstractConstantThrustPropulsionModel extends AbstractConstan
      * @param direction initial thrust direction in S/C frame
      * @param name      name of the maneuver
      */
-    public PythonAbstractConstantThrustPropulsionModel(double thrust, double isp, Vector3D direction, String name) {
-        super(thrust, isp, direction, name);
-    }
-
-    @Override
-    public Vector3D getInitialThrustVector() {
-        return super.getInitialThrustVector();
+    public PythonAbstractConstantThrustPropulsionModel(double thrust, double isp, Vector3D direction, Control3DVectorCostType control3DVectorCostType, String name) {
+        super(thrust, isp, direction, control3DVectorCostType, name);
     }
 
 
@@ -58,6 +61,8 @@ public class PythonAbstractConstantThrustPropulsionModel extends AbstractConstan
     public native Vector3D getThrustVector();
 
     // TODO: Check how to implement difference on these
+    // TODO: Is it needed with these defaults being exposed again?
+
     @Override
     public native Vector3D getThrustVector(AbsoluteDate date);
 
@@ -96,36 +101,12 @@ public class PythonAbstractConstantThrustPropulsionModel extends AbstractConstan
     /** {@inheritDoc} */
     public native <T extends CalculusFieldElement<T>> T getFlowRate_T(T[] parameters);
 
-    /** Part of JCC Python interface to object */
-    public void pythonExtension(long pythonObject)
-    {
-        this.pythonObject = pythonObject;
-    }
 
-    /** Part of JCC Python interface to object */
-    public long pythonExtension()
-    {
-        return this.pythonObject;
-    }
-
-    /** Part of JCC Python interface to object */
-    public void finalize()
-            throws Throwable
-    {
-        pythonDecRef();
-    }
-
-    /** Part of JCC Python interface to object */
-    public native void pythonDecRef();
-
+    ///** {@inheritDoc} */
+    //@Override
+    //public native void init(SpacecraftState initialState, AbsoluteDate target);
 
     /** {@inheritDoc} */
     @Override
-    public native void init(SpacecraftState initialState, AbsoluteDate target);
-
-    /** {@inheritDoc} */
-    @Override
-    public List<ParameterDriver> getParametersDrivers() {
-        return null;
-    }
+    public native List<ParameterDriver> getParametersDrivers();
 }
