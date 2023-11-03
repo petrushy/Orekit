@@ -20,7 +20,7 @@
 
 package org.orekit.files.ccsds.utils.lexical;
 
-import org.orekit.python.JCCBase;
+ ;
 import org.xml.sax.Attributes;
 
 import java.util.List;

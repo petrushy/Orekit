@@ -1,7 +1,7 @@
 package org.orekit.files.ccsds.utils.parsing;
 
 import org.orekit.files.ccsds.utils.lexical.ParseToken;
-import org.orekit.python.JCCBase;
+ ;
 
 public class PythonProcessingState implements ProcessingState {
 

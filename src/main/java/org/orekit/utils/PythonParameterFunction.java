@@ -19,7 +19,7 @@
 
 package org.orekit.utils;
 
-import org.orekit.python.JCCBase;
+ ;
 import org.orekit.time.AbsoluteDate;
 
 public class PythonParameterFunction implements ParameterFunction {

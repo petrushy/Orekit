@@ -1,7 +1,7 @@
 package org.orekit.estimation.measurements.generation;
 
 import org.orekit.estimation.measurements.ObservedMeasurement;
-import org.orekit.python.JCCBase;
+ ;
 import org.orekit.time.AbsoluteDate;
 
 public class PythonGeneratedMeasurementSubscriber implements GeneratedMeasurementSubscriber {

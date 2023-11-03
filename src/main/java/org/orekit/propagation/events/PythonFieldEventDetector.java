@@ -22,7 +22,7 @@ package org.orekit.propagation.events;
 import org.hipparchus.CalculusFieldElement;
 import org.orekit.propagation.FieldSpacecraftState;
 import org.orekit.propagation.events.handlers.FieldEventHandler;
-import org.orekit.python.JCCBase;
+ ;
 import org.orekit.time.FieldAbsoluteDate;
 
 public class PythonFieldEventDetector<T extends CalculusFieldElement<T>> implements FieldEventDetector<T> {

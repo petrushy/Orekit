@@ -3,7 +3,7 @@ package org.orekit.frames;
 import org.hipparchus.CalculusFieldElement;
 import org.hipparchus.geometry.euclidean.threed.FieldRotation;
 import org.hipparchus.geometry.euclidean.threed.FieldVector3D;
-import org.orekit.python.JCCBase;
+ ;
 import org.orekit.time.AbsoluteDate;
 
 public class PythonFieldStaticTransform<T extends CalculusFieldElement<T>> implements FieldStaticTransform<T> {

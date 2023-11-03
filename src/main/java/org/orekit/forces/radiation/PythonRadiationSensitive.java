@@ -27,7 +27,7 @@ import org.hipparchus.geometry.euclidean.threed.Vector3D;
 import org.orekit.frames.Frame;
 import org.orekit.propagation.FieldSpacecraftState;
 import org.orekit.propagation.SpacecraftState;
-import org.orekit.python.JCCBase;
+ ;
 import org.orekit.time.AbsoluteDate;
 import org.orekit.time.FieldAbsoluteDate;
 import org.orekit.utils.ParameterDriver;

@@ -18,7 +18,7 @@
 // original java class/interface
 
 package org.orekit.forces.gravity.potential;
-import org.orekit.python.JCCBase;
+ ;
 import org.orekit.time.AbsoluteDate;
 
 public class PythonSphericalHarmonicsProvider implements SphericalHarmonicsProvider {

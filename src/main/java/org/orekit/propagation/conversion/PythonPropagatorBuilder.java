@@ -27,7 +27,7 @@ import org.orekit.orbits.Orbit;
 import org.orekit.orbits.OrbitType;
 import org.orekit.orbits.PositionAngleType;
 import org.orekit.propagation.Propagator;
-import org.orekit.python.JCCBase;
+ ;
 import org.orekit.time.AbsoluteDate;
 import org.orekit.utils.ParameterDriversList;
 

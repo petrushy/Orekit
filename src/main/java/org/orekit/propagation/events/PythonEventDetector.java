@@ -23,7 +23,7 @@ package org.orekit.propagation.events;
 import org.orekit.propagation.SpacecraftState;
 import org.orekit.propagation.events.handlers.EventHandler;
 import org.orekit.time.AbsoluteDate;
-import org.orekit.python.JCCBase;
+ ;
 
 public class PythonEventDetector implements EventDetector {
 

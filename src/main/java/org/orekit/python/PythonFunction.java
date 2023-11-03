@@ -1,6 +1,6 @@
 package org.orekit.python;
 
-import org.orekit.python.JCCBase;
+ ;
 
 import java.util.function.Function;
 

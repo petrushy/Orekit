@@ -6,7 +6,7 @@ import org.hipparchus.ode.AbstractFieldIntegrator;
 import org.orekit.orbits.FieldOrbit;
 import org.orekit.orbits.Orbit;
 import org.orekit.orbits.OrbitType;
-import org.orekit.python.JCCBase;
+ ;
 
 public class PythonFieldODEIntegratorBuilder<T extends CalculusFieldElement<T>> implements FieldODEIntegratorBuilder<T> {
 

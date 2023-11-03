@@ -1,6 +1,6 @@
 package org.orekit.utils;
 
-import org.orekit.python.JCCBase;
+ ;
 
 import java.util.List;
 

@@ -20,7 +20,7 @@
 
 package org.hipparchus.analysis;
 
-import org.orekit.python.JCCBase;
+ ;
 
 /** import org.hipparchus.analysis.UnivariateFunction; **/
 

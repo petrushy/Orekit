@@ -26,7 +26,7 @@ import org.hipparchus.CalculusFieldElement;
 import org.orekit.propagation.SpacecraftState;
 import org.orekit.propagation.events.EventDetector;
 import org.orekit.propagation.events.FieldEventDetector;
-import org.orekit.python.JCCBase;
+ ;
 import org.orekit.time.AbsoluteDate;
 import org.orekit.time.FieldAbsoluteDate;
 import org.orekit.utils.ParameterDriver;

@@ -1,6 +1,6 @@
 package org.orekit.gnss.metric.parser;
 
-import org.orekit.python.JCCBase;
+ ;
 
 public class PythonDataField implements DataField {
     /** Part of JCC Python interface to object */

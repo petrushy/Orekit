@@ -1,6 +1,6 @@
 package org.orekit.frames;
 
-import org.orekit.python.JCCBase;
+ ;
 import org.orekit.time.UT1Scale;
 import org.orekit.utils.IERSConventions;
 

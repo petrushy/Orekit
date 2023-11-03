@@ -1,7 +1,7 @@
 package org.orekit.gnss.metric.parser;
 
 import org.orekit.gnss.metric.messages.ParsedMessage;
-import org.orekit.python.JCCBase;
+ ;
 
 public class PythonMessageType implements MessageType {
 

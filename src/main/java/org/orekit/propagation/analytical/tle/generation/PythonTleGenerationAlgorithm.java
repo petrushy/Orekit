@@ -5,7 +5,7 @@ import org.orekit.propagation.FieldSpacecraftState;
 import org.orekit.propagation.SpacecraftState;
 import org.orekit.propagation.analytical.tle.FieldTLE;
 import org.orekit.propagation.analytical.tle.TLE;
-import org.orekit.python.JCCBase;
+ ;
 
 public class PythonTleGenerationAlgorithm implements TleGenerationAlgorithm {
 

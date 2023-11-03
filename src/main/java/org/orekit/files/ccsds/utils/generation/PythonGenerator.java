@@ -23,7 +23,7 @@ package org.orekit.files.ccsds.utils.generation;
 
 import org.orekit.files.ccsds.definitions.TimeConverter;
 import org.orekit.files.ccsds.utils.FileFormat;
-import org.orekit.python.JCCBase;
+ ;
 import org.orekit.time.AbsoluteDate;
 import org.orekit.utils.units.Unit;
 

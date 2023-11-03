@@ -23,7 +23,7 @@ package org.orekit.propagation.events.handlers;
 import org.orekit.propagation.SpacecraftState;
 import org.orekit.propagation.events.EventDetector;
 import org.hipparchus.ode.events.Action;
-import org.orekit.python.JCCBase;
+ ;
 import org.orekit.time.AbsoluteDate;
 
 

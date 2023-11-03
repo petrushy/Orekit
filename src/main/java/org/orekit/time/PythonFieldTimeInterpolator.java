@@ -20,7 +20,7 @@
 package org.orekit.time;
 
 import org.hipparchus.CalculusFieldElement;
-import org.orekit.python.JCCBase;
+ ;
 
 import java.util.Collection;
 import java.util.List;
