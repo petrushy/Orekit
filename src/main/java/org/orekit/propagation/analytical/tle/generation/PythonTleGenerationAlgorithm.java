@@ -20,14 +20,11 @@ public class PythonTleGenerationAlgorithm implements TleGenerationAlgorithm {
     public void finalize() throws Throwable { pythonDecRef(); }
     public native void pythonDecRef();
 
-
+    /** {@inheritDoc} */
     @Override
     public native TLE generate(SpacecraftState state, TLE templateTLE);
 
+    /** {@inheritDoc} */
     @Override
-    public <T extends CalculusFieldElement<T>> FieldTLE<T> generate(FieldSpacecraftState<T> state, FieldTLE<T> templateTLE) {
-        return this.generate_FF(state, templateTLE);
-    }
-
-    public native <T extends CalculusFieldElement<T>> FieldTLE<T> generate_FF(FieldSpacecraftState<T> state, FieldTLE<T> templateTLE);
+    public native <T extends CalculusFieldElement<T>> FieldTLE<T> generate(FieldSpacecraftState<T> state, FieldTLE<T> templateTLE);
 }

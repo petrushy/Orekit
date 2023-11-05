@@ -53,48 +53,15 @@ public class PythonTimeScale implements TimeScale {
     /** Part of JCC Python interface to object */
     public native void pythonDecRef();
 
-    /**
-     * Get the offset to convert locations from {@link TAIScale} to instance.
-     *
-     * @param date conversion date
-     * @return offset in seconds to add to a location in <em>{@link TAIScale}
-     * time scale</em> to get a location in <em>instance time scale</em>
-     * @see #offsetToTAI(DateComponents, TimeComponents)
-     */
+    /** {@inheritDoc} */
     @Override
     public native double offsetFromTAI(AbsoluteDate date);
 
-    /**
-     * Get the offset to convert locations from {@link TAIScale} to instance.
-     *
-     * @param date conversion date
-     * @return offset in seconds to add to a location in <em>{@link TAIScale}
-     * time scale</em> to get a location in <em>instance time scale</em>
-     * @see #offsetToTAI(DateComponents, TimeComponents)
-     * @since 9.0
-     */
+    /** {@inheritDoc} */
     @Override
-    public <T extends CalculusFieldElement<T>> T offsetFromTAI(FieldAbsoluteDate<T> date) {
-        return this.offsetFromTAI_F(date);
-    }
+    public native <T extends CalculusFieldElement<T>> T offsetFromTAI(FieldAbsoluteDate<T> date);
 
-    /**
-     * Get the offset to convert locations from {@link TAIScale} to instance.
-     *
-     * @param date conversion date
-     * @return offset in seconds to add to a location in <em>{@link TAIScale}
-     * time scale</em> to get a location in <em>instance time scale</em>
-     * @see #offsetToTAI(DateComponents, TimeComponents)
-     * @since 9.0
-     */
-    public native <T extends CalculusFieldElement<T>> T offsetFromTAI_F(FieldAbsoluteDate<T> date);
-
-
-    /**
-     * Get the name time scale.
-     *
-     * @return name of the time scale
-     */
+    /** {@inheritDoc} */
     @Override
     public native String getName();
 }

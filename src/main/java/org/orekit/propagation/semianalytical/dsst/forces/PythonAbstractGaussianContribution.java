@@ -64,10 +64,6 @@ public class PythonAbstractGaussianContribution extends AbstractGaussianContribu
 
     /** {@inheritDoc} */
     @Override
-    public <T extends CalculusFieldElement<T>> T[] getLLimits(FieldSpacecraftState<T> state, FieldAuxiliaryElements<T> auxiliaryElements) {
-        return this.getLLimits_FF(state, auxiliaryElements);
-    }
-
-    public native <T extends CalculusFieldElement<T>> T[] getLLimits_FF(FieldSpacecraftState<T> state, FieldAuxiliaryElements<T> auxiliaryElements);
+    public native <T extends CalculusFieldElement<T>> T[] getLLimits(FieldSpacecraftState<T> state, FieldAuxiliaryElements<T> auxiliaryElements);
 
 }

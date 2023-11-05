@@ -58,89 +58,24 @@ public class PythonDiscreteTroposphericModel implements DiscreteTroposphericMode
     /** Part of JCC Python interface to object */
     public native void pythonDecRef();
 
-    /**
-     * Calculates the tropospheric path delay for the signal path from a ground
-     * station to a satellite.
-     * Extension point for Python.
-     *
-     * @param elevation  the elevation of the satellite, in radians
-     * @param height     the height of the station in m above sea level
-     * @param parameters tropospheric model parameters.
-     * @param date       current date
-     * @return the path delay due to the troposphere in m
-     */
+    /** {@inheritDoc} */
     @Override
     public native double pathDelay(double elevation, GeodeticPoint point, double[] parameters, AbsoluteDate date);
 
-    /**
-     * Calculates the tropospheric path delay for the signal path from a ground
-     * station to a satellite.
-     * Redirects to pathDelay_TTTF(...) for Python extension
-     *
-     * @param elevation  the elevation of the satellite, in radians
-     * @param height     the height of the station in m above sea level
-     * @param parameters tropospheric model parameters.
-     * @param date       current date
-     * @return the path delay due to the troposphere in m
-     */
+    /** {@inheritDoc} */
     @Override
-    public <T extends CalculusFieldElement<T>> T pathDelay(T elevation, FieldGeodeticPoint<T> point, T[] parameters, FieldAbsoluteDate<T> date) {
-        return this.pathDelay_TTTF(elevation, point, parameters, date);
-    }
+    public native <T extends CalculusFieldElement<T>> T pathDelay(T elevation, FieldGeodeticPoint<T> point, T[] parameters, FieldAbsoluteDate<T> date);
 
-    /**
-     * Calculates the tropospheric path delay for the signal path from a ground
-     * station to a satellite.
-     * Extension point for Python. Called by pathDelay for this parameter set.
-     *
-     * @param elevation  the elevation of the satellite, in radians
-     * @param height     the height of the station in m above sea level
-     * @param parameters tropospheric model parameters.
-     * @param date       current date
-     * @return the path delay due to the troposphere in m
-     */
-    public native <T extends CalculusFieldElement<T>> T pathDelay_TTTF(T elevation, FieldGeodeticPoint<T> point, T[] parameters, FieldAbsoluteDate<T> date);
-
-
-
-
-    /**
-     * Get the drivers for tropospheric model parameters.
-     * Extension point for Python.
-     *
-     * @return drivers for tropospheric model parameters
-     */
+    /** {@inheritDoc} */
     @Override
     public native List<ParameterDriver> getParametersDrivers();
 
-    /**
-     * Get tropospheric model parameters.
-     * Extension point for Python.
-     *
-     * @return tropospheric model parameters
-     */
+    /** {@inheritDoc} */
     @Override
     public native double[] getParameters();
 
-    /**
-     * Get tropospheric model parameters.
-     * Extension point for Python.
-     *
-     * @param field field to which the elements belong
-     * @return tropospheric model parameters
-     */
+    /** {@inheritDoc} */
     @Override
-    public <T extends CalculusFieldElement<T>> T[] getParameters(Field<T> field) {
-        return this.getParameters_F(field);
-    }
-
-    /**
-     * Get tropospheric model parameters.
-     * Extension point for Python.
-     *
-     * @param field field to which the elements belong
-     * @return tropospheric model parameters
-     */
-    public native <T extends CalculusFieldElement<T>> T[] getParameters_F(Field<T> field);
+    public native <T extends CalculusFieldElement<T>> T[] getParameters(Field<T> field);
 
 }

@@ -15,46 +15,16 @@ public class PythonAbstractGradientConverter extends AbstractGradientConverter {
     }
 
 
-    /** Get the number of free state parameters.
-     * @return number of free state parameters
-     */
+    /** {@inheritDoc} */
     public native int getFreeStateParameters();
 
-    /** Add zero derivatives.
-     * @param original original scalar
-     * @param freeParameters total number of free parameters in the gradient
-     * @return extended scalar
-     */
+    /** {@inheritDoc} */
     public native Gradient extend(final Gradient original, final int freeParameters);
 
-    /** Add zero derivatives.
-     * @param original original vector
-     * @param freeParameters total number of free parameters in the gradient
-     * @return extended vector
-     */
-    public FieldVector3D<Gradient> extend(final FieldVector3D<Gradient> original, final int freeParameters) {
-        return this.extend_FVi(original, freeParameters);
-    }
+    /** {@inheritDoc} */
+    public native FieldVector3D<Gradient> extend(final FieldVector3D<Gradient> original, final int freeParameters);
 
-    public native FieldVector3D<Gradient> extend_FVi(final FieldVector3D<Gradient> original, final int freeParameters);
-
-
-    /** Add zero derivatives.
-     * @param original original rotation
-     * @param freeParameters total number of free parameters in the gradient
-     * @return extended rotation
-     */
-    public FieldRotation<Gradient> extend(final FieldRotation<Gradient> original, final int freeParameters) {
-        return this.extend_FRi(original, freeParameters);
-    }
-
-    /** Add zero derivatives.
-     * @param original original rotation
-     * @param freeParameters total number of free parameters in the gradient
-     * @return extended rotation
-     */
-    public native FieldRotation<Gradient> extend_FRi(final FieldRotation<Gradient> original, final int freeParameters);
-
-
+    /** {@inheritDoc} */
+    public native FieldRotation<Gradient> extend(final FieldRotation<Gradient> original, final int freeParameters);
 
 }

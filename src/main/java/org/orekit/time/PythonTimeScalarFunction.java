@@ -47,32 +47,12 @@ public class PythonTimeScalarFunction implements TimeScalarFunction {
     /** Part of JCC Python interface to object */
     public native void pythonDecRef();
 
-    /**
-     * Compute a function of time.
-     *
-     * @param date date
-     * @return value of the function
-     */
+    /** {@inheritDoc} */
     @Override
     public native double value(AbsoluteDate date);
 
-    /**
-     * Compute a function of time.
-     *
-     * @param date date
-     * @return value of the function
-     */
+    /** {@inheritDoc} */
     @Override
-    public <T extends CalculusFieldElement<T>> T value(FieldAbsoluteDate<T> date) {
-        return this.value_F(date);
-    }
+    public native <T extends CalculusFieldElement<T>> T value(FieldAbsoluteDate<T> date);
 
-
-    /**
-     * Compute a function of time.
-     *
-     * @param date date
-     * @return value of the function
-     */
-    public native <T extends CalculusFieldElement<T>> T value_F(FieldAbsoluteDate<T> date);
 }

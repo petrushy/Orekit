@@ -55,83 +55,24 @@ public class PythonIonosphericModel implements IonosphericModel {
     /** Part of JCC Python interface to object */
     public native void pythonDecRef();
 
-    /**
-     * Calculates the ionospheric path delay for the signal path from a ground
-     * station to a satellite.
-     * <p>
-     * This method is intended to be used for orbit determination issues.
-     * In that respect, if the elevation is below 0° the path delay will be equal to zero.
-     * </p><p>
-     * For individual use of the ionospheric model (i.e. not for orbit determination), another
-     * method signature can be implemented to compute the path delay for any elevation angle.
-     * </p>
-     *
-     * @param state      spacecraft state
-     * @param baseFrame  base frame associated with the station
-     * @param frequency  frequency of the signal in Hz
-     * @param parameters ionospheric model parameters
-     * @return the path delay due to the ionosphere in m
-     */
+    /** {@inheritDoc} */
     @Override
-    public double pathDelay(SpacecraftState state, TopocentricFrame baseFrame, double frequency, double[] parameters) {
-        return this.pathDelay_STdd(state, baseFrame, frequency, parameters);
-    }
+    public native double pathDelay(SpacecraftState state, TopocentricFrame baseFrame, double frequency, double[] parameters);
 
-    public native double pathDelay_STdd(SpacecraftState state, TopocentricFrame baseFrame, double frequency, double[] parameters);
-
-
-
-
-    /**
-     * Calculates the ionospheric path delay for the signal path from a ground
-     * station to a satellite.
-     * <p>
-     * This method is intended to be used for orbit determination issues.
-     * In that respect, if the elevation is below 0° the path delay will be equal to zero.
-     * </p><p>
-     * For individual use of the ionospheric model (i.e. not for orbit determination), another
-     * method signature can be implemented to compute the path delay for any elevation angle.
-     * </p>
-     *
-     * @param state      spacecraft state
-     * @param baseFrame  base frame associated with the station
-     * @param frequency  frequency of the signal in Hz
-     * @param parameters ionospheric model parameters
-     * @return the path delay due to the ionosphere in m
-     */
+    /** {@inheritDoc} */
     @Override
-    public <T extends CalculusFieldElement<T>> T pathDelay(FieldSpacecraftState<T> state, TopocentricFrame baseFrame, double frequency, T[] parameters) {
-        return this.pathDelay_FTdT(state, baseFrame, frequency, parameters);
-    }
+    public native <T extends CalculusFieldElement<T>> T pathDelay(FieldSpacecraftState<T> state, TopocentricFrame baseFrame, double frequency, T[] parameters);
 
-    public native <T extends CalculusFieldElement<T>> T pathDelay_FTdT(FieldSpacecraftState<T> state, TopocentricFrame baseFrame, double frequency, T[] parameters);
-
-    /**
-     * Get the drivers for ionospheric model parameters.
-     *
-     * @return drivers for ionospheric model parameters
-     */
+    /** {@inheritDoc} */
     @Override
     public native List<ParameterDriver> getParametersDrivers();
 
-    /**
-     * Get ionospheric model parameters.
-     *
-     * @return ionospheric model parameters
-     */
+    /** {@inheritDoc} */
     @Override
     public native double[] getParameters();
 
-    /**
-     * Get ionospheric model parameters.
-     *
-     * @param field field to which the elements belong
-     * @return ionospheric model parameters
-     */
+    /** {@inheritDoc} */
     @Override
-    public <T extends CalculusFieldElement<T>> T[] getParameters(Field<T> field) {
-        return this.getParameters_F(field);
-    }
+    public native <T extends CalculusFieldElement<T>> T[] getParameters(Field<T> field);
 
-    public native <T extends CalculusFieldElement<T>> T[] getParameters_F(Field<T> field);
 }

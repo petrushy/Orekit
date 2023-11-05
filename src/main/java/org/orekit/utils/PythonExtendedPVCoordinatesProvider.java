@@ -51,34 +51,11 @@ public class PythonExtendedPVCoordinatesProvider implements ExtendedPVCoordinate
     /** Part of JCC Python interface to object */
     public native void pythonDecRef();
 
-    /**
-     * Get the {@link FieldPVCoordinates} of the body in the selected frame.
-     *
-     * @param date  current date
-     * @param frame the frame where to define the position
-     * @return time-stamped position/velocity of the body (m and m/s)
-     */
+    /** {@inheritDoc} */
     @Override
-    public <T extends CalculusFieldElement<T>> TimeStampedFieldPVCoordinates<T> getPVCoordinates(FieldAbsoluteDate<T> date, Frame frame) {
-        return this.getPVCoordinates_FF(date, frame);
-    }
+    public native <T extends CalculusFieldElement<T>> TimeStampedFieldPVCoordinates<T> getPVCoordinates(FieldAbsoluteDate<T> date, Frame frame);
 
-    /**
-     * Get the {@link FieldPVCoordinates} of the body in the selected frame.
-     *
-     * @param date  current date
-     * @param frame the frame where to define the position
-     * @return time-stamped position/velocity of the body (m and m/s)
-     */
-    public native <T extends CalculusFieldElement<T>> TimeStampedFieldPVCoordinates<T> getPVCoordinates_FF(FieldAbsoluteDate<T> date, Frame frame);
-
-    /**
-     * Get the {@link PVCoordinates} of the body in the selected frame.
-     *
-     * @param date  current date
-     * @param frame the frame where to define the position
-     * @return time-stamped position/velocity of the body (m and m/s)
-     */
+    /** {@inheritDoc} */
     @Override
     public native TimeStampedPVCoordinates getPVCoordinates(AbsoluteDate date, Frame frame);
 }

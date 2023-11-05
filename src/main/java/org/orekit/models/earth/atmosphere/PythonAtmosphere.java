@@ -57,92 +57,24 @@ public class PythonAtmosphere implements Atmosphere {
     /** Part of JCC Python interface to object */
     public native void pythonDecRef();
 
-    /**
-     * Get the frame of the central body.
-     *
-     * @return frame of the central body.
-     * @since 6.0
-     */
+    /** {@inheritDoc} */
     @Override
     public native Frame getFrame();
 
-    /**
-     * Get the local density.
-     * Extension point for Python.
-     *
-     * @param date     current date
-     * @param position current position in frame
-     * @param frame    the frame in which is defined the position
-     * @return local density (kg/m³)
-     */
+    /** {@inheritDoc} */
     @Override
     public native double getDensity(AbsoluteDate date, Vector3D position, Frame frame);
 
-    /**
-     * Get the local density.
-     * Redirects to getDensity_FFF
-     *
-     * @param date     current date
-     * @param position current position in frame
-     * @param frame    the frame in which is defined the position
-     * @return local density (kg/m³)
-     */
+    /** {@inheritDoc} */
     @Override
-    public <T extends CalculusFieldElement<T>> T getDensity(FieldAbsoluteDate<T> date, FieldVector3D<T> position, Frame frame) {
-        return this.getDensity_FFF(date, position, frame);
-    }
+    public native <T extends CalculusFieldElement<T>> T getDensity(FieldAbsoluteDate<T> date, FieldVector3D<T> position, Frame frame);
 
-
-    /**
-     * Get the local density.
-     * Extension point for Python.
-     *
-     * @param date     current date
-     * @param position current position in frame
-     * @param frame    the frame in which is defined the position
-     * @return local density (kg/m³)
-     */
-    public native <T extends CalculusFieldElement<T>> T getDensity_FFF(FieldAbsoluteDate<T> date, FieldVector3D<T> position, Frame frame);
-
-
-    /**
-     * Get the inertial velocity of atmosphere molecules.
-     * Extension point for Python.
-     *
-     * <p>By default, atmosphere is supposed to have a null
-     * velocity in the central body frame.</p>
-     *
-     * @param date     current date
-     * @param position current position in frame
-     * @param frame    the frame in which is defined the position
-     * @return velocity (m/s) (defined in the same frame as the position)
-     */
+    /** {@inheritDoc} */
     @Override
     public native Vector3D getVelocity(AbsoluteDate date, Vector3D position, Frame frame);
 
-    /**
-     * Get the inertial velocity of atmosphere molecules.
-     * Redirects to getVelocity_FFF(...)
-     *
-     * @param date     current date
-     * @param position current position in frame
-     * @param frame    the frame in which is defined the position
-     * @return velocity (m/s) (defined in the same frame as the position)
-     */
+    /** {@inheritDoc} */
     @Override
-    public <T extends CalculusFieldElement<T>> FieldVector3D<T> getVelocity(FieldAbsoluteDate<T> date, FieldVector3D<T> position, Frame frame) {
-        return this.getVelocity_FFF(date, position, frame);
-    }
-
-    /**
-     * Get the inertial velocity of atmosphere molecules.
-     * Extension point for Python.
-     *
-     * @param date     current date
-     * @param position current position in frame
-     * @param frame    the frame in which is defined the position
-     * @return velocity (m/s) (defined in the same frame as the position)
-     */
-    public native <T extends CalculusFieldElement<T>> FieldVector3D<T> getVelocity_FFF(FieldAbsoluteDate<T> date, FieldVector3D<T> position, Frame frame);
+    public native <T extends CalculusFieldElement<T>> FieldVector3D<T> getVelocity(FieldAbsoluteDate<T> date, FieldVector3D<T> position, Frame frame);
 
 }
