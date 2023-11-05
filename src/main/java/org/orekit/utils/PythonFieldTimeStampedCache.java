@@ -1,4 +1,4 @@
-/* Copyright 2002-2019 CS Systèmes d'Information
+/* Copyright 2002-2023 CS Systèmes d'Information
  * Licensed to CS Systèmes d'Information (CS) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -14,54 +14,43 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-// this file was created by SCC 2019 and is largely a derived work from the
+// this file was created by SCC 2023 and is largely a derived work from the
 // original java class/interface
 
-package org.orekit.propagation.sampling;
+package org.orekit.utils;
 
 import org.hipparchus.CalculusFieldElement;
-import org.orekit.propagation.FieldSpacecraftState;
-import org.orekit.propagation.sampling.FieldOrekitFixedStepHandler;
 import org.orekit.time.FieldAbsoluteDate;
+import org.orekit.time.FieldTimeStamped;
 
-public class PythonFieldOrekitFixedStepHandler<T extends CalculusFieldElement<T>> implements FieldOrekitFixedStepHandler<T> {
+import java.util.stream.Stream;
+
+public class PythonFieldTimeStampedCache<T extends FieldTimeStamped<KK>, KK extends CalculusFieldElement<KK>> implements FieldTimeStampedCache<T, KK> {
+
 
     /** Part of JCC Python interface to object */
-    private long pythonObject;
-
-    /** Part of JCC Python interface to object */
-    public void pythonExtension(long pythonObject)
-    {
+    protected long pythonObject;
+    public void pythonExtension(long pythonObject) {
         this.pythonObject = pythonObject;
     }
-
-    /** Part of JCC Python interface to object */
-    public long pythonExtension()
-    {
+    public long pythonExtension() {
         return this.pythonObject;
     }
-
-    /** Part of JCC Python interface to object */
-    public void finalize()
-            throws Throwable
-    {
-        pythonDecRef();
-    }
-
-    /** Part of JCC Python interface to object */
+    public void finalize() throws Throwable { pythonDecRef(); }
     public native void pythonDecRef();
 
-    /** @inheritDoc */
+    /** {@inheritDoc} */
     @Override
-    public native void init(FieldSpacecraftState<T> s0, FieldAbsoluteDate<T> t, T step);
+    public native Stream<T> getNeighbors(FieldAbsoluteDate<KK> central);
 
-    /** @inheritDoc */
+    /** {@inheritDoc} */
     @Override
-    public native void handleStep(FieldSpacecraftState<T> currentState);
+    public native int getNeighborsSize();
 
-    /** @inheritDoc */
+    /** {@inheritDoc} */
     @Override
-    public native void finish(FieldSpacecraftState<T> finalState);
+    public native T getEarliest() throws IllegalStateException;
 
-
+    @Override
+    public native T getLatest() throws IllegalStateException;
 }
