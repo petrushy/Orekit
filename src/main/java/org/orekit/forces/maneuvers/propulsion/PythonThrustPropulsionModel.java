@@ -73,20 +73,13 @@ public class PythonThrustPropulsionModel implements ThrustPropulsionModel {
 
     /** {@inheritDoc} */
     @Override
-    public <T extends CalculusFieldElement<T>> FieldVector3D<T> getThrustVector(FieldSpacecraftState<T> s, T[] parameters) {
-        return this.getThrustVector_FT(s, parameters);
-    }
-
-    public native <T extends CalculusFieldElement<T>> FieldVector3D<T> getThrustVector_FT(FieldSpacecraftState<T> s, T[] parameters);
+    public native <T extends CalculusFieldElement<T>> FieldVector3D<T> getThrustVector(FieldSpacecraftState<T> s, T[] parameters);
 
     /** {@inheritDoc} */
     @Override
-    public <T extends CalculusFieldElement<T>> T getFlowRate(FieldSpacecraftState<T> s, T[] parameters) {
-        return this.getFlowRate_FT(s, parameters);
-    }
+    public native <T extends CalculusFieldElement<T>> T getFlowRate(FieldSpacecraftState<T> s, T[] parameters);
 
-    public native <T extends CalculusFieldElement<T>> T getFlowRate_FT(FieldSpacecraftState<T> s, T[] parameters);
-
+    /** {@inheritDoc} */
     @Override
     public List<ParameterDriver> getParametersDrivers() {
         return null;

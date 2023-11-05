@@ -82,61 +82,28 @@ public class PythonPropulsionModel implements PropulsionModel {
     @Override
     public native Vector3D getAcceleration(SpacecraftState s, Attitude maneuverAttitude, double[] parameters);
 
-    /**
-     * Get the acceleration of the spacecraft during maneuver and in maneuver frame.
-     *
-     * @param s                current spacecraft state
-     * @param maneuverAttitude current attitude in maneuver
-     * @param parameters       propulsion model parameters
-     * @return acceleration
-     */
+    /** {@inheritDoc} */
     @Override
-    public <T extends CalculusFieldElement<T>> FieldVector3D<T> getAcceleration(FieldSpacecraftState<T> s, FieldAttitude<T> maneuverAttitude, T[] parameters) {
-        return this.getAcceleration_FFT(s, maneuverAttitude, parameters);
-    }
-
-    public native <T extends CalculusFieldElement<T>> FieldVector3D<T> getAcceleration_FFT(FieldSpacecraftState<T> s, FieldAttitude<T> maneuverAttitude, T[] parameters);
+    public native <T extends CalculusFieldElement<T>> FieldVector3D<T> getAcceleration(FieldSpacecraftState<T> s, FieldAttitude<T> maneuverAttitude, T[] parameters);
 
 
-        /**
-         * Get the mass derivative (i.e. flow rate in kg/s) during maneuver.
-         *
-         * @param s          current spacecraft state
-         * @param parameters propulsion model parameters  @return mass derivative in kg/s
-         */
+    /** {@inheritDoc} */
     @Override
     public native double getMassDerivatives(SpacecraftState s, double[] parameters);
 
-    /**
-     * Get the mass derivative (i.e. flow rate in kg/s) during maneuver.
-     *
-     * @param s          current spacecraft state
-     * @param parameters propulsion model parameters  @return mass derivative in kg/s
-     */
+    /** {@inheritDoc} */
     @Override
-    public <T extends CalculusFieldElement<T>> T getMassDerivatives(FieldSpacecraftState<T> s, T[] parameters) {
-        return this.getMassDerivatives_FT(s, parameters);
-    }
+    public native <T extends CalculusFieldElement<T>> T getMassDerivatives(FieldSpacecraftState<T> s, T[] parameters);
 
-    public native <T extends CalculusFieldElement<T>> T getMassDerivatives_FT(FieldSpacecraftState<T> s, T[] parameters);
-
-
-    /**
-     * Get the propulsion model parameter drivers.
-     *
-     * @return propulsion model parameter drivers
-     */
+    /** {@inheritDoc} */
     @Override
     public native List<ParameterDriver> getParametersDrivers();
 
-    /**
-     * Get the maneuver name.
-     *
-     * @return the maneuver name
-     */
+    /** {@inheritDoc} */
     @Override
     public native String getName();
 
+    /** {@inheritDoc} */
     @Override
     public native Control3DVectorCostType getControl3DVectorCostType();
 }

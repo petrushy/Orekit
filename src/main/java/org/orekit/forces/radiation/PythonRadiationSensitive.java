@@ -48,24 +48,17 @@ public class PythonRadiationSensitive implements RadiationSensitive {
     public native void pythonDecRef();
 
 
-    /**
-     * Get the drivers for supported parameters.
-     *
-     * @return parameters drivers
-     * @since 8.0
-     */
+    /** {@inheritDoc} */
     @Override
     public native List<ParameterDriver> getRadiationParametersDrivers();
 
+    /** {@inheritDoc} */
     @Override
     public native Vector3D radiationPressureAcceleration(SpacecraftState state, Vector3D flux, double[] parameters);
 
+    /** {@inheritDoc} */
     @Override
-    public  <T extends CalculusFieldElement<T>> FieldVector3D<T> radiationPressureAcceleration(FieldSpacecraftState<T> state, FieldVector3D<T> flux, T[] parameters) {
-        return this.radiationPressureAcceleration_FFT(state, flux, parameters);
-    }
-
-    public native <T extends CalculusFieldElement<T>> FieldVector3D<T> radiationPressureAcceleration_FFT(FieldSpacecraftState<T> state, FieldVector3D<T> flux, T[] parameters);
+    public native <T extends CalculusFieldElement<T>> FieldVector3D<T> radiationPressureAcceleration(FieldSpacecraftState<T> state, FieldVector3D<T> flux, T[] parameters);
 
 
 }

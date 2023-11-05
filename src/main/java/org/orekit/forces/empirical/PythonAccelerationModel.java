@@ -55,45 +55,15 @@ public class PythonAccelerationModel implements AccelerationModel {
     /** Part of JCC Python interface to object */
     public native void pythonDecRef();
 
-    /**
-     * Compute the signed amplitude of the acceleration.
-     * <p>
-     * The acceleration is the direction multiplied by the signed amplitude. So if
-     * signed amplitude is negative, the acceleratin is towards the opposite of the
-     * direction specified at construction.
-     * </p>
-     *
-     * @param state      current state information: date, kinematics, attitude
-     * @param parameters values of the force model parameters
-     * @return norm of the acceleration
-     */
+    /** {@inheritDoc} */
     @Override
     public native double signedAmplitude(SpacecraftState state, double[] parameters);
 
-    /**
-     * Compute the signed amplitude of the acceleration.
-     * <p>
-     * The acceleration is the direction multiplied by the signed amplitude. So if
-     * signed amplitude is negative, the acceleratin is towards the opposite of the
-     * direction specified at construction.
-     * </p>
-     *
-     * @param state      current state information: date, kinematics, attitude
-     * @param parameters values of the force model parameters
-     * @return norm of the acceleration
-     */
+    /** {@inheritDoc} */
     @Override
-    public <T extends CalculusFieldElement<T>> T signedAmplitude(FieldSpacecraftState<T> state, T[] parameters) {
-        return this.signedAmplitude_FT(state, parameters);
-    }
+    public native <T extends CalculusFieldElement<T>> T signedAmplitude(FieldSpacecraftState<T> state, T[] parameters);
 
-    public native <T extends CalculusFieldElement<T>> T signedAmplitude_FT(FieldSpacecraftState<T> state, T[] parameters);
-
-    /**
-     * Get the drivers for acceleration model parameters.
-     *
-     * @return drivers for acceleration model parameters
-     */
+    /** {@inheritDoc} */
     @Override
     public native List<ParameterDriver> getParametersDrivers();
 }

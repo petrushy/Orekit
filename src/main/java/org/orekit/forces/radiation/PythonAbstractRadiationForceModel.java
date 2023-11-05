@@ -30,13 +30,7 @@ public class PythonAbstractRadiationForceModel extends AbstractRadiationForceMod
 
     /** {@inheritDoc} */
     @Override
-    public <T extends CalculusFieldElement<T>> FieldVector3D<T> acceleration(FieldSpacecraftState<T> s, T[] parameters) {
-        return this.acceleration_FT(s,parameters);
-    }
-
-    /** {@inheritDoc} */
-    public native <T extends CalculusFieldElement<T>> FieldVector3D<T> acceleration_FT(FieldSpacecraftState<T> s, T[] parameters);
-
+    public native <T extends CalculusFieldElement<T>> FieldVector3D<T> acceleration(FieldSpacecraftState<T> s, T[] parameters);
 
     /** {@inheritDoc} */
     @Override

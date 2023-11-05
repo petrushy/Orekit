@@ -56,112 +56,32 @@ public class PythonIAUPole  implements IAUPole {
     /** Part of JCC Python interface to object */
     public native void pythonDecRef();
 
-    /**
-     * Get the body North pole direction in ICRF frame.
-     *
-     * @param date current date
-     * @return body North pole direction in ICRF frame
-     */
+    /** {@inheritDoc} */
     @Override
     public native Vector3D getPole(AbsoluteDate date);
 
 
-    /**
-     * Get the body North pole direction in ICRF frame.
-     *
-     * @param date current date
-     * @return body North pole direction in ICRF frame
-     * @since 9.0
-     */
+    /** {@inheritDoc} */
     @Override
-    public <T extends CalculusFieldElement<T>> FieldVector3D<T> getPole(FieldAbsoluteDate<T> date) {
-        return this.getPole_F(date);
-    }
-
-    /**
-     * Get the body North pole direction in ICRF frame.
-     *
-     * @param date current date
-     * @return body North pole direction in ICRF frame
-     * @since 9.0
-     */
-    public native <T extends CalculusFieldElement<T>> FieldVector3D<T> getPole_F(FieldAbsoluteDate<T> date);
+    public native <T extends CalculusFieldElement<T>> FieldVector3D<T> getPole(FieldAbsoluteDate<T> date);
 
 
-
-    /**
-     * Get the body Q Node direction in ICRF frame.
-     *
-     * @param date current date
-     * @return body Q Node direction in ICRF frame
-     * @since 9.1
-     */
+    /** {@inheritDoc} */
     @Override
     public native Vector3D getNode(AbsoluteDate date);
 
-    /**
-     * Get the body Q Node direction in ICRF frame.
-     *
-     * @param date current date
-     * @return body Q Node direction in ICRF frame
-     * @since 9.1
-     */
+    /** {@inheritDoc} */
     @Override
-    public <T extends CalculusFieldElement<T>> FieldVector3D<T> getNode(FieldAbsoluteDate<T> date) {
-        return this.getNode_F(date);
-    }
-
-    /**
-     * Get the body Q Node direction in ICRF frame.
-     *
-     * @param date current date
-     * @return body Q Node direction in ICRF frame
-     * @since 9.1
-     */
-    public native <T extends CalculusFieldElement<T>> FieldVector3D<T> getNode_F(FieldAbsoluteDate<T> date);
+    public native <T extends CalculusFieldElement<T>> FieldVector3D<T> getNode(FieldAbsoluteDate<T> date);
 
 
-    /**
-     * Get the prime meridian angle.
-     * <p>
-     * The prime meridian angle is the angle between the Q node and the
-     * prime meridian. represents the body rotation.
-     * </p>
-     *
-     * @param date current date
-     * @return prime meridian vector
-     */
+    /** {@inheritDoc} */
     @Override
     public native double getPrimeMeridianAngle(AbsoluteDate date);
 
-    /**
-     * Get the prime meridian angle.
-     * <p>
-     * The prime meridian angle is the angle between the Q node and the
-     * prime meridian. represents the body rotation.
-     * </p>
-     *
-     * @param date current date
-     * @return prime meridian vector
-     * @since 9.0
-     */
+    /** {@inheritDoc} */
     @Override
-    public <T extends CalculusFieldElement<T>> T getPrimeMeridianAngle(FieldAbsoluteDate<T> date) {
-        return this.getPrimeMeridianAngle_F(date);
-    }
-
-    /**
-     * Get the prime meridian angle.
-     * <p>
-     * The prime meridian angle is the angle between the Q node and the
-     * prime meridian. represents the body rotation.
-     * </p>
-     *
-     * @param date current date
-     * @return prime meridian vector
-     * @since 9.0
-     */
-    public native <T extends CalculusFieldElement<T>> T getPrimeMeridianAngle_F(FieldAbsoluteDate<T> date);
+    public native <T extends CalculusFieldElement<T>> T getPrimeMeridianAngle(FieldAbsoluteDate<T> date);
 
 
 }

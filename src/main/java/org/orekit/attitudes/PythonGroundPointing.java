@@ -68,40 +68,14 @@ public class PythonGroundPointing extends GroundPointing {
         super(inertialFrame, bodyFrame);
     }
 
-    /**
-     * Compute the target point position/velocity in specified frame.
-     * <p>
-     * This method is {@code public} only to allow users to subclass this
-     * abstract class from other packages. It is <em>not</em> intended to
-     * be used directly.
-     * </p>
-     *
-     * @param pvProv provider for PV coordinates
-     * @param date   date at which target point is requested
-     * @param frame  frame in which observed ground point should be provided
-     * @return observed ground point position (element 0) and velocity (at index 1)
-     * in specified frame
-     */
+    /** {@inheritDoc} */
     @Override
     public native TimeStampedPVCoordinates getTargetPV(PVCoordinatesProvider pvProv, AbsoluteDate date, Frame frame);
 
-
+    /** {@inheritDoc} */
     @Override
-    public <T extends CalculusFieldElement<T>> TimeStampedFieldPVCoordinates<T> getTargetPV(FieldPVCoordinatesProvider<T> pvProv, FieldAbsoluteDate<T> date, Frame frame)
-    {
-        return this.getTargetPV_FFF(pvProv, date, frame);
-    }
+    public native  <T extends CalculusFieldElement<T>> TimeStampedFieldPVCoordinates<T> getTargetPV(FieldPVCoordinatesProvider<T> pvProv, FieldAbsoluteDate<T> date, Frame frame);
 
-    /**
-     * Extension point for Python for Compute the target point position/velocity in specified frame.
-     *
-     * @param pvProv provider for PV coordinates
-     * @param date   date at which target point is requested
-     * @param frame  frame in which observed ground point should be provided
-     * @return observed ground point position (element 0) and velocity (at index 1)
-     * in specified frame
-     * @since 10.1
-     */
-    public native <T extends  CalculusFieldElement<T>> TimeStampedFieldPVCoordinates<T> getTargetPV_FFF(FieldPVCoordinatesProvider<T> pvProv, FieldAbsoluteDate<T> date, Frame frame);
+
 
 }

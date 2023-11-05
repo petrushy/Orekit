@@ -52,60 +52,19 @@ public class PythonEOPBasedTransformProvider implements EOPBasedTransformProvide
     /** Part of JCC Python interface to object */
     public native void pythonDecRef();
 
-    /**
-     * Get the EOP history.
-     *
-     * @return EOP history
-     */
+    /** {@inheritDoc} */
     @Override
     public native EOPHistory getEOPHistory();
 
-    /**
-     * Get a version of the provider that does <em>not</em> cache tidal corrections.
-     * <p>
-     * This method removes the performance enhancing interpolation features that are
-     * used by default in EOP-based provider, in order to focus on accuracy. The
-     * interpolation features are intended to save processing time by avoiding doing
-     * tidal correction evaluation at each time step and caching some results. This
-     * method can be used to avoid this (it is automatically called by {@link
-     * FramesFactory#getNonInterpolatingTransform(Frame, Frame, AbsoluteDate)}, when
-     * very high accuracy is desired, or for testing purposes. It should be used with
-     * care, as doing the full computation is <em>really</em> costly.
-     * </p>
-     *
-     * @return version of the provider that does <em>not</em> cache tidal corrections
-     * @see FramesFactory#getNonInterpolatingTransform(Frame, Frame, AbsoluteDate)
-     */
+    /** {@inheritDoc} */
     @Override
     public native EOPBasedTransformProvider getNonInterpolatingProvider();
 
-    /**
-     * Get the {@link Transform} corresponding to specified date.
-     *
-     * @param date current date
-     * @return transform at specified date
-     */
+    /** {@inheritDoc} */
     @Override
     public native Transform getTransform(AbsoluteDate date);
 
-    /**
-     * Get the {@link FieldTransform} corresponding to specified date.
-     *
-     * @param date current date
-     * @return transform at specified date
-     * @since 9.0
-     */
+    /** {@inheritDoc} */
     @Override
-    public <T extends CalculusFieldElement<T>> FieldTransform<T> getTransform(FieldAbsoluteDate<T> date) {
-        return this.getTransform_F(date);
-    }
-
-    /**
-     * Get the {@link FieldTransform} corresponding to specified date.
-     *
-     * @param date current date
-     * @return transform at specified date
-     * @since 9.0
-     */
-    public native <T extends CalculusFieldElement<T>> FieldTransform<T> getTransform_F(FieldAbsoluteDate<T> date);
+    public native <T extends CalculusFieldElement<T>> FieldTransform<T> getTransform(FieldAbsoluteDate<T> date);
 }

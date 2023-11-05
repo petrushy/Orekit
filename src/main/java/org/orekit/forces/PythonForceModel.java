@@ -62,153 +62,47 @@ public class PythonForceModel implements ForceModel {
     /** Part of JCC Python interface to object */
     public native void pythonDecRef();
 
-    /**
-     * Initialize the force model at the start of propagation. This method will be called
-     * before any calls to {@link #addContribution(SpacecraftState, TimeDerivativesEquations)},
-     * {@link #addContribution(FieldSpacecraftState, FieldTimeDerivativesEquations)},
-     * {@link #acceleration(SpacecraftState, double[])} or {@link #acceleration(FieldSpacecraftState, CalculusFieldElement[])}
-     *
-     * <p> The default implementation of this method does nothing.</p>
-     *
-     * @param initialState spacecraft state at the start of propagation.
-     * @param target       date of propagation. Not equal to {@code initialState.getDate()}.
-     */
+    /** {@inheritDoc} */
     @Override
     public native void init(SpacecraftState initialState, AbsoluteDate target);
 
-    /**
-     * Compute the contribution of the force model to the perturbing
-     * acceleration.
-     * <p>
-     * The default implementation simply adds the {@link #acceleration(SpacecraftState, double[]) acceleration}
-     * as a non-Keplerian acceleration.
-     * </p>
-     *
-     * @param s     current state information: date, kinematics, attitude
-     * @param adder object where the contribution should be added
-     */
+    /** {@inheritDoc} */
     @Override
     public native void addContribution(SpacecraftState s, TimeDerivativesEquations adder);
 
-    /**
-     * Compute the contribution of the force model to the perturbing
-     * acceleration.
-     *
-     * @param s     current state information: date, kinematics, attitude
-     * @param adder object where the contribution should be added
-     */
+    /** {@inheritDoc} */
     @Override
-    public <T extends CalculusFieldElement<T>> void addContribution(FieldSpacecraftState<T> s, FieldTimeDerivativesEquations<T> adder) {
-       this.addContribution_FF(s, adder);
-    }
+    public native <T extends CalculusFieldElement<T>> void addContribution(FieldSpacecraftState<T> s, FieldTimeDerivativesEquations<T> adder);
 
-    public native <T extends CalculusFieldElement<T>> void addContribution_FF(FieldSpacecraftState<T> s, FieldTimeDerivativesEquations<T> adder);
-
-    /**
-     * Get force model parameters.
-     *
-     * @return force model parameters
-     * @since 9.0
-     */
+    /** {@inheritDoc} */
     @Override
     public native double[] getParameters();
 
-    /**
-     * Get force model parameters.
-     *
-     * @param field field to which the elements belong
-     * @return force model parameters
-     * @since 9.0
-     */
+    /** {@inheritDoc} */
     @Override
-    public <T extends CalculusFieldElement<T>> T[] getParameters(Field<T> field) {
-        return this.getParameters_F(field);
-    }
+    public native <T extends CalculusFieldElement<T>> T[] getParameters(Field<T> field);
 
-    /**
-     * Get force model parameters.
-     *
-     * @param field field to which the elements belong
-     * @return force model parameters
-     * @since 9.0
-     */
-    public native <T extends CalculusFieldElement<T>> T[] getParameters_F(Field<T> field);
-
-    /**
-     * Check if force models depends on position only.
-     *
-     * @return true if force model depends on position only, false
-     * if it depends on velocity, either directly or due to a dependency
-     * on attitude
-     * @since 9.0
-     */
+    /** {@inheritDoc} */
     @Override
     public native boolean dependsOnPositionOnly();
 
-    /**
-     * Compute acceleration.
-     *
-     * @param s          current state information: date, kinematics, attitude
-     * @param parameters values of the force model parameters
-     * @return acceleration in same frame as state
-     * @since 9.0
-     */
+    /** {@inheritDoc} */
     @Override
     public native Vector3D acceleration(SpacecraftState s, double[] parameters);
 
-    /**
-     * Compute acceleration.
-     *
-     * @param s          current state information: date, kinematics, attitude
-     * @param parameters values of the force model parameters
-     * @return acceleration in same frame as state
-     * @since 9.0
-     */
+    /** {@inheritDoc} */
     @Override
-    public <T extends CalculusFieldElement<T>> FieldVector3D<T> acceleration(FieldSpacecraftState<T> s, T[] parameters) {
-        return this.acceleration_FT(s, parameters);
-    }
+    public native <T extends CalculusFieldElement<T>> FieldVector3D<T> acceleration(FieldSpacecraftState<T> s, T[] parameters);
 
-
-    /**
-     * Compute acceleration.
-     *
-     * @param s          current state information: date, kinematics, attitude
-     * @param parameters values of the force model parameters
-     * @return acceleration in same frame as state
-     * @since 9.0
-     */
-    public native <T extends CalculusFieldElement<T>> FieldVector3D<T> acceleration_FT(FieldSpacecraftState<T> s, T[] parameters);
-
-
-
-    /**
-     * Get the drivers for force model parameters.
-     *
-     * @return drivers for force model parameters
-     * @since 8.0
-     */
+    /** {@inheritDoc} */
     @Override
     public native List<ParameterDriver> getParametersDrivers();
 
-    /**
-     * Get parameter value from its name.
-     *
-     * @param name parameter name
-     * @return parameter value
-     * @since 8.0
-     */
+    /** {@inheritDoc} */
     @Override
     public native ParameterDriver getParameterDriver(String name);
 
-    /**
-     * Check if a parameter is supported.
-     * <p>Supported parameters are those listed by {@link #getParametersDrivers()}.</p>
-     *
-     * @param name parameter name to check
-     * @return true if the parameter is supported
-     * @see #getParametersDrivers()
-     */
+    /** {@inheritDoc} */
     @Override
     public native boolean isSupported(String name);
 }

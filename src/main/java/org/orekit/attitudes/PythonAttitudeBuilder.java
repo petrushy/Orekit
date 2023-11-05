@@ -55,31 +55,13 @@ public class PythonAttitudeBuilder implements AttitudeBuilder {
     public native void pythonDecRef();
 
 
-    /**
-     * Build a filtered attitude.
-     *
-     * @param frame       reference frame with respect to which attitude must be defined
-     * @param pvProv      provider for spacecraft position and velocity
-     * @param rawAttitude raw rotation/rotation rate/rotation acceleration
-     * @return filtered attitude
-     */
+    /** {@inheritDoc} */
     @Override
     public native Attitude build(Frame frame, PVCoordinatesProvider pvProv, TimeStampedAngularCoordinates rawAttitude);
 
-    /**
-     * Build a filtered attitude.
-     *
-     * @param frame       reference frame with respect to which attitude must be defined
-     * @param pvProv      provider for spacecraft position and velocity
-     * @param rawAttitude raw rotation/rotation rate/rotation acceleration
-     * @return filtered attitude
-     */
-    public  native <T extends CalculusFieldElement<T>> FieldAttitude<T> build_FFT(Frame frame, FieldPVCoordinatesProvider<T> pvProv, TimeStampedFieldAngularCoordinates<T> rawAttitude);
-
+   /** {@inheritDoc} */
     @Override
-    public  <T extends CalculusFieldElement<T>> FieldAttitude<T> build(Frame frame, FieldPVCoordinatesProvider<T> pvProv, TimeStampedFieldAngularCoordinates<T> rawAttitude) {
-        return this.build_FFT(frame, pvProv, rawAttitude);
-    }
+    public  native <T extends CalculusFieldElement<T>> FieldAttitude<T> build(Frame frame, FieldPVCoordinatesProvider<T> pvProv, TimeStampedFieldAngularCoordinates<T> rawAttitude);
 
 
 }

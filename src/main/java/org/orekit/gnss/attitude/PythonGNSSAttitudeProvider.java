@@ -57,56 +57,21 @@ public class PythonGNSSAttitudeProvider implements GNSSAttitudeProvider {
     /** Part of JCC Python interface to object */
     public native void pythonDecRef();
 
-    /**
-     * Get start of validity for this provider.
-     *
-     * @return start of validity for this provider
-     */
+    /** {@inheritDoc} */
     @Override
     public native AbsoluteDate validityStart();
 
-    /**
-     * Get end of validity for this provider.
-     *
-     * @return end of validity for this provider
-     */
+    /** {@inheritDoc} */
     @Override
     public native AbsoluteDate validityEnd();
 
-    /**
-     * Compute the attitude corresponding to an orbital state.
-     *
-     * @param pvProv local position-velocity provider around current date
-     * @param date   current date
-     * @param frame  reference frame from which attitude is computed
-     * @return attitude attitude on the specified date and position-velocity state
-     */
+    /** {@inheritDoc} */
     @Override
     public native Attitude getAttitude(PVCoordinatesProvider pvProv, AbsoluteDate date, Frame frame);
 
-    /**
-     * Compute the attitude corresponding to an orbital state.
-     *
-     * @param pvProv local position-velocity provider around current date
-     * @param date   current date
-     * @param frame  reference frame from which attitude is computed
-     * @return attitude attitude on the specified date and position-velocity state
-     * @since 9.0
-     */
+    /** {@inheritDoc} */
     @Override
-    public <T extends CalculusFieldElement<T>> FieldAttitude<T> getAttitude(FieldPVCoordinatesProvider<T> pvProv, FieldAbsoluteDate<T> date, Frame frame) {
-        return this.getAttitude_FFF(pvProv, date, frame);
-    }
+    public native <T extends CalculusFieldElement<T>> FieldAttitude<T> getAttitude(FieldPVCoordinatesProvider<T> pvProv, FieldAbsoluteDate<T> date, Frame frame);
 
-    /**
-     * Compute the attitude corresponding to an orbital state.
-     *
-     * @param pvProv local position-velocity provider around current date
-     * @param date   current date
-     * @param frame  reference frame from which attitude is computed
-     * @return attitude attitude on the specified date and position-velocity state
-     * @since 9.0
-     */
-    public native <T extends CalculusFieldElement<T>> FieldAttitude<T> getAttitude_FFF(FieldPVCoordinatesProvider<T> pvProv, FieldAbsoluteDate<T> date, Frame frame);
 
 }

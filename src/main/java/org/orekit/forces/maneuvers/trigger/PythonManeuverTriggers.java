@@ -47,51 +47,31 @@ public class PythonManeuverTriggers implements ManeuverTriggers {
     public void finalize() throws Throwable { pythonDecRef(); }
     public native void pythonDecRef();
 
-    /**
-     * Initialization method.
-     * Called in when Maneuver.init(...) is called (from ForceModel.init(...)).
-     *
-     * @param initialState initial spacecraft state (at the start of propagation).
-     * @param target       date of propagation. Not equal to {@code initialState.getDate()}.
-     */
+    /** {@inheritDoc} */
     @Override
     public native void init(SpacecraftState initialState, AbsoluteDate target);
 
-
-    /**
-     * Find out if the maneuver is firing or not.
-     *
-     * @param date       current date
-     * @param parameters maneuver triggers parameters
-     * @return true if the maneuver is firing, false otherwise
-     */
+    /** {@inheritDoc} */
     @Override
     public native boolean isFiring(AbsoluteDate date, double[] parameters);
 
-    /**
-     * Find out if the maneuver is firing or not.
-     *
-     * @param date       current date
-     * @param parameters maneuver triggers parameters
-     * @return true if the maneuver is firing, false otherwise
-     */
+    /** {@inheritDoc} */
     @Override
-    public <T extends CalculusFieldElement<T>> boolean isFiring(FieldAbsoluteDate<T> date, T[] parameters) {
-        return this.isFiring_FT(date, parameters);
-    }
+    public native <T extends CalculusFieldElement<T>> boolean isFiring(FieldAbsoluteDate<T> date, T[] parameters);
 
+    /** {@inheritDoc} */
     @Override
     public native void addResetter(ManeuverTriggersResetter resetter);
 
-    // TODO add separation
+    /** {@inheritDoc} */
     @Override
     public native <T extends CalculusFieldElement<T>> void addResetter(Field<T> field, FieldManeuverTriggersResetter<T> resetter);
 
-    public native <T extends CalculusFieldElement<T>> boolean isFiring_FT(FieldAbsoluteDate<T> date, T[] parameters);
-
+    /** {@inheritDoc} */
     @Override
     public native Stream<EventDetector> getEventDetectors();
 
+    /** {@inheritDoc} */
     @Override
     public native <T extends CalculusFieldElement<T>> Stream<FieldEventDetector<T>> getFieldEventDetectors(Field<T> field);
 

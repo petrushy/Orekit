@@ -52,35 +52,12 @@ public class PythonTransformProvider implements TransformProvider {
     /** Part of JCC Python interface to object */
     public native void pythonDecRef();
 
-    /**
-     * Get the {@link Transform} corresponding to specified date.
-     *
-     * @param date current date
-     * @return transform at specified date
-     */
+    /** {@inheritDoc} */
     @Override
     public native Transform getTransform(AbsoluteDate date);
 
-    /**
-     * Get the {@link FieldTransform} corresponding to specified date.
-     *
-     * @param date current date
-     * @return transform at specified date
-     * @since 9.0
-     */
+    /** {@inheritDoc} */
     @Override
-    public <T extends CalculusFieldElement<T>> FieldTransform<T> getTransform(FieldAbsoluteDate<T> date) {
-        return this.getTransform_F(date);
-    }
-
-    /**
-     * Get the {@link FieldTransform} corresponding to specified date.
-     *
-     * @param date current date
-     * @return transform at specified date
-     * @since 9.0
-     */
-
-    public native <T extends CalculusFieldElement<T>> FieldTransform<T> getTransform_F(FieldAbsoluteDate<T> date);
+    public native <T extends CalculusFieldElement<T>> FieldTransform<T> getTransform(FieldAbsoluteDate<T> date);
 
 }

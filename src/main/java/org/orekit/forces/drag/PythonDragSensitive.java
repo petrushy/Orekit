@@ -60,24 +60,15 @@ public class PythonDragSensitive implements DragSensitive {
     /** Part of JCC Python interface to object */
     public native void pythonDecRef();
 
-    /**
-     * Get the drivers for supported parameters.
-     * Extension point for Python.
-     *
-     * @return parameters drivers
-     * @since 8.0
-     */
+    /** {@inheritDoc} */
     @Override
     public native List<ParameterDriver> getDragParametersDrivers();
 
+    /** {@inheritDoc} */
     @Override
     public native Vector3D dragAcceleration(SpacecraftState state, double density, Vector3D relativeVelocity, double[] parameters);
 
-     @Override
-    public <T extends CalculusFieldElement<T>> FieldVector3D<T> dragAcceleration(FieldSpacecraftState<T> state, T density, FieldVector3D<T> relativeVelocity, T[] parameters) {
-        return this.dragAcceleration_FTFT(state, density, relativeVelocity, parameters);
-    }
-
-    public native <T extends CalculusFieldElement<T>> FieldVector3D<T> dragAcceleration_FTFT(FieldSpacecraftState<T> state, T density, FieldVector3D<T> relativeVelocity, T[] parameters);
-
+    /** {@inheritDoc} */
+    @Override
+    public native <T extends CalculusFieldElement<T>> FieldVector3D<T> dragAcceleration(FieldSpacecraftState<T> state, T density, FieldVector3D<T> relativeVelocity, T[] parameters);
 }

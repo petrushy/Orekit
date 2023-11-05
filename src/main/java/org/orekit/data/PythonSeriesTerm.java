@@ -49,60 +49,20 @@ public class PythonSeriesTerm extends SeriesTerm {
     public native void pythonDecRef();
 
 
-    /**
-     * Compute the argument for the current date.
-     *
-     * @param elements luni-solar and planetary elements for the current date
-     * @return current value of the argument
-     */
+    /** {@inheritDoc} */
     @Override
     public native double argument(BodiesElements elements);
 
-    /**
-     * Compute the time derivative of the argument for the current date.
-     *
-     * @param elements luni-solar and planetary elements for the current date
-     * @return current time derivative of the argument
-     */
+    /** {@inheritDoc} */
     @Override
     public native double argumentDerivative(BodiesElements elements);
 
-    /**
-     * Compute the argument for the current date.
-     *
-     * @param elements luni-solar and planetary elements for the current date
-     * @return current value of the argument
-     */
+    /** {@inheritDoc} */
     @Override
-    public <T extends CalculusFieldElement<T>> T argument(FieldBodiesElements<T> elements) {
-        return this.argument_F(elements);
-    }
+    public native <T extends CalculusFieldElement<T>> T argument(FieldBodiesElements<T> elements);
 
-    /**
-     * Compute the argument for the current date. Extension point for Python
-     *
-     * @param elements luni-solar and planetary elements for the current date
-     * @return current value of the argument
-     */
-    public native <T extends CalculusFieldElement<T>> T argument_F(FieldBodiesElements<T> elements);
-
-    /**
-     * Compute the time derivative of the argument for the current date.
-     *
-     * @param elements luni-solar and planetary elements for the current date
-     * @return current time derivative of the argument
-     */
+    /** {@inheritDoc} */
     @Override
-    public <T extends CalculusFieldElement<T>> T argumentDerivative(FieldBodiesElements<T> elements) {
-        return this.argumentDerivative_F(elements);
-    }
+    public native <T extends CalculusFieldElement<T>> T argumentDerivative(FieldBodiesElements<T> elements);
 
-    /**
-     * Compute the time derivative of the argument for the current date.
-     * Extension point for Python.
-     * @param elements luni-solar and planetary elements for the current date
-     * @return current time derivative of the argument
-     */
-
-    public native <T extends CalculusFieldElement<T>> T argumentDerivative_F(FieldBodiesElements<T> elements);
-}
+ }

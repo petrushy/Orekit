@@ -55,55 +55,19 @@ public class PythonBoundedAttitudeProvider implements BoundedAttitudeProvider {
     public native void pythonDecRef();
 
 
-    /**
-     * Compute the attitude corresponding to an orbital state.
-     *
-     * @param pvProv local position-velocity provider around current date
-     * @param date   current date
-     * @param frame  reference frame from which attitude is computed
-     * @return attitude attitude on the specified date and position-velocity state
-     */
+    /** {@inheritDoc} */
     @Override
     public native Attitude getAttitude(PVCoordinatesProvider pvProv, AbsoluteDate date, Frame frame);
 
-    /**
-     * Compute the attitude corresponding to an orbital state.
-     *
-     * @param pvProv local position-velocity provider around current date
-     * @param date   current date
-     * @param frame  reference frame from which attitude is computed
-     * @return attitude attitude on the specified date and position-velocity state
-     * @since 9.0
-     */
+    /** {@inheritDoc} */
     @Override
-    public <T extends CalculusFieldElement<T>> FieldAttitude<T> getAttitude(FieldPVCoordinatesProvider<T> pvProv, FieldAbsoluteDate<T> date, Frame frame) {
-        return this.getAttitude_FFF(pvProv, date, frame);
-    }
+    public native <T extends CalculusFieldElement<T>> FieldAttitude<T> getAttitude(FieldPVCoordinatesProvider<T> pvProv, FieldAbsoluteDate<T> date, Frame frame);
 
-    /**
-     * Compute the attitude corresponding to an orbital state.
-     *
-     * @param pvProv local position-velocity provider around current date
-     * @param date   current date
-     * @param frame  reference frame from which attitude is computed
-     * @return attitude attitude on the specified date and position-velocity state
-     * @since 9.0
-     */
-    public native <T extends CalculusFieldElement<T>> FieldAttitude<T> getAttitude_FFF(FieldPVCoordinatesProvider<T> pvProv, FieldAbsoluteDate<T> date, Frame frame);
-
-    /**
-     * Get the first date of the range.
-     *
-     * @return the first date of the range
-     */
+    /** {@inheritDoc} */
     @Override
     public native AbsoluteDate getMinDate();
 
-    /**
-     * Get the last date of the range.
-     *
-     * @return the last date of the range
-     */
+    /** {@inheritDoc} */
     @Override
     public native AbsoluteDate getMaxDate();
 }
