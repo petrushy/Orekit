@@ -53,62 +53,20 @@ public class PythonPropagatorConverter implements PropagatorConverter {
     /** Part of JCC Python interface to object */
     public native void pythonDecRef();
 
-    /**
-     * Convert a propagator into another one.
-     *
-     * @param source         propagator to convert
-     * @param timeSpan       time span considered for conversion
-     * @param nbPoints       number of points for sampling over the time span
-     * @param freeParameters names of the free parameters
-     * @return adapted propagator
-     */
+    /** {@inheritDoc} */
     @Override
     public native Propagator convert(Propagator source, double timeSpan, int nbPoints, List<String> freeParameters);
 
-    /**
-     * Convert a propagator into another one.
-     *
-     * @param source         propagator to convert
-     * @param timeSpan       time span considered for conversion
-     * @param nbPoints       number of points for sampling over the time span
-     * @param freeParameters names of the free parameters
-     * @return adapted propagator
-     */
+    /** {@inheritDoc} */
     @Override
-    public Propagator convert(Propagator source, double timeSpan, int nbPoints, String... freeParameters) {
-        return this.convert_PdiS(source, timeSpan, nbPoints, freeParameters);
-    }
+    public native Propagator convert(Propagator source, double timeSpan, int nbPoints, String... freeParameters);
 
-    public native Propagator convert_PdiS(Propagator source, double timeSpan, int nbPoints, String... freeParameters);
-
-    /**
-     * Find the propagator that minimize the mean square error for a sample of {@link SpacecraftState states}.
-     *
-     * @param states         spacecraft states sample to fit
-     * @param positionOnly   if true, consider only position data otherwise both position and velocity are used
-     * @param freeParameters names of the free parameters
-     * @return adapted propagator
-     */
+    /** {@inheritDoc} */
     @Override
-    public Propagator convert(List<SpacecraftState> states, boolean positionOnly, List<String> freeParameters) {
-        return this.convert_LbL(states, positionOnly, freeParameters);
-    }
+    public native Propagator convert(List<SpacecraftState> states, boolean positionOnly, List<String> freeParameters);
 
-    public native Propagator convert_LbL(List<SpacecraftState> states, boolean positionOnly, List<String> freeParameters);
-
-    /**
-     * Find the propagator that minimize the mean square error for a sample of {@link SpacecraftState states}.
-     *
-     * @param states         spacecraft states sample to fit
-     * @param positionOnly   if true, consider only position data otherwise both position and velocity are used
-     * @param freeParameters names of the free parameters
-     * @return adapted propagator
-     */
+    /** {@inheritDoc} */
     @Override
-    public Propagator convert(List<SpacecraftState> states, boolean positionOnly, String... freeParameters) {
-        return this.convert_LbS(states, positionOnly, freeParameters);
-    }
-
-    public native Propagator convert_LbS(List<SpacecraftState> states, boolean positionOnly, String... freeParameters);
+    public native Propagator convert(List<SpacecraftState> states, boolean positionOnly, String... freeParameters);
 
 }

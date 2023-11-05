@@ -84,27 +84,11 @@ public class PythonAbstractConstantThrustPropulsionModel extends AbstractConstan
 
     /** {@inheritDoc} */
     @Override
-    public <T extends CalculusFieldElement<T>> FieldVector3D<T> getThrustVector(T[] parameters) {
-        return this.getThrustVector_T(parameters);
-    }
-
-    /** {@inheritDoc} */
-    public native <T extends CalculusFieldElement<T>> FieldVector3D<T> getThrustVector_T(T[] parameters);
+    public native <T extends CalculusFieldElement<T>> FieldVector3D<T> getThrustVector(T[] parameters);
 
     /** {@inheritDoc} */
     @Override
-    public <T extends CalculusFieldElement<T>> T getFlowRate(T[] parameters) {
-        return this.getFlowRate_T(parameters);
-    }
-
-
-    /** {@inheritDoc} */
-    public native <T extends CalculusFieldElement<T>> T getFlowRate_T(T[] parameters);
-
-
-    ///** {@inheritDoc} */
-    //@Override
-    //public native void init(SpacecraftState initialState, AbsoluteDate target);
+    public native <T extends CalculusFieldElement<T>> T getFlowRate(T[] parameters);
 
     /** {@inheritDoc} */
     @Override

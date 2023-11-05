@@ -52,59 +52,12 @@ public class PythonMappingFunction implements MappingFunction {
     /** Part of JCC Python interface to object */
     public native void pythonDecRef();
 
-    /**
-     * This method allows the computation of the hydrostatic and
-     * wet mapping functions. The resulting element is an array having the following form:
-     * <ul>
-     * <li>double[0] = m<sub>h</sub>(e) -&gt hydrostatic mapping function
-     * <li>double[1] = m<sub>w</sub>(e) -&gt wet mapping function
-     * </ul>
-     *
-     * @param elevation  the elevation of the satellite, in radians.
-     * @param height     the height of the station in m above sea level.
-     * @param parameters tropospheric model parameters.
-     * @param date       current date
-     * @return a two components array containing the hydrostatic and wet mapping functions.
-     */
+    /** {@inheritDoc} */
     @Override
     public native double[] mappingFactors(double elevation, GeodeticPoint point, AbsoluteDate date);
 
-    /**
-     * This method allows the computation of the hydrostatic and
-     * wet mapping functions. The resulting element is an array having the following form:
-     * <ul>
-     * <li>T[0] = m<sub>h</sub>(e) -&gt hydrostatic mapping function
-     * <li>T[1] = m<sub>w</sub>(e) -&gt wet mapping function
-     * </ul>
-     *
-     * @param elevation  the elevation of the satellite, in radians.
-     * @param height     the height of the station in m above sea level.
-     * @param parameters tropospheric model parameters.
-     * @param date       current date
-     * @return a two components array containing the hydrostatic and wet mapping functions.
-     */
+    /** {@inheritDoc} */
     @Override
-    public <T extends CalculusFieldElement<T>> T[] mappingFactors(T elevation, FieldGeodeticPoint<T> point, FieldAbsoluteDate<T> date) {
-        return this.mappingFactors_TTTF(elevation, point, date);
-    }
-
-
-    /**
-     * This method allows the computation of the hydrostatic and
-     * wet mapping functions. The resulting element is an array having the following form:
-     * <ul>
-     * <li>T[0] = m<sub>h</sub>(e) -&gt hydrostatic mapping function
-     * <li>T[1] = m<sub>w</sub>(e) -&gt wet mapping function
-     * </ul>
-     *
-     * @param elevation  the elevation of the satellite, in radians.
-     * @param height     the height of the station in m above sea level.
-     * @param parameters tropospheric model parameters.
-     * @param date       current date
-     * @return a two components array containing the hydrostatic and wet mapping functions.
-     */
-    public native <T extends CalculusFieldElement<T>> T[] mappingFactors_TTTF(T elevation, FieldGeodeticPoint<T> point, FieldAbsoluteDate<T> date);
-
-
+    public native <T extends CalculusFieldElement<T>> T[] mappingFactors(T elevation, FieldGeodeticPoint<T> point, FieldAbsoluteDate<T> date);
 
 }

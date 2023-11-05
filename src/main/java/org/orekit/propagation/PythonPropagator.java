@@ -116,12 +116,7 @@ public class PythonPropagator implements Propagator {
 
     /** {@inheritDoc} */
     @Override
-    public SpacecraftState propagate(AbsoluteDate start, AbsoluteDate target) {
-        return this.propagate_AA(start, target);
-    }
-
-    /** {@inheritDoc} */
-    public native SpacecraftState propagate_AA(AbsoluteDate start, AbsoluteDate target);
+    public native SpacecraftState propagate(AbsoluteDate start, AbsoluteDate target);
 
     /** {@inheritDoc} */
     @Override
