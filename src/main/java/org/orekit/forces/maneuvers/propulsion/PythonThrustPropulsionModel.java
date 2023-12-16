@@ -81,7 +81,5 @@ public class PythonThrustPropulsionModel implements ThrustPropulsionModel {
 
     /** {@inheritDoc} */
     @Override
-    public List<ParameterDriver> getParametersDrivers() {
-        return null;
-    }
+    public native List<ParameterDriver> getParametersDrivers();
 }
