@@ -1173,6 +1173,38 @@
         </pluginManagement>
       </build>
     </profile>
+    <profile>
+      <id>python-jar</id>
+      <build>
+        <plugins>
+
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-jar-plugin</artifactId>
+            <version>3.2.0</version> <!-- Use the appropriate version -->
+            <executions>
+              <execution>
+                <id>create-python-jar</id>
+                <phase>package</phase>
+                <goals>
+                  <goal>jar</goal>
+                </goals>
+                <configuration>
+                  <classifier>python-wrapper</classifier>
+                  <includes>
+                    <include>**/Python*.class</include>
+                  </includes>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+
+        </plugins>
+      </build>
+      <properties>
+        <maven.test.skip>true</maven.test.skip>
+      </properties>
+    </profile>
   </profiles>
 
 </project>
