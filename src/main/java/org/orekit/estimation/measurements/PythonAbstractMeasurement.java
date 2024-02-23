@@ -27,7 +27,21 @@ public class PythonAbstractMeasurement<T extends ObservedMeasurement<T>> extends
         super(date, observed, sigma, baseWeight, satellites);
     }
 
-
+    /** Simple constructor, for multi-dimensional measurements.
+     * <p>
+     * At construction, a measurement is enabled.
+     * </p>
+     * @param date date of the measurement
+     * @param observed observed value
+     * @param sigma theoretical standard deviation
+     * @param baseWeight base weight
+     * @param satellites satellites related to this measurement
+     * @since 9.3
+     */
+    public PythonAbstractMeasurement(final AbsoluteDate date, final double[] observed,
+                                  final double[] sigma, final double[] baseWeight,
+                                  final List<ObservableSatellite> satellites)  {
+        super(date, observed, sigma, baseWeight, satellites);  }
 
     /** Part of JCC Python interface to object */
     public void pythonExtension(long pythonObject)
