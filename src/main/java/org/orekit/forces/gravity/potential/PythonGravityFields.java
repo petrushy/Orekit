@@ -20,7 +20,6 @@
 
 package org.orekit.forces.gravity.potential;
 
- ;
 import org.orekit.time.AbsoluteDate;
 
 import java.util.List;

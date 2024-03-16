@@ -19,7 +19,6 @@
 
 package org.orekit.time;
 
- ;
 
 import java.util.Collection;
 import java.util.List;

@@ -23,10 +23,7 @@ package org.orekit.estimation.measurements.generation;
 import org.orekit.estimation.measurements.ObservableSatellite;
 import org.orekit.estimation.measurements.ObservedMeasurement;
 import org.orekit.propagation.sampling.OrekitStepInterpolator;
- ;
 import org.orekit.time.AbsoluteDate;
-
-import java.util.List;
 import java.util.Map;
 import java.util.SortedSet;
 

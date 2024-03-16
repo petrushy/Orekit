@@ -21,7 +21,6 @@ package org.orekit.estimation.measurements;
 import org.orekit.propagation.SpacecraftState;
 import org.orekit.time.AbsoluteDate;
 import org.orekit.utils.ParameterDriver;
- ;
 import java.util.List;
 import java.util.SortedSet;
 

@@ -21,7 +21,6 @@
 package org.orekit.propagation.sampling;
 
 import org.orekit.propagation.SpacecraftState;
- ;
 import org.orekit.time.AbsoluteDate;
 
 /** This interface is a space-dynamics aware fixed size step handler.

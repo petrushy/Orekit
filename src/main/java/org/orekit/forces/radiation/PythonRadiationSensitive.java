@@ -22,16 +22,10 @@ package org.orekit.forces.radiation;
 import org.hipparchus.CalculusFieldElement;
 import org.hipparchus.geometry.euclidean.threed.FieldRotation;
 import org.hipparchus.geometry.euclidean.threed.FieldVector3D;
-import org.hipparchus.geometry.euclidean.threed.Rotation;
 import org.hipparchus.geometry.euclidean.threed.Vector3D;
-import org.orekit.frames.Frame;
 import org.orekit.propagation.FieldSpacecraftState;
 import org.orekit.propagation.SpacecraftState;
- ;
-import org.orekit.time.AbsoluteDate;
-import org.orekit.time.FieldAbsoluteDate;
 import org.orekit.utils.ParameterDriver;
-
 import java.util.List;
 
 public class PythonRadiationSensitive implements RadiationSensitive {

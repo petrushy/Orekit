@@ -1,7 +1,5 @@
 package org.orekit.utils;
 
- ;
-
 import java.util.List;
 
 public class PythonParameterDriversProvider implements ParameterDriversProvider {

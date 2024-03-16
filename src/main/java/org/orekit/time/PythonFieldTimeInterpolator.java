@@ -21,7 +21,6 @@
 package org.orekit.time;
 
 import org.hipparchus.CalculusFieldElement;
- ;
 
 import java.util.Collection;
 import java.util.List;

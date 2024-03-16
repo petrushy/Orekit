@@ -21,7 +21,6 @@ package org.orekit.forces.gravity.potential;
 // original java class
 
 
- ;
 import org.orekit.time.AbsoluteDate;
 
 public class PythonUnnormalizedSphericalHarmonicsProvider implements UnnormalizedSphericalHarmonicsProvider {

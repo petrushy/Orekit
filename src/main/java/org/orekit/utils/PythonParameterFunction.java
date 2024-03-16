@@ -19,7 +19,6 @@
 
 package org.orekit.utils;
 
- ;
 import org.orekit.time.AbsoluteDate;
 
 public class PythonParameterFunction implements ParameterFunction {

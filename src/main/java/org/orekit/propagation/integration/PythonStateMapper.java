@@ -33,8 +33,6 @@ public class PythonStateMapper extends StateMapper {
     }
 
 
-    static final long serialVersionUID = 1L;
-
     /** Part of JCC Python interface to object */
     private long pythonObject;
 

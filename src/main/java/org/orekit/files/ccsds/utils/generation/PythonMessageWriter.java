@@ -24,8 +24,6 @@ package org.orekit.files.ccsds.utils.generation;
 import org.orekit.files.ccsds.ndm.NdmConstituent;
 import org.orekit.files.ccsds.section.Header;
 import org.orekit.files.ccsds.section.Segment;
- ;
-
 import java.io.IOException;
 
 public class PythonMessageWriter<H extends Header, S extends Segment<?, ?>, F extends NdmConstituent<H, S>> implements MessageWriter<H, S, F> {
