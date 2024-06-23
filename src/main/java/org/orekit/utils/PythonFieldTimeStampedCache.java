@@ -45,7 +45,11 @@ public class PythonFieldTimeStampedCache<T extends FieldTimeStamped<KK>, KK exte
 
     /** {@inheritDoc} */
     @Override
-    public native int getNeighborsSize();
+    public native Stream<T> getNeighbors(FieldAbsoluteDate<KK> central, int n);
+
+    /** {@inheritDoc} */
+    @Override
+    public native int getMaxNeighborsSize();
 
     /** {@inheritDoc} */
     @Override

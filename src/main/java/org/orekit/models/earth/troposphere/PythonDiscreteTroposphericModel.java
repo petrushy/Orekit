@@ -31,6 +31,7 @@ import org.orekit.utils.ParameterDriver;
 
 import java.util.List;
 
+@Deprecated
 public class PythonDiscreteTroposphericModel implements DiscreteTroposphericModel {
 
     /** Part of JCC Python interface to object */

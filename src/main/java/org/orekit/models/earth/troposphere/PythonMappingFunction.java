@@ -25,6 +25,7 @@ import org.orekit.bodies.GeodeticPoint;
 import org.orekit.time.AbsoluteDate;
 import org.orekit.time.FieldAbsoluteDate;
 
+@Deprecated
 public class PythonMappingFunction implements MappingFunction {
 
     /** Part of JCC Python interface to object */

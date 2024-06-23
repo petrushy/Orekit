@@ -61,12 +61,7 @@ public class PythonLibrationOrbit extends LibrationOrbit {
         super(system, initialPV, orbitalPeriod);
     }
 
-    /**
-     * Apply the differential correction to compute more accurate initial PV.
-     *
-     * @param diff cr3bp differential correction
-     * @return corrected PV coordinates
-     */
+    /** {@inheritDoc} */
     @Override
     public native PVCoordinates applyCorrectionOnPV(CR3BPDifferentialCorrection diff);
 }
