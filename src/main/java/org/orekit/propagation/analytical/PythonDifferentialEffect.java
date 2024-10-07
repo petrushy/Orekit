@@ -28,7 +28,7 @@ public class PythonDifferentialEffect implements AdapterPropagator.DifferentialE
     /** Part of JCC Python interface to object */
     public native void pythonDecRef();
 
-
+    /** {@inheritDoc} */
     @Override
     public native SpacecraftState apply(SpacecraftState original);
 }
