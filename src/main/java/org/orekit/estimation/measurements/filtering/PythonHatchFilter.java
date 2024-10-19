@@ -1,6 +1,28 @@
 package org.orekit.estimation.measurements.filtering;
 
 public class PythonHatchFilter extends HatchFilter {
+
+    /** Part of JCC Python interface to object */
+    protected long pythonObject;
+
+    /** Part of JCC Python interface to object */
+    public void pythonExtension(long pythonObject) {
+        this.pythonObject = pythonObject;
+    }
+
+    /** Part of JCC Python interface to object */
+    public long pythonExtension() {
+        return this.pythonObject;
+    }
+
+    /** Part of JCC Python interface to object */
+    public void finalize() throws Throwable {
+        pythonDecRef();
+    }
+
+    /** Part of JCC Python interface to object */
+    public native void pythonDecRef();
+
     /**
      * Constructor for the Abstract Hatch Filter.
      * <p>
