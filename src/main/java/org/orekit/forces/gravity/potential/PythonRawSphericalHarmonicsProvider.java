@@ -19,7 +19,6 @@
 
 package org.orekit.forces.gravity.potential;
 
- ;
 import org.orekit.time.AbsoluteDate;
 
 public class PythonRawSphericalHarmonicsProvider implements RawSphericalHarmonicsProvider {

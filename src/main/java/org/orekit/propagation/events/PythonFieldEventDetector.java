@@ -95,5 +95,7 @@ public class PythonFieldEventDetector<T extends CalculusFieldElement<T>> impleme
     @Override
     public native FieldEventHandler<T> getHandler();
 
-
+    //** {@inheritDoc} */
+    @Override
+    public native void finish(FieldSpacecraftState<T> state);
 }

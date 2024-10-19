@@ -23,8 +23,6 @@ package org.orekit.propagation.integration;
 
 import org.hipparchus.CalculusFieldElement;
 import org.orekit.propagation.FieldSpacecraftState;
-import org.orekit.propagation.SpacecraftState;
- ;
 import org.orekit.time.FieldAbsoluteDate;
 
 public class PythonFieldAdditionalDerivativesProvider<T extends CalculusFieldElement<T>> implements FieldAdditionalDerivativesProvider<T> {

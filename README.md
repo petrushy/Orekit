@@ -93,3 +93,11 @@ More detailed information is available in the
 Orekit is licensed by [CS GROUP](https://www.c-s.fr/) under
 the [Apache License, version 2.0](http://www.apache.org/licenses/LICENSE-2.0.html).
 A copy of this license is provided in the [LICENSE.txt](LICENSE.txt) file.
+
+# Orekit-python-wrapper release checklist
+
+* Merge released upstream branch into orekit-python develop branch
+* Check if any new classes, interfaces
+* Create new wrapper classes if needed
+* Compile and check for warnings
+* 

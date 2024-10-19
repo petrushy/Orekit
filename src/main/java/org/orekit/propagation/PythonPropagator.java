@@ -25,11 +25,9 @@ import org.orekit.frames.Frame;
 import org.orekit.propagation.events.EventDetector;
 import org.orekit.propagation.sampling.OrekitStepHandler;
 import org.orekit.propagation.sampling.StepHandlerMultiplexer;
- ;
 import org.orekit.time.AbsoluteDate;
 import org.orekit.utils.DoubleArrayDictionary;
 import org.orekit.utils.TimeStampedPVCoordinates;
-import org.orekit.utils.PVCoordinates;
 
 import java.util.Collection;
 import java.util.List;

@@ -58,5 +58,9 @@ public class PythonEventHandler implements EventHandler
 
 	@Override
 	public native SpacecraftState resetState(EventDetector detector, SpacecraftState oldState);
-}
+
+	@Override
+	public native void finish(final SpacecraftState finalState, final EventDetector detector);
+
+	}
 

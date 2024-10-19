@@ -68,4 +68,9 @@ public class PythonFieldEventHandler<KK extends FieldEventDetector<T>, T extends
     /** {@inheritDoc} */
     @Override
     public native FieldSpacecraftState<T> resetState(FieldEventDetector<T> detector, FieldSpacecraftState<T> oldState);
-}
+
+    /** {@inheritDoc} */
+    @Override
+    public native void finish(final FieldSpacecraftState<T> finalState, final FieldEventDetector<T> detector);
+
+    }

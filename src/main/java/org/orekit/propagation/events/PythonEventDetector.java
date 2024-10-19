@@ -65,5 +65,9 @@ public class PythonEventDetector implements EventDetector {
 	@Override
 	public native EventHandler getHandler();
 
+	/** {@inheritDoc} */
+	@Override
+	public native void finish(SpacecraftState state);
+
 }
 
