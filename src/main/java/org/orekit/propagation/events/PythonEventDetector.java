@@ -23,6 +23,7 @@ package org.orekit.propagation.events;
 
 import org.orekit.propagation.SpacecraftState;
 import org.orekit.propagation.events.handlers.EventHandler;
+import org.orekit.propagation.events.intervals.AdaptableInterval;
 import org.orekit.time.AbsoluteDate;
  ;
 
@@ -68,6 +69,10 @@ public class PythonEventDetector implements EventDetector {
 	/** {@inheritDoc} */
 	@Override
 	public native void finish(SpacecraftState state);
+
+	/** {@inheritDoc} */
+	@Override
+	public native void reset(SpacecraftState state, AbsoluteDate t);
 
 }
 

@@ -23,6 +23,7 @@ package org.orekit.propagation.events;
 import org.hipparchus.CalculusFieldElement;
 import org.orekit.propagation.FieldSpacecraftState;
 import org.orekit.propagation.events.handlers.FieldEventHandler;
+import org.orekit.propagation.events.intervals.FieldAdaptableInterval;
 import org.orekit.time.FieldAbsoluteDate;
 
 public class PythonFieldEventDetector<T extends CalculusFieldElement<T>> implements FieldEventDetector<T> {
@@ -56,6 +57,10 @@ public class PythonFieldEventDetector<T extends CalculusFieldElement<T>> impleme
      */
     @Override
     public native void init(FieldSpacecraftState<T> s0, FieldAbsoluteDate<T> t);
+
+    //** {@inheritDoc} */
+    @Override
+    public native void reset(FieldSpacecraftState<T> s0, FieldAbsoluteDate<T> t);
 
     /**
      * Compute the value of the switching function.
@@ -98,4 +103,7 @@ public class PythonFieldEventDetector<T extends CalculusFieldElement<T>> impleme
     //** {@inheritDoc} */
     @Override
     public native void finish(FieldSpacecraftState<T> state);
+
+    @Override
+    public native FieldEventDetectionSettings<T> getDetectionSettings();
 }

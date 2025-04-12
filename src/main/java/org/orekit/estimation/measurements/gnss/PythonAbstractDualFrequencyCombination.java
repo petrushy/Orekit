@@ -20,7 +20,7 @@
 
 package org.orekit.estimation.measurements.gnss;
 
-import org.orekit.gnss.Frequency;
+import org.orekit.gnss.GnssSignal;
 import org.orekit.gnss.SatelliteSystem;
 
 public class PythonAbstractDualFrequencyCombination extends AbstractDualFrequencyCombination {
@@ -59,25 +59,12 @@ public class PythonAbstractDualFrequencyCombination extends AbstractDualFrequenc
         super(type, system);
     }
 
-    /**
-     * Get the combined observed value of two measurements.
-     *
-     * @param obs1 observed value of the first measurement
-     * @param f1   frequency of the first measurement
-     * @param obs2 observed value of the second measurement
-     * @param f2   frequency of the second measurement
-     * @return combined observed value
-     */
+    /** {@inheritDoc} */
     @Override
-    public native double getCombinedValue(double obs1, Frequency f1, double obs2, Frequency f2);
+    public native double getCombinedValue(double obs1, GnssSignal s1, double obs2, GnssSignal s2);
 
-    /**
-     * Get the combined frequency of two measurements.
-     *
-     * @param f1 frequency of the first measurement
-     * @param f2 frequency of the second measurement
-     * @return combined frequency in MHz
-     */
+    /** {@inheritDoc} */
     @Override
-    public native double getCombinedFrequency(Frequency f1, Frequency f2);
+    public native double getCombinedFrequency(GnssSignal s1, GnssSignal s2);
+
 }

@@ -22,12 +22,9 @@
 package org.orekit.estimation.measurements.gnss;
 
 import org.orekit.files.rinex.observation.ObservationDataSet;
-import org.orekit.gnss.Frequency;
 import org.orekit.gnss.SatelliteSystem;
-import org.orekit.time.AbsoluteDate;
 
 import java.util.List;
-import java.util.Map;
 
 public class PythonAbstractCycleSlipDetector extends AbstractCycleSlipDetector {
 
@@ -92,18 +89,6 @@ public class PythonAbstractCycleSlipDetector extends AbstractCycleSlipDetector {
     @Override
     public List<CycleSlipDetectorResults> getResults() {
         return super.getResults();
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public List<Map<Frequency, DataForDetection>> getStuffReference() {
-        return super.getStuffReference();
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public void cycleSlipDataSet(String nameSat, AbsoluteDate date, double value, Frequency freq) {
-        super.cycleSlipDataSet(nameSat, date, value, freq);
     }
 
     /** {@inheritDoc} */
