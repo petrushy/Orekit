@@ -1,4 +1,4 @@
-/* Copyright 2022-2024 Romain Serra
+/* Copyright 2022-2025 Romain Serra
  * Licensed to CS GROUP (CS) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -31,7 +31,7 @@ import org.orekit.errors.OrekitMessages;
 public class EquinoctialLongitudeArgumentUtility {
 
     /** Tolerance for stopping criterion in iterative conversion from mean to eccentric angle. */
-    private static final double TOLERANCE_CONVERGENCE = 1.0e-12;
+    private static final double TOLERANCE_CONVERGENCE = 1.0e-11;
 
     /** Maximum number of iterations in iterative conversion from mean to eccentric angle. */
     private static final int MAXIMUM_ITERATION = 50;
@@ -156,8 +156,8 @@ public class EquinoctialLongitudeArgumentUtility {
      * @return the mean longitude argument.
      */
     public static double trueToMean(final double ex, final double ey, final double lV) {
-        final double alphaE = trueToEccentric(ex, ey, lV);
-        return eccentricToMean(ex, ey, alphaE);
+        final double lE = trueToEccentric(ex, ey, lV);
+        return eccentricToMean(ex, ey, lE);
     }
 
     /**
@@ -169,8 +169,8 @@ public class EquinoctialLongitudeArgumentUtility {
      * @return the true longitude argument.
      */
     public static double meanToTrue(final double ex, final double ey, final double lM) {
-        final double alphaE = meanToEccentric(ex, ey, lM);
-        return eccentricToTrue(ex, ey, alphaE);
+        final double lE = meanToEccentric(ex, ey, lM);
+        return eccentricToTrue(ex, ey, lE);
     }
 
     /**
