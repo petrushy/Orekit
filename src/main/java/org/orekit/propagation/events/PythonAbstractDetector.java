@@ -60,15 +60,20 @@ public class PythonAbstractDetector<T extends AbstractDetector<T>> extends Abstr
 	 * @param maxIter maximum number of iterations in the event time search
 	 * @param handler event handler to call at event occurrences
 	 */
-	public PythonAbstractDetector(double maxCheck, double threshold, int maxIter, EventHandler handler) {
+	public PythonAbstractDetector(final double maxCheck, final double threshold, final int maxIter,
+								  final EventHandler handler) {
 		super(maxCheck, threshold, maxIter, handler);
 	}
 
-
-	public PythonAbstractDetector(final AdaptableInterval maxCheck, final double threshold, final int maxIter,
-							   final EventHandler handler) {
-		super(maxCheck, threshold, maxIter, handler);
+	/** Build a new instance.
+	 * @param detectionSettings event detection settings
+	 * @param handler event handler to call at event occurrences
+	 * @since 12.2
+	 */
+	public PythonAbstractDetector(final EventDetectionSettings detectionSettings, final EventHandler handler) {
+		super(detectionSettings, handler);
 	}
+
 
 	/** {@inheritDoc} */
     @Override

@@ -1,7 +1,7 @@
 package org.orekit.gnss.metric.parser;
 
 import org.orekit.gnss.metric.messages.ParsedMessage;
- ;
+import org.orekit.time.TimeScales;
 
 public class PythonMessageType implements MessageType {
 
@@ -16,6 +16,9 @@ public class PythonMessageType implements MessageType {
     public void finalize() throws Throwable { pythonDecRef(); }
     public native void pythonDecRef();
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public native ParsedMessage parse(EncodedMessage encodedMessage, int messageNumber);
+    public native ParsedMessage parse(EncodedMessage encodedMessage, int messageNumber, TimeScales timeScales);
 }

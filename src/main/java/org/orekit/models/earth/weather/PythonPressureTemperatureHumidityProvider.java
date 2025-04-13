@@ -33,12 +33,12 @@ public class PythonPressureTemperatureHumidityProvider implements PressureTemper
     /** Part of JCC Python interface to object */
     public native void pythonDecRef();
 
+    /** {@inheritDoc} */
+    @Override
+    public native PressureTemperatureHumidity getWeatherParameters(GeodeticPoint location, AbsoluteDate date);
 
     /** {@inheritDoc} */
     @Override
-    public native PressureTemperatureHumidity getWeatherParamerers(GeodeticPoint location, AbsoluteDate date);
-
-    /** {@inheritDoc} */
-    @Override
-    public native <T extends CalculusFieldElement<T>> FieldPressureTemperatureHumidity<T> getWeatherParamerers(FieldGeodeticPoint<T> location, FieldAbsoluteDate<T> date);
+    public native <T extends CalculusFieldElement<T>> FieldPressureTemperatureHumidity<T> getWeatherParameters(
+            FieldGeodeticPoint<T> location, FieldAbsoluteDate<T> date);
 }

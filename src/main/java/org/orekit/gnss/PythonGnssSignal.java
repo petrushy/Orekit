@@ -35,4 +35,12 @@ public class PythonGnssSignal implements GnssSignal {
     /** {@inheritDoc} */
     @Override
     public native double getFrequency();
+
+    /** {@inheritDoc} */
+    @Override
+    public native String getName();
+
+    /** {@inheritDoc} */
+    @Override
+    public native SatelliteSystem getSatelliteSystem();
 }
