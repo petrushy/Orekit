@@ -20,6 +20,7 @@
 package org.orekit.bodies;
 
 import org.hipparchus.Field;
+import org.hipparchus.geometry.euclidean.threed.FieldVector3D;
 import org.hipparchus.CalculusFieldElement;
 import org.orekit.frames.Frame;
 import org.orekit.time.AbsoluteDate;
@@ -82,4 +83,8 @@ public class PythonCelestialBody implements CelestialBody {
     /** {@inheritDoc} */
     @Override
     public native TimeStampedPVCoordinates getPVCoordinates(AbsoluteDate date, Frame frame);
+
+    /** {@inheritDoc} */
+    @Override
+    public native <T extends CalculusFieldElement<T>> FieldVector3D<T> getPosition(FieldAbsoluteDate<T> date, Frame frame);
 }

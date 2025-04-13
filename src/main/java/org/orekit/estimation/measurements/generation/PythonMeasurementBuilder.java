@@ -21,11 +21,10 @@
 
 package org.orekit.estimation.measurements.generation;
 
+import org.orekit.estimation.measurements.EstimatedMeasurementBase;
 import org.orekit.estimation.measurements.EstimationModifier;
 import org.orekit.estimation.measurements.ObservableSatellite;
 import org.orekit.estimation.measurements.ObservedMeasurement;
-import org.orekit.propagation.SpacecraftState;
-
 import org.orekit.propagation.sampling.OrekitStepInterpolator;
 import org.orekit.time.AbsoluteDate;
 
@@ -58,41 +57,24 @@ public class PythonMeasurementBuilder<T extends ObservedMeasurement<T>> implemen
     /** Part of JCC Python interface to object */
     public native void pythonDecRef();
 
-    /**
-     * Initialize builder at the start of a measurements generation.
-     * <p>
-     * This method is called once at the start of the measurements generation. It
-     * may be used by the builder to initialize some internal data
-     * if needed, typically setting up parameters reference dates.
-     * </p>
-     *
-     * @param start start of the measurements time span
-     * @param end   end of the measurements time span
-     */
+    /** {@inheritDoc} */
     @Override
     public native void init(AbsoluteDate start, AbsoluteDate end);
 
-    /**
-     * Add a modifier.
-     *
-     * @param modifier modifier to add
-     */
+    /** {@inheritDoc} */
     @Override
     public native void addModifier(EstimationModifier<T> modifier);
 
-    /**
-     * Get the modifiers that apply to a measurement.
-     *
-     * @return modifiers that apply to a measurement
-     * @see #addModifier(EstimationModifier)
-     */
+    /** {@inheritDoc} */
     @Override
     public native List<EstimationModifier<T>> getModifiers();
 
+    /** {@inheritDoc} */
     @Override
     public native ObservableSatellite[] getSatellites();
 
+    /** {@inheritDoc} */
     @Override
-    public native T build(AbsoluteDate date, Map<ObservableSatellite, OrekitStepInterpolator> interpolators);
+    public native EstimatedMeasurementBase<T> build(AbsoluteDate date, Map<ObservableSatellite, OrekitStepInterpolator> interpolators);
 
 }

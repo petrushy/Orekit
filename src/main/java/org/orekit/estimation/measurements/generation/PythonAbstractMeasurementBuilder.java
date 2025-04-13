@@ -3,8 +3,6 @@ package org.orekit.estimation.measurements.generation;
 import org.hipparchus.random.CorrelatedRandomVectorGenerator;
 import org.orekit.estimation.measurements.ObservableSatellite;
 import org.orekit.estimation.measurements.ObservedMeasurement;
-import org.orekit.estimation.measurements.generation.AbstractMeasurementBuilder;
-import org.orekit.propagation.SpacecraftState;
 import org.orekit.propagation.sampling.OrekitStepInterpolator;
 import org.orekit.time.AbsoluteDate;
 
@@ -61,84 +59,31 @@ public class PythonAbstractMeasurementBuilder<T extends ObservedMeasurement<T>> 
         super(noiseSource, sigma, baseWeight, satellites);
     }
 
-    /**
-     * Get the start of the measurements time span.
-     *
-     * @return start of the measurements time span
-     */
+    /** {@inheritDoc} */
     @Override
-    public AbsoluteDate getStart() {
-        return super.getStart();
-    }
+    public native AbsoluteDate getStart();
 
-    /**
-     * Get the end of the measurements time span.
-     *
-     * @return end of the measurements time span
-     */
+    /** {@inheritDoc} */
     @Override
-    public AbsoluteDate getEnd() {
-        return super.getEnd();
-    }
+    public native AbsoluteDate getEnd();
 
-    /**
-     * Generate a noise vector.
-     *
-     * @return noise vector (null if we generate perfect measurements)
-     */
+    /** {@inheritDoc} */
     @Override
-    public double[] getNoise() {
-        return super.getNoise();
-    }
+    public native double[] getNoise();
 
-    /**
-     * Get the theoretical standard deviation.
-     * <p>
-     * The theoretical standard deviation is a theoretical value
-     * used for normalizing the residuals. It acts as a weighting
-     * factor to mix appropriately measurements with different units
-     * and different accuracy. The value has the same dimension as
-     * the measurement itself (i.e. when a residual is divided by
-     * this value, it becomes dimensionless).
-     * </p>
-     *
-     * @return expected standard deviation
-     * @see #getBaseWeight()
-     */
+    /** {@inheritDoc} */
     @Override
-    public double[] getTheoreticalStandardDeviation() {
-        return super.getTheoreticalStandardDeviation();
-    }
+    public native double[] getTheoreticalStandardDeviation();
 
-    /**
-     * Get the base weight associated with the measurement
-     * <p>
-     * The base weight is used on residuals already normalized thanks to
-     * {@link #getTheoreticalStandardDeviation()} to increase or
-     * decrease relative effect of some measurements with respect to
-     * other measurements. It is a dimensionless value, typically between
-     * 0 and 1 (but it can really have any non-negative value).
-     * </p>
-     *
-     * @return base weight
-     * @see #getTheoreticalStandardDeviation()
-     */
+    /** {@inheritDoc} */
     @Override
-    public double[] getBaseWeight() {
-        return super.getBaseWeight();
-    }
+    public native double[] getBaseWeight();
 
-    /**
-     * Get the satellites related to this measurement.
-     *
-     * @return satellites related to this measurement
-     */
+    /** {@inheritDoc} */
     @Override
-    public ObservableSatellite[] getSatellites() {
-        return super.getSatellites();
-    }
+    public native ObservableSatellite[] getSatellites();
 
+    /** {@inheritDoc} */
     @Override
-    public native T build(AbsoluteDate date, Map<ObservableSatellite, OrekitStepInterpolator> interpolators);
-
+    public native T buildObserved(AbsoluteDate date, Map<ObservableSatellite, OrekitStepInterpolator> interpolators);
 }

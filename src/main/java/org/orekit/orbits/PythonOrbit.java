@@ -23,12 +23,8 @@ package org.orekit.orbits;
 import org.hipparchus.geometry.euclidean.threed.Vector3D;
 import org.orekit.frames.Frame;
 import org.orekit.time.AbsoluteDate;
-import org.orekit.orbits.PositionAngleType;
+import org.orekit.time.TimeOffset;
 import org.orekit.utils.TimeStampedPVCoordinates;
-
-import java.util.stream.Stream;
-
-// TODO more abstract classes in this package to be subclassed
 
 public class PythonOrbit extends Orbit {
 
@@ -36,21 +32,17 @@ public class PythonOrbit extends Orbit {
     private long pythonObject;
 
     /** Part of JCC Python interface to object */
-    public void pythonExtension(long pythonObject)
-    {
+    public void pythonExtension(long pythonObject) {
         this.pythonObject = pythonObject;
     }
 
     /** Part of JCC Python interface to object */
-    public long pythonExtension()
-    {
+    public long pythonExtension() {
         return this.pythonObject;
     }
 
     /** Part of JCC Python interface to object */
-    public void finalize()
-            throws Throwable
-    {
+    public void finalize() throws Throwable {
         pythonDecRef();
     }
 
@@ -91,300 +83,123 @@ public class PythonOrbit extends Orbit {
         super(pvCoordinates, frame, mu);
     }
 
-    /**
-     * Get the orbit type.
-     *
-     * @return orbit type
-     */
+    /** {@inheritDoc} */
     @Override
     public native OrbitType getType();
 
-    /**
-     * Get the semi-major axis.
-     * <p>Note that the semi-major axis is considered negative for hyperbolic orbits.</p>
-     *
-     * @return semi-major axis (m)
-     */
+    /** {@inheritDoc} */
     @Override
     public native double getA();
 
-    /**
-     * Get the semi-major axis derivative.
-     * <p>Note that the semi-major axis is considered negative for hyperbolic orbits.</p>
-     * <p>
-     * If the orbit was created without derivatives, the value returned is {@link Double#NaN}.
-     * </p>
-     *
-     * @return semi-major axis  derivative (m/s)
-     * @see #hasDerivatives()
-     * @since 9.0
-     */
+    /** {@inheritDoc} */
     @Override
     public native double getADot();
 
-    /**
-     * Get the first component of the equinoctial eccentricity vector derivative.
-     *
-     * @return first component of the equinoctial eccentricity vector derivative
-     */
+    /** {@inheritDoc} */
     @Override
     public native double getEquinoctialEx();
 
-    /**
-     * Get the first component of the equinoctial eccentricity vector.
-     * <p>
-     * If the orbit was created without derivatives, the value returned is {@link Double#NaN}.
-     * </p>
-     *
-     * @return first component of the equinoctial eccentricity vector
-     * @see #hasDerivatives()
-     * @since 9.0
-     */
+    /** {@inheritDoc} */
     @Override
     public native double getEquinoctialExDot();
 
-    /**
-     * Get the second component of the equinoctial eccentricity vector derivative.
-     *
-     * @return second component of the equinoctial eccentricity vector derivative
-     */
+    /** {@inheritDoc} */
     @Override
     public native double getEquinoctialEy();
 
-    /**
-     * Get the second component of the equinoctial eccentricity vector.
-     * <p>
-     * If the orbit was created without derivatives, the value returned is {@link Double#NaN}.
-     * </p>
-     *
-     * @return second component of the equinoctial eccentricity vector
-     * @see #hasDerivatives()
-     * @since 9.0
-     */
+    /** {@inheritDoc} */
     @Override
     public native double getEquinoctialEyDot();
 
-    /**
-     * Get the first component of the inclination vector.
-     *
-     * @return first component of the inclination vector
-     */
+    /** {@inheritDoc} */
     @Override
     public native double getHx();
 
-    /**
-     * Get the first component of the inclination vector derivative.
-     * <p>
-     * If the orbit was created without derivatives, the value returned is {@link Double#NaN}.
-     * </p>
-     *
-     * @return first component of the inclination vector derivative
-     * @see #hasDerivatives()
-     * @since 9.0
-     */
+    /** {@inheritDoc} */
     @Override
     public native double getHxDot();
 
-    /**
-     * Get the second component of the inclination vector.
-     *
-     * @return second component of the inclination vector
-     */
+    /** {@inheritDoc} */
     @Override
     public native double getHy();
 
-    /**
-     * Get the second component of the inclination vector derivative.
-     * <p>
-     * If the orbit was created without derivatives, the value returned is {@link Double#NaN}.
-     * </p>
-     *
-     * @return second component of the inclination vector derivative
-     * @see #hasDerivatives()
-     * @since 9.0
-     */
+    /** {@inheritDoc} */
     @Override
     public native double getHyDot();
 
-    /**
-     * Get the eccentric longitude argument.
-     *
-     * @return E + ω + Ω eccentric longitude argument (rad)
-     */
+    /** {@inheritDoc} */
     @Override
     public native double getLE();
 
-    /**
-     * Get the eccentric longitude argument derivative.
-     * <p>
-     * If the orbit was created without derivatives, the value returned is {@link Double#NaN}.
-     * </p>
-     *
-     * @return d(E + ω + Ω)/dt eccentric longitude argument derivative (rad/s)
-     * @see #hasDerivatives()
-     * @since 9.0
-     */
+    /** {@inheritDoc} */
     @Override
     public native double getLEDot();
 
-    /**
-     * Get the true longitude argument.
-     *
-     * @return v + ω + Ω true longitude argument (rad)
-     */
+    /** {@inheritDoc} */
     @Override
     public native double getLv();
 
-    /**
-     * Get the true longitude argument derivative.
-     * <p>
-     * If the orbit was created without derivatives, the value returned is {@link Double#NaN}.
-     * </p>
-     *
-     * @return d(v + ω + Ω)/dt true longitude argument derivative (rad/s)
-     * @see #hasDerivatives()
-     * @since 9.0
-     */
+    /** {@inheritDoc} */
     @Override
     public native double getLvDot();
 
-    /**
-     * Get the mean longitude argument.
-     *
-     * @return M + ω + Ω mean longitude argument (rad)
-     */
+    /** {@inheritDoc} */
     @Override
     public native double getLM();
 
-    /**
-     * Get the mean longitude argument derivative.
-     * <p>
-     * If the orbit was created without derivatives, the value returned is {@link Double#NaN}.
-     * </p>
-     *
-     * @return d(M + ω + Ω)/dt mean longitude argument derivative (rad/s)
-     * @see #hasDerivatives()
-     * @since 9.0
-     */
+    /** {@inheritDoc} */
     @Override
     public native double getLMDot();
 
-    /**
-     * Get the eccentricity.
-     *
-     * @return eccentricity
-     */
+    /** {@inheritDoc} */
     @Override
     public native double getE();
 
-    /**
-     * Get the eccentricity derivative.
-     * <p>
-     * If the orbit was created without derivatives, the value returned is {@link Double#NaN}.
-     * </p>
-     *
-     * @return eccentricity derivative
-     * @see #hasDerivatives()
-     * @since 9.0
-     */
+    /** {@inheritDoc} */
     @Override
     public native double getEDot();
 
-    /**
-     * Get the inclination.
-     *
-     * @return inclination (rad)
-     */
+    /** {@inheritDoc} */
     @Override
     public native double getI();
 
-    /**
-     * Get the inclination derivative.
-     * <p>
-     * If the orbit was created without derivatives, the value returned is {@link Double#NaN}.
-     * </p>
-     *
-     * @return inclination derivative (rad/s)
-     * @see #hasDerivatives()
-     * @since 9.0
-     */
+    /** {@inheritDoc} */
     @Override
     public native double getIDot();
 
+    /** {@inheritDoc} */
     @Override
     public native Vector3D initPosition();
 
-    /**
-     * Compute the position/velocity coordinates from the canonical parameters.
-     *
-     * @return computed position/velocity coordinates
-     */
+    /** {@inheritDoc} */
     @Override
     public native TimeStampedPVCoordinates initPVCoordinates();
 
-    /**
-     * Get a time-shifted orbit.
-     * <p>
-     * The orbit can be slightly shifted to close dates. The shifting model is a
-     * Keplerian one if no derivatives are available in the orbit, or Keplerian
-     * plus quadratic effect of the non-Keplerian acceleration if derivatives are
-     * available. Shifting is <em>not</em> intended as a replacement for proper
-     * orbit propagation but should be sufficient for small time shifts or coarse
-     * accuracy.
-     * </p>
-     *
-     * @param dt time shift in seconds
-     * @return a new orbit, shifted with respect to the instance (which is immutable)
-     */
+    /** {@inheritDoc} */
     @Override
     public native Orbit shiftedBy(double dt);
 
-    /**
-     * Compute the Jacobian of the orbital parameters with mean angle with respect to the Cartesian parameters.
-     * <p>
-     * Element {@code jacobian[i][j]} is the derivative of parameter i of the orbit with
-     * respect to Cartesian coordinate j. This means each row correspond to one orbital parameter
-     * whereas columns 0 to 5 correspond to the Cartesian coordinates x, y, z, xDot, yDot and zDot.
-     * </p>
-     *
-     * @return 6x6 Jacobian matrix
-     * @see #computeJacobianEccentricWrtCartesian()
-     * @see #computeJacobianTrueWrtCartesian()
-     */
+    /** {@inheritDoc} */
     @Override
     public native double[][] computeJacobianMeanWrtCartesian();
 
-    /**
-     * Compute the Jacobian of the orbital parameters with eccentric angle with respect to the Cartesian parameters.
-     * <p>
-     * Element {@code jacobian[i][j]} is the derivative of parameter i of the orbit with
-     * respect to Cartesian coordinate j. This means each row correspond to one orbital parameter
-     * whereas columns 0 to 5 correspond to the Cartesian coordinates x, y, z, xDot, yDot and zDot.
-     * </p>
-     *
-     * @return 6x6 Jacobian matrix
-     * @see #computeJacobianMeanWrtCartesian()
-     * @see #computeJacobianTrueWrtCartesian()
-     */
+    /** {@inheritDoc} */
     @Override
     public native double[][] computeJacobianEccentricWrtCartesian();
 
-    /**
-     * Compute the Jacobian of the orbital parameters with true angle with respect to the Cartesian parameters.
-     * <p>
-     * Element {@code jacobian[i][j]} is the derivative of parameter i of the orbit with
-     * respect to Cartesian coordinate j. This means each row correspond to one orbital parameter
-     * whereas columns 0 to 5 correspond to the Cartesian coordinates x, y, z, xDot, yDot and zDot.
-     * </p>
-     *
-     * @return 6x6 Jacobian matrix
-     * @see #computeJacobianMeanWrtCartesian()
-     * @see #computeJacobianEccentricWrtCartesian()
-     */
+    /** {@inheritDoc} */
     @Override
     public native double[][] computeJacobianTrueWrtCartesian();
 
+    /** {@inheritDoc} */
     @Override
     public native void addKeplerContribution(PositionAngleType type, double gm, double[] pDot);
 
+    /** {@inheritDoc} */
+    @Override
+    public native Orbit inFrame(Frame inertialFrame);
+
+    /** {@inheritDoc} */
+    @Override
+    public native Orbit shiftedBy(TimeOffset dt);
 }

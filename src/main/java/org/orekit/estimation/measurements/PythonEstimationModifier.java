@@ -50,13 +50,19 @@ public class PythonEstimationModifier<T extends ObservedMeasurement<T>> implemen
     /** Part of JCC Python interface to object */
     public native void pythonDecRef();
 
-    /** {@inheritDoc} */    @Override
+    /** {@inheritDoc} */    
+    @Override
     public native List<ParameterDriver> getParametersDrivers();
 
     /** {@inheritDoc} */
     @Override
     public native void modifyWithoutDerivatives(EstimatedMeasurementBase<T> estimated);
 
-    /** {@inheritDoc} */    @Override
+    /** {@inheritDoc} */    
+    @Override
     public native void modify(EstimatedMeasurement<T> estimated);
+
+    /** {@inheritDoc} */
+    @Override
+    public native String getEffectName();
 }

@@ -1,5 +1,7 @@
 package org.orekit.estimation.sequential;
 
+import org.hipparchus.filtering.kalman.KalmanFilter;
+import org.hipparchus.linear.MatrixDecomposer;
 import org.orekit.propagation.conversion.PropagatorBuilder;
 
 import java.util.List;
@@ -34,12 +36,22 @@ public class PythonAbstractKalmanEstimator extends AbstractKalmanEstimator {
     /**
      * Constructor.
      *
-     * @param builders list of propagator builders
+     * @param decomposer matrix decomposer for filter
+     * @param builders   list of propagator builders
      */
-    public PythonAbstractKalmanEstimator(List<? extends PropagatorBuilder> builders) {
-        super(builders);
+    public PythonAbstractKalmanEstimator(MatrixDecomposer decomposer, List<? extends PropagatorBuilder> builders) {
+        super(decomposer, builders);
     }
 
     @Override
     public native KalmanEstimation getKalmanEstimation();
+
+
+    /** {@inheritDoc} */
+    @Override
+    public native KalmanFilter<MeasurementDecorator> getKalmanFilter();
+
+    /** {@inheritDoc} */
+    @Override
+    public native double[] getScale();
 }

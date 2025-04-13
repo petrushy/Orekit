@@ -23,6 +23,7 @@ package org.orekit.forces.maneuvers.trigger;
 
 import org.hipparchus.Field;
 import org.hipparchus.CalculusFieldElement;
+import org.orekit.propagation.FieldSpacecraftState;
 import org.orekit.propagation.SpacecraftState;
 import org.orekit.propagation.events.EventDetector;
 import org.orekit.propagation.events.FieldEventDetector;
@@ -52,19 +53,15 @@ public class PythonManeuverTriggers implements ManeuverTriggers {
 
     /** {@inheritDoc} */
     @Override
+    public native  <T extends CalculusFieldElement<T>> void init(FieldSpacecraftState<T> initialState, FieldAbsoluteDate<T> target);
+
+    /** {@inheritDoc} */
+    @Override
     public native boolean isFiring(AbsoluteDate date, double[] parameters);
 
     /** {@inheritDoc} */
     @Override
     public native <T extends CalculusFieldElement<T>> boolean isFiring(FieldAbsoluteDate<T> date, T[] parameters);
-
-    /** {@inheritDoc} */
-    @Override
-    public native void addResetter(ManeuverTriggersResetter resetter);
-
-    /** {@inheritDoc} */
-    @Override
-    public native <T extends CalculusFieldElement<T>> void addResetter(Field<T> field, FieldManeuverTriggersResetter<T> resetter);
 
     /** {@inheritDoc} */
     @Override

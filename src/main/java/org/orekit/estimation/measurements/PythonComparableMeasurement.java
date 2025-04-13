@@ -22,8 +22,6 @@ package org.orekit.estimation.measurements;
 import org.orekit.estimation.measurements.ComparableMeasurement;
 import org.orekit.time.AbsoluteDate;
 
-import java.util.SortedSet;
-
 public class PythonComparableMeasurement implements ComparableMeasurement {
 
     /** Part of JCC Python interface to object */
@@ -51,41 +49,19 @@ public class PythonComparableMeasurement implements ComparableMeasurement {
     /** Part of JCC Python interface to object */
     public native void pythonDecRef();
 
-    /**
-     * Get the observed value.
-     * <p>
-     * The observed value is the value that was measured by the instrument.
-     * </p>
-     *
-     * @return observed value (array of size {@link #getDimension()}
-     */
+    /** {@inheritDoc} */
     @Override
     public native double[] getObservedValue();
 
-    /**
-     * {@inheritDoc}
-     *
-     * Extension point for Python.
-     * <p>
-     * Measurements comparison is primarily chronological, but measurements
-     * with the same date are sorted based on the observed value. Even if they
-     * have the same value too, they will <em>not</em> be considered equal if they
-     * correspond to different instances. This allows to store measurements in
-     * {@link SortedSet SortedSet} without losing any measurements, even
-     * redundant ones.
-     * </p>
-     *
-     * @param other
-     */
+    /** {@inheritDoc} */
     @Override
     public native int compareTo(ComparableMeasurement other);
 
-    /**
-     * Get the date.
-     * Extension point for Python.
-     *
-     * @return date attached to the object
-     */
+    /** {@inheritDoc} */
     @Override
     public native AbsoluteDate getDate();
+
+    /** {@inheritDoc} */
+    @Override
+    public native void setObservedValue(double[] newObserved);
 }

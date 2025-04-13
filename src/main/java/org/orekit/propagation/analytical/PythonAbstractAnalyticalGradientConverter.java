@@ -21,7 +21,6 @@
 package org.orekit.propagation.analytical;
 
 import org.hipparchus.analysis.differentiation.Gradient;
-import org.orekit.propagation.FieldSpacecraftState;
 import org.orekit.utils.ParameterDriver;
 
 import java.util.List;
@@ -51,6 +50,8 @@ public class PythonAbstractAnalyticalGradientConverter extends AbstractAnalytica
 
     /** Part of JCC Python interface to object */
     public native void pythonDecRef();
+
+
     /**
      * Constructor.
      *
@@ -58,25 +59,17 @@ public class PythonAbstractAnalyticalGradientConverter extends AbstractAnalytica
      * @param mu                  central attraction coefficient
      * @param freeStateParameters number of free parameters
      */
-    public PythonAbstractAnalyticalGradientConverter(AbstractAnalyticalPropagator propagator, double mu, int freeStateParameters) {
-        super(propagator, mu, freeStateParameters);
+    public PythonAbstractAnalyticalGradientConverter( AbstractAnalyticalPropagator propagator, final int freeStateParameters) 
+    {
+        super(propagator, freeStateParameters);
     }
 
-    /**
-     * Get the parameter drivers related to the analytical propagation model.
-     *
-     * @return a list of parameter drivers
-     */
+    //** {@inheritDoc} */
     @Override
     public native List<ParameterDriver> getParametersDrivers();
 
-    /**
-     * Get the converted analytical orbit propagator.
-     *
-     * @param state      state as returned by {@link #getState()}
-     * @param parameters model parameters as returned by {@link #getParameters(FieldSpacecraftState)}
-     * @return the converted analytical orbit propagator
-     */
+    /** {@inheritDoc} */
     @Override
-    public native FieldAbstractAnalyticalPropagator<Gradient> getPropagator(FieldSpacecraftState<Gradient> state, Gradient[] parameters);
+    public native FieldAbstractAnalyticalPropagator<Gradient> getPropagator();
+
 }

@@ -20,6 +20,7 @@
 
 package org.orekit.estimation.measurements.generation;
 
+import org.orekit.estimation.measurements.EstimatedMeasurementBase;
 import org.orekit.estimation.measurements.ObservableSatellite;
 import org.orekit.estimation.measurements.ObservedMeasurement;
 import org.orekit.propagation.sampling.OrekitStepInterpolator;
@@ -50,5 +51,5 @@ public class PythonScheduler<T extends ObservedMeasurement<T>> implements Schedu
 
     /** {@inheritDoc} */
     @Override
-    public native SortedSet<T> generate(Map<ObservableSatellite, OrekitStepInterpolator> interpolators);
+    public native SortedSet<EstimatedMeasurementBase<T>> generate(Map<ObservableSatellite, OrekitStepInterpolator> interpolators);
 }
