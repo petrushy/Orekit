@@ -89,30 +89,15 @@ public class PythonFieldAbstractPropagator<T extends CalculusFieldElement<T>> ex
     @Override
     public native <D extends FieldEventDetector<T>> void addEventDetector(D detector);
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public native Collection<FieldEventDetector<T>> getEventsDetectors();
-
-    /**
-     * {@inheritDoc}
-     */
+    /** {@inheritDoc} */
     @Override
     public native void clearEventsDetectors();
 
-    /**
-     * Propagate from a start date towards a target date.
-     * <p>Those propagators use a start date and a target date to
-     * compute the propagated state. For propagators using event detection mechanism,
-     * if the provided start date is different from the initial state date, a first,
-     * simple propagation is performed, without processing any event computation.
-     * Then complete propagation is performed from start date to target date.</p>
-     *
-     * @param start  start date from which orbit state should be propagated
-     * @param target target date to which orbit state should be propagated
-     * @return propagated state
-     */
+    /** {@inheritDoc} */   
     @Override
     public native FieldSpacecraftState<T> propagate(FieldAbsoluteDate<T> start, FieldAbsoluteDate<T> target);
+
+    /** {@inheritDoc} */
+    @Override
+    public native Collection<FieldEventDetector<T>> getEventDetectors();
 }

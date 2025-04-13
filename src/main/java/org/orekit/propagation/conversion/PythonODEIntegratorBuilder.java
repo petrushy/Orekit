@@ -20,9 +20,12 @@
 package org.orekit.propagation.conversion;
 
 import org.hipparchus.ode.AbstractIntegrator;
+import org.hipparchus.ode.ODEIntegrator;
 import org.orekit.orbits.Orbit;
 import org.orekit.orbits.OrbitType;
+import org.orekit.orbits.PositionAngleType;
 import org.orekit.propagation.conversion.ODEIntegratorBuilder;
+import org.orekit.utils.AbsolutePVCoordinates;
 
 public class PythonODEIntegratorBuilder implements ODEIntegratorBuilder {
 
@@ -60,4 +63,10 @@ public class PythonODEIntegratorBuilder implements ODEIntegratorBuilder {
      */
     @Override
     public native AbstractIntegrator buildIntegrator(Orbit orbit, OrbitType orbitType);
+
+    @Override
+    public native ODEIntegrator buildIntegrator(Orbit orbit, OrbitType orbitType, PositionAngleType angleType);
+
+    @Override
+    public native ODEIntegrator buildIntegrator(AbsolutePVCoordinates absolutePVCoordinates);
 }

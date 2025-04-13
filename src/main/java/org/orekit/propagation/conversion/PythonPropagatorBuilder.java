@@ -19,6 +19,7 @@
 
 package org.orekit.propagation.conversion;
 
+import org.orekit.attitudes.AttitudeProvider;
 import org.orekit.estimation.leastsquares.AbstractBatchLSModel;
 import org.orekit.estimation.leastsquares.ModelObserver;
 import org.orekit.estimation.measurements.ObservedMeasurement;
@@ -44,10 +45,6 @@ public class PythonPropagatorBuilder implements PropagatorBuilder {
     }
     public void finalize() throws Throwable { pythonDecRef(); }
     public native void pythonDecRef();
-
-    /** {@inheritDoc} */
-    @Override
-    public native PropagatorBuilder copy();
 
     /** {@inheritDoc} */
     @Override
@@ -92,4 +89,10 @@ public class PythonPropagatorBuilder implements PropagatorBuilder {
     /** {@inheritDoc} */
     @Override
     public native void resetOrbit(Orbit newOrbit);
+    
+    @Override
+    public native AttitudeProvider getAttitudeProvider();
+
+    @Override
+    public native double getMass();
 }

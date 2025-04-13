@@ -25,8 +25,8 @@ import org.orekit.estimation.leastsquares.ModelObserver;
 import org.orekit.estimation.measurements.ObservedMeasurement;
 import org.orekit.orbits.Orbit;
 import org.orekit.orbits.PositionAngleType;
-import org.orekit.propagation.Propagator;
-import org.orekit.propagation.conversion.AbstractPropagatorBuilder;
+import org.orekit.propagation.AbstractPropagator;
+
 import org.orekit.utils.ParameterDriver;
 import org.orekit.utils.ParameterDriversList;
 
@@ -34,7 +34,7 @@ import java.util.List;
 
 // TODO: Not sure about which methods shall be exposed to Python
 
-public class PythonAbstractPropagatorBuilder extends AbstractPropagatorBuilder {
+public class PythonAbstractPropagatorBuilder<T extends AbstractPropagator>  extends AbstractPropagatorBuilder<T> {
     /** Part of JCC Python interface to object */
     private long pythonObject;
 
@@ -91,13 +91,10 @@ public class PythonAbstractPropagatorBuilder extends AbstractPropagatorBuilder {
         super(templateOrbit, PositionAngleType, positionScale, addDriverForCentralAttraction);
     }
 
-    /** {@inheritDoc} */
-    @Override
-    public native PropagatorBuilder copy();
 
     /** {@inheritDoc} */
     @Override
-    public native Propagator buildPropagator(double[] normalizedParameters);
+    public native T buildPropagator(double[] normalizedParameters);
 
     /** {@inheritDoc} */
     @Override

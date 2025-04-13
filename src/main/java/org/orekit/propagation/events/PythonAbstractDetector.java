@@ -64,13 +64,7 @@ public class PythonAbstractDetector<T extends AbstractDetector<T>> extends Abstr
 		super(maxCheck, threshold, maxIter, handler);
 	}
 
-	/** Build a new instance.
-	 * @param maxCheck maximum checking interval
-	 * @param threshold convergence threshold (s)
-	 * @param maxIter maximum number of iterations in the event time search
-	 * @param handler event handler to call at event occurrences
-	 * @since 12.0
-	 */
+
 	public PythonAbstractDetector(final AdaptableInterval maxCheck, final double threshold, final int maxIter,
 							   final EventHandler handler) {
 		super(maxCheck, threshold, maxIter, handler);
@@ -80,8 +74,9 @@ public class PythonAbstractDetector<T extends AbstractDetector<T>> extends Abstr
     @Override
     public native double g(SpacecraftState s);
 
+
 	/** {@inheritDoc} */
 	@Override
-	public native T create(AdaptableInterval newMaxCheck, double newThreshold, int newMaxIter, EventHandler newHandler);
+	protected native T create(EventDetectionSettings detectionSettings, EventHandler newHandler);
 
 }

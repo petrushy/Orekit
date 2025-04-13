@@ -20,9 +20,6 @@
 package org.orekit.time;
 
 import org.hipparchus.CalculusFieldElement;
-import org.orekit.time.AbsoluteDate;
-import org.orekit.time.FieldAbsoluteDate;
-import org.orekit.time.TimeScale;
 
 public class PythonTimeScale implements TimeScale {
 
@@ -53,7 +50,7 @@ public class PythonTimeScale implements TimeScale {
 
     /** {@inheritDoc} */
     @Override
-    public native double offsetFromTAI(AbsoluteDate date);
+    public native TimeOffset offsetFromTAI(AbsoluteDate date);
 
     /** {@inheritDoc} */
     @Override

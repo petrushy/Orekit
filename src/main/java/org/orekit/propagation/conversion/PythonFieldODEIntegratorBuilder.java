@@ -23,9 +23,12 @@ package org.orekit.propagation.conversion;
 import org.hipparchus.CalculusFieldElement;
 import org.hipparchus.Field;
 import org.hipparchus.ode.AbstractFieldIntegrator;
+import org.hipparchus.ode.FieldODEIntegrator;
 import org.orekit.orbits.FieldOrbit;
 import org.orekit.orbits.Orbit;
 import org.orekit.orbits.OrbitType;
+import org.orekit.orbits.PositionAngleType;
+import org.orekit.utils.FieldAbsolutePVCoordinates;
  ;
 
 public class PythonFieldODEIntegratorBuilder<T extends CalculusFieldElement<T>> implements FieldODEIntegratorBuilder<T> {
@@ -46,4 +49,11 @@ public class PythonFieldODEIntegratorBuilder<T extends CalculusFieldElement<T>> 
 
     @Override
     public native AbstractFieldIntegrator<T> buildIntegrator(FieldOrbit<T> orbit, OrbitType orbitType);
+    @Override
+    public native FieldODEIntegrator<T> buildIntegrator(Field<T> field, Orbit orbit, OrbitType orbitType,
+            PositionAngleType angleType);
+    @Override
+    public native FieldODEIntegrator<T> buildIntegrator(FieldAbsolutePVCoordinates<T> fieldAbsolutePVCoordinates);
+    @Override
+    public native ODEIntegratorBuilder toODEIntegratorBuilder();
 }

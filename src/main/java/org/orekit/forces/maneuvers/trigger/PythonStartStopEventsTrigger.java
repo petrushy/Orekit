@@ -25,11 +25,9 @@ package org.orekit.forces.maneuvers.trigger;
 
 import org.hipparchus.CalculusFieldElement;
 import org.hipparchus.Field;
-import org.orekit.propagation.FieldPropagator;
 import org.orekit.propagation.events.AbstractDetector;
-import org.orekit.propagation.events.FieldAbstractDetector;
 import org.orekit.propagation.events.FieldEventDetector;
-import org.orekit.propagation.events.handlers.FieldEventHandler;
+
 import org.orekit.utils.ParameterDriver;
 
 import java.util.List;
@@ -65,15 +63,16 @@ public class PythonStartStopEventsTrigger<A extends AbstractDetector<A>, O exten
         super(prototypeStartDetector, prototypeStopDetector);
     }
 
-    /** {@inheritDoc} */
-    @Override
-    public native  <D extends FieldAbstractDetector<D, S>, S extends CalculusFieldElement<S>> FieldAbstractDetector<D, S> convertStartDetector(Field<S> field, A detector);
-
-    /** {@inheritDoc} */
-    @Override
-    public native <D extends FieldAbstractDetector<D, S>, S extends CalculusFieldElement<S>> FieldAbstractDetector<D, S> convertStopDetector(Field<S> field, O detector);
 
     /** {@inheritDoc} */
     @Override
     public native List<ParameterDriver> getParametersDrivers();
+
+    @Override
+    protected native <D extends FieldEventDetector<S>, S extends CalculusFieldElement<S>> D convertStartDetector(
+            Field<S> field, A detector);
+
+    @Override
+    protected native <D extends FieldEventDetector<S>, S extends CalculusFieldElement<S>> D convertStopDetector(
+            Field<S> field, O detector);
 }
