@@ -30,8 +30,6 @@ import org.orekit.time.FieldAbsoluteDate;
 
 public class PythonAtmosphere implements Atmosphere {
 
-    private static final long serialVersionUID = 335860944218555301L;
-    
     /** Part of JCC Python interface to object */
     private long pythonObject;
 

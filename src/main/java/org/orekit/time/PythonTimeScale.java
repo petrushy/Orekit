@@ -26,8 +26,6 @@ import org.orekit.time.TimeScale;
 
 public class PythonTimeScale implements TimeScale {
 
-    private static final long serialVersionUID = 1472684095479052858L;
-    
     /** Part of JCC Python interface to object */
     private long pythonObject;
 
