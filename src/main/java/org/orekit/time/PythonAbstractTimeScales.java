@@ -50,130 +50,61 @@ public class PythonAbstractTimeScales extends AbstractTimeScales {
     /** Part of JCC Python interface to object */
     public native void pythonDecRef();
 
-    /**
-     * Get the Universal Time 1 scale.
-     * <p>
-     * As this method allow associating any history with the time scale, it may involve
-     * large data sets. So this method does <em>not</em> cache the resulting {@link
-     * UT1Scale UT1Scale} instance, a new instance will be returned each time. In order to
-     * avoid wasting memory, calling {@link #getUT1(IERSConventions, boolean)} with the
-     * single enumerate corresponding to the conventions may be a better solution. This
-     * method is made available only for expert use.
-     * </p>
-     *
-     * @param history EOP parameters providing dUT1 (may be null if no correction is
-     *                desired)
-     * @return Universal Time 1 scale
-     * @see #getUT1(IERSConventions, boolean)
-     */
+    /** {@inheritDoc} */
     @Override
     public UT1Scale getUT1(EOPHistory history) {
         return super.getUT1(history);
     }
 
-    /**
-     * Get the EOP history for the given conventions.
-     *
-     * @param conventions to use in computing the EOP history.
-     * @param simpleEOP   whether to ignore some small tidal effects.
-     * @return EOP history.
-     */
+    /** {@inheritDoc} */
     @Override
     public native EOPHistory getEopHistory(IERSConventions conventions, boolean simpleEOP);
 
-    /**
-     * Get the International Atomic Time scale.
-     *
-     * @return International Atomic Time scale
-     */
+    /** {@inheritDoc} */
     @Override
     public native TAIScale getTAI();
 
-    /**
-     * Get the Universal Time Coordinate scale.
-     *
-     * @return Universal Time Coordinate scale
-     */
+    /** {@inheritDoc} */
     @Override
     public native UTCScale getUTC();
 
-    /**
-     * Get the Terrestrial Time scale.
-     *
-     * @return Terrestrial Time scale
-     */
+    /** {@inheritDoc} */
     @Override
     public native TTScale getTT();
 
-    /**
-     * Get the Galileo System Time scale.
-     *
-     * @return Galileo System Time scale
-     */
+    /** {@inheritDoc} */
     @Override
     public native GalileoScale getGST();
 
-    /**
-     * Get the GLObal NAvigation Satellite System time scale.
-     *
-     * @return GLObal NAvigation Satellite System time scale
-     */
+    /** {@inheritDoc} */
     @Override
     public native GLONASSScale getGLONASS();
 
-    /**
-     * Get the Quasi-Zenith Satellite System time scale.
-     *
-     * @return Quasi-Zenith Satellite System time scale
-     */
+    /** {@inheritDoc} */
     @Override
     public native QZSSScale getQZSS();
 
-    /**
-     * Get the Global Positioning System scale.
-     *
-     * @return Global Positioning System scale
-     */
+    /** {@inheritDoc} */
     @Override
     public native GPSScale getGPS();
 
-    /**
-     * Get the Geocentric Coordinate Time scale.
-     *
-     * @return Geocentric Coordinate Time scale
-     */
+    /** {@inheritDoc} */
     @Override
     public native TCGScale getTCG();
 
-    /**
-     * Get the Barycentric Dynamic Time scale.
-     *
-     * @return Barycentric Dynamic Time scale
-     */
+    /** {@inheritDoc} */
     @Override
     public native TDBScale getTDB();
 
-    /**
-     * Get the Barycentric Coordinate Time scale.
-     *
-     * @return Barycentric Coordinate Time scale
-     */
+    /** {@inheritDoc} */
     @Override
     public native TCBScale getTCB();
 
-    /**
-     * Get the Indian Regional Navigation Satellite System time scale.
-     *
-     * @return Indian Regional Navigation Satellite System time scale
-     */
+    /** {@inheritDoc} */
     @Override
-    public native IRNSSScale getIRNSS();
+    public native  NavicScale getNavIC();
 
-    /**
-     * Get the BeiDou Navigation Satellite System time scale.
-     *
-     * @return BeiDou Navigation Satellite System time scale
-     */
+    /** {@inheritDoc} */
     @Override
     public native BDTScale getBDT();
 }

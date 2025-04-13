@@ -43,13 +43,13 @@ public class PythonTroposphericModel implements TroposphericModel {
 
     /** {@inheritDoc} */
     @Override
-    public native TroposphericDelay pathDelay(TrackingCoordinates trackingCoordinates, GeodeticPoint point, PressureTemperatureHumidity weather, double[] parameters, AbsoluteDate date);
-
-    /** {@inheritDoc} */
-    @Override
-    public native <T extends CalculusFieldElement<T>> FieldTroposphericDelay<T> pathDelay(FieldTrackingCoordinates<T> trackingCoordinates, FieldGeodeticPoint<T> point, FieldPressureTemperatureHumidity<T> weather, T[] parameters, FieldAbsoluteDate<T> date);
-
-    /** {@inheritDoc} */
-    @Override
     public native List<ParameterDriver> getParametersDrivers();
+
+    /** {@inheritDoc} */
+    @Override
+    public native TroposphericDelay pathDelay(TrackingCoordinates trackingCoordinates, GeodeticPoint point, double[] parameters, AbsoluteDate date);
+
+    /** {@inheritDoc} */
+    @Override
+    public native <T extends CalculusFieldElement<T>> FieldTroposphericDelay<T> pathDelay(FieldTrackingCoordinates<T> trackingCoordinates, FieldGeodeticPoint<T> point, T[] parameters, FieldAbsoluteDate<T> date);
 }

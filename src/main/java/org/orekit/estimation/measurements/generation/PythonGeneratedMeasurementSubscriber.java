@@ -20,7 +20,7 @@
 
 package org.orekit.estimation.measurements.generation;
 
-import org.orekit.estimation.measurements.ObservedMeasurement;
+import org.orekit.estimation.measurements.EstimatedMeasurementBase;
 import org.orekit.time.AbsoluteDate;
 
 public class PythonGeneratedMeasurementSubscriber implements GeneratedMeasurementSubscriber {
@@ -39,5 +39,5 @@ public class PythonGeneratedMeasurementSubscriber implements GeneratedMeasuremen
     public native void init(AbsoluteDate start, AbsoluteDate end);
 
     @Override
-    public native void handleGeneratedMeasurement(ObservedMeasurement<?> measurement);
+    public native void handleGeneratedMeasurement(EstimatedMeasurementBase<?> measurement);
 }

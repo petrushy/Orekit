@@ -64,7 +64,6 @@ public class PythonBoundedPropagator implements BoundedPropagator {
     @Override
     public native AbsoluteDate getMaxDate();
 
-
     /** {@inheritDoc} */
     @Override
     public native StepHandlerMultiplexer getMultiplexer();
@@ -83,19 +82,19 @@ public class PythonBoundedPropagator implements BoundedPropagator {
 
     /** {@inheritDoc} */
     @Override
-    public native void addAdditionalStateProvider(AdditionalStateProvider additionalStateProvider);
+    public native void addAdditionalDataProvider(AdditionalDataProvider<?> additionalDataProvider);
 
     /** {@inheritDoc} */
     @Override
-    public native List<AdditionalStateProvider> getAdditionalStateProviders();
+    public native List<AdditionalDataProvider<?>> getAdditionalDataProviders();
 
     /** {@inheritDoc} */
     @Override
-    public native boolean isAdditionalStateManaged(String name);
+    public native boolean isAdditionalDataManaged(String name);
 
     /** {@inheritDoc} */
     @Override
-    public native String[] getManagedAdditionalStates();
+    public native String[] getManagedAdditionalData();
 
     /** {@inheritDoc} */
     @Override
@@ -103,8 +102,7 @@ public class PythonBoundedPropagator implements BoundedPropagator {
 
     /** {@inheritDoc} */
     @Override
-    public native Collection<EventDetector> getEventsDetectors();
-
+    public native Collection<EventDetector> getEventDetectors();
     /** {@inheritDoc} */
     @Override
     public native void clearEventsDetectors();

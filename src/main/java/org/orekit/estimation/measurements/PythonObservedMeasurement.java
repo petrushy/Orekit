@@ -24,7 +24,7 @@ import org.orekit.utils.ParameterDriver;
 import java.util.List;
 import java.util.SortedSet;
 
-public class PythonObservedMeasurement<T extends ObservedMeasurement<T>> implements ObservedMeasurement<T>  {
+public class PythonObservedMeasurement<T extends ObservedMeasurement<T>> implements ObservedMeasurement<T> {
 
     /** Part of JCC Python interface to object */
     protected long pythonObject;
@@ -177,6 +177,17 @@ public class PythonObservedMeasurement<T extends ObservedMeasurement<T>> impleme
     public native double[] getObservedValue();
 
     /**
+     * Set the observed value.
+     * <p>
+     * This method allows setting the value that was measured by the instrument.
+     * </p>
+     *
+     * @param observedValue the observed value (array of size {@link #getDimension()})
+     */
+    @Override
+    public native void setObservedValue(double[] observedValue);
+
+    /**
      * {@inheritDoc}
      * <p>
      * Measurements comparison is primarily chronological, but measurements
@@ -205,6 +216,7 @@ public class PythonObservedMeasurement<T extends ObservedMeasurement<T>> impleme
      * <p>
      * @return type of measurement
      */
+    @Override
     public native String getMeasurementType();
 }
 

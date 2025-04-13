@@ -82,19 +82,20 @@ public class PythonFieldPropagator<T extends CalculusFieldElement<T>> implements
 
     /** {@inheritDoc} */
     @Override
-    public native void addAdditionalStateProvider(FieldAdditionalStateProvider<T> additionalStateProvider);
+    public native void addAdditionalDataProvider(FieldAdditionalDataProvider<?, T> additionalDataProvider);
 
     /** {@inheritDoc} */
     @Override
-    public native List<FieldAdditionalStateProvider<T>> getAdditionalStateProviders();
+    public native List<FieldAdditionalDataProvider<?, T>> getAdditionalDataProviders();
 
     /** {@inheritDoc} */
     @Override
-    public native boolean isAdditionalStateManaged(String name);
+    public native boolean isAdditionalDataManaged(String name);
 
     /** {@inheritDoc} */
     @Override
-    public native String[] getManagedAdditionalStates();
+    public native String[] getManagedAdditionalData();
+
 
     /** {@inheritDoc} */
     @Override
@@ -102,7 +103,7 @@ public class PythonFieldPropagator<T extends CalculusFieldElement<T>> implements
 
     /** {@inheritDoc} */
     @Override
-    public native Collection<FieldEventDetector<T>> getEventsDetectors();
+    public native Collection<FieldEventDetector<T>> getEventDetectors();
 
     /** {@inheritDoc} */
     @Override

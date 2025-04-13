@@ -49,11 +49,10 @@ public class PythonAbstractVienna extends AbstractVienna {
     /** Part of JCC Python interface to object */
     public native void pythonDecRef();
 
-    /** {@inheritDoc} */
     @Override
-    public native double[] mappingFactors(TrackingCoordinates trackingCoordinates, GeodeticPoint point, PressureTemperatureHumidity weather, AbsoluteDate date);
+    public native double[] mappingFactors(TrackingCoordinates trackingCoordinates, GeodeticPoint point, AbsoluteDate date);
 
-    /** {@inheritDoc} */
     @Override
-    public native <T extends CalculusFieldElement<T>> T[] mappingFactors(FieldTrackingCoordinates<T> trackingCoordinates, FieldGeodeticPoint<T> point, FieldPressureTemperatureHumidity<T> weather, FieldAbsoluteDate<T> date);
+    public native <T extends CalculusFieldElement<T>> T[] mappingFactors(FieldTrackingCoordinates<T> trackingCoordinates, FieldGeodeticPoint<T> point, FieldAbsoluteDate<T> date);
+
 }

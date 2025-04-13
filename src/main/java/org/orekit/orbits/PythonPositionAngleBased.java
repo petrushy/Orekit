@@ -32,11 +32,12 @@ public class PythonPositionAngleBased implements PositionAngleBased {
     @Override
     public native PositionAngleType getCachedPositionAngleType();
 
-    /** {@inheritDoc} */
     @Override
-    public native boolean hasRates();
+    public native boolean hasNonKeplerianRates();
 
-    /** {@inheritDoc} */
     @Override
-    public native PositionAngleBased removeRates();
+    public native Object withKeplerianRates();
+
+    @Override
+    public native Object withCachedPositionAngleType(PositionAngleType positionAngleType);
 }

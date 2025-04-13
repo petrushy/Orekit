@@ -42,7 +42,6 @@ public class PythonPropagator implements Propagator {
     }
     public void finalize() throws Throwable { pythonDecRef(); }
     public native void pythonDecRef();
-
     /** {@inheritDoc} */
     @Override
     public native StepHandlerMultiplexer getMultiplexer();
@@ -61,19 +60,19 @@ public class PythonPropagator implements Propagator {
 
     /** {@inheritDoc} */
     @Override
-    public native void addAdditionalStateProvider(AdditionalStateProvider additionalStateProvider);
+    public native void addAdditionalDataProvider(AdditionalDataProvider<?> additionalDataProvider);
 
     /** {@inheritDoc} */
     @Override
-    public native List<AdditionalStateProvider> getAdditionalStateProviders();
+    public native List<AdditionalDataProvider<?>> getAdditionalDataProviders();
 
     /** {@inheritDoc} */
     @Override
-    public native boolean isAdditionalStateManaged(String name);
+    public native boolean isAdditionalDataManaged(String name);
 
     /** {@inheritDoc} */
     @Override
-    public native String[] getManagedAdditionalStates();
+    public native String[] getManagedAdditionalData();
 
     /** {@inheritDoc} */
     @Override
@@ -81,7 +80,7 @@ public class PythonPropagator implements Propagator {
 
     /** {@inheritDoc} */
     @Override
-    public native Collection<EventDetector> getEventsDetectors();
+    public native Collection<EventDetector> getEventDetectors();
 
     /** {@inheritDoc} */
     @Override
