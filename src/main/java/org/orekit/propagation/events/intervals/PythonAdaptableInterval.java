@@ -1,4 +1,4 @@
-/* Copyright 2002-2021 CS GROUP
+/* Copyright 2022-2025 Petrus Hyvönen, SSC
  * Licensed to CS GROUP (CS) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -15,39 +15,38 @@
  * limitations under the License.
  */
 
-// this file was created by SSC 2021 and is largely a derived work from the
-// original java class
+// this file was created by SSC 2025 and is largely a derived work from the
+// original java class by Luc Maisonobe
 
-
-package org.orekit.attitudes;
+package org.orekit.propagation.events.intervals;
 
 import org.orekit.propagation.SpacecraftState;
 
-public class PythonAttitudeSwitchHandler implements AttitudeSwitchHandler {
-
+public class PythonAdaptableInterval implements AdaptableInterval {
 
     /** Part of JCC Python interface to object */
     private long pythonObject;
+
     /** Part of JCC Python interface to object */
-    public void pythonExtension(long pythonObject)
-    {
+    public void pythonExtension(long pythonObject) {
         this.pythonObject = pythonObject;
     }
+
     /** Part of JCC Python interface to object */
-    public long pythonExtension()
-    {
+    public long pythonExtension() {
         return this.pythonObject;
     }
+
     /** Part of JCC Python interface to object */
     public void finalize()
-            throws Throwable
-    {
+            throws Throwable {
         pythonDecRef();
     }
+
     /** Part of JCC Python interface to object */
     public native void pythonDecRef();
 
-
+    /** {@inheritDoc} */
     @Override
-    public native void switchOccurred(AttitudeProvider preceding, AttitudeProvider following, SpacecraftState state);
+    public native double currentInterval(SpacecraftState state, boolean isForward);
 }

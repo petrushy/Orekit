@@ -1,4 +1,4 @@
-/* Copyright 2002-2021 CS GROUP
+/* Copyright 2022-2025 Petrus Hyvönen, SSC
  * Licensed to CS GROUP (CS) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -15,39 +15,45 @@
  * limitations under the License.
  */
 
-// this file was created by SSC 2021 and is largely a derived work from the
-// original java class
+// this file was created by SSC 2025 and is largely a derived work from the
+// original java class by Romain Serra
 
+package org.orekit.propagation.events.handlers;
 
-package org.orekit.attitudes;
-
+import org.hipparchus.ode.events.Action;
 import org.orekit.propagation.SpacecraftState;
+import org.orekit.propagation.events.EventDetector;
 
-public class PythonAttitudeSwitchHandler implements AttitudeSwitchHandler {
-
+public class PythonCountingHandler extends CountingHandler {
 
     /** Part of JCC Python interface to object */
     private long pythonObject;
+
+    /** Constructor. */
+    public PythonCountingHandler(int startingCount, Action action) {
+        super(startingCount, action);
+    }
+
     /** Part of JCC Python interface to object */
-    public void pythonExtension(long pythonObject)
-    {
+    public void pythonExtension(long pythonObject) {
         this.pythonObject = pythonObject;
     }
+
     /** Part of JCC Python interface to object */
-    public long pythonExtension()
-    {
+    public long pythonExtension() {
         return this.pythonObject;
     }
+
     /** Part of JCC Python interface to object */
     public void finalize()
-            throws Throwable
-    {
+            throws Throwable {
         pythonDecRef();
     }
+
     /** Part of JCC Python interface to object */
     public native void pythonDecRef();
 
-
+    /** Abstract method to implement in Python. */
     @Override
-    public native void switchOccurred(AttitudeProvider preceding, AttitudeProvider following, SpacecraftState state);
+    public native boolean doesCount(SpacecraftState state, EventDetector detector, boolean increasing);
 }
