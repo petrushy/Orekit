@@ -21,6 +21,33 @@
 package org.orekit.data;
 // TODO: Not sure which methods to expose to Python
 public class PythonAbstractSelfFeedingLoader extends AbstractSelfFeedingLoader {
+
+
+    /** Part of JCC Python interface to object */
+    private long pythonObject;
+
+    /** Part of JCC Python interface to object */
+    public void pythonExtension(long pythonObject)
+    {
+        this.pythonObject = pythonObject;
+    }
+
+    /** Part of JCC Python interface to object */
+    public long pythonExtension()
+    {
+        return this.pythonObject;
+    }
+
+    /** Part of JCC Python interface to object */
+    public void finalize()
+            throws Throwable
+    {
+        pythonDecRef();
+    }
+
+    /** Part of JCC Python interface to object */
+    public native void pythonDecRef();
+
     /**
      * Create an abstract data loader that can feed itself.
      *
@@ -31,4 +58,7 @@ public class PythonAbstractSelfFeedingLoader extends AbstractSelfFeedingLoader {
     public PythonAbstractSelfFeedingLoader(String supportedNames, DataProvidersManager manager) {
         super(supportedNames, manager);
     }
+
+
+
 }
