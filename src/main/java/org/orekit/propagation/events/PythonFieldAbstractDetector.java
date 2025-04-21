@@ -43,5 +43,5 @@ public class PythonFieldAbstractDetector<D extends FieldAbstractDetector<D, T>, 
 
     /** {@inheritDoc} */
     @Override
-    protected native D create(FieldEventDetectionSettings<T> detectionSettings, FieldEventHandler<T> newHandler);
+    public native D create(FieldEventDetectionSettings<T> detectionSettings, FieldEventHandler<T> newHandler);
 }

@@ -79,5 +79,5 @@ public class PythonTileAiming implements TileAiming {
      * @return normalized along tile direction
      */
     @Override
-    native public Vector3D alongTileDirection(Vector3D point, GeodeticPoint gp);
+    public native Vector3D alongTileDirection(Vector3D point, GeodeticPoint gp);
 }

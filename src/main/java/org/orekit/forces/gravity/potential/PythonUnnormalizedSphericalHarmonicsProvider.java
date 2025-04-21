@@ -42,11 +42,11 @@ public class PythonUnnormalizedSphericalHarmonicsProvider implements Unnormalize
 
     /** {@inheritDoc} */
     @Override
-    public  native int getMaxOrder();
+    public native int getMaxOrder();
 
     /** {@inheritDoc} */
     @Override
-    public  native double getMu();
+    public native double getMu();
 
     /**
      * Get the value of the central body reference radius.
@@ -54,7 +54,7 @@ public class PythonUnnormalizedSphericalHarmonicsProvider implements Unnormalize
      * @return ae (m)
      */
     @Override
-    public  native double getAe();
+    public native double getAe();
 
     /**
      * Get the reference date for the harmonics.
@@ -62,7 +62,7 @@ public class PythonUnnormalizedSphericalHarmonicsProvider implements Unnormalize
      * @return reference date for the harmonics
      */
     @Override
-    public  native AbsoluteDate getReferenceDate();
+    public native AbsoluteDate getReferenceDate();
 
 
     /**
@@ -71,7 +71,7 @@ public class PythonUnnormalizedSphericalHarmonicsProvider implements Unnormalize
      * @return tide system used in the gravity field
      */
     @Override
-    public  native TideSystem getTideSystem();
+    public native TideSystem getTideSystem();
 
     /**
      * Get the un-normalized spherical harmonic coefficients at a specific instance in time.
@@ -81,5 +81,5 @@ public class PythonUnnormalizedSphericalHarmonicsProvider implements Unnormalize
      * @since 6.1
      */
     @Override
-    public  native UnnormalizedSphericalHarmonics onDate(AbsoluteDate date);
+    public native UnnormalizedSphericalHarmonics onDate(AbsoluteDate date);
 }

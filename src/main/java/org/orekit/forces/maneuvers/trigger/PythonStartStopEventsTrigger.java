@@ -68,11 +68,13 @@ public class PythonStartStopEventsTrigger<A extends AbstractDetector<A>, O exten
     @Override
     public native List<ParameterDriver> getParametersDrivers();
 
+    /** {@inheritDoc} */
     @Override
-    protected native <D extends FieldEventDetector<S>, S extends CalculusFieldElement<S>> D convertStartDetector(
+    public native <D extends FieldEventDetector<S>, S extends CalculusFieldElement<S>> D convertStartDetector(
             Field<S> field, A detector);
 
+    /** {@inheritDoc} */
     @Override
-    protected native <D extends FieldEventDetector<S>, S extends CalculusFieldElement<S>> D convertStopDetector(
+    public native <D extends FieldEventDetector<S>, S extends CalculusFieldElement<S>> D convertStopDetector(
             Field<S> field, O detector);
 }

@@ -52,9 +52,7 @@ public class PythonAbstractTimeScales extends AbstractTimeScales {
 
     /** {@inheritDoc} */
     @Override
-    public UT1Scale getUT1(EOPHistory history) {
-        return super.getUT1(history);
-    }
+    public native UT1Scale getUT1(EOPHistory history);
 
     /** {@inheritDoc} */
     @Override

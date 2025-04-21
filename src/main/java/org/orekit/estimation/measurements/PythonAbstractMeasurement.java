@@ -71,9 +71,7 @@ public class PythonAbstractMeasurement<T extends ObservedMeasurement<T>> extends
 
     /** {@inheritDoc} */
     @Override
-    public void addParameterDriver(ParameterDriver driver) {
-        super.addParameterDriver(driver);
-    }
+    public native void addParameterDriver(ParameterDriver driver);
 
     /** {@inheritDoc} */
     @Override

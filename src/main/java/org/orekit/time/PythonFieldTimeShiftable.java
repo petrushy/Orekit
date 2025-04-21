@@ -63,17 +63,5 @@ public class PythonFieldTimeShiftable<T extends FieldTimeShiftable<T, KK>, KK ex
      * @return a new instance, shifted with respect to instance (which is not changed)
      */
     @Override
-    public T shiftedBy(KK dt) {
-        return this.shiftedBy_KK(dt);
-    }
-
-
-    /**
-     * Get a time-shifted instance. The Python extension method.
-     *
-     * @param dt time shift in seconds
-     * @return a new instance, shifted with respect to instance (which is not changed)
-     */
-    public native T shiftedBy_KK(KK dt);
-
+    public native T shiftedBy(KK dt);
 }

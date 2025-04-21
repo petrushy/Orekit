@@ -61,9 +61,7 @@ public class PythonOdmParser<T extends NdmConstituent<OdmHeader, ?>, P extends O
      * @return gravitational coefficient set at construction
      */
     @Override
-    public double getMuSet() {
-        return super.getMuSet();
-    }
+    public native double getMuSet();
 
     /**
      * Set the gravitational coefficient parsed in the ODM File.
@@ -71,9 +69,7 @@ public class PythonOdmParser<T extends NdmConstituent<OdmHeader, ?>, P extends O
      * @param muParsed the coefficient to be set
      */
     @Override
-    public void setMuParsed(double muParsed) {
-        super.setMuParsed(muParsed);
-    }
+    public native void setMuParsed(double muParsed);
 
     /**
      * Set the gravitational coefficient created from the knowledge of the central body.
@@ -81,9 +77,7 @@ public class PythonOdmParser<T extends NdmConstituent<OdmHeader, ?>, P extends O
      * @param muCreated the coefficient to be set
      */
     @Override
-    public void setMuCreated(double muCreated) {
-        super.setMuCreated(muCreated);
-    }
+    public native void setMuCreated(double muCreated);
 
     /** Part of JCC Python interface to object */
     public void pythonExtension(long pythonObject)
@@ -210,7 +204,5 @@ public class PythonOdmParser<T extends NdmConstituent<OdmHeader, ?>, P extends O
      * @return file format
      */
     @Override
-    public FileFormat getFileFormat() {
-        return super.getFileFormat();
-    }
+    public native FileFormat getFileFormat();
 }

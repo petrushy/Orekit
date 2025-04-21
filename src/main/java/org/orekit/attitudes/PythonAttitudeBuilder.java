@@ -61,7 +61,5 @@ public class PythonAttitudeBuilder implements AttitudeBuilder {
 
    /** {@inheritDoc} */
     @Override
-    public  native <T extends CalculusFieldElement<T>> FieldAttitude<T> build(Frame frame, FieldPVCoordinatesProvider<T> pvProv, TimeStampedFieldAngularCoordinates<T> rawAttitude);
-
-
+    public native <T extends CalculusFieldElement<T>> FieldAttitude<T> build(Frame frame, FieldPVCoordinatesProvider<T> pvProv, TimeStampedFieldAngularCoordinates<T> rawAttitude);
 }

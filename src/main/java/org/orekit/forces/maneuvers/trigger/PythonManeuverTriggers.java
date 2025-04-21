@@ -71,6 +71,7 @@ public class PythonManeuverTriggers implements ManeuverTriggers {
     @Override
     public native <T extends CalculusFieldElement<T>> Stream<FieldEventDetector<T>> getFieldEventDetectors(Field<T> field);
 
+    /** {@inheritDoc} */
     @Override
     public native List<ParameterDriver> getParametersDrivers();
 }

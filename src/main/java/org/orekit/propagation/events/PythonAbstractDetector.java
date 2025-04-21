@@ -74,14 +74,11 @@ public class PythonAbstractDetector<T extends AbstractDetector<T>> extends Abstr
 		super(detectionSettings, handler);
 	}
 
-
 	/** {@inheritDoc} */
     @Override
     public native double g(SpacecraftState s);
 
-
 	/** {@inheritDoc} */
 	@Override
-	protected native T create(EventDetectionSettings detectionSettings, EventHandler newHandler);
-
+	public native T create(EventDetectionSettings detectionSettings, EventHandler newHandler);
 }

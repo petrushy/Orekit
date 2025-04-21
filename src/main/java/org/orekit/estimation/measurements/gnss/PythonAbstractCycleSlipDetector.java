@@ -75,25 +75,17 @@ public class PythonAbstractCycleSlipDetector extends AbstractCycleSlipDetector {
 
     /** {@inheritDoc} */
     @Override
-    public int getMinMeasurementNumber() {
-        return super.getMinMeasurementNumber();
-    }
+    public native int getMinMeasurementNumber();
 
     /** {@inheritDoc} */
     @Override
-    public double getMaxTimeBeetween2Measurement() {
-        return super.getMaxTimeBeetween2Measurement();
-    }
+    public native double getMaxTimeBeetween2Measurement();
 
     /** {@inheritDoc} */
     @Override
-    public List<CycleSlipDetectorResults> getResults() {
-        return super.getResults();
-    }
+    public native List<CycleSlipDetectorResults> getResults();
 
     /** {@inheritDoc} */
     @Override
-    public String setName(int numSat, SatelliteSystem sys) {
-        return super.setName(numSat, sys);
-    }
+    public native String setName(int numSat, SatelliteSystem sys);
 }

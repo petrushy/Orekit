@@ -65,9 +65,7 @@ public class PythonManeuverTriggersResetter implements ManeuverTriggersResetter 
      * @param start if true, the trigger is the start of the maneuver
      */
     @Override
-    public void maneuverTriggered(SpacecraftState state, boolean start) {
-
-    }
+    public native void maneuverTriggered(SpacecraftState state, boolean start);
 
     /**
      * Reset state as a maneuver triggers.
