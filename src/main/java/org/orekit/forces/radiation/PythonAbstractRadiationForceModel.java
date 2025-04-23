@@ -7,7 +7,6 @@ import org.orekit.bodies.OneAxisEllipsoid;
 import org.orekit.propagation.FieldSpacecraftState;
 import org.orekit.propagation.SpacecraftState;
 import org.orekit.propagation.events.EventDetectionSettings;
-import org.orekit.time.AbsoluteDate;
 import org.orekit.utils.ExtendedPositionProvider;
 import org.orekit.utils.ParameterDriver;
 
@@ -47,11 +46,6 @@ public class PythonAbstractRadiationForceModel extends AbstractRadiationForceMod
     /** Part of JCC Python interface to object */
     public native void pythonDecRef();
 
-
-
-    /** {@inheritDoc} */
-    @Override
-    public native void init(SpacecraftState initialState, AbsoluteDate target);
 
     /** {@inheritDoc} */
     @Override
