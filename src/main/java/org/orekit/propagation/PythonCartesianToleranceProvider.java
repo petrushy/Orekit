@@ -1,11 +1,8 @@
 package org.orekit.propagation;
 
-import org.hipparchus.geometry.euclidean.threed.FieldVector3D;
+
 import org.hipparchus.geometry.euclidean.threed.Vector3D;
-import org.orekit.orbits.CartesianOrbit;
-import org.orekit.orbits.FieldCartesianOrbit;
-import org.orekit.utils.AbsolutePVCoordinates;
-import org.orekit.utils.FieldAbsolutePVCoordinates;
+
 
 /**
  * Python implementation of the CartesianToleranceProvider interface.

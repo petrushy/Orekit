@@ -20,7 +20,7 @@
 package org.orekit.utils;
 
 import org.orekit.time.AbsoluteDate;
-import org.orekit.utils.ParameterDriver;
+
 import org.orekit.utils.ParameterObserver;
 
 public class PythonParameterObserver implements ParameterObserver {

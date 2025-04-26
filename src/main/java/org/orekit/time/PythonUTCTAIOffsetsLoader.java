@@ -19,8 +19,6 @@
 
 package org.orekit.time;
 
-import org.orekit.time.OffsetModel;
-import org.orekit.time.UTCTAIOffsetsLoader;
 
 import java.util.List;
 
