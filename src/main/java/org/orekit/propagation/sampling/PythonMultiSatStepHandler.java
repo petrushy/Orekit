@@ -21,8 +21,6 @@ package org.orekit.propagation.sampling;
 
 import org.orekit.propagation.PropagatorsParallelizer;
 import org.orekit.propagation.SpacecraftState;
-import org.orekit.propagation.sampling.MultiSatStepHandler;
-import org.orekit.propagation.sampling.OrekitStepInterpolator;
 import org.orekit.time.AbsoluteDate;
 
 import java.util.List;

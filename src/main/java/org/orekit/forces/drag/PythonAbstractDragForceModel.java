@@ -23,18 +23,15 @@
 package org.orekit.forces.drag;
 
 import org.hipparchus.CalculusFieldElement;
-import org.hipparchus.Field;
 import org.hipparchus.geometry.euclidean.threed.FieldVector3D;
 import org.hipparchus.geometry.euclidean.threed.Vector3D;
 import org.orekit.models.earth.atmosphere.Atmosphere;
 import org.orekit.propagation.FieldSpacecraftState;
 import org.orekit.propagation.SpacecraftState;
-import org.orekit.propagation.events.EventDetector;
-import org.orekit.propagation.events.FieldEventDetector;
+
 import org.orekit.utils.ParameterDriver;
 
 import java.util.List;
-import java.util.stream.Stream;
 
 public class PythonAbstractDragForceModel extends AbstractDragForceModel {
 

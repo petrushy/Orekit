@@ -20,8 +20,6 @@
 package org.orekit.propagation.sampling;
 
 import org.orekit.propagation.SpacecraftState;
-import org.orekit.propagation.sampling.OrekitStepHandler;
-import org.orekit.propagation.sampling.OrekitStepInterpolator;
 import org.orekit.time.AbsoluteDate;
 
 public class PythonOrekitStepHandler implements OrekitStepHandler {

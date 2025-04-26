@@ -21,7 +21,6 @@
 package org.hipparchus.analysis;
 
 import org.hipparchus.CalculusFieldElement;
-import org.hipparchus.analysis.FieldUnivariateFunction;
 
 public class PythonFieldUnivariateFunction implements org.hipparchus.analysis.FieldUnivariateFunction  {
 

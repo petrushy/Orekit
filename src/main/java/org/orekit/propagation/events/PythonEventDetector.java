@@ -52,9 +52,7 @@ public class PythonEventDetector implements EventDetector {
 	@Override
 	public native double getThreshold();
 
-	/**
-	 * {@inheritDoc}
-	 */
+	/** {@inheritDoc} */
 	@Override
 	public native AdaptableInterval getMaxCheckInterval();
 

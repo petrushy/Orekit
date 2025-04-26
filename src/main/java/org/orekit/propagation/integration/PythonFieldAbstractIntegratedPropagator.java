@@ -8,8 +8,6 @@ import org.orekit.frames.Frame;
 import org.orekit.orbits.OrbitType;
 import org.orekit.orbits.PositionAngleType;
 import org.orekit.propagation.PropagationType;
-import org.orekit.propagation.integration.FieldAbstractIntegratedPropagator;
-import org.orekit.propagation.integration.FieldStateMapper;
 import org.orekit.time.FieldAbsoluteDate;
 
 public class PythonFieldAbstractIntegratedPropagator<T extends CalculusFieldElement<T>> extends FieldAbstractIntegratedPropagator<T> {

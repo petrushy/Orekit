@@ -20,7 +20,6 @@
 package org.orekit.estimation.sequential;
 
 import org.hipparchus.linear.RealMatrix;
-import org.orekit.estimation.sequential.CovarianceMatrixProvider;
 import org.orekit.propagation.SpacecraftState;
 import org.orekit.propagation.conversion.PropagatorBuilder;
 

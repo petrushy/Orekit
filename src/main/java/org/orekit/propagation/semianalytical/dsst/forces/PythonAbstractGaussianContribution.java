@@ -1,14 +1,10 @@
 package org.orekit.propagation.semianalytical.dsst.forces;
 
 import org.hipparchus.CalculusFieldElement;
-import org.hipparchus.Field;
 
 import org.orekit.forces.ForceModel;
 import org.orekit.propagation.FieldSpacecraftState;
 import org.orekit.propagation.SpacecraftState;
-import org.orekit.propagation.events.EventDetector;
-import org.orekit.propagation.events.FieldEventDetector;
-import org.orekit.propagation.semianalytical.dsst.forces.AbstractGaussianContribution;
 import org.orekit.propagation.semianalytical.dsst.utilities.AuxiliaryElements;
 import org.orekit.propagation.semianalytical.dsst.utilities.FieldAuxiliaryElements;
 import org.orekit.utils.ParameterDriver;

@@ -20,8 +20,6 @@
 package org.orekit.time;
 
 import org.hipparchus.CalculusFieldElement;
-import org.orekit.time.FieldAbsoluteDate;
-import org.orekit.time.FieldTimeStamped;
 
 public class PythonFieldTimeStamped<T extends CalculusFieldElement<T>> implements FieldTimeStamped<T> {
 

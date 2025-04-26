@@ -20,7 +20,6 @@
 package org.orekit.utils;
 
 import org.orekit.propagation.SpacecraftState;
-import org.orekit.utils.StateFunction;
 
 public class PythonStateFunction implements StateFunction {
 

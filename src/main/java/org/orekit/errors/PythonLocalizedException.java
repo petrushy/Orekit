@@ -20,7 +20,7 @@
 package org.orekit.errors;
 
 import org.hipparchus.exception.Localizable;
-import org.orekit.errors.LocalizedException;
+
 
 import java.util.Locale;
 

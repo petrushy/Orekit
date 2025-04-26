@@ -19,8 +19,6 @@
 
 package org.orekit.data;
 
-import org.orekit.data.DataLoader;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.text.ParseException;
