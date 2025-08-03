@@ -105,4 +105,12 @@ public class PythonForceModel implements ForceModel {
     /** {@inheritDoc} */
     @Override
     public native boolean isSupported(String name);
+
+    /** {@inheritDoc} */
+    @Override
+    public native double getMassDerivative(SpacecraftState s, double[] parameters);
+
+    /** {@inheritDoc} */
+    @Override
+    public native <T extends CalculusFieldElement<T>> T getMassDerivative(FieldSpacecraftState<T> s, T[] parameters);
 }
