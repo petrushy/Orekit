@@ -73,10 +73,10 @@ import org.orekit.utils.TimeStampedFieldPVCoordinates;
 public class FieldCartesianOrbit<T extends CalculusFieldElement<T>> extends FieldOrbit<T> {
 
     /** Indicator for non-Keplerian acceleration. */
-    private final transient boolean hasNonKeplerianAcceleration;
+    private final boolean hasNonKeplerianAcceleration;
 
     /** Underlying equinoctial orbit to which high-level methods are delegated. */
-    private transient FieldEquinoctialOrbit<T> equinoctial;
+    private FieldEquinoctialOrbit<T> equinoctial;
 
     /** Constructor from Cartesian parameters.
      *
@@ -413,6 +413,14 @@ public class FieldCartesianOrbit<T extends CalculusFieldElement<T>> extends Fiel
     }
 
     /** {@inheritDoc} */
+    @Override
+    protected FieldVector3D<T> nonKeplerianAcceleration() {
+        final T norm = getPosition().getNorm();
+        final T factor = getMu().divide(norm.square().multiply(norm));
+        return getPVCoordinates().getAcceleration().add(new FieldVector3D<>(factor, getPosition()));
+    }
+
+    /** {@inheritDoc} */
     protected FieldVector3D<T> initPosition() {
         // nothing to do here, as the canonical elements are already the Cartesian ones
         return getPVCoordinates().getPosition();
@@ -455,7 +463,7 @@ public class FieldCartesianOrbit<T extends CalculusFieldElement<T>> extends Fiel
         final FieldPVCoordinates<T> shiftedPV = KeplerianMotionCartesianUtility.predictPositionVelocity(dt,
                 pvCoordinates.getPosition(), pvCoordinates.getVelocity(), getMu());
 
-        if (hasNonKeplerianAcceleration) {
+        if (!dt.isZero() && hasNonKeplerianAcceleration) {
 
             final FieldVector3D<T> pvP = getPosition();
             final T r2 = pvP.getNormSq();

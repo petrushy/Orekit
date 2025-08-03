@@ -207,7 +207,7 @@ public abstract class AbstractFixedInitialCartesianSingleShooting extends Abstra
         final FieldOrdinaryDifferentialEquation<Gradient> fieldODE = buildFieldODE(fieldInitialState.getDate());
         final AdjointDynamicsProvider dynamicsProvider = getPropagationSettings().getAdjointDynamicsProvider();
         AbsoluteDate date = initialDate.toAbsoluteDate();
-        Gradient[] integrationState = formatToArray(fieldInitialState, dynamicsProvider);
+        Gradient[] integrationState = formatToArray(fieldInitialState, dynamicsProvider.getAdjointName());
         // step-by-step integration
         final List<EventsLogger.LoggedEvent> loggedEvents = eventsLogger.getLoggedEvents();
         final List<AbsoluteDate> stepDates = propagationStepRecorder.copyStates().stream().map(SpacecraftState::getDate)
@@ -373,19 +373,19 @@ public abstract class AbstractFixedInitialCartesianSingleShooting extends Abstra
     /**
      * Form array from Orekit object.
      * @param fieldState state
-     * @param dynamicsProvider adjoint dynamics provider
+     * @param adjointName adjoint name
      * @return propagation state as array
      */
     private Gradient[] formatToArray(final FieldSpacecraftState<Gradient> fieldState,
-                                     final AdjointDynamicsProvider dynamicsProvider) {
-        final Gradient[] integrationState = MathArrays.buildArray(fieldState.getMass().getField(),
-                7 + dynamicsProvider.getDimension());
+                                     final String adjointName) {
+        final Gradient[] adjoint = fieldState.getAdditionalState(adjointName);
+        final int adjointDimension = adjoint.length;
+        final Gradient[] integrationState = MathArrays.buildArray(fieldState.getMass().getField(), 7 + adjointDimension);
         final FieldPVCoordinates<Gradient> pvCoordinates = fieldState.getPVCoordinates();
         System.arraycopy(pvCoordinates.getPosition().toArray(), 0, integrationState, 0, 3);
         System.arraycopy(pvCoordinates.getVelocity().toArray(), 0, integrationState, 3, 3);
         integrationState[6] = fieldState.getMass();
-        System.arraycopy(fieldState.getAdditionalData(dynamicsProvider.getAdjointName()), 0, integrationState,
-                7, dynamicsProvider.getDimension());
+        System.arraycopy(adjoint, 0, integrationState, 7, adjointDimension);
         return integrationState;
     }
 
@@ -417,6 +417,8 @@ public abstract class AbstractFixedInitialCartesianSingleShooting extends Abstra
                                                      final AbsoluteDate referenceDate,
                                                      final ControlSwitchDetector switchDetector,
                                                      final AdjointDynamicsProvider dynamicsProvider) {
+        final FieldSpacecraftState<Gradient> fieldState = formatFromArray(date, integrationState);
+        final double expectedG = switchDetector.g(fieldState.toSpacecraftState());
         final int shootingVariables = dynamicsProvider.getDimension();
         final int increasedVariables = shootingVariables + 1;
         final GradientField increasedVariablesField = GradientField.getField(increasedVariables);
@@ -424,14 +426,11 @@ public abstract class AbstractFixedInitialCartesianSingleShooting extends Abstra
                 (FieldCartesianAdjointDerivativesProvider<Gradient>) dynamicsProvider.buildFieldAdditionalDerivativesProvider(increasedVariablesField);
         final List<FieldEventDetector<Gradient>> fieldEventDetectors = fieldDerivativesProvider.getCost()
                 .getFieldEventDetectors(increasedVariablesField).collect(Collectors.toList());
-        final FieldSpacecraftState<Gradient> fieldState = formatFromArray(date, integrationState);
-        final double expectedG = switchDetector.g(fieldState.toSpacecraftState());
         for (final FieldEventDetector<Gradient> fieldEventDetector : fieldEventDetectors) {
             if (fieldEventDetector instanceof FieldControlSwitchDetector) {
                 final double actualG = fieldEventDetector.g(fieldState).getReal();
                 if (FastMath.abs(actualG - expectedG) < 1e-10) {
-                    return updateStateWithTaylorMapInversion(date, integrationState, referenceDate,
-                            (FieldControlSwitchDetector<Gradient>) fieldEventDetector, dynamicsProvider.getAdjointName());
+                    return updateStateWithTaylorMapInversion(date, integrationState, referenceDate, fieldEventDetector);
                 }
             }
         }
@@ -444,54 +443,134 @@ public abstract class AbstractFixedInitialCartesianSingleShooting extends Abstra
      * @param integrationState integration variables
      * @param initialDate date at start of propagation
      * @param fieldDetector switch detector
-     * @param adjointName adjoint name
      * @return updated integration state
      */
     private Gradient[] updateStateWithTaylorMapInversion(final AbsoluteDate date, final Gradient[] integrationState,
                                                          final AbsoluteDate initialDate,
-                                                         final FieldControlSwitchDetector<Gradient> fieldDetector,
-                                                         final String adjointName) {
+                                                         final FieldEventDetector<Gradient> fieldDetector) {
         // form array with increased gradient size
-        final int increasedVariables = integrationState[0].getFreeParameters() + 1;
+        final Gradient threshold = fieldDetector.getThreshold();
+        final int increasedVariables = threshold.getFreeParameters();
         final GradientField increasedVariablesField = GradientField.getField(increasedVariables);
         final Gradient[] increasedVariablesArray = MathArrays.buildArray(increasedVariablesField,
                 integrationState.length);
         for (int i = 0; i < integrationState.length; i++) {
             increasedVariablesArray[i] = integrationState[i].stackVariable();
         }
-        // evaluate event function in Taylor algebra with time as additional gradient variable
-        final Gradient dt = Gradient.variable(increasedVariables, increasedVariables - 1, 1);
-        final FieldAbsoluteDate<Gradient> referenceDate = new FieldAbsoluteDate<>(increasedVariablesField, initialDate);
-        final FieldOrdinaryDifferentialEquation<Gradient> fieldODE = buildFieldODE(referenceDate);
-        final Gradient[] derivatives = fieldODE.computeDerivatives(dt.add(date.durationFrom(initialDate)),
-                increasedVariablesArray);
-        final FieldSpacecraftState<Gradient> fieldState = formatFromArray(date, increasedVariablesArray);
-        final FieldSpacecraftState<Gradient> fieldStateWithAdjointDerivative = fieldState.addAdditionalStateDerivative(adjointName,
-                Arrays.copyOfRange(derivatives, derivatives.length - 7, derivatives.length));
-        final Gradient g = fieldDetector.g(fieldStateWithAdjointDerivative.shiftedBy(dt));
-        // invert map
-        return invertTaylorMap(increasedVariablesArray, g);
+        // compute rates at switch
+        final GradientField field = increasedVariablesArray[0].getField();
+        final FieldOrdinaryDifferentialEquation<Gradient> fieldODE = buildFieldODE(new FieldAbsoluteDate<>(field, initialDate));
+        final double duration = date.durationFrom(initialDate);
+        final Gradient fieldDuration = field.getZero().newInstance(duration);
+        final Gradient[] derivatives = fieldODE.computeDerivatives(fieldDuration, increasedVariablesArray);
+        // compute differences in rates
+        final double[] deltaRates = computeDeltaRates(date, increasedVariablesArray,
+                fieldDetector.getThreshold().getValue(), initialDate, fieldODE, derivatives);
+        // evaluate event function in Taylor algebra
+        final double[] derivativesValues = new double[derivatives.length];
+        for (int i = 0; i < derivativesValues.length; i++) {
+            derivativesValues[i] = derivatives[i].getValue();
+        }
+        final Gradient g = evaluateG(date, increasedVariablesArray, initialDate, fieldDetector, derivativesValues);
+        // perform last step involving variables swap
+        return invertTaylorMap(increasedVariablesArray, deltaRates, g);
+    }
+
+    /**
+     * Form differences in rates before and after switch.
+     * @param date epoch
+     * @param integrationState state variables
+     * @param threshold event detection threshold
+     * @param initialDate initial date
+     * @param fieldODE ODE model
+     * @param derivatives rates at switch
+     * @return rates difference
+     */
+    private double[] computeDeltaRates(final AbsoluteDate date, final Gradient[] integrationState,
+                                       final double threshold, final AbsoluteDate initialDate,
+                                       final FieldOrdinaryDifferentialEquation<Gradient> fieldODE,
+                                       final Gradient[] derivatives) {
+        final double duration = date.durationFrom(initialDate);
+        final Gradient fieldDuration = integrationState[0].getField().getZero().newInstance(duration);
+        final double tinyStep = threshold * 2.;
+        final boolean isForward = date.isAfter(initialDate);
+        final double timeShift = isForward ? tinyStep : -tinyStep;
+        final Gradient[] derivativesBefore = shiftAndComputeDerivatives(fieldDuration, integrationState, derivatives,
+                fieldODE, -timeShift);
+        final Gradient[] derivativesAfter = shiftAndComputeDerivatives(fieldDuration, integrationState, derivatives,
+                fieldODE, timeShift);
+        final double[] deltaRates = new double[integrationState.length];
+        for (int i = 0; i < integrationState.length; i++) {
+            deltaRates[i] = derivativesBefore[i].getValue() - derivativesAfter[i].getValue();
+        }
+        return deltaRates;
+    }
+
+    /**
+     * Shift state variables in time and compute rates.
+     * @param fieldDuration duration
+     * @param integrationState state variables
+     * @param derivatives rates before shift
+     * @param fieldODE ODE model
+     * @param timeShift shift
+     * @return rates
+     */
+    private Gradient[] shiftAndComputeDerivatives(final Gradient fieldDuration, final Gradient[] integrationState,
+                                                  final Gradient[] derivatives,
+                                                  final FieldOrdinaryDifferentialEquation<Gradient> fieldODE,
+                                                  final double timeShift) {
+        final Gradient[] state = integrationState.clone();
+        for (int i = 0; i < state.length; i++) {
+            state[i] = state[i].add(derivatives[i].multiply(timeShift));
+        }
+        return fieldODE.computeDerivatives(fieldDuration, state);
+    }
+
+    /**
+     * Evaluate event function in proper Taylor algebra.
+     * @param date date
+     * @param increasedVariablesArray integration variables with increased gradient size
+     * @param initialDate date at start of propagation
+     * @param fieldDetector switch detector
+     * @param derivatives rates
+     * @return g
+     */
+    private Gradient evaluateG(final AbsoluteDate date, final Gradient[] increasedVariablesArray,
+                               final AbsoluteDate initialDate, final FieldEventDetector<Gradient> fieldDetector,
+                               final double[] derivatives) {
+        final Field<Gradient> field = increasedVariablesArray[0].getField();
+        final int increasedVariables = field.getZero().getFreeParameters();
+        final Gradient lastVariable = Gradient.variable(increasedVariables, increasedVariables - 1, 1);
+        final boolean isForward = date.isAfterOrEqualTo(initialDate);
+        final Gradient dt = isForward ? lastVariable : lastVariable.negate();
+        final Gradient[] shiftedVariables = increasedVariablesArray.clone();
+        for (int i = 0; i < shiftedVariables.length; i++) {
+            shiftedVariables[i] = shiftedVariables[i].add(dt.multiply(derivatives[i]));
+        }
+        final FieldSpacecraftState<Gradient> fieldState = formatFromArray(date, shiftedVariables);
+        return fieldDetector.g(fieldState);
     }
 
     /**
      * Invert so-called Taylor map to make the event function value an independent variable.
      * Then nullify its variation to keep only the derivatives of interest.
      * @param state integration variables with dt as last gradient variable
+     * @param deltaRates differences in rates from dynamics switch
      * @param g event function evaluated with dt as last gradient variable
      * @return update integration variables
      */
-    private static Gradient[] invertTaylorMap(final Gradient[] state, final Gradient g) {
+    private static Gradient[] invertTaylorMap(final Gradient[] state, final double[] deltaRates, final Gradient g) {
         // swap dt and g as variables of algebra
         final int increasedGradientDimension = g.getFreeParameters();
         final RealMatrix rightMatrix = MatrixUtils.createRealIdentityMatrix(increasedGradientDimension);
         rightMatrix.setRow(rightMatrix.getRowDimension() - 1, g.getGradient());
         final LUDecomposition luDecomposition = new LUDecomposition(rightMatrix, 0.);
         final RealMatrix inverted = luDecomposition.getSolver().getInverse();
-        final double[][] leftMatrixCoefficients = new double[state.length + 1][];
+        final double[][] leftMatrixCoefficients = new double[state.length][];
         for (int i = 0; i < state.length; i++) {
             leftMatrixCoefficients[i] = state[i].getGradient();
+            leftMatrixCoefficients[i][leftMatrixCoefficients[i].length - 1] = deltaRates[i];
         }
-        leftMatrixCoefficients[leftMatrixCoefficients.length - 1] = g.getGradient();
         final RealMatrix product = MatrixUtils.createRealMatrix(leftMatrixCoefficients).multiply(inverted);
         // pack into array with original gradient dimension
         final int gradientDimension = increasedGradientDimension - 1;

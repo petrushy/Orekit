@@ -69,6 +69,11 @@ public class Frame {
     /** Indicator for pseudo-inertial frames. */
     private final boolean pseudoInertial;
 
+    /** Cache for transforms with peer frame.
+     * @since 13.1
+     */
+    private final PeerCache peerCache;
+
     /** Private constructor used only for the root frame.
      * @param name name of the frame
      * @param pseudoInertial true if frame is considered pseudo-inertial
@@ -80,6 +85,7 @@ public class Frame {
         transformProvider   = new FixedTransformProvider(Transform.IDENTITY);
         this.name           = name;
         this.pseudoInertial = pseudoInertial;
+        this.peerCache      = new PeerCache(this);
     }
 
     /** Build a non-inertial frame from its transform with respect to its parent.
@@ -158,7 +164,7 @@ public class Frame {
         this.transformProvider = transformProvider;
         this.name              = name;
         this.pseudoInertial    = pseudoInertial;
-
+        this.peerCache         = new PeerCache(this);
     }
 
     /** Get the name.
@@ -233,37 +239,151 @@ public class Frame {
 
     }
 
-    /** Get the transform from the instance to another frame.
-     * @param destination destination frame to which we want to transform vectors
-     * @param date the date (can be null if it is sure than no date dependent frame is used)
-     * @return transform from the instance to the destination frame
+    /** Associate this frame to a peer, caching transforms.
+     * <p>
+     * The cache is a LRU cache (Least Recently Used), so entries remain in
+     * the cache if they are used frequently, and only older entries
+     * that have not been accessed for a while will be expunged.
+     * </p>
+     * <p>
+     * Setting up a peer is mainly intended when there is a real need to speed up
+     * conversions in a context when the same frames (origin and destination) are
+     * used over and over again at the same date. One typical use case is to peer
+     * topocentric frames to the inertial frame when dealing with ground links
+     * as the conversion between a ground station (topocentric frame) and inertial
+     * frame will be needed for relative position computation, tropospheric effect
+     * computation, ionospheric effect computation, on all signal types and for
+     * all observables (code, phase, Doppler, signal strength…).
+     * </p>
+     * <p>
+     * Setting up peer caching does not change the result of the various
+     * {@code getTransformTo} methods, it just speeds up the computation in the
+     * case the same date is used over and over again between the instance and its
+     * peer. The computation is just fully performed the first time a date is used
+     * and the result is put in the cache before being returned. If a later call
+     * uses the same date again and there is a cache hit, then it will return the
+     * cached transform without any computation.
+     * </p>
+     * <p>
+     * The peer frame doesn't need to be close to the initial frame in the hierarchical
+     * frames tree, and there is no transitivity involved: peering is a point-to-point
+     * relationship. It is for example possible to peer a topocentric frame to the
+     * EME2000 frame despite there are several intermediate frames involved when
+     * computing the transform (topocentric → ITRF → TIRF → CIRF → GCRF → EME2000), the
+     * link will be a direct one and what will be cached at each date is the transform
+     * resulting from the combination of all transforms between the intermediate frames
+     * at this date. We could have at the same time the intermediate ITRF frame peered
+     * to another frame not belonging to this list, it won't have any influence,
+     * peering is really point-to-point.
+     * </p>
+     * <p>
+     * Peering is unidirectional, i.e. if {@code frameA} is peered to {@code frameB},
+     * it means the transforms that will be cached are the transforms from {@code frameA}
+     * (the instance when this method or the {@link #getTransformTo(Frame, AbsoluteDate)
+     * getTransformTo} method are called) to {@code frameB} (the argument when this
+     * method or the {@link #getTransformTo(Frame, AbsoluteDate) getTransformTo} method
+     * are called). It is therefore possible to have {@code frameA} peered to {@code frameB}
+     * and {@code frameB} peered to another {@code frameC} or no frames at all.
+     * This allows several frames to be peered to a shared pivot one (typically Earth
+     * frame and many topocentric frames all peered to one inertial frame). The side
+     * effect of this choice is that peering improves efficiency only in one direction,
+     * i.e. if {@code frameA} is peered to {@code frameB}, then computing the transform
+     * from {@code frameB} to {@code frameA} should be done by computing transform from
+     * {@code frameA} to {@code frameB} and then inverting rather than directly computing
+     * the transform from {@code frameB} to {@code frameA}. It is of course possible to
+     * peer {@code frameA} to {@code frameB} and also {@code frameB} to {@code frameA},
+     * but this prevents using a shared pivot frame.
+     * </p>
+     * <p>
+     * Peering is generally set up at the start of the application and kept unchanged
+     * throughout its operation, but nothing prevents to change it on the fly, even
+     * from different threads. Peering is thread-safe, but shared among all threads
+     * (there are internal locks to ensure thread safety), so peering is often set up
+     * on a main thread and then used on several other threads, like for example in
+     * parallel propagation contexts.
+     * </p>
+     * <p>
+     * Peering is optional; when a frame is first created, it is not peered to any
+     * other frames.
+     * </p>
+     * <p>
+     * When peering has been set up, caching is enabled for all transforms computed
+     * from the instance to its peer, i.e. {@link #getTransformTo(Frame, AbsoluteDate)
+     * regular transforms}, {@link #getTransformTo(Frame, FieldAbsoluteDate) field transforms},
+     * {@link #getKinematicTransformTo(Frame, AbsoluteDate) regular kinematic transforms},
+     * {@link #getKinematicTransformTo(Frame, FieldAbsoluteDate) field kinematic transforms},
+     * {@link #getStaticTransformTo(Frame, AbsoluteDate) regular static transforms},
+     * {@link #getStaticTransformTo(Frame, FieldAbsoluteDate) field static transforms}.
+     * It is not possible to set different cached for different transforms types.
+     * </p>
+     * <p>
+     * If a peer was already associated to this frame, it will be overridden. This
+     * can be used to clear peering by setting the peer to {@code null} and avoid
+     * keeping a reference to a frame that is not used anymore, hence allowing it to
+     * be garbage collected.
+     * </p>
+     * @param peer peer frame (null to clear the cache)
+     * @param cacheSize number of transforms kept in the date-based cache
+     * @since 13.0.3
      */
-    public Transform getTransformTo(final Frame destination, final AbsoluteDate date) {
-        return getTransformTo(
-                destination,
-                Transform.IDENTITY,
-                frame -> frame.getTransformProvider().getTransform(date),
-                (t1, t2) -> new Transform(date, t1, t2),
-                Transform::getInverse);
+    public void setPeerCaching(final Frame peer, final int cacheSize) {
+        peerCache.setPeerCaching(peer, cacheSize);
+    }
+
+    /** Get the peer associated to this frame.
+     * @return peer associated with this frame, null if not peered at all
+     * @since 13.0.3
+     */
+    public Frame getPeer() {
+        return peerCache.getPeer();
     }
 
     /** Get the transform from the instance to another frame.
      * @param destination destination frame to which we want to transform vectors
-     * @param date the date (<em>must</em> be non-null, which is a more stringent condition
-     *      *                than in {@link #getTransformTo(Frame, FieldAbsoluteDate)})
+     * @param date the date (can be null if it is certain that no date dependent frame is used)
+     * @return transform from the instance to the destination frame
+     */
+    public Transform getTransformTo(final Frame destination, final AbsoluteDate date) {
+        final CachedTransformProvider cachedProvider = peerCache.getCachedTransformProvider(destination);
+        if (cachedProvider != null) {
+            // this is our peer, we must cache the transform
+            return cachedProvider.getTransform(date);
+        } else {
+            // not our peer, just compute the transform and forget about it
+            return getTransformTo(
+                    destination,
+                    Transform.IDENTITY,
+                    frame -> frame.getTransformProvider().getTransform(date),
+                    (t1, t2) -> new Transform(date, t1, t2),
+                    Transform::getInverse);
+        }
+    }
+
+    /** Get the transform from the instance to another frame.
+     * @param destination destination frame to which we want to transform vectors
+     * @param date        the date (<em>must</em> be non-null, which is a more stringent condition
+     *                    than in {@link #getTransformTo(Frame, FieldAbsoluteDate)})
      * @param <T> the type of the field elements
      * @return transform from the instance to the destination frame
      */
     public <T extends CalculusFieldElement<T>> FieldTransform<T> getTransformTo(final Frame destination,
                                                                                 final FieldAbsoluteDate<T> date) {
-        if (date.hasZeroField()) {
-            return new FieldTransform<>(date.getField(), getTransformTo(destination, date.toAbsoluteDate()));
+        final FieldCachedTransformProvider<T> cachedProvider = peerCache.getCachedTransformProvider(destination, date.getField());
+        if (cachedProvider != null) {
+            // this is our peer, we must cache the transform
+            return cachedProvider.getTransform(date);
+        } else {
+            // not our peer, just compute the transform and forget about it
+            if (date.hasZeroField()) {
+                return new FieldTransform<>(date.getField(), getTransformTo(destination, date.toAbsoluteDate()));
+            }
+
+            return getTransformTo(destination,
+                                  FieldTransform.getIdentity(date.getField()),
+                                  frame -> frame.getTransformProvider().getTransform(date),
+                                  (t1, t2) -> new FieldTransform<>(date, t1, t2),
+                                  FieldTransform::getInverse);
         }
-        return getTransformTo(destination,
-                              FieldTransform.getIdentity(date.getField()),
-                              frame -> frame.getTransformProvider().getTransform(date),
-                              (t1, t2) -> new FieldTransform<>(date, t1, t2),
-                              FieldTransform::getInverse);
     }
 
     /**
@@ -282,12 +402,19 @@ public class Frame {
      * @since 12.1
      */
     public KinematicTransform getKinematicTransformTo(final Frame destination, final AbsoluteDate date) {
-        return getTransformTo(
-            destination,
-            KinematicTransform.getIdentity(),
-            frame -> frame.getTransformProvider().getKinematicTransform(date),
-            (t1, t2) -> KinematicTransform.compose(date, t1, t2),
-            KinematicTransform::getInverse);
+        final CachedTransformProvider cachedProvider = peerCache.getCachedTransformProvider(destination);
+        if (cachedProvider != null) {
+            // this is our peer, we must cache the transform
+            return cachedProvider.getKinematicTransform(date);
+        } else {
+            // not our peer, just compute the transform and forget about it
+            return getTransformTo(
+                    destination,
+                    KinematicTransform.getIdentity(),
+                    frame -> frame.getTransformProvider().getKinematicTransform(date),
+                    (t1, t2) -> KinematicTransform.compose(date, t1, t2),
+                    KinematicTransform::getInverse);
+        }
     }
 
     /**
@@ -307,12 +434,20 @@ public class Frame {
      */
     public StaticTransform getStaticTransformTo(final Frame destination,
                                                 final AbsoluteDate date) {
-        return getTransformTo(
-                destination,
-                StaticTransform.getIdentity(),
-                frame -> frame.getTransformProvider().getStaticTransform(date),
-                (t1, t2) -> StaticTransform.compose(date, t1, t2),
-                StaticTransform::getInverse);
+        final CachedTransformProvider cachedProvider = peerCache.getCachedTransformProvider(destination);
+        if (cachedProvider != null) {
+            // this is our peer, we must cache the transform
+            return cachedProvider.getStaticTransform(date);
+        }
+        else {
+            // not our peer, just compute the transform and forget about it
+            return getTransformTo(
+                    destination,
+                    StaticTransform.getIdentity(),
+                    frame -> frame.getTransformProvider().getStaticTransform(date),
+                    (t1, t2) -> StaticTransform.compose(date, t1, t2),
+                    StaticTransform::getInverse);
+        }
     }
 
     /**
@@ -337,17 +472,24 @@ public class Frame {
      */
     public <T extends CalculusFieldElement<T>> FieldStaticTransform<T> getStaticTransformTo(final Frame destination,
                                                 final FieldAbsoluteDate<T> date) {
-        if (date.hasZeroField()) {
-            // If date field is Zero, then use the un-fielded version for performances
-            return FieldStaticTransform.of(date, getStaticTransformTo(destination, date.toAbsoluteDate()));
-
+        final FieldCachedTransformProvider<T> cachedProvider = peerCache.getCachedTransformProvider(destination, date.getField());
+        if (cachedProvider != null) {
+            return cachedProvider.getStaticTransform(date);
         } else {
-            // Use classic fielded function
-            return getTransformTo(destination,
-                                  FieldStaticTransform.getIdentity(date.getField()),
-                                  frame -> frame.getTransformProvider().getStaticTransform(date),
-                                  (t1, t2) -> FieldStaticTransform.compose(date, t1, t2),
-                                  FieldStaticTransform::getInverse);
+            // not our peer, just compute the transform and forget about it
+            if (date.hasZeroField()) {
+                // If date field is Zero, then use the un-fielded version for performances
+                return FieldStaticTransform.of(date, getStaticTransformTo(destination, date.toAbsoluteDate()));
+
+            }
+            else {
+                // Use classic fielded function
+                return getTransformTo(destination,
+                                      FieldStaticTransform.getIdentity(date.getField()),
+                                      frame -> frame.getTransformProvider().getStaticTransform(date),
+                                      (t1, t2) -> FieldStaticTransform.compose(date, t1, t2),
+                                      FieldStaticTransform::getInverse);
+            }
         }
     }
 
@@ -368,18 +510,26 @@ public class Frame {
      */
     public <T extends CalculusFieldElement<T>> FieldKinematicTransform<T> getKinematicTransformTo(final Frame destination,
                                                                                                   final FieldAbsoluteDate<T> date) {
-        if (date.hasZeroField()) {
-            // If date field is Zero, then use the un-fielded version for performances
-            final KinematicTransform kinematicTransform = getKinematicTransformTo(destination, date.toAbsoluteDate());
-            return FieldKinematicTransform.of(date.getField(), kinematicTransform);
+        final FieldCachedTransformProvider<T> cachedProvider = peerCache.getCachedTransformProvider(destination, date.getField());
+        if (cachedProvider != null) {
+            return cachedProvider.getKinematicTransform(date);
+        }
+        else {
+            // not our peer, just compute the transform and forget about it
+            if (date.hasZeroField()) {
+                // If date field is Zero, then use the un-fielded version for performances
+                final KinematicTransform kinematicTransform = getKinematicTransformTo(destination, date.toAbsoluteDate());
+                return FieldKinematicTransform.of(date.getField(), kinematicTransform);
 
-        } else {
-            // Use classic fielded function
-            return getTransformTo(destination,
-                    FieldKinematicTransform.getIdentity(date.getField()),
-                    frame -> frame.getTransformProvider().getKinematicTransform(date),
-                    (t1, t2) -> FieldKinematicTransform.compose(date, t1, t2),
-                    FieldKinematicTransform::getInverse);
+            }
+            else {
+                // Use classic fielded function
+                return getTransformTo(destination,
+                                      FieldKinematicTransform.getIdentity(date.getField()),
+                                      frame -> frame.getTransformProvider().getKinematicTransform(date),
+                                      (t1, t2) -> FieldKinematicTransform.compose(date, t1, t2),
+                                      FieldKinematicTransform::getInverse);
+            }
         }
     }
 
@@ -396,11 +546,11 @@ public class Frame {
      * @param <T>          Type of transform returned.
      * @return composite transform.
      */
-    private <T> T getTransformTo(final Frame destination,
-                                 final T identity,
-                                 final Function<Frame, T> getTransform,
-                                 final BiFunction<T, T, T> compose,
-                                 final Function<T, T> inverse) {
+    <T> T getTransformTo(final Frame destination,
+                         final T identity,
+                         final Function<Frame, T> getTransform,
+                         final BiFunction<T, T, T> compose,
+                         final Function<T, T> inverse) {
 
         if (this == destination) {
             // shortcut for special case that may be frequent

@@ -360,7 +360,10 @@ public class MarshallSolarActivityFutureEstimation
         // Interpolate
         final AbsoluteDate previousDate = neighbors.get(0).getDate();
         final AbsoluteDate nextDate     = neighbors.get(1).getDate();
-        return interpolatingFunction.value(date.durationFrom(previousDate) / nextDate.durationFrom(previousDate));
+
+        // TODO Temporary fix for issue 1719 until GenericTimeStampedCache is fixed
+        final double normInterpDate = date.durationFrom(previousDate) / nextDate.durationFrom(previousDate);
+        return interpolatingFunction.value(FastMath.max(0, FastMath.min(normInterpDate, 1.0)));
     }
 
     /** {@inheritDoc} */
@@ -507,7 +510,7 @@ public class MarshallSolarActivityFutureEstimation
             }
 
             // Returns the 81 day average flux
-            return new TimeStampedDouble(average / 81, date);
+            return new TimeStampedDouble(date, average / 81);
         }
     }
 

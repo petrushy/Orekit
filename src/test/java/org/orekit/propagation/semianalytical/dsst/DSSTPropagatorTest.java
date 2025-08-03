@@ -120,6 +120,30 @@ public class DSSTPropagatorTest {
 
     private DSSTPropagator dsstProp;
 
+    @Test
+    public void testIssue1703() {
+        // Orbit
+        final AbsoluteDate orbitEpoch = new AbsoluteDate(2023, 2, 18, TimeScalesFactory.getUTC());
+        final Frame inertial = FramesFactory.getCIRF(IERSConventions.IERS_2010, true);
+        final KeplerianOrbit orbit = new KeplerianOrbit(42166000.0, 0.00028, FastMath.toRadians(0.05), FastMath.toRadians(66.0),
+                                                        FastMath.toRadians(270.0), FastMath.toRadians(11.94), PositionAngleType.MEAN,
+                                                        inertial, orbitEpoch, Constants.WGS84_EARTH_MU);
+
+        // Setup propagator
+        DSSTPropagator propagator = new DSSTPropagator(new ClassicalRungeKuttaIntegrator(60.0), PropagationType.OSCULATING);
+        propagator.setInitialState(new SpacecraftState(orbit), PropagationType.MEAN);
+
+        // Verify initial state
+        Assertions.assertFalse(propagator.initialIsOsculating());
+
+        // Action to reproduce the issue
+        propagator.setupMatricesComputation("stm", null, null);
+        propagator.setUpStmAndJacobianGenerators();
+
+        // Verify that initial state is still mean state
+        Assertions.assertFalse(propagator.initialIsOsculating());
+    }
+
     /**
      * Test issue #1029 about DSST short period terms computation.
      * Issue #1029 is a regression introduced in version 10.0
@@ -153,7 +177,7 @@ public class DSSTPropagatorTest {
         propagator.addForceModel(new DSSTThirdBody(CelestialBodyFactory.getMoon(), gravityProvider.getMu()));
 
         // propagate
-        propagator.setInitialState(new SpacecraftState(equinoctial, 6000.0), PropagationType.MEAN);
+        propagator.setInitialState(new SpacecraftState(equinoctial).withMass(6000.0), PropagationType.MEAN);
         SpacecraftState propagated = propagator.propagate(orbitEpoch.shiftedBy(20.0 * Constants.JULIAN_DAY));
 
         // The purpose is not verifying propagated values, but to check that no exception occurred
@@ -169,7 +193,7 @@ public class DSSTPropagatorTest {
         CircularOrbit orbit = new CircularOrbit(7389068.5, 1.0e-15, 1.0e-15, 1.709573, 1.308398, 0, PositionAngleType.MEAN,
                                                 FramesFactory.getTOD(IERSConventions.IERS_2010, false),
                                                 date, Constants.WGS84_EARTH_MU);
-        SpacecraftState osculatingState = new SpacecraftState(orbit, 1116.2829);
+        SpacecraftState osculatingState = new SpacecraftState(orbit).withMass(1116.2829);
 
         List<DSSTForceModel> dsstForceModels = new ArrayList<DSSTForceModel>();
 
@@ -193,7 +217,7 @@ public class DSSTPropagatorTest {
         CircularOrbit orbit = new CircularOrbit(7389068.5, 0.0, 0.0, 1.709573, 1.308398, 0, PositionAngleType.MEAN,
                                                 FramesFactory.getTOD(IERSConventions.IERS_2010, false),
                                                 date, Constants.WGS84_EARTH_MU);
-        SpacecraftState osculatingState = new SpacecraftState(orbit, 1116.2829);
+        SpacecraftState osculatingState = new SpacecraftState(orbit).withMass(1116.2829);
 
         List<DSSTForceModel> dsstForceModels = new ArrayList<DSSTForceModel>();
 
@@ -288,11 +312,11 @@ public class DSSTPropagatorTest {
 
         // Initial orbit definition
         final Vector3D initialPosition = state.getPosition();
-        final Vector3D initialVelocity = state.getPVCoordinates().getVelocity();
+        final Vector3D initialVelocity = state.getVelocity();
 
         // Final orbit definition
         final Vector3D finalPosition = finalState.getPosition();
-        final Vector3D finalVelocity = finalState.getPVCoordinates().getVelocity();
+        final Vector3D finalVelocity = finalState.getVelocity();
 
         // Check results
         Assertions.assertEquals(initialPosition.getX(), finalPosition.getX(), 0.0);
@@ -695,7 +719,7 @@ public class DSSTPropagatorTest {
         propagator.addForceModel(new DSSTSolarRadiationPressure(1.2, 180, sun, earth, nshp.getMu()));
 
 
-        propagator.setInitialState(new SpacecraftState(orbit, 45.0), PropagationType.OSCULATING);
+        propagator.setInitialState(new SpacecraftState(orbit).withMass(45.0), PropagationType.OSCULATING);
         SpacecraftState finalState = propagator.propagate(orbit.getDate().shiftedBy(30 * Constants.JULIAN_DAY));
         // the following comparison is in fact meaningless
         // the initial orbit is osculating the final orbit is a mean orbit
@@ -703,7 +727,7 @@ public class DSSTPropagatorTest {
         // we keep it only as is was an historical test
         Assertions.assertEquals(2187.2, orbit.getA() - finalState.getOrbit().getA(), 1.0);
 
-        propagator.setInitialState(new SpacecraftState(orbit, 45.0), PropagationType.MEAN);
+        propagator.setInitialState(new SpacecraftState(orbit).withMass(45.0), PropagationType.MEAN);
         finalState = propagator.propagate(orbit.getDate().shiftedBy(30 * Constants.JULIAN_DAY));
         // the following comparison is realistic
         // both the initial orbit and final orbit are mean orbits
@@ -757,13 +781,13 @@ public class DSSTPropagatorTest {
         final double nDays = 5.;
 
         // direct generation of states
-        propagator.setInitialState(new SpacecraftState(orbit, 45.0), PropagationType.MEAN);
+        propagator.setInitialState(new SpacecraftState(orbit).withMass( 45.0), PropagationType.MEAN);
         final List<SpacecraftState> states = new ArrayList<SpacecraftState>();
         propagator.setStepHandler(600, currentState -> states.add(currentState));
         propagator.propagate(orbit.getDate().shiftedBy(nDays * Constants.JULIAN_DAY));
 
         // ephemeris generation
-        propagator.setInitialState(new SpacecraftState(orbit, 45.0), PropagationType.MEAN);
+        propagator.setInitialState(new SpacecraftState(orbit).withMass(45.0), PropagationType.MEAN);
         final EphemerisGenerator generator = propagator.getEphemerisGenerator();
         propagator.propagate(orbit.getDate().shiftedBy(nDays * Constants.JULIAN_DAY));
         BoundedPropagator ephemeris = generator.getGeneratedEphemeris();
@@ -895,7 +919,7 @@ public class DSSTPropagatorTest {
         propagator.addForceModel(new DSSTSolarRadiationPressure(1.2, 180, sun, earth, nshp.getMu()));
 
         final AbsoluteDate finalDate = orbit.getDate().shiftedBy(30 * Constants.JULIAN_DAY);
-        propagator.resetInitialState(new SpacecraftState(orbit, 45.0));
+        propagator.resetInitialState(new SpacecraftState(orbit).withMass( 45.0));
         final SpacecraftState stateNoConfig = propagator.propagate(finalDate);
         Assertions.assertEquals(0, stateNoConfig.getAdditionalDataValues().size());
 
@@ -903,7 +927,7 @@ public class DSSTPropagatorTest {
         propagator.setSelectedCoefficients(new HashSet<String>());
         Assertions.assertNotNull(propagator.getSelectedCoefficients());
         Assertions.assertTrue(propagator.getSelectedCoefficients().isEmpty());
-        propagator.resetInitialState(new SpacecraftState(orbit, 45.0));
+        propagator.resetInitialState(new SpacecraftState(orbit).withMass( 45.0));
         final SpacecraftState stateConfigEmpty = propagator.propagate(finalDate);
         Assertions.assertEquals(234, stateConfigEmpty.getAdditionalDataValues().size());
 
@@ -912,12 +936,12 @@ public class DSSTPropagatorTest {
         selected.add("DSST-central-body-tesseral-c[-2][3]");
         propagator.setSelectedCoefficients(selected);
         Assertions.assertEquals(2, propagator.getSelectedCoefficients().size());
-        propagator.resetInitialState(new SpacecraftState(orbit, 45.0));
+        propagator.resetInitialState(new SpacecraftState(orbit).withMass(45.0));
         final SpacecraftState stateConfigeSelected = propagator.propagate(finalDate);
         Assertions.assertEquals(selected.size(), stateConfigeSelected.getAdditionalDataValues().size());
 
         propagator.setSelectedCoefficients(null);
-        propagator.resetInitialState(new SpacecraftState(orbit, 45.0));
+        propagator.resetInitialState(new SpacecraftState(orbit).withMass(45.0));
         final SpacecraftState stateConfigNull = propagator.propagate(finalDate);
         Assertions.assertEquals(0, stateConfigNull.getAdditionalDataValues().size());
 
