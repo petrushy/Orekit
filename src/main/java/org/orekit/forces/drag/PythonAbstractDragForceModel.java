@@ -70,6 +70,17 @@ public class PythonAbstractDragForceModel extends AbstractDragForceModel {
         super(atmosphere);
     }
 
+    /**
+     * Constructor.
+     *
+     * @param atmosphere atmospheric model
+     * @param useFiniteDifferencesOnDensityWrtPosition flag to use finite differences to compute density derivatives
+     *                                                 with respect to position
+     */
+    public PythonAbstractDragForceModel(Atmosphere atmosphere, boolean useFiniteDifferencesOnDensityWrtPosition) {
+        super(atmosphere, useFiniteDifferencesOnDensityWrtPosition);
+    }
+
     /** {@inheritDoc} */
     @Override
     public native Vector3D acceleration(SpacecraftState s, double[] parameters);

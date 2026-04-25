@@ -2,8 +2,10 @@ package org.orekit.attitudes;
 
 import org.orekit.frames.Frame;
 
-// TODO What to extend?
-
+/**
+ * Python implementation of the GroundPointingAttitudeModifier abstract class.
+ * This class is part of the JCC Python interface.
+ */
 public class PythonGroundPointingAttitudeModifier extends GroundPointingAttitudeModifier {
     /**
      * Constructor.
@@ -39,7 +41,5 @@ public class PythonGroundPointingAttitudeModifier extends GroundPointingAttitude
 
     /** Part of JCC Python interface to object */
     public native void pythonDecRef();
-
-    // TODO What to expose here?
 
 }

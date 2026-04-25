@@ -7,6 +7,10 @@ import java.util.Collection;
 
 public class PythonAbstractPropagator extends AbstractPropagator {
 
+    public PythonAbstractPropagator() {
+        super();
+    }
+
     /** Part of JCC Python interface to object */
     private long pythonObject;
 

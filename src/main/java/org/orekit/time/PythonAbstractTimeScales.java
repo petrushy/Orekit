@@ -25,6 +25,10 @@ import org.orekit.utils.IERSConventions;
 
 public class PythonAbstractTimeScales extends AbstractTimeScales {
 
+    public PythonAbstractTimeScales() {
+        super();
+    }
+
     /** Part of JCC Python interface to object */
     private long pythonObject;
 

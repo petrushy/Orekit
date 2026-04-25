@@ -31,6 +31,10 @@ import java.util.List;
 import java.util.stream.Stream;
 
 public class PythonAbstractManeuverTriggers extends AbstractManeuverTriggers {
+    public PythonAbstractManeuverTriggers() {
+        super();
+    }
+
     /** Part of JCC Python interface to object */
     private long pythonObject;
 

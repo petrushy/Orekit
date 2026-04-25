@@ -8,6 +8,10 @@ public class PythonGroundReceiverMeasurement<T extends GroundReceiverMeasurement
         super(station, twoWay, date, observed, sigma, baseWeight, satellite);
     }
 
+    public PythonGroundReceiverMeasurement(GroundStation station, boolean twoWay, AbsoluteDate date, double[] observed, double[] sigma, double[] baseWeight, ObservableSatellite satellite) {
+        super(station, twoWay, date, observed, sigma, baseWeight, satellite);
+    }
+
     /** Part of JCC Python interface to object */
     protected long pythonObject;
 

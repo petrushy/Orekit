@@ -55,13 +55,22 @@ public class PythonAbstractConstantThrustPropulsionModel extends AbstractConstan
         super(thrust, isp, direction, control3DVectorCostType, name);
     }
 
+    /**
+     * Generic constructor with default control cost type.
+     *
+     * @param thrust    initial thrust value (N)
+     * @param isp       initial isp value (s)
+     * @param direction initial thrust direction in S/C frame
+     * @param name      name of the maneuver
+     */
+    public PythonAbstractConstantThrustPropulsionModel(double thrust, double isp, Vector3D direction, String name) {
+        super(thrust, isp, direction, name);
+    }
+
 
     /** {@inheritDoc} */
     @Override
     public native Vector3D getThrustVector();
-
-    // TODO: Check how to implement difference on these
-    // TODO: Is it needed with these defaults being exposed again?
 
     @Override
     public native Vector3D getThrustVector(AbsoluteDate date);

@@ -1,6 +1,10 @@
 package org.orekit.gnss.metric.parser;
 
 public class PythonAbstractEncodedMessage extends AbstractEncodedMessage {
+    public PythonAbstractEncodedMessage() {
+        super();
+    }
+
     /** Part of JCC Python interface to object */
     private long pythonObject;
 

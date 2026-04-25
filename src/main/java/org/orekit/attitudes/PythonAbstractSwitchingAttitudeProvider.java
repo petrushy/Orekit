@@ -15,6 +15,10 @@ import org.orekit.utils.PVCoordinatesProvider;
  */
 public class PythonAbstractSwitchingAttitudeProvider extends AbstractSwitchingAttitudeProvider {
 
+    public PythonAbstractSwitchingAttitudeProvider() {
+        super();
+    }
+
     /** Part of JCC Python interface to object */
     private long pythonObject;
 

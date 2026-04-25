@@ -21,6 +21,7 @@
 package org.orekit.files.ccsds.utils.generation;
 
 import org.orekit.files.ccsds.utils.FileFormat;
+import org.orekit.utils.Formatter;
 import org.orekit.utils.units.Unit;
 
 import java.io.IOException;
@@ -57,6 +58,12 @@ public class PythonAbstractGenerator extends AbstractGenerator {
     public PythonAbstractGenerator( Appendable output,  String outputName,
                                     double maxRelativeOffset,  boolean writeUnits) {
         super(output, outputName, maxRelativeOffset, writeUnits);
+    }
+
+    public PythonAbstractGenerator(Appendable output, String outputName,
+                                   double maxRelativeOffset, boolean writeUnits,
+                                   Formatter formatter) {
+        super(output, outputName, maxRelativeOffset, writeUnits, formatter);
     }
 
     /** {@inheritDoc} */

@@ -34,7 +34,7 @@ public class PythonHatchFilter extends HatchFilter {
      *                  and measured values for loss of lock detection)
      * @param N         window size of the Hatch Filter
      */
-    PythonHatchFilter(double threshold, int N) {
+    public PythonHatchFilter(double threshold, int N) {
         super(threshold, N);
     }
 }

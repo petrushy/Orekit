@@ -20,6 +20,10 @@
 
 package org.orekit.files.ilrs;
 
+/**
+ * Python implementation of the ILRSHeader abstract class.
+ * This class is part of the JCC Python interface.
+ */
 public class PythonILRSHeader extends ILRSHeader {
     /** Part of JCC Python interface to object */
     private long pythonObject;
@@ -46,6 +50,8 @@ public class PythonILRSHeader extends ILRSHeader {
     /** Part of JCC Python interface to object */
     public native void pythonDecRef();
 
-    // TODO: Verify that this is a reasonable exposure of the abstract class
+    public PythonILRSHeader() {
+        super();
+    }
 
 }

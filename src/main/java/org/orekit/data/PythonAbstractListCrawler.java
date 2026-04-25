@@ -25,6 +25,11 @@ import java.io.InputStream;
 
 public class PythonAbstractListCrawler<T> extends AbstractListCrawler<T> {
 
+    @SafeVarargs
+    public PythonAbstractListCrawler(T... inputs) {
+        super(inputs);
+    }
+
     /** Part of JCC Python interface to object */
     private long pythonObject;
 

@@ -23,6 +23,10 @@ package org.orekit.data;
 import org.hipparchus.CalculusFieldElement;
 
 public class PythonSeriesTerm extends SeriesTerm {
+    public PythonSeriesTerm() {
+        super();
+    }
+
     /** Part of JCC Python interface to object */
     private long pythonObject;
 

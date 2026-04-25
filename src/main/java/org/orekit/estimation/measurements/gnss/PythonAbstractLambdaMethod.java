@@ -21,6 +21,10 @@
 package org.orekit.estimation.measurements.gnss;
 
 public class PythonAbstractLambdaMethod extends AbstractLambdaMethod {
+    public PythonAbstractLambdaMethod() {
+        super();
+    }
+
     /** Part of JCC Python interface to object */
     private long pythonObject;
 
