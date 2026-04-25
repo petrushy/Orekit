@@ -45,6 +45,18 @@ public class ConstantPVCoordinatesProviderTest {
     }
 
     @Test
+    void testGetVelocity() {
+        // GIVEN
+        final PVCoordinates pvCoordinates = new PVCoordinates(Vector3D.MINUS_I, Vector3D.MINUS_K);
+        final Frame frame = FramesFactory.getEME2000();
+        final ConstantPVCoordinatesProvider provider = new ConstantPVCoordinatesProvider(pvCoordinates, frame);
+        // WHEN
+        final Vector3D velocity = provider.getVelocity(AbsoluteDate.ARBITRARY_EPOCH, frame);
+        // THEN
+        Assertions.assertEquals(pvCoordinates.getVelocity(), velocity);
+    }
+
+    @Test
     public void verifyEllipsoidLocation() {
         final Frame itrf = FramesFactory.getITRF(IERSConventions.IERS_2010, true);
         final OneAxisEllipsoid body = ReferenceEllipsoid.getWgs84(itrf);

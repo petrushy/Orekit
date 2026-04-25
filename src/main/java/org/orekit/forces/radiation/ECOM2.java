@@ -28,7 +28,8 @@ import org.hipparchus.util.FieldSinCos;
 import org.hipparchus.util.SinCos;
 import org.orekit.annotation.DefaultDataContext;
 import org.orekit.bodies.OneAxisEllipsoid;
-import org.orekit.frames.FramesFactory;
+import org.orekit.data.DataContext;
+import org.orekit.frames.Frames;
 import org.orekit.propagation.FieldSpacecraftState;
 import org.orekit.propagation.SpacecraftState;
 import org.orekit.utils.ExtendedPositionProvider;
@@ -84,14 +85,6 @@ public class ECOM2 extends AbstractRadiationForceModel {
     /** Maximum value for ECOM2 estimated parameters. */
     private static final double MAX_VALUE = Double.POSITIVE_INFINITY;
 
-    /** Parameters scaling factor.
-     * <p>
-     * We use a power of 2 to avoid numeric noise introduction
-     * in the multiplications/divisions sequences.
-     * </p>
-     */
-    private final double SCALE = FastMath.scalb(1.0, -22);
-
     /** Highest order for parameter along eD axis (satellite --> sun direction). */
     private final int nD;
 
@@ -120,30 +113,47 @@ public class ECOM2 extends AbstractRadiationForceModel {
     @DefaultDataContext
     public ECOM2(final int nD, final int nB, final double value,
                  final ExtendedPositionProvider sun, final double equatorialRadius) {
-        super(sun, new OneAxisEllipsoid(equatorialRadius, 0.0, FramesFactory.getGCRF()),
-                getDefaultEclipseDetectionSettings());
+        this(nD, nB, value, sun, equatorialRadius, DataContext.getDefault().getFrames());
+    }
+
+    /**
+     * Constructor.
+     * @param nD truncation rank of Fourier series in D term.
+     * @param nB truncation rank of Fourier series in B term.
+     * @param value parameters initial value
+     * @param sun provide for Sun parameter
+     * @param equatorialRadius spherical shape model (for umbra/penumbra computation)
+     * @param frames list of frames with user-defined data context
+     * @since 13.1.1
+     */
+    public ECOM2(final int nD, final int nB, final double value,
+                 final ExtendedPositionProvider sun, final double equatorialRadius,
+                 final Frames frames) {
+        super(sun, new OneAxisEllipsoid(equatorialRadius, 0.0, frames.getGCRF()), getDefaultEclipseDetectionSettings());
         this.nB = nB;
         this.nD = nD;
         this.coefficients = new ArrayList<>(2 * (nD + nB) + 3);
 
+        // Parameters scaling factor
+        final double scale = FastMath.scalb(1.0, -22);
         // Add parameter along eB axis in alphabetical order
-        coefficients.add(new ParameterDriver(ECOM_COEFFICIENT + " B0", value, SCALE, MIN_VALUE, MAX_VALUE));
+        coefficients.add(new ParameterDriver(ECOM_COEFFICIENT + " B0", value, scale, MIN_VALUE, MAX_VALUE));
         for (int i = 1; i < nB + 1; i++) {
-            coefficients.add(new ParameterDriver(ECOM_COEFFICIENT + " Bcos" + Integer.toString(i - 1), value, SCALE, MIN_VALUE, MAX_VALUE));
+            coefficients.add(new ParameterDriver(ECOM_COEFFICIENT + " Bcos" + (i - 1), value, scale, MIN_VALUE, MAX_VALUE));
         }
         for (int i = nB + 1; i < 2 * nB + 1; i++) {
-            coefficients.add(new ParameterDriver(ECOM_COEFFICIENT + " Bsin" + Integer.toString(i - (nB + 1)), value, SCALE, MIN_VALUE, MAX_VALUE));
+            coefficients.add(new ParameterDriver(ECOM_COEFFICIENT + " Bsin" + (i - (nB + 1)), value, scale, MIN_VALUE, MAX_VALUE));
         }
         // Add driver along eD axis in alphabetical order
-        coefficients.add(2 * nB + 1, new ParameterDriver(ECOM_COEFFICIENT + " D0", value, SCALE, MIN_VALUE, MAX_VALUE));
+        coefficients.add(2 * nB + 1, new ParameterDriver(ECOM_COEFFICIENT + " D0", value, scale, MIN_VALUE, MAX_VALUE));
         for (int i = 2 * nB + 2; i < 2 * nB + 2 + nD; i++) {
-            coefficients.add(new ParameterDriver(ECOM_COEFFICIENT + " Dcos" + Integer.toString(i - (2 * nB + 2)), value, SCALE, MIN_VALUE, MAX_VALUE));
+            coefficients.add(new ParameterDriver(ECOM_COEFFICIENT + " Dcos" + (i - (2 * nB + 2)), value, scale, MIN_VALUE, MAX_VALUE));
         }
         for (int i = 2 * nB + 2 + nD; i < 2 * (nB + nD) + 2; i++) {
-            coefficients.add(new ParameterDriver(ECOM_COEFFICIENT + " Dsin" + Integer.toString(i - (2 * nB + nD + 2)), value, SCALE, MIN_VALUE, MAX_VALUE));
+            coefficients.add(new ParameterDriver(ECOM_COEFFICIENT + " Dsin" + (i - (2 * nB + nD + 2)), value, scale, MIN_VALUE, MAX_VALUE));
         }
-        // Add  Y0
-        coefficients.add(new ParameterDriver(ECOM_COEFFICIENT + " Y0", value, SCALE, MIN_VALUE, MAX_VALUE));
+        // Add Y0
+        coefficients.add(new ParameterDriver(ECOM_COEFFICIENT + " Y0", value, scale, MIN_VALUE, MAX_VALUE));
 
         // For ECOM2 model, all parameters are estimated
         coefficients.forEach(parameter -> parameter.setSelected(true));

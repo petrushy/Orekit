@@ -19,6 +19,8 @@ package org.orekit.files.ccsds.ndm.cdm;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 
+import org.hamcrest.MatcherAssert;
+import org.hamcrest.Matchers;
 import org.hipparchus.util.FastMath;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -1945,4 +1947,27 @@ public class CdmParserTest {
         // dummy assertion: the aim of the test is to show that empty unit can be parsed
         Assertions.assertNull(file.getDataObject1().getODParametersBlock());
     }
+
+    /** Check that an invalid TCA throws an exception saying so. */
+    @Test
+    public void testInvalidTca() {
+        // File
+        final String ex = "/ccsds/cdm/CDMExample1InvalidTca.txt";
+
+        // Initialize the parser
+        final CdmParser parser = new ParserBuilder().buildCdmParser();
+
+        final DataSource source = new DataSource(ex, () -> getClass().getResourceAsStream(ex));
+
+        // Generated CDM file
+        try {
+            parser.parseMessage(source);
+            Assertions.fail("an exception should have been thrown");
+        } catch (Exception e) {
+            MatcherAssert.assertThat(
+                    e.getMessage(),
+                    Matchers.containsString("non-existent date 2010-04-31"));
+        }
+    }
+
 }

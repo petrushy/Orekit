@@ -21,7 +21,9 @@ import java.util.function.DoubleFunction;
 import org.hipparchus.CalculusFieldElement;
 import org.hipparchus.Field;
 import org.hipparchus.analysis.differentiation.UnivariateDerivative2;
+import org.hipparchus.analysis.differentiation.UnivariateDerivative2Field;
 import org.hipparchus.analysis.solvers.BracketingNthOrderBrentSolver;
+import org.hipparchus.exception.LocalizedCoreFormats;
 import org.hipparchus.geometry.euclidean.threed.FieldLine;
 import org.hipparchus.geometry.euclidean.threed.FieldVector3D;
 import org.hipparchus.geometry.euclidean.threed.Line;
@@ -32,6 +34,8 @@ import org.hipparchus.util.FieldSinCos;
 import org.hipparchus.util.MathArrays;
 import org.hipparchus.util.MathUtils;
 import org.hipparchus.util.SinCos;
+import org.orekit.errors.OrekitException;
+import org.orekit.errors.OrekitMessages;
 import org.orekit.frames.FieldStaticTransform;
 import org.orekit.frames.Frame;
 import org.orekit.frames.StaticTransform;
@@ -56,6 +60,9 @@ public class OneAxisEllipsoid extends Ellipsoid implements BodyShape {
 
     /** Threshold for polar and equatorial points detection. */
     private static final double ANGULAR_THRESHOLD = 1.0e-4;
+
+    /** Convergence threshold for {@link #pointAtAltitude(Line, double, Vector3D, Frame, AbsoluteDate)}. */
+    private static final double ALTITUDE_CONVERGENCE = 1.0e-6;
 
     /** Equatorial radius power 2. */
     private final double ae2;
@@ -171,17 +178,25 @@ public class OneAxisEllipsoid extends Ellipsoid implements BodyShape {
     }
 
     /** Get the intersection point of a line with the surface of the body.
-     * <p>A line may have several intersection points with a closed
+     * <p>
+     * A line may have several intersection points with a closed
      * surface (we consider the one point case as a degenerated two
      * points case). The close parameter is used to select which of
      * these points should be returned. The selected point is the one
-     * that is closest to the close point.</p>
+     * that is closest to the close point.
+     * </p>
+     * <p>
+     * This method is similar to {@link #pointAtAltitude(Line, double,
+     * Vector3D, Frame, AbsoluteDate)} pointAtAltitude} <em>except</em> it
+     * returns a point in the body frame (the other method returns a point
+     * in the sameframe as the input line)
+     * </p>
      * @param line test line (may intersect the body or not)
      * @param close point used for intersections selection
      * @param frame frame in which line is expressed
      * @param date date of the line in given frame
-     * @return intersection point at altitude zero or null if the line does
-     * not intersect the surface
+     * @return intersection point in body frame at altitude zero or null
+     * if the line does not intersect the surface
      * @since 9.3
      */
     public Vector3D getCartesianIntersectionPoint(final Line line, final Vector3D close,
@@ -248,18 +263,26 @@ public class OneAxisEllipsoid extends Ellipsoid implements BodyShape {
     }
 
     /** Get the intersection point of a line with the surface of the body.
-     * <p>A line may have several intersection points with a closed
+     * <p>
+     * A line may have several intersection points with a closed
      * surface (we consider the one point case as a degenerated two
      * points case). The close parameter is used to select which of
      * these points should be returned. The selected point is the one
-     * that is closest to the close point.</p>
+     * that is closest to the close point.
+     * </p>
+     * <p>
+     * This method is similar to {@link #pointAtAltitude(FieldLine, CalculusFieldElement,
+     * FieldVector3D, Frame, FieldAbsoluteDate) pointAtAltitude} <em>except</em> it
+     * returns a point in the body frame (the other method returns a point in the same
+     * frame as the input line)
+     * </p>
      * @param line test line (may intersect the body or not)
      * @param close point used for intersections selection
      * @param frame frame in which line is expressed
      * @param date date of the line in given frame
      * @param <T> type of the field elements
-     * @return intersection point at altitude zero or null if the line does
-     * not intersect the surface
+     * @return intersection point in body frame at altitude zero or null
+     * if the line does not intersect the surface
      * @since 9.3
      */
     public <T extends CalculusFieldElement<T>> FieldVector3D<T> getCartesianIntersectionPoint(final FieldLine<T> line,
@@ -591,8 +614,8 @@ public class OneAxisEllipsoid extends Ellipsoid implements BodyShape {
      * </p>
      */
     public <T extends CalculusFieldElement<T>> FieldGeodeticPoint<T> transform(final FieldVector3D<T> point,
-                                                                           final Frame frame,
-                                                                           final FieldAbsoluteDate<T> date) {
+                                                                               final Frame frame,
+                                                                               final FieldAbsoluteDate<T> date) {
 
         // transform point to body frame
         final FieldVector3D<T> pointInBodyFrame = (frame == getFrame()) ?
@@ -718,30 +741,10 @@ public class OneAxisEllipsoid extends Ellipsoid implements BodyShape {
      */
     public FieldGeodeticPoint<UnivariateDerivative2> transform(final PVCoordinates point,
                                                                final Frame frame, final AbsoluteDate date) {
-
-        // transform point to body frame
-        final Transform toBody = frame.getTransformTo(getFrame(), date);
-        final PVCoordinates pointInBodyFrame = toBody.transformPVCoordinates(point);
-        final FieldVector3D<UnivariateDerivative2> p = pointInBodyFrame.toUnivariateDerivative2Vector();
-        final UnivariateDerivative2   pr2 = p.getX().square().add(p.getY().square());
-        final UnivariateDerivative2   pr  = pr2.sqrt();
-        final UnivariateDerivative2   pz  = p.getZ();
-
-        // project point on the ellipsoid surface
-        final TimeStampedPVCoordinates groundPoint = projectToGround(new TimeStampedPVCoordinates(date, pointInBodyFrame),
-                                                                     getFrame());
-        final FieldVector3D<UnivariateDerivative2> gp = groundPoint.toUnivariateDerivative2Vector();
-        final UnivariateDerivative2   gpr2 = gp.getX().square().add(gp.getY().square());
-        final UnivariateDerivative2   gpr  = gpr2.sqrt();
-        final UnivariateDerivative2   gpz  = gp.getZ();
-
-        // relative position of test point with respect to its ellipse sub-point
-        final UnivariateDerivative2 dr  = pr.subtract(gpr);
-        final UnivariateDerivative2 dz  = pz.subtract(gpz);
-        final double insideIfNegative = g2 * (pr2.getReal() - ae2) + pz.getReal() * pz.getReal();
-
-        return new FieldGeodeticPoint<>(FastMath.atan2(gpz, gpr.multiply(g2)), FastMath.atan2(p.getY(), p.getX()),
-            FastMath.hypot(dr, dz).copySign(insideIfNegative));
+        final UnivariateDerivative2Field field = UnivariateDerivative2Field.getInstance();
+        final UnivariateDerivative2 dt = new UnivariateDerivative2(0., 1., 0.);
+        final FieldAbsoluteDate<UnivariateDerivative2> fieldDate = new FieldAbsoluteDate<>(field, date).shiftedBy(dt);
+        return transform(point.toUnivariateDerivative2Vector(), frame, fieldDate);
     }
 
     /** Compute the azimuth angle from local north between the two points.
@@ -766,10 +769,10 @@ public class OneAxisEllipsoid extends Ellipsoid implements BodyShape {
     }
 
     /** Compute the azimuth angle from local north between the two points.
-     *
+     * <p>
      * The angle is calculated clockwise from local north at the origin point
      * and follows the rhumb line to the destination point.
-     *
+     * </p>
      * @param origin the origin point, at which the azimuth angle will be computed (non-{@code null})
      * @param destination the destination point, to which the angle is defined (non-{@code null})
      * @param <T> the type of field elements
@@ -921,6 +924,134 @@ public class OneAxisEllipsoid extends Ellipsoid implements BodyShape {
                 return intermediate.apply(lambdaMin);
             }
         }
+
+    }
+
+    /** Get point at some altitude along a line.
+     * <p>
+     * A line may have several intersection points with a closed
+     * surface at some altitude (we consider the one point case as a
+     * degenerated two points case). The close parameter is used to
+     * select which of these points should be returned. The selected
+     * point is the one that is closest to the close point.
+     * </p>
+     * <p>
+     * This is a generalized version of {@link #getCartesianIntersectionPoint(Line,
+     * Vector3D, Frame, AbsoluteDate)}, with a non-zero altitude, <em>except</em>
+     * that it returns a point in the same frame as input line (the other method
+     * returns a point in the body frame).
+     * </p>
+     * <p>
+     * This method was adapted from the sister Rugged library.
+     * </p>
+     * @param line test line (may intersect the body or not)
+     * @param altitude altitude with respect to ellipsoid (m)
+     * @param close point used for intersections selection
+     * @param frame frame in which line is expressed
+     * @param date date of the line in given frame
+     * @return intersection point at specified altitude zero or null
+     * if the line does not intersect the iso-altitude surface
+     * @since 13.1.1
+     */
+    public Vector3D pointAtAltitude(final Line line, final double altitude, final Vector3D close,
+                                    final Frame frame, final AbsoluteDate date) {
+
+        // compute desired point position along the line using a rough guess (spherical body)
+        final double r     = altitude + getEquatorialRadius();
+        final double delta = r * r - line.getOrigin().getNormSq();
+        if (delta < 0) {
+            throw new OrekitException(OrekitMessages.LINE_NEVER_CROSSES_ALTITUDE, altitude);
+        }
+        double k = FastMath.copySign(FastMath.sqrt(delta), line.getAbscissa(close));
+
+        final StaticTransform frame2Body = frame.getStaticTransformTo(getBodyFrame(), date);
+        final Vector3D        direction  = frame2Body.transformVector(line.getDirection());
+
+        // this loop usually converges in about 3 iterations
+        for (int i = 0; i < 100; ++i) {
+
+            final Vector3D      pInputFrame = line.pointAt(k);
+            final Vector3D      pBodyFrame  = frame2Body.transformPosition(pInputFrame);
+            final GeodeticPoint gpK         = transform(pBodyFrame, getBodyFrame(), null);
+            final double        deltaH      = altitude - gpK.getAltitude();
+            if (FastMath.abs(deltaH) <= ALTITUDE_CONVERGENCE) {
+                return pInputFrame;
+            }
+
+            // improve the offset using linear ratio between
+            // altitude variation and displacement along line
+            k += deltaH / Vector3D.dotProduct(gpK.getZenith(), direction);
+
+        }
+
+        // could not converge (line probably skims rights at the desired altitude)
+        throw new OrekitException(LocalizedCoreFormats.CONVERGENCE_FAILED);
+
+    }
+
+    /** Get point at some altitude along a line.
+     * <p>
+     * A line may have several intersection points with a closed
+     * surface at some altitude (we consider the one point case as a
+     * degenerated two points case). The close parameter is used to
+     * select which of these points should be returned. The selected
+     * point is the one that is closest to the close point.
+     * </p>
+     * <p>
+     * This is a generalized version of {@link #getCartesianIntersectionPoint(Line,
+     * Vector3D, Frame, AbsoluteDate)}, with a non-zero altitude, <em>except</em>
+     * that it returns a point in the same frame as input line (the other method
+     * returns a point in the body frame).
+     * </p>
+     * <p>
+     * This method was adapted from the sister Rugged library.
+     * </p>
+     * @param <T> type of the field elements
+     * @param line test line (may intersect the body or not)
+     * @param altitude altitude with respect to ellipsoid (m)
+     * @param close point used for intersections selection
+     * @param frame frame in which line is expressed
+     * @param date date of the line in given frame
+     * @return intersection point at specified altitude zero or null
+     * if the line does not intersect the iso-altitude surface
+     * @since 13.1.1
+     */
+    public <T extends CalculusFieldElement<T>> FieldVector3D<T> pointAtAltitude(final FieldLine<T> line,
+                                                                                final T altitude,
+                                                                                final FieldVector3D<T> close,
+                                                                                final Frame frame,
+                                                                                final FieldAbsoluteDate<T> date) {
+
+        // compute desired point position along the line using a rough guess (spherical body)
+        final T r     = altitude.add(getEquatorialRadius());
+        final T delta = r.multiply(r).subtract(line.getOrigin().getNormSq());
+        if (delta.getReal() < 0) {
+            throw new OrekitException(OrekitMessages.LINE_NEVER_CROSSES_ALTITUDE, altitude.getReal());
+        }
+        T k = FastMath.copySign(FastMath.sqrt(delta), line.getAbscissa(close));
+
+        final FieldStaticTransform<T> frame2Body = frame.getStaticTransformTo(getBodyFrame(), date);
+        final FieldVector3D<T>        direction  = frame2Body.transformVector(line.getDirection());
+
+        // this loop usually converges in about 3 iterations
+        for (int i = 0; i < 100; ++i) {
+
+            final FieldVector3D<T>      pInputFrame = line.pointAt(k);
+            final FieldVector3D<T>      pBodyFrame  = frame2Body.transformPosition(pInputFrame);
+            final FieldGeodeticPoint<T> gpK         = transform(pBodyFrame, getBodyFrame(), null);
+            final T                     deltaH      = altitude.subtract(gpK.getAltitude());
+            if (FastMath.abs(deltaH).getReal() <= ALTITUDE_CONVERGENCE) {
+                return pInputFrame;
+            }
+
+            // improve the offset using linear ratio between
+            // altitude variation and displacement along line
+            k = k.add(deltaH.divide(FieldVector3D.dotProduct(gpK.getZenith(), direction)));
+
+        }
+
+        // could not converge (line probably skims rights at the desired altitude)
+        throw new OrekitException(LocalizedCoreFormats.CONVERGENCE_FAILED);
 
     }
 

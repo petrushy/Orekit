@@ -22,6 +22,7 @@ import java.util.List;
 import org.hipparchus.CalculusFieldElement;
 import org.hipparchus.geometry.euclidean.threed.FieldVector3D;
 import org.orekit.attitudes.AttitudeProvider;
+import org.orekit.frames.FieldKinematicTransform;
 import org.orekit.frames.Frame;
 import org.orekit.propagation.events.FieldEventDetector;
 import org.orekit.propagation.sampling.FieldOrekitFixedStepHandler;
@@ -255,6 +256,17 @@ public interface FieldPropagator<T extends CalculusFieldElement<T>> extends Fiel
     @Override
     default TimeStampedFieldPVCoordinates<T> getPVCoordinates(final FieldAbsoluteDate<T> date, final Frame frame) {
         return propagate(date).getPVCoordinates(frame);
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    default FieldVector3D<T> getVelocity(final FieldAbsoluteDate<T> date, final Frame frame) {
+        final FieldSpacecraftState<T> state = propagate(date);
+        if (frame == getFrame()) {
+            return state.getVelocity();
+        }
+        final FieldKinematicTransform<T> kinematicTransform = getFrame().getKinematicTransformTo(frame, date);
+        return kinematicTransform.transformOnlyPV(state.getPVCoordinates()).getVelocity();
     }
 
     /** {@inheritDoc} */

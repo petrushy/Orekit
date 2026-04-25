@@ -29,7 +29,9 @@ import org.hipparchus.analysis.differentiation.DerivativeStructure;
 import org.hipparchus.analysis.differentiation.FiniteDifferencesDifferentiator;
 import org.hipparchus.analysis.differentiation.UnivariateDifferentiableFunction;
 import org.hipparchus.analysis.differentiation.UnivariateDerivative2;
+import org.hipparchus.exception.LocalizedCoreFormats;
 import org.hipparchus.geometry.euclidean.oned.Vector1D;
+import org.hipparchus.geometry.euclidean.threed.FieldLine;
 import org.hipparchus.geometry.euclidean.threed.FieldVector3D;
 import org.hipparchus.geometry.euclidean.threed.Line;
 import org.hipparchus.geometry.euclidean.threed.Vector3D;
@@ -44,8 +46,12 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.orekit.Utils;
 import org.orekit.errors.OrekitException;
+import org.orekit.errors.OrekitMessages;
+import org.orekit.frames.FieldStaticTransform;
 import org.orekit.frames.Frame;
 import org.orekit.frames.FramesFactory;
+import org.orekit.frames.StaticTransform;
+import org.orekit.models.earth.ReferenceEllipsoid;
 import org.orekit.orbits.CircularOrbit;
 import org.orekit.orbits.EquinoctialOrbit;
 import org.orekit.orbits.Orbit;
@@ -63,6 +69,9 @@ import org.orekit.utils.PVCoordinates;
 import org.orekit.utils.PVCoordinatesProvider;
 import org.orekit.utils.TimeStampedPVCoordinates;
 import org.orekit.utils.TimeStampedPVCoordinatesHermiteInterpolator;
+
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.orekit.OrekitMatchers.closeTo;
 
 
 class OneAxisEllipsoidTest {
@@ -264,8 +273,8 @@ class OneAxisEllipsoidTest {
 
     private double[] derivativesErrors(PVCoordinatesProvider provider, AbsoluteDate date, Frame frame,
                                        OneAxisEllipsoid model) {
-        List<TimeStampedPVCoordinates> pvList       = new ArrayList<TimeStampedPVCoordinates>();
-        List<TimeStampedPVCoordinates> groundPVList = new ArrayList<TimeStampedPVCoordinates>();
+        List<TimeStampedPVCoordinates> pvList       = new ArrayList<>();
+        List<TimeStampedPVCoordinates> groundPVList = new ArrayList<>();
         for (double dt = -0.25; dt <= 0.25; dt += 0.125) {
             TimeStampedPVCoordinates shiftedPV = provider.getPVCoordinates(date.shiftedBy(dt), frame);
             Vector3D p = model.projectToGround(shiftedPV.getPosition(), shiftedPV.getDate(), frame);
@@ -344,7 +353,7 @@ class OneAxisEllipsoidTest {
         Vector3D direction     = new Vector3D(0.0, 1.0, 1.0);
         Line line = new Line(point, point.add(direction), 1.0e-10);
         GeodeticPoint gp = model.getIntersectionPoint(line, point, frame, date);
-        Assertions.assertEquals(gp.getAltitude(), 0.0, 1.0e-12);
+        Assertions.assertEquals(0.0, gp.getAltitude(), 1.0e-12);
         Assertions.assertTrue(line.contains(model.transform(gp)));
 
         model = new OneAxisEllipsoid(100.0, 0.9, frame);
@@ -373,13 +382,13 @@ class OneAxisEllipsoidTest {
         direction = new Vector3D(0.0, 0.0, 1.0);
         line = new Line(point, point.add(direction), 1.0e-10);
         gp = model.getIntersectionPoint(line, point, frame, date);
-        Assertions.assertEquals(gp.getLatitude(), FastMath.PI/2, 1.0e-12);
+        Assertions.assertEquals(FastMath.PI/2, gp.getLatitude(), 1.0e-12);
 
         point = new Vector3D(0.0, 110, 0);
         direction = new Vector3D(0.0, 1.0, 0.0);
         line = new Line(point, point.add(direction), 1.0e-10);
         gp = model.getIntersectionPoint(line, point, frame, date);
-        Assertions.assertEquals(gp.getLatitude(), 0, 1.0e-12);
+        Assertions.assertEquals(0, gp.getLatitude(), 1.0e-12);
 
     }
 
@@ -459,7 +468,7 @@ class OneAxisEllipsoidTest {
 
     @Test
     void testIntersectionFromPoints() {
-        AbsoluteDate date = new AbsoluteDate(new DateComponents(2008, 03, 21),
+        AbsoluteDate date = new AbsoluteDate(new DateComponents(2008, 3, 21),
                                              TimeComponents.H12,
                                              TimeScalesFactory.getUTC());
 
@@ -606,17 +615,27 @@ class OneAxisEllipsoidTest {
 
         // direct computation of position, velocity and acceleration
         PVCoordinates pv = new PVCoordinates(earth.transform(new FieldGeodeticPoint<>(latDS, lonDS, altDS)));
-        FieldGeodeticPoint<UnivariateDerivative2> rebuilt = earth.transform(pv, earth.getBodyFrame(), null);
+        FieldGeodeticPoint<UnivariateDerivative2> rebuilt = earth.transform(pv, earth.getBodyFrame(), AbsoluteDate.ARBITRARY_EPOCH);
         Assertions.assertEquals(lat0, rebuilt.getLatitude().getReal(),                1.0e-16);
         Assertions.assertEquals(lat1, rebuilt.getLatitude().getPartialDerivative(1),  5.0e-19);
         Assertions.assertEquals(lat2, rebuilt.getLatitude().getPartialDerivative(2),  5.0e-14);
         Assertions.assertEquals(lon0, rebuilt.getLongitude().getReal(),               1.0e-16);
-        Assertions.assertEquals(lon1, rebuilt.getLongitude().getPartialDerivative(1), 5.0e-19);
+        Assertions.assertEquals(lon1, rebuilt.getLongitude().getPartialDerivative(1), 1.0e-18);
         Assertions.assertEquals(lon2, rebuilt.getLongitude().getPartialDerivative(2), 1.0e-20);
         Assertions.assertEquals(alt0, rebuilt.getAltitude().getReal(),                2.0e-11);
-        Assertions.assertEquals(alt1, rebuilt.getAltitude().getPartialDerivative(1),  6.0e-13);
+        Assertions.assertEquals(alt1, rebuilt.getAltitude().getPartialDerivative(1),  1.0e-12);
         Assertions.assertEquals(alt2, rebuilt.getAltitude().getPartialDerivative(2),  2.0e-14);
 
+    }
+
+    @Test
+    void testIssue873() {
+        AbsoluteDate epoch = AbsoluteDate.ARBITRARY_EPOCH;
+        OneAxisEllipsoid earth = ReferenceEllipsoid.getWgs84(FramesFactory.getGCRF());
+        FieldGeodeticPoint<UnivariateDerivative2> gp = earth.transform(
+                new PVCoordinates(new Vector3D(0, 0, earth.getC()), new Vector3D(0, 1, 0)),
+                earth.getBodyFrame(), epoch);
+        assertThat(gp.getAltitude().getPartialDerivative(1), closeTo(0.0, 1e-12));
     }
 
     @Test
@@ -646,28 +665,19 @@ class OneAxisEllipsoidTest {
         FiniteDifferencesDifferentiator differentiator =
                 new FiniteDifferencesDifferentiator(5, 0.1);
         UnivariateDifferentiableFunction fx =
-                differentiator.differentiate(new UnivariateFunction() {
-                    public double value(double dt) {
-                        GeodeticPoint gp =
-                                new GeodeticPoint(latDS.taylor(dt), lonDS.taylor(dt), altDS.taylor(dt));
-                        return earth.transform(gp).getX();
-                    }
+                differentiator.differentiate((UnivariateFunction) dt -> {
+                    GeodeticPoint gp = new GeodeticPoint(latDS.taylor(dt), lonDS.taylor(dt), altDS.taylor(dt));
+                    return earth.transform(gp).getX();
                 });
         UnivariateDifferentiableFunction fy =
-                differentiator.differentiate(new UnivariateFunction() {
-                    public double value(double dt) {
-                        GeodeticPoint gp =
-                                new GeodeticPoint(latDS.taylor(dt), lonDS.taylor(dt), altDS.taylor(dt));
-                        return earth.transform(gp).getY();
-                    }
+                differentiator.differentiate((UnivariateFunction) dt -> {
+                    GeodeticPoint gp = new GeodeticPoint(latDS.taylor(dt), lonDS.taylor(dt), altDS.taylor(dt));
+                    return earth.transform(gp).getY();
                 });
         UnivariateDifferentiableFunction fz =
-                differentiator.differentiate(new UnivariateFunction() {
-                    public double value(double dt) {
-                        GeodeticPoint gp =
-                                new GeodeticPoint(latDS.taylor(dt), lonDS.taylor(dt), altDS.taylor(dt));
-                        return earth.transform(gp).getZ();
-                    }
+                differentiator.differentiate((UnivariateFunction) dt -> {
+                    GeodeticPoint gp = new GeodeticPoint(latDS.taylor(dt), lonDS.taylor(dt), altDS.taylor(dt));
+                    return earth.transform(gp).getZ();
                 });
         DerivativeStructure dtZero = factory.variable(0, 0.0);
         DerivativeStructure xDS    = fx.value(dtZero);
@@ -708,9 +718,9 @@ class OneAxisEllipsoidTest {
         Vector3D rebuiltNadir = Vector3D.crossProduct(gp.getSouth(), gp.getWest());
         Assertions.assertEquals(0, rebuiltNadir.subtract(gp.getNadir()).getNorm(), 1.0e-15);
 
-        FieldGeodeticPoint<Binary64> gp64 = model.transform(new FieldVector3D<Binary64>(new Binary64(x),
-                                                                                          new Binary64(y),
-                                                                                          new Binary64(z)),
+        FieldGeodeticPoint<Binary64> gp64 = model.transform(new FieldVector3D<>(new Binary64(x),
+                                                                                new Binary64(y),
+                                                                                new Binary64(z)),
                                                              frame,
                                                              new FieldAbsoluteDate<>(Binary64Field.getInstance(), date));
         Assertions.assertEquals(longitude, MathUtils.normalizeAngle(gp64.getLongitude().getReal(), longitude), 1.0e-10);
@@ -979,6 +989,208 @@ class OneAxisEllipsoidTest {
                                                                                              +1.0e-2, p2.subtract(p1).normalize()),
                                                                          earth.getBodyFrame(), null);
         Assertions.assertTrue(oneCentimeterAfter.getAltitude().subtract(lowest.getAltitude()).getReal() > 0);
+
+    }
+
+    @Test
+    public void testPointAtAltitude() {
+        final Frame inertial = FramesFactory.getGCRF();
+        final AbsoluteDate date = new AbsoluteDate(2003, 5, 7, 12, 34, 0.0, TimeScalesFactory.getUTC());
+        final OneAxisEllipsoid earth = new OneAxisEllipsoid(Constants.WGS84_EARTH_EQUATORIAL_RADIUS,
+                                                            Constants.WGS84_EARTH_FLATTENING,
+                                                            FramesFactory.getITRF(IERSConventions.IERS_2010, false));
+        final GeodeticPoint wenoGP   = new GeodeticPoint(FastMath.toRadians(  7.4423),
+                                                         FastMath.toRadians(151.8398),
+                                                         300000.0);
+        final StaticTransform earth2Inertial = earth.getBodyFrame().getStaticTransformTo(inertial, date);
+        final Vector3D weno3D = earth2Inertial.transformPosition(earth.transform(wenoGP));
+        final GeodeticPoint tuvaluGP = new GeodeticPoint(FastMath.toRadians(-8.515194),
+                                                         FastMath.toRadians(179.199420),
+                                                         3500000.0);
+        final Vector3D tuvalu3D = earth2Inertial.transformPosition(earth.transform(tuvaluGP));
+        final Line lineA = new Line(tuvalu3D, weno3D, 1.0e-12);
+        final Vector3D resA = earth.pointAtAltitude(lineA, wenoGP.getAltitude(), tuvalu3D, inertial, date);
+        Assertions.assertEquals(0, resA.distance(weno3D), 1.0e-6);
+
+        final Vector3D groundA1I = earth.pointAtAltitude(lineA, 0, tuvalu3D, inertial, date);
+        final Vector3D groundA2E = earth.getCartesianIntersectionPoint(lineA, tuvalu3D, inertial, date);
+        final Vector3D groundA2I = earth2Inertial.transformPosition(groundA2E);
+        Assertions.assertEquals(0, Vector3D.distance(groundA1I, groundA2I), 1.0e-6);
+
+        final Line lineB = new Line(weno3D, tuvalu3D, 1.0e-12);
+        final Vector3D resB = earth.pointAtAltitude(lineB, wenoGP.getAltitude(), tuvalu3D, inertial, date);
+        Assertions.assertEquals(0, resB.distance(weno3D), 1.0e-6);
+
+        final Vector3D groundB1I = earth.pointAtAltitude(lineB, 0, tuvalu3D, inertial, date);
+        final Vector3D groundB2E = earth.getCartesianIntersectionPoint(lineB, tuvalu3D, inertial, date);
+        final Vector3D groundB2I = earth2Inertial.transformPosition(groundB2E);
+        Assertions.assertEquals(0, Vector3D.distance(groundB1I, groundB2I), 1.0e-6);
+
+    }
+
+    @Test
+    public void testPointAtAltitudeNoCrossing() {
+        final Frame inertial = FramesFactory.getGCRF();
+        final AbsoluteDate date = new AbsoluteDate(2003, 5, 7, 12, 34, 0.0, TimeScalesFactory.getUTC());
+        final OneAxisEllipsoid earth = new OneAxisEllipsoid(Constants.WGS84_EARTH_EQUATORIAL_RADIUS,
+                                                            Constants.WGS84_EARTH_FLATTENING,
+                                                            FramesFactory.getITRF(IERSConventions.IERS_2010, false));
+        final GeodeticPoint wenoGP   = new GeodeticPoint(FastMath.toRadians(  7.4423),
+                                                         FastMath.toRadians(151.8398),
+                                                         500000.0);
+        final StaticTransform earth2Inertial = earth.getBodyFrame().getStaticTransformTo(inertial, date);
+        final Vector3D weno3D = earth2Inertial.transformPosition(earth.transform(wenoGP));
+        final GeodeticPoint tuvaluGP = new GeodeticPoint(FastMath.toRadians(-8.515194),
+                                                         FastMath.toRadians(179.199420),
+                                                         800000.0);
+        final Vector3D tuvalu3D = earth2Inertial.transformPosition(earth.transform(tuvaluGP));
+        final Line lineA = new Line(tuvalu3D, weno3D, 1.0e-12);
+        try {
+            earth.pointAtAltitude(lineA, 200000.0, tuvalu3D, inertial, date);
+            Assertions.fail("an exception should have been thrown");
+        } catch (OrekitException ex) {
+            Assertions.assertEquals(OrekitMessages.LINE_NEVER_CROSSES_ALTITUDE, ex.getSpecifier());
+            Assertions.assertEquals(200000.0, (Double) ex.getParts()[0], 1.0e-6);
+        }
+
+    }
+
+    @Test
+    public void testPointAtAltitudeNoConvergence() {
+        final Frame inertial = FramesFactory.getGCRF();
+        final AbsoluteDate date = new AbsoluteDate(2003, 5, 7, 12, 34, 0.0, TimeScalesFactory.getUTC());
+        final OneAxisEllipsoid earth = new OneAxisEllipsoid(Constants.WGS84_EARTH_EQUATORIAL_RADIUS,
+                                                            Constants.WGS84_EARTH_FLATTENING,
+                                                            FramesFactory.getITRF(IERSConventions.IERS_2010, false));
+        final GeodeticPoint skimmingGP   = new GeodeticPoint(FastMath.toRadians(1.6498654859),
+                                                             FastMath.toRadians(161.7837673842),
+                                                             362673.428653);
+        final StaticTransform earth2Inertial = earth.getBodyFrame().getStaticTransformTo(inertial, date);
+        final Vector3D skimming3D = earth2Inertial.transformPosition(earth.transform(skimmingGP));
+        final GeodeticPoint tuvaluGP = new GeodeticPoint(FastMath.toRadians(-8.515194),
+                                                         FastMath.toRadians(179.199420),
+                                                         800000.0);
+        final Vector3D tuvalu3D = earth2Inertial.transformPosition(earth.transform(tuvaluGP));
+        final Line lineA = new Line(tuvalu3D, skimming3D, 1.0e-12);
+        try {
+            earth.pointAtAltitude(lineA, skimmingGP.getAltitude() - 1.0e-6, tuvalu3D, inertial, date);
+            Assertions.fail("an exception should have been thrown");
+        } catch (OrekitException ex) {
+            Assertions.assertEquals(LocalizedCoreFormats.CONVERGENCE_FAILED, ex.getSpecifier());
+        }
+
+    }
+
+    @Test
+    public void testFieldPointAtAltitude() {
+        doTestFieldPointAtAltitude(Binary64Field.getInstance());
+    }
+
+    private <T extends CalculusFieldElement<T>> void doTestFieldPointAtAltitude(final Field<T> field) {
+        final Frame inertial = FramesFactory.getGCRF();
+        final FieldAbsoluteDate<T> date = new FieldAbsoluteDate<>(field,
+                                                                  new AbsoluteDate(2003, 5, 7, 12, 34, 0.0,
+                                                                                   TimeScalesFactory.getUTC()));
+        final OneAxisEllipsoid earth = new OneAxisEllipsoid(Constants.WGS84_EARTH_EQUATORIAL_RADIUS,
+                                                            Constants.WGS84_EARTH_FLATTENING,
+                                                            FramesFactory.getITRF(IERSConventions.IERS_2010, false));
+        final FieldGeodeticPoint<T> wenoGP   = new FieldGeodeticPoint<>(field,
+                                                                        new GeodeticPoint(FastMath.toRadians(7.4423),
+                                                                                          FastMath.toRadians(151.8398),
+                                                                                          300000.0));
+        final FieldStaticTransform<T> earth2Inertial = earth.getBodyFrame().getStaticTransformTo(inertial, date);
+        final FieldVector3D<T> weno3D = earth2Inertial.transformPosition(earth.transform(wenoGP));
+        final FieldGeodeticPoint<T> tuvaluGP = new FieldGeodeticPoint<>(field,
+                                                                        new GeodeticPoint(FastMath.toRadians(-8.515194),
+                                                                                          FastMath.toRadians(179.199420),
+                                                                                          3500000.0));
+        final FieldVector3D<T> tuvalu3D = earth2Inertial.transformPosition(earth.transform(tuvaluGP));
+        final FieldLine<T> lineA = new FieldLine<>(tuvalu3D, weno3D, 1.0e-12);
+        final FieldVector3D<T> resA = earth.pointAtAltitude(lineA, wenoGP.getAltitude(), tuvalu3D, inertial, date);
+        Assertions.assertEquals(0, resA.distance(weno3D).getReal(), 1.0e-6);
+
+        final FieldVector3D<T> groundA1I = earth.pointAtAltitude(lineA, field.getZero(), tuvalu3D, inertial, date);
+        final FieldVector3D<T> groundA2E = earth.getCartesianIntersectionPoint(lineA, tuvalu3D, inertial, date);
+        final FieldVector3D<T> groundA2I = earth2Inertial.transformPosition(groundA2E);
+        Assertions.assertEquals(0, FieldVector3D.distance(groundA1I, groundA2I).getReal(), 1.0e-6);
+
+        final FieldLine<T> lineB = new FieldLine<>(weno3D, tuvalu3D, 1.0e-12);
+        final FieldVector3D<T> resB = earth.pointAtAltitude(lineB, wenoGP.getAltitude(), tuvalu3D, inertial, date);
+        Assertions.assertEquals(0, resB.distance(weno3D).getReal(), 1.0e-6);
+
+        final FieldVector3D<T> groundB1I = earth.pointAtAltitude(lineB, field.getZero(), tuvalu3D, inertial, date);
+        final FieldVector3D<T> groundB2E = earth.getCartesianIntersectionPoint(lineB, tuvalu3D, inertial, date);
+        final FieldVector3D<T> groundB2I = earth2Inertial.transformPosition(groundB2E);
+        Assertions.assertEquals(0, FieldVector3D.distance(groundB1I, groundB2I).getReal(), 1.0e-6);
+
+    }
+
+    @Test
+    public void testFieldPointAtAltitudeNoCrossing() {
+        doTestFieldPointAtAltitudeNoCrossing(Binary64Field.getInstance());
+    }
+
+    private <T extends CalculusFieldElement<T>> void doTestFieldPointAtAltitudeNoCrossing(final Field<T> field) {
+        final Frame inertial = FramesFactory.getGCRF();
+        final FieldAbsoluteDate<T> date = new FieldAbsoluteDate<>(field,
+                                                                  new AbsoluteDate(2003, 5, 7, 12, 34, 0.0,
+                                                                                   TimeScalesFactory.getUTC()));
+        final OneAxisEllipsoid earth = new OneAxisEllipsoid(Constants.WGS84_EARTH_EQUATORIAL_RADIUS,
+                                                            Constants.WGS84_EARTH_FLATTENING,
+                                                            FramesFactory.getITRF(IERSConventions.IERS_2010, false));
+        final FieldGeodeticPoint<T> wenoGP   = new FieldGeodeticPoint<>(field,
+                                                                        new GeodeticPoint(FastMath.toRadians(7.4423),
+                                                                                          FastMath.toRadians(151.8398),
+                                                                                          500000.0));
+        final FieldStaticTransform<T> earth2Inertial = earth.getBodyFrame().getStaticTransformTo(inertial, date);
+        final FieldVector3D<T> weno3D = earth2Inertial.transformPosition(earth.transform(wenoGP));
+        final FieldGeodeticPoint<T> tuvaluGP = new FieldGeodeticPoint<>(field,
+                                                                        new GeodeticPoint(FastMath.toRadians(-8.515194),
+                                                                                          FastMath.toRadians(179.199420),
+                                                                                          800000.0));
+        final FieldVector3D<T> tuvalu3D = earth2Inertial.transformPosition(earth.transform(tuvaluGP));
+        final FieldLine<T> lineA = new FieldLine<>(tuvalu3D, weno3D, 1.0e-12);
+        try {
+            earth.pointAtAltitude(lineA, field.getZero().newInstance(200000.0), tuvalu3D, inertial, date);
+            Assertions.fail("an exception should have been thrown");
+        } catch (OrekitException ex) {
+            Assertions.assertEquals(OrekitMessages.LINE_NEVER_CROSSES_ALTITUDE, ex.getSpecifier());
+            Assertions.assertEquals(200000.0, (Double) ex.getParts()[0], 1.0e-6);
+        }
+
+    }
+
+    @Test
+    public void testFieldPointAtAltitudeNoConvergence() {
+        doTestFieldPointAtAltitudeNoConvergence(Binary64Field.getInstance());
+    }
+
+    private <T extends CalculusFieldElement<T>> void doTestFieldPointAtAltitudeNoConvergence(final Field<T> field) {
+        final Frame inertial = FramesFactory.getGCRF();
+        final FieldAbsoluteDate<T> date = new FieldAbsoluteDate<>(field,
+                                                                  new AbsoluteDate(2003, 5, 7, 12, 34, 0.0,
+                                                                                   TimeScalesFactory.getUTC()));
+        final OneAxisEllipsoid earth = new OneAxisEllipsoid(Constants.WGS84_EARTH_EQUATORIAL_RADIUS,
+                                                            Constants.WGS84_EARTH_FLATTENING,
+                                                            FramesFactory.getITRF(IERSConventions.IERS_2010, false));
+        final FieldGeodeticPoint<T> skimmingGP   = new FieldGeodeticPoint<>(field,
+                                                                        new GeodeticPoint(FastMath.toRadians(1.6498654859),
+                                                                                          FastMath.toRadians(161.7837673842),
+                                                                                          362673.428653));
+        final FieldStaticTransform<T> earth2Inertial = earth.getBodyFrame().getStaticTransformTo(inertial, date);
+        final FieldVector3D<T> skimming3D = earth2Inertial.transformPosition(earth.transform(skimmingGP));
+        final FieldGeodeticPoint<T> tuvaluGP = new FieldGeodeticPoint<>(field,
+                                                                        new GeodeticPoint(FastMath.toRadians(-8.515194),
+                                                                                          FastMath.toRadians(179.199420),
+                                                                                          800000.0));
+        final FieldVector3D<T> tuvalu3D = earth2Inertial.transformPosition(earth.transform(tuvaluGP));
+        final FieldLine<T> lineA = new FieldLine<>(tuvalu3D, skimming3D, 1.0e-12);
+        try {
+            earth.pointAtAltitude(lineA, skimmingGP.getAltitude().subtract(1.0e-6), tuvalu3D, inertial, date);
+            Assertions.fail("an exception should have been thrown");
+        } catch (OrekitException ex) {
+            Assertions.assertEquals(LocalizedCoreFormats.CONVERGENCE_FAILED, ex.getSpecifier());
+        }
 
     }
 

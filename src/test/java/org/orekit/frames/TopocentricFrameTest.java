@@ -384,6 +384,18 @@ class TopocentricFrameTest {
     }
 
     @Test
+    void testGetVelocity() {
+        // GIVEN
+        final GeodeticPoint point = new GeodeticPoint(FastMath.toRadians(45.), FastMath.toRadians(5.), 0.);
+        final TopocentricFrame topoFrame = new TopocentricFrame(earthSpheric, point, "lon 5 lat 45");
+        final Frame frame = FramesFactory.getGCRF();
+        // WHEN
+        final Vector3D velocity = topoFrame.getVelocity(date, frame);
+        // THEN
+        Assertions.assertEquals(topoFrame.getPVCoordinates(date, frame).getVelocity(), velocity);
+    }
+
+    @Test
     void testGetPVCoordinates() {
         // GIVEN
         final GeodeticPoint point = new GeodeticPoint(FastMath.toRadians(45.), FastMath.toRadians(5.), 0.);

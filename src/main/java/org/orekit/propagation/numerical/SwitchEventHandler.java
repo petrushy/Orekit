@@ -154,7 +154,7 @@ class SwitchEventHandler implements EventHandler {
                                                             final List<FieldEventDetector<Gradient>> fieldDetectors) {
         for (final FieldEventDetector<Gradient> fieldDetector : fieldDetectors) {
             final Gradient fieldG = fieldDetector.g(fieldState);
-            if (FastMath.abs(fieldG.getValue() - g) < 1e-15) {
+            if (FastMath.abs(fieldG.getValue() - g) < 1e-11) {
                 return fieldDetector;
             }
         }
@@ -167,23 +167,19 @@ class SwitchEventHandler implements EventHandler {
      * @return updated state
      */
     private SpacecraftState updateState(final SpacecraftState stateAtSwitch) {
-        final RealMatrix factorMatrix = computeUpdateMatrix(stateAtSwitch);
+        final RealMatrix cartesianFactorMatrix = computeUpdateMatrix(stateAtSwitch);
         // update STM
         final String stmName = matricesHarvester.getStmName();
         final RealMatrix oldStm = matricesHarvester.toSquareMatrix(stateAtSwitch.getAdditionalState(stmName));
-        final RealMatrix stm = factorMatrix.multiply(oldStm);
+        final RealMatrix stm = cartesianFactorMatrix.multiply(oldStm).add(oldStm);
         final DataDictionary additionalData = new DataDictionary(stateAtSwitch.getAdditionalDataValues());
-        additionalData.remove(stmName);
         additionalData.put(stmName, matricesHarvester.toArray(stm.getData()));
         // update model parameters Jacobian if present
         if (!matricesHarvester.getJacobiansColumnsNames().isEmpty()) {
-            final RealMatrix oldJacobian = matricesHarvester.getParametersJacobian(stateAtSwitch);
-            final RealMatrix jacobian = factorMatrix.multiply(oldJacobian);
-            int index = 0;
             for (final String parameterName : matricesHarvester.getJacobiansColumnsNames()) {
-                additionalData.remove(parameterName);
-                additionalData.put(parameterName, jacobian.getColumn(index));
-                index++;
+                final RealVector oldJacobian = MatrixUtils.createRealVector(stateAtSwitch.getAdditionalState(parameterName));
+                final RealVector jacobian = cartesianFactorMatrix.operate(oldJacobian).add(oldJacobian);
+                additionalData.put(parameterName, jacobian.toArray());
             }
         }
         return stateAtSwitch.withAdditionalData(additionalData);
@@ -211,7 +207,7 @@ class SwitchEventHandler implements EventHandler {
         final double[] gGradientState = Arrays.copyOfRange(g.getGradient(), 0, 7);
         final RealVector lhs = MatrixUtils.createRealVector(deltaDerivatives);
         final RealVector rhs = MatrixUtils.createRealVector(gGradientState).mapMultiply(1. / gDot);
-        return MatrixUtils.createRealIdentityMatrix(7).add(lhs.outerProduct(rhs));
+        return lhs.outerProduct(rhs);
     }
 
     /**

@@ -34,6 +34,19 @@ import org.orekit.time.FieldAbsoluteDate;
 class ExtendedPositionProviderTest {
 
     @Test
+    void testGetVelocity() {
+        // GIVEN
+        final TestExtendedPositionProvider positionProvider = new TestExtendedPositionProvider();
+        final Frame frame = Mockito.mock(Frame.class);
+        final AbsoluteDate date = AbsoluteDate.J2000_EPOCH;
+        // WHEN
+        final Vector3D velocity = positionProvider.getVelocity(date, frame);
+        // THEN
+        final TimeStampedPVCoordinates pvCoordinates = positionProvider.getPVCoordinates(date, frame);
+        Assertions.assertEquals(pvCoordinates.getVelocity(), velocity);
+    }
+
+    @Test
     void testGetPVCoordinates() {
         // GIVEN
         final TestExtendedPositionProvider positionProvider = new TestExtendedPositionProvider();

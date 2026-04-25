@@ -249,20 +249,7 @@ public class AbsolutePVCoordinates extends TimeStampedPVCoordinates implements T
      * @return provider based on Taylor expansion, for small time shifts around instance date
      */
     public PVCoordinatesProvider toTaylorProvider() {
-        return new PVCoordinatesProvider() {
-            /** {@inheritDoc} */
-            public Vector3D getPosition(final AbsoluteDate d,  final Frame f) {
-                final TimeStampedPVCoordinates shifted   = shiftedBy(d.durationFrom(getDate()));
-                final StaticTransform          transform = frame.getStaticTransformTo(f, d);
-                return transform.transformPosition(shifted.getPosition());
-            }
-            /** {@inheritDoc} */
-            public TimeStampedPVCoordinates getPVCoordinates(final AbsoluteDate d,  final Frame f) {
-                final TimeStampedPVCoordinates shifted   = shiftedBy(d.durationFrom(getDate()));
-                final Transform                transform = frame.getTransformTo(f, d);
-                return transform.transformPVCoordinates(shifted);
-            }
-        };
+        return this;
     }
 
     /** Get the frame in which the coordinates are defined.
@@ -315,6 +302,19 @@ public class AbsolutePVCoordinates extends TimeStampedPVCoordinates implements T
         return t.transformPVCoordinates(getPVCoordinates());
     }
 
+    /** {@inheritDoc} */
+    @Override
+    public Vector3D getPosition(final AbsoluteDate otherDate, final Frame outputFrame) {
+        final double duration = otherDate.durationFrom(getDate());
+        final Vector3D position = getPosition().add((getVelocity().add(getAcceleration().scalarMultiply(duration / 2))).scalarMultiply(duration));
+
+        if (outputFrame == frame) {
+            return position;
+        }
+        return frame.getStaticTransformTo(outputFrame, otherDate).transformPosition(position);
+    }
+
+    /** {@inheritDoc} */
     @Override
     public TimeStampedPVCoordinates getPVCoordinates(final AbsoluteDate otherDate, final Frame outputFrame) {
         return shiftedBy(otherDate.durationFrom(getDate())).getPVCoordinates(outputFrame);

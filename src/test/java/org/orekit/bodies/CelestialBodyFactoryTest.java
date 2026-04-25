@@ -28,6 +28,7 @@ import org.orekit.time.AbsoluteDate;
 import org.orekit.time.TimeScalesFactory;
 import org.orekit.utils.Constants;
 import org.orekit.utils.IERSConventions;
+import org.orekit.utils.PVCoordinates;
 import org.orekit.utils.TimeStampedPVCoordinates;
 
 import java.util.ArrayList;
@@ -312,4 +313,17 @@ public class CelestialBodyFactoryTest {
         return bodyPositionDifference.getNorm();
     }
 
+    @Test
+    void testGetVelocity() {
+        // GIVEN
+        Utils.setDataRoot("regular-data");
+        final CelestialBody moon = CelestialBodyFactory.getSun();
+        final AbsoluteDate date = AbsoluteDate.ARBITRARY_EPOCH;
+        final Frame frame = FramesFactory.getGCRF();
+        // WHEN
+        final Vector3D velocity = moon.getVelocity(date, frame);
+        // THEN
+        final PVCoordinates expectedPV = moon.getPVCoordinates(date, frame);
+        Assertions.assertArrayEquals(expectedPV.getVelocity().toArray(), velocity.toArray(), 1.0e-10);
+    }
 }

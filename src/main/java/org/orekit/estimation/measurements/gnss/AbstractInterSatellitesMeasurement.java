@@ -24,9 +24,9 @@ import org.orekit.estimation.measurements.ObservedMeasurement;
 import org.orekit.estimation.measurements.QuadraticClockModel;
 import org.orekit.propagation.SpacecraftState;
 import org.orekit.time.AbsoluteDate;
+import org.orekit.utils.AbsolutePVCoordinates;
 import org.orekit.utils.FieldPVCoordinatesProvider;
 import org.orekit.utils.PVCoordinatesProvider;
-import org.orekit.utils.ShiftingPVCoordinatesProvider;
 import org.orekit.utils.TimeStampedFieldPVCoordinates;
 
 /** Base class for measurement between two satellites that are both estimated.
@@ -63,7 +63,7 @@ public abstract class AbstractInterSatellitesMeasurement<T extends ObservedMeasu
     /** {@inheritDoc} */
     @Override
     protected PVCoordinatesProvider getRemotePV(final SpacecraftState[] states) {
-        return new ShiftingPVCoordinatesProvider(states[1].getPVCoordinates(), states[1].getFrame());
+        return new AbsolutePVCoordinates(states[1].getFrame(), states[1].getPVCoordinates());
     }
 
     /** {@inheritDoc} */

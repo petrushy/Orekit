@@ -72,11 +72,20 @@ public class ConstantPVCoordinatesProvider implements PVCoordinatesProvider {
         this.sourceFrame = frame;
     }
 
+    /** {@inheritDoc} */
     @Override
     public Vector3D getPosition(final AbsoluteDate date, final Frame frame) {
         return sourceFrame.getStaticTransformTo(frame, date).transformPosition(pva.getPosition());
     }
 
+    /** {@inheritDoc} */
+    @Override
+    public Vector3D getVelocity(final AbsoluteDate date, final Frame frame) {
+        final PVCoordinates pvCoordinates = sourceFrame.getKinematicTransformTo(frame, date).transformOnlyPV(pva);
+        return pvCoordinates.getVelocity();
+    }
+
+    /** {@inheritDoc} */
     @Override
     public TimeStampedPVCoordinates getPVCoordinates(final AbsoluteDate date, final Frame frame) {
         final PVCoordinates pv = sourceFrame.getTransformTo(frame, date).transformPVCoordinates(pva);

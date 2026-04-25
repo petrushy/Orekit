@@ -26,7 +26,7 @@ import org.orekit.utils.TimeStampedFieldPVCoordinates;
 /** This interface is a space-dynamics aware step interpolator.
  *
  * <p>It mirrors the <code>StepInterpolator</code> interface from <a
- * href="http://commons.apache.org/math/"> commons-math</a> but
+ * href="https://commons.apache.org/proper/commons-math/"> commons-math</a> but
  * provides a space-dynamics interface to the methods.</p>
  * @author Luc Maisonobe
  * @param <T> type of the field elements

@@ -463,7 +463,7 @@ public abstract class FieldTLEPropagator<T extends CalculusFieldElement<T>> exte
         final T x7thm1  = cosi0Sq.multiply(7.0).subtract(1.0);
 
         if (e.getReal() > (1 - 1e-6)) {
-            throw new OrekitException(OrekitMessages.TOO_LARGE_ECCENTRICITY_FOR_PROPAGATION_MODEL, e);
+            throw new OrekitException(OrekitMessages.TOO_LARGE_ECCENTRICITY_FOR_PROPAGATION_MODEL, e.getReal());
         }
 
         // Solve Kepler's' Equation.

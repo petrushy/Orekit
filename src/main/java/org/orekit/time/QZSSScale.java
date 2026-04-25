@@ -19,7 +19,7 @@ package org.orekit.time;
 /** QZSS time scale.
  * <p>By convention, TQZSS = TAI - 19 s.</p>
  * <p>The time scale is defined in <a
- * href="http://qzss.go.jp/en/technical/download/pdf/ps-is-qzss/is-qzss-pnt-003.pdf?t=1549268771755">
+ * href="https://qzss.go.jp/en/technical/download/pdf/ps-is-qzss/is-qzss-pnt-003.pdf?t=1549268771755">
  * Quasi-Zenith Satellite System Navigation Service - Interface Specification for QZSS</a> version 1.6, 2014.
  * </p>
  * <p>This is intended to be accessed thanks to {@link TimeScales},

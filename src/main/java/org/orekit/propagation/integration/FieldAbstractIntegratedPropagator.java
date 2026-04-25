@@ -66,6 +66,7 @@ import org.orekit.propagation.events.handlers.FieldEventHandler;
 import org.orekit.propagation.sampling.FieldOrekitStepHandler;
 import org.orekit.propagation.sampling.FieldOrekitStepInterpolator;
 import org.orekit.time.FieldAbsoluteDate;
+import org.orekit.utils.FieldArrayDictionary;
 import org.orekit.utils.FieldDataDictionary;
 
 
@@ -519,7 +520,7 @@ public abstract class FieldAbstractIntegratedPropagator<T extends CalculusFieldE
 
             if (getInitialState().getMass().getReal() <= 0.0) {
                 throw new OrekitException(OrekitMessages.NOT_POSITIVE_SPACECRAFT_MASS,
-                                               getInitialState().getMass());
+                                               getInitialState().getMass().getReal());
             }
 
             // convert space flight dynamics API to math API
@@ -568,19 +569,24 @@ public abstract class FieldAbstractIntegratedPropagator<T extends CalculusFieldE
      */
     private FieldSpacecraftState<T> updateAdditionalStatesAndDerivatives(final FieldSpacecraftState<T> originalState,
                                                                          final FieldODEStateAndDerivative<T> os) {
-        FieldSpacecraftState<T> updatedState = originalState;
+        FieldSpacecraftState<T> s = originalState;
         if (os.getNumberOfSecondaryStates() > 0) {
             final T[] secondary           = os.getSecondaryState(1);
             final T[] secondaryDerivative = os.getSecondaryDerivative(1);
-            for (final FieldAdditionalDerivativesProvider<T> provider : additionalDerivativesProviders) {
-                final String name      = provider.getName();
+            final Field<T> field = s.getDate().getField();
+            final FieldArrayDictionary<T> additionalDerivativesDictionary = new FieldArrayDictionary<>(field);
+            final FieldDataDictionary<T> additionalDataDictionary = new FieldDataDictionary<>(field);
+            for (final FieldAdditionalDerivativesProvider<T> equations : additionalDerivativesProviders) {
+                final String name      = equations.getName();
                 final int    offset    = secondaryOffsets.get(name);
-                final int    dimension = provider.getDimension();
-                updatedState = updatedState.addAdditionalData(name, Arrays.copyOfRange(secondary, offset, offset + dimension));
-                updatedState = updatedState.addAdditionalStateDerivative(name, Arrays.copyOfRange(secondaryDerivative, offset, offset + dimension));
+                final int    dimension = equations.getDimension();
+                additionalDataDictionary.put(name, Arrays.copyOfRange(secondary, offset, offset + dimension));
+                additionalDerivativesDictionary.put(name, Arrays.copyOfRange(secondaryDerivative, offset, offset + dimension));
             }
+            s = s.withAdditionalData(additionalDataDictionary);
+            s = s.withAdditionalStatesDerivatives(additionalDerivativesDictionary);
         }
-        return updateAdditionalData(updatedState);
+        return updateAdditionalData(s);
     }
 
     /** Get the initial state for integration.
@@ -708,20 +714,9 @@ public abstract class FieldAbstractIntegratedPropagator<T extends CalculusFieldE
      */
     private FieldSpacecraftState<T> convertToOrekit(final FieldODEStateAndDerivative<T> os) {
 
-        FieldSpacecraftState<T> s = convertToOrekitWithoutAdditional(os);
+        final FieldSpacecraftState<T> s = convertToOrekitWithoutAdditional(os);
 
-        if (os.getNumberOfSecondaryStates() > 0) {
-            final T[] secondary           = os.getSecondaryState(1);
-            final T[] secondaryDerivative = os.getSecondaryDerivative(1);
-            for (final FieldAdditionalDerivativesProvider<T> equations : additionalDerivativesProviders) {
-                final String name      = equations.getName();
-                final int    offset    = secondaryOffsets.get(name);
-                final int    dimension = equations.getDimension();
-                s = s.addAdditionalData(name, Arrays.copyOfRange(secondary, offset, offset + dimension));
-                s = s.addAdditionalStateDerivative(name, Arrays.copyOfRange(secondaryDerivative, offset, offset + dimension));
-            }
-        }
-        return updateAdditionalData(s);
+        return updateAdditionalStatesAndDerivatives(s, os);
 
     }
 
@@ -792,11 +787,13 @@ public abstract class FieldAbstractIntegratedPropagator<T extends CalculusFieldE
             final FieldSpacecraftState<T> storedInitialState = getInitialState();
             final T originalTime = stateMapper.mapDateToDouble(originalState.getDate());
             if (storedInitialState != null && stateMapper.mapDateToDouble(storedInitialState.getDate()).subtract(originalTime).isZero()) {
+                final FieldDataDictionary<T> fieldDataDictionary =  new FieldDataDictionary<>(originalState.getDate().getField());
                 for (final FieldAdditionalDerivativesProvider<T> provider: additionalDerivativesProviders) {
                     final String name = provider.getName();
                     final T[] value = storedInitialState.getAdditionalState(name);
-                    updatedState = updatedState.addAdditionalData(name, value);
+                    fieldDataDictionary.put(name, value);
                 }
+                updatedState = updatedState.withAdditionalData(fieldDataDictionary);
             }
             return updatedState;
         }
@@ -867,6 +864,7 @@ public abstract class FieldAbstractIntegratedPropagator<T extends CalculusFieldE
 
             // gather the derivatives from all additional equations, taking care of dependencies
             final T[] secondaryDot = MathArrays.buildArray(t.getField(), combinedDimension);
+            final FieldArrayDictionary<T> fieldDerivativesDictionary = new FieldArrayDictionary<>(t.getField());
             int yieldCount = 0;
             while (!pending.isEmpty()) {
                 final FieldAdditionalDerivativesProvider<T> equations = pending.remove();
@@ -889,7 +887,8 @@ public abstract class FieldAbstractIntegratedPropagator<T extends CalculusFieldE
                     final T[]                         additionalPart = derivatives.getAdditionalDerivatives();
                     final T[]                         mainPart       = derivatives.getMainStateDerivativesIncrements();
                     System.arraycopy(additionalPart, 0, secondaryDot, offset, dimension);
-                    updated = updated.addAdditionalStateDerivative(name, additionalPart);
+                    fieldDerivativesDictionary.put(name, additionalPart);
+                    updated = updated.withAdditionalStatesDerivatives(fieldDerivativesDictionary);
                     if (mainPart != null) {
                         // this equation does change the main state derivatives
                         for (int i = 0; i < mainPart.length; ++i) {
@@ -914,16 +913,17 @@ public abstract class FieldAbstractIntegratedPropagator<T extends CalculusFieldE
         private FieldSpacecraftState<T> convert(final T t, final T[] primary,
                                                 final T[] primaryDot, final T[] secondary) {
 
-            FieldSpacecraftState<T> initialState = stateMapper.mapArrayToState(t, primary, primaryDot, PropagationType.MEAN);
+            final FieldSpacecraftState<T> initialState = stateMapper.mapArrayToState(t, primary, primaryDot, PropagationType.MEAN);
 
+            final FieldDataDictionary<T> fieldDataDictionary = new FieldDataDictionary<>(t.getField());
             for (final FieldAdditionalDerivativesProvider<T> provider : additionalDerivativesProviders) {
                 final String name      = provider.getName();
                 final int    offset    = secondaryOffsets.get(name);
                 final int    dimension = provider.getDimension();
-                initialState = initialState.addAdditionalData(name, Arrays.copyOfRange(secondary, offset, offset + dimension));
+                fieldDataDictionary.put(name, Arrays.copyOfRange(secondary, offset, offset + dimension));
             }
 
-            return updateAdditionalData(initialState);
+            return updateAdditionalData(initialState.withAdditionalData(fieldDataDictionary));
 
         }
 

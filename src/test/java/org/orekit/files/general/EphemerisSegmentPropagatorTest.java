@@ -119,6 +119,9 @@ public class EphemerisSegmentPropagatorTest {
                 new Vector3D(6778137, 0, 0),
                 new Vector3D(1.0 / 30, 0, 0));
         MatcherAssert.assertThat(
+                propagator.getVelocity(start, propagator.getFrame()),
+                OrekitMatchers.vectorCloseTo(expected.getVelocity(), ulps));
+        MatcherAssert.assertThat(
                 propagator.propagate(start).getPVCoordinates(),
                 OrekitMatchers.pvCloseTo(expected, ulps));
         MatcherAssert.assertThat(

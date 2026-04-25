@@ -48,6 +48,19 @@ class PropagatorTest {
     }
 
     @Test
+    void testGetVelocity() {
+        // GIVEN
+        final TestPropagator testPropagator = new TestPropagator();
+        final AbsoluteDate date = AbsoluteDate.ARBITRARY_EPOCH;
+        final Frame frame = FramesFactory.getGCRF();
+        // WHEN
+        final Vector3D actualVelocity = testPropagator.getVelocity(date, frame);
+        // THEN
+        final PVCoordinates expectedState = testPropagator.propagate(date).getPVCoordinates(frame);
+        Assertions.assertEquals(expectedState.getVelocity(), actualVelocity);
+    }
+
+    @Test
     void testGetPVCoordinates() {
         // GIVEN
         final TestPropagator testPropagator = new TestPropagator();
@@ -70,6 +83,7 @@ class PropagatorTest {
         Mockito.when(mockedSpacecraftState.getPVCoordinates(Mockito.any(Frame.class))).thenReturn(tspvc);
         Mockito.when(mockedSpacecraftState.getPosition(Mockito.any(Frame.class)))
                 .thenReturn(pvCoordinates.getPosition());
+        Mockito.when(mockedSpacecraftState.getVelocity()).thenReturn(pvCoordinates.getVelocity());
         return mockedSpacecraftState;
     }
 
@@ -142,7 +156,7 @@ class PropagatorTest {
 
         @Override
         public Frame getFrame() {
-            return null;
+            return FramesFactory.getGCRF();
         }
 
         @Override

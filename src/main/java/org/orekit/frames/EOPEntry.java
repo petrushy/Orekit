@@ -72,6 +72,9 @@ public class EOPEntry implements TimeStamped, Serializable {
     /** ITRF version this entry defines. */
     private final ITRFVersion itrfType;
 
+    /** EOP data type. */
+    private final EopDataType eopDataType;
+
     /** Simple constructor.
      * @param mjd entry date (modified Julian day, 00h00 UTC scale)
      * @param dt UT1-UTC in seconds
@@ -93,21 +96,45 @@ public class EOPEntry implements TimeStamped, Serializable {
                     final double ddPsi, final double ddEps,
                     final double dx, final double dy,
                     final ITRFVersion itrfType, final AbsoluteDate date) {
+        this(mjd, dt, lod, x, y, xRate, yRate, ddPsi, ddEps, dx, dy, itrfType, date, EopDataType.UNKNOWN);
+    }
 
-        this.mjd      = mjd;
-        this.date     = date;
-        this.dt       = dt;
-        this.lod      = lod;
-        this.x        = x;
-        this.y        = y;
-        this.xRate    = xRate;
-        this.yRate    = yRate;
-        this.ddPsi    = ddPsi;
-        this.ddEps    = ddEps;
-        this.dx       = dx;
-        this.dy       = dy;
-        this.itrfType = itrfType;
-
+    /** Simple constructor.
+     * @param mjd entry date (modified Julian day, 00h00 UTC scale)
+     * @param dt UT1-UTC in seconds
+     * @param lod length of day
+     * @param x X component of pole motion
+     * @param y Y component of pole motion
+     * @param xRate X component of pole motion rate (NaN if absent)
+     * @param yRate Y component of pole motion rate (NaN if absent)
+     * @param ddPsi correction for nutation in longitude δΔΨ
+     * @param ddEps correction for nutation in obliquity δΔε
+     * @param dx correction for Celestial Intermediate Pole (CIP) coordinates
+     * @param dy correction for Celestial Intermediate Pole (CIP) coordinates
+     * @param itrfType ITRF version this entry defines
+     * @param date corresponding to {@code mjd}.
+     * @param eopDataType EOP data type
+     * @since 13.1.1
+     */
+    public EOPEntry(final int mjd, final double dt, final double lod,
+                    final double x, final double y, final double xRate, final double yRate,
+                    final double ddPsi, final double ddEps,
+                    final double dx, final double dy,
+                    final ITRFVersion itrfType, final AbsoluteDate date, final EopDataType eopDataType) {
+        this.mjd         = mjd;
+        this.date        = date;
+        this.dt          = dt;
+        this.lod         = lod;
+        this.x           = x;
+        this.y           = y;
+        this.xRate       = xRate;
+        this.yRate       = yRate;
+        this.ddPsi       = ddPsi;
+        this.ddEps       = ddEps;
+        this.dx          = dx;
+        this.dy          = dy;
+        this.itrfType    = itrfType;
+        this.eopDataType = eopDataType;
     }
 
     /** Get the entry date (modified julian day, 00h00 UTC scale).
@@ -202,5 +229,11 @@ public class EOPEntry implements TimeStamped, Serializable {
     public ITRFVersion getITRFType() {
         return itrfType;
     }
+
+    /** Get the EOP data type.
+     * @return EOP data type
+     * @since 13.1.1
+     */
+    public EopDataType getEopDataType() { return eopDataType; }
 
 }

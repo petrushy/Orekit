@@ -26,7 +26,7 @@ import org.orekit.time.AbstractTimeInterpolator;
 /** Interpolator for {@link SP3Coordinate SP3 coordinates}.
  * <p>
  * As this implementation of interpolation is polynomial, it should be used only with small number of interpolation points
- * (about 10-20 points) in order to avoid <a href="http://en.wikipedia.org/wiki/Runge%27s_phenomenon">Runge's phenomenon</a>
+ * (about 10-20 points) in order to avoid <a href="https://en.wikipedia.org/wiki/Runge%27s_phenomenon">Runge's phenomenon</a>
  * and numerical problems (including NaN appearing).
  * </p>
  * <p>
@@ -49,7 +49,7 @@ public class SP3CoordinateHermiteInterpolator extends AbstractTimeInterpolator<S
      * Constructor.
      * <p>
      * As this implementation of interpolation is polynomial, it should be used only with small number of interpolation
-     * points (about 10-20 points) in order to avoid <a href="http://en.wikipedia.org/wiki/Runge%27s_phenomenon">Runge's
+     * points (about 10-20 points) in order to avoid <a href="https://en.wikipedia.org/wiki/Runge%27s_phenomenon">Runge's
      * phenomenon</a> and numerical problems (including NaN appearing).
      * </p>
      *

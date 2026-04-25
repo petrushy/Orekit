@@ -652,6 +652,25 @@ public class EOPHistory {
 
     }
 
+    /** Get the EOP data type.
+     * @param date date at which the value is desired
+     * @return data type of the EOP covering the specified date
+     * @since 13.1.1
+     */
+    public EopDataType getEopDataType(final AbsoluteDate date) {
+
+        // check if there is data for date
+        if (!this.hasDataFor(date)) {
+            // no EOP data available for this date, data type is unknown
+            return EopDataType.UNKNOWN;
+        }
+
+        // we have EOP data for date
+        final Optional<EOPEntry> first = getNeighbors(date, 1).findFirst();
+        return first.isPresent() ? first.get().getEopDataType() : EopDataType.UNKNOWN;
+
+    }
+
     /** Check Earth orientation parameters continuity.
      * @param maxGap maximal allowed gap between entries (in seconds)
      */
@@ -898,7 +917,7 @@ public class EOPHistory {
                                 entry.getX(), entry.getY(), xRate, yRate,
                                 entry.getDdPsi(), entry.getDdEps(),
                                 entry.getDx(), entry.getDy(),
-                                entry.getITRFType(), entry.getDate());
+                                entry.getITRFType(), entry.getDate(), entry.getEopDataType());
         } else {
             // the entry already has all derivatives
             return entry;

@@ -420,10 +420,11 @@ class ExtendedStateTransitionMatrixGeneratorTest {
         assertEquals(relativePV.getVelocity().getZ() / dM, stateTransitionMatrix.getEntry(5, 6), 1e-5);
     }
 
-    @Test
-    void testRadiationPressure() {
+    @ParameterizedTest
+    @EnumSource(value = OrbitType.class, names = {"CARTESIAN", "EQUINOCTIAL", "CIRCULAR"})
+    void testRadiationPressure(final OrbitType orbitType) {
         // GIVEN
-        final NumericalPropagator propagator = buildPropagator(OrbitType.CARTESIAN);
+        final NumericalPropagator propagator = buildPropagator(orbitType);
         final String stmName = "stm";
         final MatricesHarvester harvester = propagator.setupMatricesComputation(stmName, MatrixUtils.createRealIdentityMatrix(7), null);
         final CylindricallyShadowedLightFluxModel shadowModel = new CylindricallyShadowedLightFluxModel(new AnalyticalSolarPositionProvider(),
@@ -439,40 +440,47 @@ class ExtendedStateTransitionMatrixGeneratorTest {
         final double timeOfFlight = 1e4;
         final AbsoluteDate epoch = propagator.getInitialState().getDate();
         final AbsoluteDate targetDate = epoch.shiftedBy(timeOfFlight);
-                // WHEN
+        // WHEN
         final SpacecraftState state = propagator.propagate(targetDate);
         final RealMatrix jacobianMatrix = harvester.getParametersJacobian(state);
+        final double[][] conversionJacobian = new double[6][6];
+        state.getOrbit().getJacobianWrtParameters(propagator.getPositionAngleType(), conversionJacobian);
+        final RealMatrix matrix = MatrixUtils.createRealIdentityMatrix(jacobianMatrix.getRowDimension());
+        matrix.setSubMatrix(conversionJacobian, 0, 0);
+        final RealMatrix jacobianCartesian = matrix.multiply(jacobianMatrix);
         // THEN
-        compareRadiationCoefficientGradientWithFiniteDifferences(shadowModel, crossSection, coefficientValue,
-                targetDate, jacobianMatrix);
+        compareRadiationCoefficientGradientWithFiniteDifferences(propagator.getOrbitType(), shadowModel, crossSection,
+                coefficientValue, targetDate, jacobianCartesian);
         final RealMatrix stm = harvester.getStateTransitionMatrix(state);
         for (int i = 0; i < 6; i++) {
             Assertions.assertNotEquals(0., stm.getEntry(i, 6));
         }
     }
 
-    private static void compareRadiationCoefficientGradientWithFiniteDifferences(
+    private static void compareRadiationCoefficientGradientWithFiniteDifferences(final OrbitType orbitType,
                                                                  final LightFluxModel fluxModel,
                                                                  final double crossSection, final double singleCoefficient,
                                                                  final AbsoluteDate targetDate,
                                                                  final RealMatrix jacobianMatrix) {
         final double dP = 0.01;
-        final NumericalPropagator propagator1 = buildPropagator(OrbitType.CARTESIAN);
-                propagator1.addForceModel(new RadiationPressureModel(fluxModel, new IsotropicRadiationSingleCoefficient(crossSection,
+        final NumericalPropagator propagator1 = buildPropagator(orbitType);
+        propagator1.addForceModel(new RadiationPressureModel(fluxModel, new IsotropicRadiationSingleCoefficient(crossSection,
                 singleCoefficient - dP /2)));
         final SpacecraftState propagated1 = propagator1.propagate(targetDate);
         final NumericalPropagator propagator2 = buildPropagator(propagator1.getOrbitType(), propagator1.getAttitudeProvider());
-                propagator2.addForceModel(new RadiationPressureModel(fluxModel, new IsotropicRadiationSingleCoefficient(crossSection,
+        propagator2.addForceModel(new RadiationPressureModel(fluxModel, new IsotropicRadiationSingleCoefficient(crossSection,
                 singleCoefficient + dP /2)));
         final SpacecraftState propagated2 = propagator2.propagate(targetDate);
         final PVCoordinates relativePV = new PVCoordinates(propagated1.getPVCoordinates(),
                 propagated2.getPVCoordinates());
-        assertEquals(relativePV.getPosition().getX() / dP, jacobianMatrix.getEntry(0, 0), 5e-3);
-        assertEquals(relativePV.getPosition().getY() / dP, jacobianMatrix.getEntry(1, 0), 5e-3);
-        assertEquals(relativePV.getPosition().getZ() / dP, jacobianMatrix.getEntry(2, 0), 5e-3);
-        assertEquals(relativePV.getVelocity().getX() / dP, jacobianMatrix.getEntry(3, 0), 1e-5);
-        assertEquals(relativePV.getVelocity().getY() / dP, jacobianMatrix.getEntry(4, 0), 1e-5);
-        assertEquals(relativePV.getVelocity().getZ() / dP, jacobianMatrix.getEntry(5, 0), 1e-5);
+        final double toleranceDerivativePosition = 3e-2;
+        final double toleranceDerivativeVelocity = 5e-5;
+        assertEquals(relativePV.getPosition().getX() / dP, jacobianMatrix.getEntry(0, 0), toleranceDerivativePosition);
+        assertEquals(relativePV.getPosition().getY() / dP, jacobianMatrix.getEntry(1, 0), toleranceDerivativePosition);
+        assertEquals(relativePV.getPosition().getZ() / dP, jacobianMatrix.getEntry(2, 0), toleranceDerivativePosition);
+        assertEquals(relativePV.getVelocity().getX() / dP, jacobianMatrix.getEntry(3, 0), toleranceDerivativeVelocity);
+        assertEquals(relativePV.getVelocity().getY() / dP, jacobianMatrix.getEntry(4, 0), toleranceDerivativeVelocity);
+        assertEquals(relativePV.getVelocity().getZ() / dP, jacobianMatrix.getEntry(5, 0), toleranceDerivativeVelocity);
     }
 
     @ParameterizedTest

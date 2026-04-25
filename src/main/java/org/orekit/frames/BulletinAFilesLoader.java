@@ -382,6 +382,9 @@ class BulletinAFilesLoader extends AbstractEopLoader implements EopHistoryLoader
         /** Map for pole offsets fields read in different sections. */
         private final Map<Integer, double[]> poleOffsetsFieldsMap;
 
+        /** Map for EOP data type. */
+        private final Map<Integer, EopDataType> eopDataTypeMap;
+
         /** Configuration for ITRF versions. */
         private final ItrfVersionProvider itrfVersionProvider;
 
@@ -411,7 +414,8 @@ class BulletinAFilesLoader extends AbstractEopLoader implements EopHistoryLoader
         Parser() {
             this.eopFieldsMap         = new HashMap<>();
             this.poleOffsetsFieldsMap = new HashMap<>();
-            this.itrfVersionProvider = new ITRFVersionLoader(
+            this.eopDataTypeMap       = new HashMap<>();
+            this.itrfVersionProvider  = new ITRFVersionLoader(
                     ITRFVersionLoader.SUPPORTED_NAMES,
                     getDataProvidersManager());
             this.lineNumber           = 0;
@@ -443,19 +447,38 @@ class BulletinAFilesLoader extends AbstractEopLoader implements EopHistoryLoader
                      section != null;
                      section = nextSection(remaining, reader)) {
 
+                    final EopDataType eopDataType;
+                    switch (section) {
+                        case EOP_FINAL_VALUES:
+                        case POLE_OFFSETS_IAU_1980_FINAL_VALUES:
+                        case POLE_OFFSETS_IAU_2000_FINAL_VALUES:
+                            eopDataType = EopDataType.FINAL;
+                            break;
+                        case EOP_RAPID_SERVICE:
+                        case POLE_OFFSETS_IAU_1980_RAPID_SERVICE:
+                        case POLE_OFFSETS_IAU_2000_RAPID_SERVICE:
+                            eopDataType = EopDataType.RAPID;
+                            break;
+                        case EOP_PREDICTION:
+                            eopDataType = EopDataType.PREDICTED;
+                            break;
+                        default:
+                            eopDataType = EopDataType.UNKNOWN;
+                    }
+
                     switch (section) {
                         case EOP_RAPID_SERVICE :
                         case EOP_FINAL_VALUES  :
                         case EOP_PREDICTION    :
-                            loadXYDT(section, reader, name);
+                            loadXYDT(section, reader, name, eopDataType);
                             break;
                         case POLE_OFFSETS_IAU_1980_RAPID_SERVICE :
                         case POLE_OFFSETS_IAU_1980_FINAL_VALUES  :
-                            loadPoleOffsets(section, false, reader, name);
+                            loadPoleOffsets(section, false, reader, name, eopDataType);
                             break;
                         case POLE_OFFSETS_IAU_2000_RAPID_SERVICE :
                         case POLE_OFFSETS_IAU_2000_FINAL_VALUES  :
-                            loadPoleOffsets(section, true, reader, name);
+                            loadPoleOffsets(section, true, reader, name, eopDataType);
                             break;
                         default :
                             // this should never happen
@@ -489,8 +512,9 @@ class BulletinAFilesLoader extends AbstractEopLoader implements EopHistoryLoader
             double[] nextEOP    = eopFieldsMap.get(mjdMin);
             for (int mjd = mjdMin; mjd <= mjdMax; ++mjd) {
 
-                final AbsoluteDate mjdDate = AbsoluteDate.createMJDDate(mjd, 0, getUtc());
-                final double[] currentPole = poleOffsetsFieldsMap.get(mjd);
+                final AbsoluteDate mjdDate    = AbsoluteDate.createMJDDate(mjd, 0, getUtc());
+                final double[] currentPole    = poleOffsetsFieldsMap.get(mjd);
+                final EopDataType eopDataType = eopDataTypeMap.get(mjd);
 
                 currentEOP = nextEOP;
                 nextEOP    = eopFieldsMap.get(mjd + 1);
@@ -504,12 +528,12 @@ class BulletinAFilesLoader extends AbstractEopLoader implements EopHistoryLoader
                         }
                         history.add(new EOPEntry(mjd,
                                                  0.0, Double.NaN, 0.0, 0.0, Double.NaN, Double.NaN,
-                                                 UnitsConverter.MILLI_ARC_SECONDS_TO_RADIANS.convert(currentPole[1]),
-                                                 UnitsConverter.MILLI_ARC_SECONDS_TO_RADIANS.convert(currentPole[2]),
                                                  UnitsConverter.MILLI_ARC_SECONDS_TO_RADIANS.convert(currentPole[3]),
                                                  UnitsConverter.MILLI_ARC_SECONDS_TO_RADIANS.convert(currentPole[4]),
+                                                 UnitsConverter.MILLI_ARC_SECONDS_TO_RADIANS.convert(currentPole[1]),
+                                                 UnitsConverter.MILLI_ARC_SECONDS_TO_RADIANS.convert(currentPole[2]),
                                                  configuration.getVersion(),
-                                                 mjdDate));
+                                                 mjdDate, eopDataType));
                     }
                 } else {
 
@@ -526,7 +550,7 @@ class BulletinAFilesLoader extends AbstractEopLoader implements EopHistoryLoader
                                                  Double.NaN, Double.NaN,
                                                  0.0, 0.0, 0.0, 0.0,
                                                  configuration.getVersion(),
-                                                 mjdDate));
+                                                 mjdDate, eopDataType));
                     } else {
                         // we have complete data
                         history.add(new EOPEntry(mjd,
@@ -534,12 +558,12 @@ class BulletinAFilesLoader extends AbstractEopLoader implements EopHistoryLoader
                                                  UnitsConverter.ARC_SECONDS_TO_RADIANS.convert(currentEOP[1] ),
                                                  UnitsConverter.ARC_SECONDS_TO_RADIANS.convert(currentEOP[2] ),
                                                  Double.NaN, Double.NaN,
-                                                 UnitsConverter.MILLI_ARC_SECONDS_TO_RADIANS.convert(currentPole[1]),
-                                                 UnitsConverter.MILLI_ARC_SECONDS_TO_RADIANS.convert(currentPole[2]),
                                                  UnitsConverter.MILLI_ARC_SECONDS_TO_RADIANS.convert(currentPole[3]),
                                                  UnitsConverter.MILLI_ARC_SECONDS_TO_RADIANS.convert(currentPole[4]),
+                                                 UnitsConverter.MILLI_ARC_SECONDS_TO_RADIANS.convert(currentPole[1]),
+                                                 UnitsConverter.MILLI_ARC_SECONDS_TO_RADIANS.convert(currentPole[2]),
                                                  configuration.getVersion(),
-                                                 mjdDate));
+                                                 mjdDate, eopDataType));
                     }
                 }
 
@@ -575,9 +599,10 @@ class BulletinAFilesLoader extends AbstractEopLoader implements EopHistoryLoader
          * @param section section to parse
          * @param reader reader from where file content is obtained
          * @param name name of the file (or zip entry)
+         * @param eopDataType EOP data type
          * @exception IOException if data can't be read
          */
-        private void loadXYDT(final Section section, final BufferedReader reader, final String name)
+        private void loadXYDT(final Section section, final BufferedReader reader, final String name, final EopDataType eopDataType)
             throws IOException {
 
             boolean inValuesPart = false;
@@ -625,6 +650,7 @@ class BulletinAFilesLoader extends AbstractEopLoader implements EopHistoryLoader
                         eop[1] = Double.parseDouble(fields[4]);
                         eop[2] = Double.parseDouble(fields[5]);
                         eop[3] = Double.parseDouble(fields[6]);
+                        eopDataTypeMap.put(mjd, eopDataType);
                     }
 
                 } else if (inValuesPart) {
@@ -643,10 +669,11 @@ class BulletinAFilesLoader extends AbstractEopLoader implements EopHistoryLoader
          * @param isNonRotatingOrigin if true, the file contain Non-Rotating Origin nutation corrections
          * @param reader reader from where file content is obtained
          * @param name name of the file (or zip entry)
+         * @param eopDataType EOP data type
          * @exception IOException if data can't be read
          */
         private void loadPoleOffsets(final Section section, final boolean isNonRotatingOrigin,
-                                     final BufferedReader reader, final String name)
+                                     final BufferedReader reader, final String name, final EopDataType eopDataType)
             throws IOException {
 
             boolean inValuesPart = false;
@@ -684,6 +711,7 @@ class BulletinAFilesLoader extends AbstractEopLoader implements EopHistoryLoader
                             pole[3] = Double.parseDouble(fields[1]);
                             pole[4] = Double.parseDouble(fields[2]);
                         }
+                        eopDataTypeMap.put(mjd, eopDataType);
                     }
 
                 } else if (inValuesPart) {

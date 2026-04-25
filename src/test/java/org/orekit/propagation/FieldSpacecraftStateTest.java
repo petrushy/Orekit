@@ -41,6 +41,7 @@ import org.orekit.TestUtils;
 import org.orekit.Utils;
 import org.orekit.attitudes.BodyCenterPointing;
 import org.orekit.attitudes.FieldAttitude;
+import org.orekit.attitudes.FrameAlignedProvider;
 import org.orekit.bodies.OneAxisEllipsoid;
 import org.orekit.errors.OrekitException;
 import org.orekit.errors.OrekitIllegalArgumentException;
@@ -783,6 +784,30 @@ class FieldSpacecraftStateTest {
 
     }
 
+    @Test
+    void testWithAdditionalEmpty() {
+        // GIVEN
+        final SpacecraftState state = new SpacecraftState(TestUtils.getDefaultOrbit(AbsoluteDate.ARBITRARY_EPOCH));
+        final Binary64Field field = Binary64Field.getInstance();
+        final FieldSpacecraftState<Binary64> fieldState = new FieldSpacecraftState<>(field, state);
+        // WHEN
+        final FieldSpacecraftState<Binary64> newState = fieldState.withAdditionalData(null);
+        // THEN
+        Assertions.assertEquals(0, newState.getAdditionalDataValues().size());
+    }
+
+    @Test
+    void testWithAdditionalStatesDerivatives() {
+        // GIVEN
+        final SpacecraftState state = new SpacecraftState(TestUtils.getDefaultOrbit(AbsoluteDate.ARBITRARY_EPOCH));
+        final Binary64Field field = Binary64Field.getInstance();
+        final FieldSpacecraftState<Binary64> fieldState = new FieldSpacecraftState<>(field, state);
+        // WHEN
+        final FieldSpacecraftState<Binary64> newState = fieldState.withAdditionalStatesDerivatives(null);
+        // THEN
+        Assertions.assertEquals(0, newState.getAdditionalStatesDerivatives().size());
+    }
+
     private <T extends CalculusFieldElement<T>> void doTestFieldVsRealAbsPV(final Field<T> field) {
         T zero = field.getZero();
 
@@ -1269,6 +1294,23 @@ class FieldSpacecraftStateTest {
         Assertions.assertEquals( 1.0, s1.getAdditionalStateDerivative(derivativeOnly)[0].getReal(),     1.0e-15);
         Assertions.assertEquals(-1.0, s1.getAdditionalStateDerivative(derivativeOnly)[1].getReal(),     1.0e-15);
 
+    }
+
+    @Deprecated
+    @Test
+    void testDeprecated() {
+        final Binary64 mass = Binary64.ONE;
+        final Orbit orbit = TestUtils.getDefaultOrbit(AbsoluteDate.ARBITRARY_EPOCH);
+        final Binary64Field field = Binary64Field.getInstance();
+        final FieldOrbit<Binary64> fieldOrbit = new FieldCartesianOrbit<>(field, orbit);
+        final FieldAbsolutePVCoordinates<Binary64> fieldPV = new FieldAbsolutePVCoordinates<>(orbit.getFrame(), fieldOrbit.getDate(),
+                fieldOrbit.getPVCoordinates());
+        final FieldAttitude<Binary64> fieldAttitude = new FrameAlignedProvider(orbit.getFrame()).getAttitude(fieldOrbit,
+                fieldOrbit.getDate(), fieldPV.getFrame());
+        Assertions.assertEquals(mass, new FieldSpacecraftState<>(fieldOrbit, mass).getMass());
+        Assertions.assertEquals(mass, new FieldSpacecraftState<>(fieldPV, mass).getMass());
+        Assertions.assertEquals(mass, new FieldSpacecraftState<>(fieldPV, fieldAttitude, mass).getMass());
+        Assertions.assertEquals(mass, new FieldSpacecraftState<>(fieldOrbit, fieldAttitude, mass).getMass());
     }
 
     @BeforeEach

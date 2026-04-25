@@ -252,7 +252,7 @@ public class DTM2000 extends AbstractSunInfluencedAtmosphere {
         final double threshold = 120000;
         if (alti.getReal() < threshold) {
             throw new OrekitException(OrekitMessages.ALTITUDE_BELOW_ALLOWED_THRESHOLD,
-                                      alti, threshold);
+                                      alti.getReal(), threshold);
         }
         final FieldComputation<T> result = new FieldComputation<>(day, alti.divide(1000), lon, lat, hl,
                                                                   new double[] {

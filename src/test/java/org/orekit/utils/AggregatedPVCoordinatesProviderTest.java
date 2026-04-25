@@ -16,15 +16,18 @@
  */
 package org.orekit.utils;
 
+import org.hipparchus.geometry.euclidean.threed.Vector3D;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentMatchers;
 import org.mockito.Mockito;
+import org.orekit.TestUtils;
 import org.orekit.Utils;
 import org.orekit.errors.OrekitException;
 import org.orekit.errors.OrekitMessages;
 import org.orekit.frames.FramesFactory;
+import org.orekit.orbits.Orbit;
 import org.orekit.time.AbsoluteDate;
 
 /** Unit tests for {@link AggregatedPVCoordinatesProvider}. */
@@ -51,6 +54,64 @@ public class AggregatedPVCoordinatesProviderTest {
         date2 = date1.shiftedBy(86400);
         date3 = date2.shiftedBy(86400);
         date4 = date3.shiftedBy(86400);
+    }
+
+    @Test
+    void testGetPosition() {
+        // GIVEN
+        final Orbit orbit = TestUtils.getDefaultOrbit(AbsoluteDate.ARBITRARY_EPOCH);
+        final TimeSpanMap<PVCoordinatesProvider> map = new TimeSpanMap<>(null);
+        map.addValidBetween(orbit, AbsoluteDate.PAST_INFINITY, AbsoluteDate.FUTURE_INFINITY);
+        final AggregatedPVCoordinatesProvider provider = new AggregatedPVCoordinatesProvider(map);
+        // WHEN
+        final Vector3D position = provider.getPosition(orbit.getDate(), orbit.getFrame());
+        // THEN
+        Assertions.assertArrayEquals(orbit.getPosition().toArray(), position.toArray(), 1e-12);
+    }
+
+    @Test
+    void testGetVelocity() {
+        // GIVEN
+        final Orbit orbit = TestUtils.getDefaultOrbit(AbsoluteDate.ARBITRARY_EPOCH);
+        final TimeSpanMap<PVCoordinatesProvider> map = new TimeSpanMap<>(null);
+        map.addValidBetween(orbit, AbsoluteDate.PAST_INFINITY, AbsoluteDate.FUTURE_INFINITY);
+        final AggregatedPVCoordinatesProvider provider = new AggregatedPVCoordinatesProvider(map);
+        // WHEN
+        final Vector3D velocity = provider.getVelocity(orbit.getDate(), orbit.getFrame());
+        // THEN
+        Assertions.assertArrayEquals(orbit.getVelocity().toArray(), velocity.toArray(), 1e-12);
+    }
+
+    @Test
+    void invalidPVProviderVelocityTooEarly() {
+        Assertions.assertThrows(OrekitException.class, () -> {
+            final PVCoordinatesProvider pvProv = new AggregatedPVCoordinatesProvider.InvalidPVProvider();
+            pvProv.getVelocity(AbsoluteDate.PAST_INFINITY, FramesFactory.getGCRF());
+        });
+    }
+
+    @Test
+    void invalidPVProviderVelocityTooLate() {
+        Assertions.assertThrows(OrekitException.class, () -> {
+            final PVCoordinatesProvider pvProv = new AggregatedPVCoordinatesProvider.InvalidPVProvider();
+            pvProv.getVelocity(AbsoluteDate.FUTURE_INFINITY, FramesFactory.getGCRF());
+        });
+    }
+
+    @Test
+    void invalidPVProviderPositionTooEarly() {
+        Assertions.assertThrows(OrekitException.class, () -> {
+            final PVCoordinatesProvider pvProv = new AggregatedPVCoordinatesProvider.InvalidPVProvider();
+            pvProv.getPosition(AbsoluteDate.PAST_INFINITY, FramesFactory.getGCRF());
+        });
+    }
+
+    @Test
+    void invalidPVProviderPositionTooLate() {
+        Assertions.assertThrows(OrekitException.class, () -> {
+            final PVCoordinatesProvider pvProv = new AggregatedPVCoordinatesProvider.InvalidPVProvider();
+            pvProv.getPosition(AbsoluteDate.FUTURE_INFINITY, FramesFactory.getGCRF());
+        });
     }
 
     @Test

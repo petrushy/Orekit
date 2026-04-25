@@ -436,7 +436,7 @@ public class FieldNumericalPropagator<T extends CalculusFieldElement<T>> extends
 
             final T mass = y[6];
             if (mass.getReal() <= 0.0) {
-                throw new OrekitException(OrekitMessages.NOT_POSITIVE_SPACECRAFT_MASS, mass);
+                throw new OrekitException(OrekitMessages.NOT_POSITIVE_SPACECRAFT_MASS, mass.getReal());
             }
 
             if (superGetOrbitType() == null) {
@@ -615,7 +615,7 @@ public class FieldNumericalPropagator<T extends CalculusFieldElement<T>> extends
         @Override
         public void addMassDerivative(final T q) {
             if (q.getReal() > 0) {
-                throw new OrekitIllegalArgumentException(OrekitMessages.POSITIVE_FLOW_RATE, q);
+                throw new OrekitIllegalArgumentException(OrekitMessages.POSITIVE_FLOW_RATE, q.getReal());
             }
             yDot[6] = yDot[6].add(q);
         }

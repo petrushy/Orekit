@@ -87,7 +87,7 @@ public class Ephemeris extends AbstractAnalyticalPropagator implements BoundedPr
      * Legacy constructor with tabulated states and default Hermite interpolation.
      * <p>
      * As this implementation of interpolation is polynomial, it should be used only with small samples (about 10-20 points)
-     * in order to avoid <a href="http://en.wikipedia.org/wiki/Runge%27s_phenomenon">Runge's phenomenon</a> and numerical
+     * in order to avoid <a href="https://en.wikipedia.org/wiki/Runge%27s_phenomenon">Runge's phenomenon</a> and numerical
      * problems (including NaN appearing).
      *
      * @param states list of spacecraft states

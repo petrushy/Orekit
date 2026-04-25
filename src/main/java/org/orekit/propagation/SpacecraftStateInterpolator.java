@@ -97,7 +97,7 @@ public class SpacecraftStateInterpolator extends AbstractTimeInterpolator<Spacec
      * </ul>
      * <p>
      * As this implementation of interpolation is polynomial, it should be used only with small number of interpolation
-     * points (about 10-20 points) in order to avoid <a href="http://en.wikipedia.org/wiki/Runge%27s_phenomenon">Runge's
+     * points (about 10-20 points) in order to avoid <a href="https://en.wikipedia.org/wiki/Runge%27s_phenomenon">Runge's
      * phenomenon</a> and numerical problems (including NaN appearing).
      * <p>
      * <b>BEWARE:</b> output frame <b>must be inertial</b> if this instance is going to interpolate between
@@ -123,7 +123,7 @@ public class SpacecraftStateInterpolator extends AbstractTimeInterpolator<Spacec
      * </ul>
      * <p>
      * As this implementation of interpolation is polynomial, it should be used only with small number of interpolation
-     * points (about 10-20 points) in order to avoid <a href="http://en.wikipedia.org/wiki/Runge%27s_phenomenon">Runge's
+     * points (about 10-20 points) in order to avoid <a href="https://en.wikipedia.org/wiki/Runge%27s_phenomenon">Runge's
      * phenomenon</a> and numerical problems (including NaN appearing).
      * <p>
      * <b>BEWARE:</b> output frame <b>must be inertial</b> if this instance is going to interpolate between
@@ -149,7 +149,7 @@ public class SpacecraftStateInterpolator extends AbstractTimeInterpolator<Spacec
      * </ul>
      * <p>
      * As this implementation of interpolation is polynomial, it should be used only with small number of interpolation
-     * points (about 10-20 points) in order to avoid <a href="http://en.wikipedia.org/wiki/Runge%27s_phenomenon">Runge's
+     * points (about 10-20 points) in order to avoid <a href="https://en.wikipedia.org/wiki/Runge%27s_phenomenon">Runge's
      * phenomenon</a> and numerical problems (including NaN appearing).
      * <p>
      * <b>BEWARE:</b> output frame <b>must be inertial</b> if this instance is going to interpolate between
@@ -176,7 +176,7 @@ public class SpacecraftStateInterpolator extends AbstractTimeInterpolator<Spacec
      * </ul>
      * <p>
      * As this implementation of interpolation is polynomial, it should be used only with small number of interpolation
-     * points (about 10-20 points) in order to avoid <a href="http://en.wikipedia.org/wiki/Runge%27s_phenomenon">Runge's
+     * points (about 10-20 points) in order to avoid <a href="https://en.wikipedia.org/wiki/Runge%27s_phenomenon">Runge's
      * phenomenon</a> and numerical problems (including NaN appearing).
      * <p>
      * <b>BEWARE:</b> output frame <b>must be inertial</b> if this instance is going to interpolate between
@@ -204,7 +204,7 @@ public class SpacecraftStateInterpolator extends AbstractTimeInterpolator<Spacec
      * </ul>
      * <p>
      * As this implementation of interpolation is polynomial, it should be used only with small number of interpolation
-     * points (about 10-20 points) in order to avoid <a href="http://en.wikipedia.org/wiki/Runge%27s_phenomenon">Runge's
+     * points (about 10-20 points) in order to avoid <a href="https://en.wikipedia.org/wiki/Runge%27s_phenomenon">Runge's
      * phenomenon</a> and numerical problems (including NaN appearing).
      * <p>
      * <b>BEWARE:</b> output frame <b>must be inertial</b> if this instance is going to interpolate between
@@ -225,7 +225,7 @@ public class SpacecraftStateInterpolator extends AbstractTimeInterpolator<Spacec
      * Constructor to create a customizable Hermite interpolator for every spacecraft state field.
      * <p>
      * As this implementation of interpolation is polynomial, it should be used only with small number of interpolation
-     * points (about 10-20 points) in order to avoid <a href="http://en.wikipedia.org/wiki/Runge%27s_phenomenon">Runge's
+     * points (about 10-20 points) in order to avoid <a href="https://en.wikipedia.org/wiki/Runge%27s_phenomenon">Runge's
      * phenomenon</a> and numerical problems (including NaN appearing).
      * <p>
      * <b>BEWARE:</b> output frame <b>must be inertial</b> if this instance is going to interpolate between

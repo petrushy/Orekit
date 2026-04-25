@@ -32,10 +32,8 @@ import org.orekit.frames.StaticTransform;
 import org.orekit.frames.Transform;
 import org.orekit.time.AbsoluteDate;
 import org.orekit.time.TimeOffset;
-import org.orekit.time.TimeShiftable;
-import org.orekit.time.TimeStamped;
 import org.orekit.utils.PVCoordinates;
-import org.orekit.utils.PVCoordinatesProvider;
+import org.orekit.utils.ShiftablePVCoordinatesHolder;
 import org.orekit.utils.TimeStampedPVCoordinates;
 
 /**
@@ -62,7 +60,7 @@ import org.orekit.utils.TimeStampedPVCoordinates;
  * @author V&eacute;ronique Pommier-Maurussane
  */
 public abstract class Orbit
-    implements TimeStamped, TimeShiftable<Orbit>, PVCoordinatesProvider {
+    implements ShiftablePVCoordinatesHolder<Orbit> {
 
     /** Absolute tolerance when checking if the rate of the position angle is Keplerian or not. */
     protected static final double TOLERANCE_POSITION_ANGLE_RATE = 1e-15;
@@ -471,17 +469,6 @@ public abstract class Orbit
         return t.transformPVCoordinates(pvCoordinates);
     }
 
-    /** {@inheritDoc} */
-    public TimeStampedPVCoordinates getPVCoordinates(final AbsoluteDate otherDate, final Frame otherFrame) {
-        return shiftedBy(otherDate.durationFrom(getDate())).getPVCoordinates(otherFrame);
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public Vector3D getPosition(final AbsoluteDate otherDate, final Frame otherFrame) {
-        return shiftedBy(otherDate.durationFrom(getDate())).getPosition(otherFrame);
-    }
-
     /** Get the position in a specified frame.
      * @param outputFrame frame in which the position coordinates shall be computed
      * @return position in the specified output frame
@@ -515,15 +502,6 @@ public abstract class Orbit
             position = initPosition();
         }
         return position;
-    }
-
-    /** Get the velocity in definition frame.
-     * @return velocity in the definition frame
-     * @see #getPVCoordinates()
-     * @since 13.1
-     */
-    public Vector3D getVelocity() {
-        return getPVCoordinates().getVelocity();
     }
 
     /** Get the {@link TimeStampedPVCoordinates} in definition frame.

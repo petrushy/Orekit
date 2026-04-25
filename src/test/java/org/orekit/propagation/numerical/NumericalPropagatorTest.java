@@ -61,6 +61,7 @@ import org.orekit.forces.maneuvers.ImpulseManeuver;
 import org.orekit.forces.maneuvers.Maneuver;
 import org.orekit.forces.maneuvers.propulsion.BasicConstantThrustPropulsionModel;
 import org.orekit.forces.maneuvers.trigger.ManeuverTriggers;
+import org.orekit.forces.maneuvers.trigger.TimeIntervalsManeuverTrigger;
 import org.orekit.forces.radiation.IsotropicRadiationSingleCoefficient;
 import org.orekit.forces.radiation.SolarRadiationPressure;
 import org.orekit.frames.Frame;
@@ -101,6 +102,31 @@ class NumericalPropagatorTest {
     private AbsoluteDate         initDate;
     private SpacecraftState      initialState;
     private NumericalPropagator  propagator;
+
+    // This test highlights the fix of: https://gitlab.orekit.org/orekit/orekit/-/issues/1808
+    @Test
+    void testPropagationEndCoincidingWithManeuverThrustEndForIssue1808() {
+        final UTCScale utc = TimeScalesFactory.getUTC();
+        // Initialize spacecraft
+        final AbsoluteDate orbitEpoch = new AbsoluteDate(2025, 6, 25, 14, 30, 32.965, utc);
+        final CartesianOrbit cartesian = new CartesianOrbit(new PVCoordinates(new Vector3D(1897711.783316963, 4938498.102677712, -4414426.470208112),
+                                                                              new Vector3D(-525.3256319053179, -4937.568767036118, -5754.938592063509)),
+                                                            FramesFactory.getTOD(false), orbitEpoch, Constants.WGS84_EARTH_MU);
+        // Maneuver
+        final AbsoluteDate maneuverStart = new AbsoluteDate(2025, 6, 25, 14, 54, 53.247, utc);
+        final AbsoluteDate maneuverEnd = maneuverStart.shiftedBy(720.0);
+
+        // Initialize propagator
+        final NumericalPropagator numerical = new NumericalPropagator(new ClassicalRungeKuttaIntegrator(60.0));
+        numerical.addForceModel(new Maneuver(null,
+                                             TimeIntervalsManeuverTrigger.of(TimeInterval.of(maneuverStart, maneuverEnd)),
+                                             new BasicConstantThrustPropulsionModel(0.02, 1160, Vector3D.PLUS_I, "tangential")));
+        numerical.setInitialState(new SpacecraftState(cartesian));
+
+        // Propagate
+        final AbsoluteDate propagationStart = new AbsoluteDate(2025, 6, 25, 10, 23, 17.009, utc);
+        Assertions.assertNotNull(numerical.propagate(propagationStart, maneuverEnd));
+    }
 
     @Test
     void testDependsOnTimeOnlyWrong() {
@@ -177,6 +203,19 @@ class NumericalPropagatorTest {
         propagator.propagate(initDate.shiftedBy(1));
         // THEN
         Assertions.assertThrows(NullPointerException.class, generator::getGeneratedEphemeris);
+    }
+
+    @Test
+    void testIssue1826() {
+        // GIVEN
+        propagator.setupMatricesComputation("stm", null, null);
+        propagator.setResetAtEnd(false);
+        final AbsoluteDate targetDate = initDate.shiftedBy(1);
+        propagator.propagate(targetDate);
+        // WHEN
+        propagator.clearMatricesComputation();
+        // THEN
+        Assertions.assertDoesNotThrow(() -> propagator.propagate(targetDate));
     }
 
     @Test

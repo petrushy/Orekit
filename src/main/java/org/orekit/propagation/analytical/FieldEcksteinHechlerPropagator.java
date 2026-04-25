@@ -950,7 +950,7 @@ public class FieldEcksteinHechlerPropagator<T extends CalculusFieldElement<T>> e
             if (mean.getE().getReal() > 0.1) {
                 // if 0.005 < e < 0.1 no error is triggered, but accuracy is poor
                 throw new OrekitException(OrekitMessages.TOO_LARGE_ECCENTRICITY_FOR_PROPAGATION_MODEL,
-                                               mean.getE());
+                                               mean.getE().getReal());
             }
 
             xnotDot = mu.divide(mean.getA()).sqrt().divide(mean.getA());

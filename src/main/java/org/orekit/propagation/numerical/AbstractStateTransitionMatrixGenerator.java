@@ -34,7 +34,7 @@ import org.orekit.propagation.FieldSpacecraftState;
 import org.orekit.propagation.SpacecraftState;
 import org.orekit.propagation.integration.AdditionalDerivativesProvider;
 import org.orekit.propagation.integration.CombinedDerivatives;
-import org.orekit.utils.DoubleArrayDictionary;
+import org.orekit.utils.DataDictionary;
 import org.orekit.utils.ParameterDriver;
 import org.orekit.utils.TimeSpanMap;
 
@@ -248,7 +248,7 @@ abstract class AbstractStateTransitionMatrixGenerator implements AdditionalDeriv
 
         // set up containers for partial derivatives
         final double[]              factor               = new double[(stateDimension - SPACE_DIMENSION) * stateDimension];
-        final DoubleArrayDictionary partialsDictionary = new DoubleArrayDictionary();
+        final Map<String, double[]> partialsDictionary = new HashMap<>();
 
         // evaluate contribution of all force models
         final AttitudeProvider equivalentAttitudeProvider = wrapAttitudeProviderIfPossible();
@@ -256,6 +256,7 @@ abstract class AbstractStateTransitionMatrixGenerator implements AdditionalDeriv
         final NumericalGradientConverter posOnlyConverter = new NumericalGradientConverter(state, SPACE_DIMENSION, equivalentAttitudeProvider);
         final NumericalGradientConverter fullConverter = isThereAnyForceNotDependingOnlyOnPosition ?
                 new NumericalGradientConverter(state, getStateDimension(), equivalentAttitudeProvider) : posOnlyConverter;
+        final SpacecraftState stateForParameters = state.withAdditionalData(new LocalDoubleArrayDictionary(state.getAdditionalDataValues()));
 
         for (final ForceModel forceModel : getForceModels()) {
 
@@ -267,7 +268,7 @@ abstract class AbstractStateTransitionMatrixGenerator implements AdditionalDeriv
             final Gradient[] ratesPartials = computeRatesPartialsAndUpdateFactor(forceModel, dsState, parameters, factor);
 
             // partials derivatives with respect to parameters
-            updateFactorForParameters(forceModel, converter, ratesPartials, partialsDictionary, state, factor);
+            updateFactorForParameters(forceModel, converter, ratesPartials, partialsDictionary, stateForParameters, factor);
 
         }
 
@@ -298,7 +299,7 @@ abstract class AbstractStateTransitionMatrixGenerator implements AdditionalDeriv
      * @param factor factor matrix (flattened)
      */
     private void updateFactorForParameters(final ForceModel forceModel, final NumericalGradientConverter converter,
-                                           final Gradient[] ratesPartials, final DoubleArrayDictionary partialsDictionary,
+                                           final Gradient[] ratesPartials, final Map<String, double[]> partialsDictionary,
                                            final SpacecraftState state, final double[] factor) {
         int paramsIndex = converter.getFreeStateParameters();
         for (ParameterDriver driver : forceModel.getParametersDrivers()) {
@@ -314,8 +315,8 @@ abstract class AbstractStateTransitionMatrixGenerator implements AdditionalDeriv
 
         // notify observers
         for (Map.Entry<String, PartialsObserver> observersEntry : getPartialsObservers().entrySet()) {
-            final DoubleArrayDictionary.Entry entry = partialsDictionary.getEntry(observersEntry.getKey());
-            observersEntry.getValue().partialsComputed(state, factor, entry == null ? new double[ratesPartials.length] : entry.getValue());
+            observersEntry.getValue().partialsComputed(state, factor,
+                    partialsDictionary.getOrDefault(observersEntry.getKey(), new double[ratesPartials.length]));
         }
     }
 
@@ -326,22 +327,17 @@ abstract class AbstractStateTransitionMatrixGenerator implements AdditionalDeriv
      * @param ratesPartials state variables' rates evaluated in the Taylor differential algebra
      * @param paramsIndex index of parameter as an independent variable of the differential algebra
      */
-    private void updateDictionaryEntry(final DoubleArrayDictionary partialsDictionary, final TimeSpanMap.Span<String> span,
+    private void updateDictionaryEntry(final Map<String, double[]> partialsDictionary, final TimeSpanMap.Span<String> span,
                                        final Gradient[] ratesPartials, final int paramsIndex) {
         // get the partials derivatives for this driver
-        DoubleArrayDictionary.Entry entry = partialsDictionary.getEntry(span.getData());
-        if (entry == null) {
-            // create an entry filled with zeroes
-            partialsDictionary.put(span.getData(), new double[ratesPartials.length]);
-            entry = partialsDictionary.getEntry(span.getData());
-        }
+        partialsDictionary.putIfAbsent(span.getData(), new double[ratesPartials.length]);
 
         // add the contribution of the current force model
-        final double[] increment = new double[ratesPartials.length];
+        final double[] increment = partialsDictionary.get(span.getData());
         for (int i = 0; i < ratesPartials.length; ++i) {
-            increment[i] = ratesPartials[i].getGradient()[paramsIndex];
+            increment[i] += ratesPartials[i].getGradient()[paramsIndex];
         }
-        entry.increment(increment);
+        partialsDictionary.replace(span.getData(), increment);
     }
 
     /**
@@ -375,5 +371,30 @@ abstract class AbstractStateTransitionMatrixGenerator implements AdditionalDeriv
 
     }
 
+    /**
+     * Local override of data dictionary using HashMap for performance.
+     */
+    private static class LocalDoubleArrayDictionary extends DataDictionary {
+
+        /** Serialization UID. */
+        private static final long serialVersionUID = 1L;
+
+        /** Map for quick access. */
+        private final transient Map<String, Object> objectMap;
+
+        /**
+         * Constructor.
+         * @param inputDictionary dictionary whose content is to reproduce
+         */
+        LocalDoubleArrayDictionary(final DataDictionary inputDictionary) {
+            super(inputDictionary);
+            objectMap = toMap();
+        }
+
+        @Override
+        public Object get(final String key) {
+            return objectMap.get(key);
+        }
+    }
 }
 

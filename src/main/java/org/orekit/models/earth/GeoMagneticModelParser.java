@@ -29,10 +29,10 @@ import java.util.List;
  * The format of the expected model file is either:
  * <ul>
  *   <li>combined format as used by the geomag software, available from the
- *       <a href="http://www.ngdc.noaa.gov/IAGA/vmod/igrf.html">IGRF model site</a>;
+ *       <a href="https://www.ngdc.noaa.gov/IAGA/vmod/igrf.html">IGRF model site</a>;
  *       supports multiple epochs per file</li>
  *   <li>original format as used by the
- *       <a href="http://www.ngdc.noaa.gov/geomag/WMM/DoDWMM.shtml">WMM model site</a>.
+ *       <a href="https://www.ngdc.noaa.gov/geomag/WMM/DoDWMM.shtml">WMM model site</a>.
  * </ul>
  * <p>
  * <b>Combined Format</b>

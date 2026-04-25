@@ -615,7 +615,9 @@ public class RinexObservationWriter implements AutoCloseable {
         for (final Map.Entry<SatInSystem, Map<ObservationType, Integer>> entry1 : header.getNbObsPerSat().entrySet()) {
             final SatInSystem sis = entry1.getKey();
             outputField(sis.toString(), 6, false);
-            for (final Map.Entry<ObservationType, Integer> entry2 : entry1.getValue().entrySet()) {
+            // list the entries in the order specified in SYS / # / OBS TYPES
+            for (final ObservationType obsType : header.getTypeObs().get(sis.getSystem())) {
+                final Integer nbObs = entry1.getValue().get(obsType);
                 int next = column + 6;
                 if (next > LABEL_INDEX) {
                     // we need to set up a continuation line
@@ -623,7 +625,7 @@ public class RinexObservationWriter implements AutoCloseable {
                     outputField("", 6, true);
                     next = column + 6;
                 }
-                outputField(SIX_DIGITS_INTEGER, entry2.getValue(), next);
+                outputField(SIX_DIGITS_INTEGER, nbObs == null ? 0 : nbObs, next);
             }
             finishHeaderLine(RinexLabels.PRN_NB_OF_OBS);
         }
@@ -704,11 +706,7 @@ public class RinexObservationWriter implements AutoCloseable {
 
         // event flag
         outputField("", 28, true);
-        if (first.getEventFlag() == 0) {
-            outputField("", 29, true);
-        } else {
-            outputField(ONE_DIGIT_INTEGER, first.getEventFlag(), 29);
-        }
+        outputField(ONE_DIGIT_INTEGER, first.getEventFlag(), 29);
 
         // list of satellites and receiver clock offset
         outputField(THREE_DIGITS_INTEGER, pending.size(), 32);
@@ -785,11 +783,7 @@ public class RinexObservationWriter implements AutoCloseable {
 
         // event flag
         outputField("", 31, true);
-        if (first.getEventFlag() == 0) {
-            outputField("", 32, true);
-        } else {
-            outputField(ONE_DIGIT_INTEGER, first.getEventFlag(), 32);
-        }
+        outputField(ONE_DIGIT_INTEGER, first.getEventFlag(), 32);
 
         // number of satellites and receiver clock offset
         outputField(THREE_DIGITS_INTEGER, pending.size(), 35);

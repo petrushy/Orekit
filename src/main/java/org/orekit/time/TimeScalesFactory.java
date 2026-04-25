@@ -83,7 +83,7 @@ public class TimeScalesFactory implements Serializable {
      * have been errors in several bulletins regarding these data.
      * </p>
      * @see <a href="http://maia.usno.navy.mil/ser7/tai-utc.dat">USNO tai-utc.dat file</a>
-     * @see <a href="http://hpiers.obspm.fr/eoppc/bul/bulc/UTC-TAI.history">IERS UTC-TAI.history file</a>
+     * @see <a href="https://hpiers.obspm.fr/eoppc/bul/bulc/UTC-TAI.history">IERS UTC-TAI.history file</a>
      * @see TAIUTCDatFilesLoader
      * @see UTCTAIHistoryFilesLoader
      * @see #getUTC()

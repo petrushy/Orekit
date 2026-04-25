@@ -265,7 +265,7 @@ public class FieldAbsolutePVCoordinates<T extends CalculusFieldElement<T>> exten
      * @return provider based on Taylor expansion, for small time shifts around instance date
      */
     public FieldPVCoordinatesProvider<T> toTaylorProvider() {
-        return new FieldShiftingPVCoordinatesProvider<>(this, frame);
+        return this;
     }
 
     /** Get the frame in which the coordinates are defined.
@@ -318,6 +318,19 @@ public class FieldAbsolutePVCoordinates<T extends CalculusFieldElement<T>> exten
         return t.transformPVCoordinates(getPVCoordinates());
     }
 
+    /** {@inheritDoc} */
+    @Override
+    public FieldVector3D<T> getPosition(final FieldAbsoluteDate<T> otherDate, final Frame outputFrame) {
+        final T duration = otherDate.durationFrom(getDate());
+        final FieldVector3D<T> position = getPosition().add((getVelocity().add(getAcceleration().scalarMultiply(duration.divide(2)))).scalarMultiply(duration));
+
+        if (outputFrame == frame) {
+            return position;
+        }
+        return frame.getStaticTransformTo(frame, otherDate).transformPosition(position);
+    }
+
+    /** {@inheritDoc} */
     @Override
     public TimeStampedFieldPVCoordinates<T> getPVCoordinates(final FieldAbsoluteDate<T> otherDate, final Frame outputFrame) {
         return shiftedBy(otherDate.durationFrom(getDate())).getPVCoordinates(outputFrame);

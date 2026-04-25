@@ -31,12 +31,14 @@ import org.hipparchus.util.MathArrays;
 import org.orekit.errors.OrekitIllegalArgumentException;
 import org.orekit.errors.OrekitInternalError;
 import org.orekit.errors.OrekitMessages;
+import org.orekit.frames.FieldKinematicTransform;
 import org.orekit.frames.FieldStaticTransform;
 import org.orekit.frames.FieldTransform;
 import org.orekit.frames.Frame;
 import org.orekit.time.FieldAbsoluteDate;
 import org.orekit.time.FieldTimeShiftable;
 import org.orekit.time.FieldTimeStamped;
+import org.orekit.time.TimeOffset;
 import org.orekit.utils.FieldPVCoordinates;
 import org.orekit.utils.FieldPVCoordinatesProvider;
 import org.orekit.utils.TimeStampedFieldPVCoordinates;
@@ -501,8 +503,22 @@ public abstract class FieldOrbit<T extends CalculusFieldElement<T>>
     }
 
     /** {@inheritDoc} */
-    public TimeStampedFieldPVCoordinates<T> getPVCoordinates(final FieldAbsoluteDate<T> otherDate, final Frame otherFrame) {
-        return shiftedBy(otherDate.durationFrom(getDate())).getPVCoordinates(otherFrame);
+    public TimeStampedFieldPVCoordinates<T> getPVCoordinates(final FieldAbsoluteDate<T> otherDate,
+                                                             final Frame otherFrame) {
+        final TimeOffset timeOffset = otherDate.toAbsoluteDate().accurateDurationFrom(getDate().toAbsoluteDate());
+        final T          fieldShift = otherDate.durationFrom(getDate()).subtract(timeOffset.toDouble());
+        return shiftedBy(timeOffset).shiftedBy(fieldShift).getPVCoordinates(otherFrame);
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public FieldVector3D<T> getVelocity(final FieldAbsoluteDate<T> otherDate, final Frame otherFrame) {
+        final FieldPVCoordinates<T> pv = getPVCoordinates(otherDate, otherFrame);
+        if (otherFrame == getFrame()) {
+            return pv.getVelocity();
+        }
+        final FieldKinematicTransform<T> kinematicTransform = getFrame().getKinematicTransformTo(otherFrame, date);
+        return kinematicTransform.transformOnlyPV(pv).getVelocity();
     }
 
     /** {@inheritDoc} */

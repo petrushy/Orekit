@@ -5,7 +5,7 @@ Two values are different in the TeX files and in the conventions that were print
 reason for that is that they have been fixed by IERS after publication, as explained
 in the errata:
 
-   ### 8.  p. 36:  i=1,106 has been removed from the summation, the B_i" 
+   ### 8.  p. 36:  i=1,106 has been removed from the summation, the B_i"
    ###     term -12.7 should be 12.7 and the B_i" term 1.4 should be -1.4.
 
 One value has been changed by Orekit team: the sign of Delaunay multiplier
@@ -14,7 +14,7 @@ for this term changed from (1, 0, 0 , 2, 1) to (-1, 0, 0 , 2, 1). This
 change ensure the term matches the corresponding value in table 5.1, it matches the
 coefficients found in all other references about IAU-80 nutation model we are able
 to check (Sofa library function iauNut80, IERS data file at
-http://hpiers.obspm.fr/eop-pc/models/nutations/nut_IAU1980.dat, various
+https://hpiers.obspm.fr/eop-pc/models/nutations/nut_IAU1980.dat, various
 implementations fond on the web and relating to Explanatory Supplement to the
 Astronomical Almanac (1992), it matches the announced period of 32.0 days
 (the recomputed period for (-1, 0, 0 , 2, 1) is 31.9615 days whereas the

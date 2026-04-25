@@ -28,7 +28,7 @@ public interface TileAiming {
 
     /** Get points at which aiming direction cannot be computed.
      * <p>
-     * As per Brouwer's <a href="http://mathworld.wolfram.com/HairyBallTheorem.html">hairy
+     * As per Brouwer's <a href="https://mathworld.wolfram.com/HairyBallTheorem.html">hairy
      * ball theorem</a>, any vector field on the 2-sphere has at least one zero.
      * This implies that any implementation of this interface has at least one point
      * where the aiming direction cannot be computed. The most typical example is aiming

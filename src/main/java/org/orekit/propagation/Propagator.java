@@ -26,6 +26,7 @@ import org.orekit.attitudes.AttitudeProvider;
 import org.orekit.attitudes.FrameAlignedProvider;
 import org.orekit.frames.Frame;
 import org.orekit.frames.Frames;
+import org.orekit.frames.KinematicTransform;
 import org.orekit.orbits.PositionAngleType;
 import org.orekit.propagation.events.EventDetector;
 import org.orekit.propagation.sampling.OrekitFixedStepHandler;
@@ -298,6 +299,14 @@ public interface Propagator extends PVCoordinatesProvider {
     @Override
     default TimeStampedPVCoordinates getPVCoordinates(final AbsoluteDate date, final Frame frame) {
         return propagate(date).getPVCoordinates(frame);
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    default Vector3D getVelocity(final AbsoluteDate date, final Frame frame) {
+        final SpacecraftState state = propagate(date);
+        final KinematicTransform transform = getFrame().getKinematicTransformTo(frame, date);
+        return transform.transformOnlyPV(state.getPVCoordinates()).getVelocity();
     }
 
     /** {@inheritDoc} */

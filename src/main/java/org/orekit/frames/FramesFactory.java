@@ -228,7 +228,7 @@ public class FramesFactory {
      * (may be null if the default IERS file names are used)
      * @param csvSupportedNames regular expression for supported csv files names
      * (may be null if the default IERS file names are used)
-     * @see <a href="http://hpiers.obspm.fr/eoppc/eop/eopc04/">IERS EOP C04 files</a>
+     * @see <a href="https://hpiers.obspm.fr/eoppc/eop/eopc04/">IERS EOP C04 files</a>
      * @see #addEOPHistoryLoader(IERSConventions, EopHistoryLoader)
      * @see #clearEOPHistoryLoaders()
      * @see #addDefaultEOP2000HistoryLoaders(String, String, String, String, String, String)
@@ -269,7 +269,7 @@ public class FramesFactory {
      * (may be null if the default IERS file names are used)
      * @param csvSupportedNames regular expression for supported csv files names
      * (may be null if the default IERS file names are used)
-     * @see <a href="http://hpiers.obspm.fr/eoppc/eop/eopc04/">IERS EOP C04 files</a>
+     * @see <a href="https://hpiers.obspm.fr/eoppc/eop/eopc04/">IERS EOP C04 files</a>
      * @see #addEOPHistoryLoader(IERSConventions, EopHistoryLoader)
      * @see #clearEOPHistoryLoaders()
      * @see #addDefaultEOP1980HistoryLoaders(String, String, String, String, String, String)

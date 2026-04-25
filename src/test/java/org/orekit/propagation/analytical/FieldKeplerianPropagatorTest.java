@@ -25,6 +25,7 @@ import org.hipparchus.geometry.euclidean.threed.FieldVector3D;
 import org.hipparchus.geometry.euclidean.threed.Vector3D;
 import org.hipparchus.stat.descriptive.rank.Max;
 import org.hipparchus.stat.descriptive.rank.Min;
+import org.hipparchus.util.Binary64;
 import org.hipparchus.util.Binary64Field;
 import org.hipparchus.util.FastMath;
 import org.hipparchus.util.MathUtils;
@@ -33,7 +34,10 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.EnumSource;
 import org.orekit.OrekitMatchers;
+import org.orekit.TestUtils;
 import org.orekit.Utils;
 import org.orekit.attitudes.Attitude;
 import org.orekit.attitudes.AttitudeProvider;
@@ -45,6 +49,7 @@ import org.orekit.bodies.OneAxisEllipsoid;
 import org.orekit.errors.OrekitException;
 import org.orekit.frames.Frame;
 import org.orekit.frames.FramesFactory;
+import org.orekit.frames.Predefined;
 import org.orekit.frames.TopocentricFrame;
 import org.orekit.orbits.FieldCartesianOrbit;
 import org.orekit.orbits.FieldCircularOrbit;
@@ -52,6 +57,7 @@ import org.orekit.orbits.FieldEquinoctialOrbit;
 import org.orekit.orbits.FieldKeplerianOrbit;
 import org.orekit.orbits.FieldOrbit;
 import org.orekit.orbits.KeplerianOrbit;
+import org.orekit.orbits.Orbit;
 import org.orekit.orbits.OrbitType;
 import org.orekit.orbits.PositionAngleType;
 import org.orekit.propagation.FieldBoundedPropagator;
@@ -145,6 +151,23 @@ public class FieldKeplerianPropagatorTest {
         Assertions.assertEquals(   -92.800, minRadial.getResult(),     1.0e-3);
         Assertions.assertEquals(  7739.532, maxRadial.getResult(),     1.0e-3);
 
+    }
+
+    @ParameterizedTest
+    @EnumSource(value = Predefined.class, names = {"EME2000", "GCRF"})
+    void testGetVelocity(final Predefined predefined) {
+        // GIVEN
+        final Orbit orbit = TestUtils.getDefaultOrbit(AbsoluteDate.ARBITRARY_EPOCH);
+        final Binary64Field field = Binary64Field.getInstance();
+        final FieldOrbit<Binary64> fieldOrbit = new FieldCartesianOrbit<>(field, orbit);
+        final FieldKeplerianPropagator<Binary64> fieldKeplerianPropagator = new FieldKeplerianPropagator<>(fieldOrbit);
+        final Frame frame = FramesFactory.getFrame(predefined);
+        final FieldAbsoluteDate<Binary64> fieldDate = FieldAbsoluteDate.getArbitraryEpoch(field);
+        // WHEN
+        final FieldVector3D<Binary64> velocity = fieldKeplerianPropagator.getVelocity(fieldDate, frame);
+        // THEN
+        final FieldPVCoordinates<Binary64> pv = fieldKeplerianPropagator.getPVCoordinates(fieldDate, frame);
+        Assertions.assertEquals(pv.getVelocity(), velocity);
     }
 
     @Test

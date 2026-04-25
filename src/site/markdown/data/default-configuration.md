@@ -79,7 +79,7 @@ uses each [supported data](./supported-data-types.html) set in the native format
 it is publicly available. So if a user wants to take into account the Earth Orientation
 Parameters for a given year, for example, he or she will simply download the corresponding
 file from IERS server at
-[http://www.iers.org/IERS/EN/DataProducts/EarthOrientationData/eop.html](http://www.iers.org/IERS/EN/DataProducts/EarthOrientationData/eop.html)
+[https://www.iers.org/IERS/EN/DataProducts/EarthOrientationData/eop.html](https://www.iers.org/IERS/EN/DataProducts/EarthOrientationData/eop.html)
 and drop it in the data storage system Orekit is configured to use, without any change
 to the data file itself.
 

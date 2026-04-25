@@ -30,7 +30,8 @@ import java.util.List;
 import java.util.stream.Stream;
 
 /**
- * Class using a Hermite interpolator to interpolate orbits.
+ * Class using a Hermite interpolator to interpolate orbits. It is assumed that provided samples have the same
+ * gravitational parameter and frame. Otherwise, an error will be thrown
  * <p>
  * Depending on given sample orbit type, the interpolation may differ :
  * <ul>
@@ -42,7 +43,7 @@ import java.util.stream.Stream;
  * </ul>
  * <p>
  * In any case, it should be used only with small number of interpolation points (about 10-20 points) in order to avoid
- * <a href="http://en.wikipedia.org/wiki/Runge%27s_phenomenon">Runge's phenomenon</a> and numerical problems
+ * <a href="https://en.wikipedia.org/wiki/Runge%27s_phenomenon">Runge's phenomenon</a> and numerical problems
  * (including NaN appearing).
  *
  * @author Luc Maisonobe
@@ -63,7 +64,7 @@ public class OrbitHermiteInterpolator extends AbstractOrbitInterpolator {
      *     <li>Use of position and two time derivatives during interpolation</li>
      * </ul>
      * As this implementation of interpolation is polynomial, it should be used only with small number of interpolation
-     * points (about 10-20 points) in order to avoid <a href="http://en.wikipedia.org/wiki/Runge%27s_phenomenon">Runge's
+     * points (about 10-20 points) in order to avoid <a href="https://en.wikipedia.org/wiki/Runge%27s_phenomenon">Runge's
      * phenomenon</a> and numerical problems (including NaN appearing).
      *
      * @param outputInertialFrame output inertial frame
@@ -79,7 +80,7 @@ public class OrbitHermiteInterpolator extends AbstractOrbitInterpolator {
      *     <li>Use of position and two time derivatives during interpolation</li>
      * </ul>
      * As this implementation of interpolation is polynomial, it should be used only with small number of interpolation
-     * points (about 10-20 points) in order to avoid <a href="http://en.wikipedia.org/wiki/Runge%27s_phenomenon">Runge's
+     * points (about 10-20 points) in order to avoid <a href="https://en.wikipedia.org/wiki/Runge%27s_phenomenon">Runge's
      * phenomenon</a> and numerical problems (including NaN appearing).
      *
      * @param interpolationPoints number of interpolation points
@@ -93,7 +94,7 @@ public class OrbitHermiteInterpolator extends AbstractOrbitInterpolator {
      * Constructor with default extrapolation threshold value ({@code DEFAULT_EXTRAPOLATION_THRESHOLD_SEC} s).
      * <p>
      * As this implementation of interpolation is polynomial, it should be used only with small number of interpolation
-     * points (about 10-20 points) in order to avoid <a href="http://en.wikipedia.org/wiki/Runge%27s_phenomenon">Runge's
+     * points (about 10-20 points) in order to avoid <a href="https://en.wikipedia.org/wiki/Runge%27s_phenomenon">Runge's
      * phenomenon</a> and numerical problems (including NaN appearing).
      *
      * @param interpolationPoints number of interpolation points
@@ -110,7 +111,7 @@ public class OrbitHermiteInterpolator extends AbstractOrbitInterpolator {
      * Constructor.
      * <p>
      * As this implementation of interpolation is polynomial, it should be used only with small number of interpolation
-     * points (about 10-20 points) in order to avoid <a href="http://en.wikipedia.org/wiki/Runge%27s_phenomenon">Runge's
+     * points (about 10-20 points) in order to avoid <a href="https://en.wikipedia.org/wiki/Runge%27s_phenomenon">Runge's
      * phenomenon</a> and numerical problems (including NaN appearing).
      *
      * @param interpolationPoints number of interpolation points
@@ -158,31 +159,47 @@ public class OrbitHermiteInterpolator extends AbstractOrbitInterpolator {
         // Get orbit sample
         final List<Orbit> sample = interpolationData.getNeighborList();
 
-        // Get orbit type for interpolation
-        final OrbitType orbitType = sample.get(0).getType();
+        // Get information for interpolation
+        final AbsoluteDate interpolationDate = interpolationData.getInterpolationDate();
+        final Orbit        firstEntry        = sample.get(0);
+        final OrbitType    orbitType         = firstEntry.getType();
+        final Frame        inputFrame        = firstEntry.getFrame();
+        final Frame        outputFrame       = getOutputInertialFrame();
 
+        final Orbit interpolated;
         if (orbitType == OrbitType.CARTESIAN) {
-            return interpolateCartesian(interpolationData.getInterpolationDate(), sample);
+            interpolated = interpolateCartesian(interpolationDate, inputFrame, sample);
         }
         else {
-            return interpolateCommon(interpolationData.getInterpolationDate(), sample, orbitType);
+            interpolated = interpolateCommon(interpolationDate, inputFrame, sample, orbitType);
         }
 
+        // Return interpolated if input and output frame are the same
+        if (inputFrame.equals(outputFrame)) {
+            return interpolated;
+        }
+
+        // Otherwise, express in the output frame
+        return interpolated.inFrame(outputFrame);
     }
 
     /**
-     * Interpolate Cartesian orbit using specific method for Cartesian orbit.
+     * Interpolate Cartesian orbit using a specific method for Cartesian orbit. Assumes that the input frame is the same
+     * throughout the sample.
      *
      * @param interpolationDate interpolation date
-     * @param sample orbits sample
-     *
+     * @param inputFrame        input frame
+     * @param sample            orbits sample
      * @return interpolated Cartesian orbit
      */
-    private CartesianOrbit interpolateCartesian(final AbsoluteDate interpolationDate, final List<Orbit> sample) {
+    private CartesianOrbit interpolateCartesian(final AbsoluteDate interpolationDate,
+                                                final Frame inputFrame,
+                                                final List<Orbit> sample) {
 
         // Create time stamped position-velocity-acceleration Hermite interpolator
         final TimeInterpolator<TimeStampedPVCoordinates> interpolator =
-                new TimeStampedPVCoordinatesHermiteInterpolator(getNbInterpolationPoints(), getExtrapolationThreshold(),
+                new TimeStampedPVCoordinatesHermiteInterpolator(getNbInterpolationPoints(),
+                                                                getExtrapolationThreshold(),
                                                                 pvaFilter);
 
         // Convert sample to stream
@@ -194,22 +211,28 @@ public class OrbitHermiteInterpolator extends AbstractOrbitInterpolator {
         // Interpolate PVA
         final TimeStampedPVCoordinates interpolated = interpolator.interpolate(interpolationDate, sampleTimeStampedPV);
 
-        // Use first entry gravitational parameter
+        // Use first entry gravitational parameter (initially checked that it is consistent throughout the sample)
         final double mu = sample.get(0).getMu();
 
-        return new CartesianOrbit(interpolated, getOutputInertialFrame(), interpolationDate, mu);
+        return new CartesianOrbit(interpolated,
+                                  inputFrame,
+                                  interpolationDate,
+                                  mu);
     }
 
     /**
      * Method gathering common parts of interpolation between circular, equinoctial and keplerian orbit.
      *
      * @param interpolationDate interpolation date
+     * @param inputFrame input frame
      * @param orbits orbits sample
      * @param orbitType interpolation method to use
      *
      * @return interpolated orbit
      */
-    private Orbit interpolateCommon(final AbsoluteDate interpolationDate, final List<Orbit> orbits,
+    private Orbit interpolateCommon(final AbsoluteDate interpolationDate,
+                                    final Frame inputFrame,
+                                    final List<Orbit> orbits,
                                     final OrbitType orbitType) {
 
         // First pass to check if derivatives are available throughout the sample
@@ -230,21 +253,21 @@ public class OrbitHermiteInterpolator extends AbstractOrbitInterpolator {
                                          interpolated[0][3], interpolated[0][4], interpolated[0][5],
                                          interpolated[1][0], interpolated[1][1], interpolated[1][2],
                                          interpolated[1][3], interpolated[1][4], interpolated[1][5],
-                                         PositionAngleType.MEAN, getOutputInertialFrame(), interpolationDate, mu);
+                                         PositionAngleType.MEAN, inputFrame, interpolationDate, mu);
             case KEPLERIAN:
                 interpolated = interpolateKeplerian(interpolationDate, orbits, useDerivatives);
                 return new KeplerianOrbit(interpolated[0][0], interpolated[0][1], interpolated[0][2],
                                           interpolated[0][3], interpolated[0][4], interpolated[0][5],
                                           interpolated[1][0], interpolated[1][1], interpolated[1][2],
                                           interpolated[1][3], interpolated[1][4], interpolated[1][5],
-                                          PositionAngleType.MEAN, getOutputInertialFrame(), interpolationDate, mu);
+                                          PositionAngleType.MEAN, inputFrame, interpolationDate, mu);
             case EQUINOCTIAL:
                 interpolated = interpolateEquinoctial(interpolationDate, orbits, useDerivatives);
                 return new EquinoctialOrbit(interpolated[0][0], interpolated[0][1], interpolated[0][2],
                                             interpolated[0][3], interpolated[0][4], interpolated[0][5],
                                             interpolated[1][0], interpolated[1][1], interpolated[1][2],
                                             interpolated[1][3], interpolated[1][4], interpolated[1][5],
-                                            PositionAngleType.MEAN, getOutputInertialFrame(), interpolationDate, mu);
+                                            PositionAngleType.MEAN, inputFrame, interpolationDate, mu);
             default:
                 // Should never happen
                 throw new OrekitInternalError(null);

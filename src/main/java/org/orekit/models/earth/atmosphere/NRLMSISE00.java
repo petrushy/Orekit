@@ -115,7 +115,7 @@ import java.util.Arrays;
  *  ftp://hanna.ccmc.gsfc.nasa.gov/pub/modelweb/atmospheric/msis/nrlmsise00/<br>
  *  <br>
  *  Dominik Brodowski implemented a C version of the NRLMSISE-00 model available at:<br>
- *  http://www.brodo.de/space/nrlmsise/index.html
+ *  https://www.brodo.de/space/nrlmsise/index.html
  *  <p>
  *  Instances of this class are immutable.
  *  </p>

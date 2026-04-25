@@ -27,7 +27,7 @@ import java.util.List;
  * Hermite interpolator of time stamped field value.
  * <p>
  * As this implementation of interpolation is polynomial, it should be used only with small number of interpolation points
- * (about 10-20 points) in order to avoid <a href="http://en.wikipedia.org/wiki/Runge%27s_phenomenon">Runge's phenomenon</a>
+ * (about 10-20 points) in order to avoid <a href="https://en.wikipedia.org/wiki/Runge%27s_phenomenon">Runge's phenomenon</a>
  * and numerical problems (including NaN appearing).
  *
  * @author Vincent Cucchietti
@@ -45,7 +45,7 @@ public class TimeStampedFieldHermiteInterpolator<KK extends CalculusFieldElement
      *     <li>Default extrapolation threshold value ({@code DEFAULT_EXTRAPOLATION_THRESHOLD_SEC} s)</li>
      * </ul>
      * As this implementation of interpolation is polynomial, it should be used only with small number of interpolation
-     * points (about 10-20 points) in order to avoid <a href="http://en.wikipedia.org/wiki/Runge%27s_phenomenon">Runge's
+     * points (about 10-20 points) in order to avoid <a href="https://en.wikipedia.org/wiki/Runge%27s_phenomenon">Runge's
      * phenomenon</a> and numerical problems (including NaN appearing).
      */
     public TimeStampedFieldHermiteInterpolator() {
@@ -58,7 +58,7 @@ public class TimeStampedFieldHermiteInterpolator<KK extends CalculusFieldElement
      *     <li>Default extrapolation threshold value ({@code DEFAULT_EXTRAPOLATION_THRESHOLD_SEC} s)</li>
      * </ul>
      * As this implementation of interpolation is polynomial, it should be used only with small number of interpolation
-     * points (about 10-20 points) in order to avoid <a href="http://en.wikipedia.org/wiki/Runge%27s_phenomenon">Runge's
+     * points (about 10-20 points) in order to avoid <a href="https://en.wikipedia.org/wiki/Runge%27s_phenomenon">Runge's
      * phenomenon</a> and numerical problems (including NaN appearing).
      *
      * @param interpolationPoints number of interpolation points
@@ -71,7 +71,7 @@ public class TimeStampedFieldHermiteInterpolator<KK extends CalculusFieldElement
      * Constructor.
      * <p>
      * As this implementation of interpolation is polynomial, it should be used only with small number of interpolation
-     * points (about 10-20 points) in order to avoid <a href="http://en.wikipedia.org/wiki/Runge%27s_phenomenon">Runge's
+     * points (about 10-20 points) in order to avoid <a href="https://en.wikipedia.org/wiki/Runge%27s_phenomenon">Runge's
      * phenomenon</a> and numerical problems (including NaN appearing).
      *
      * @param interpolationPoints number of interpolation points
@@ -85,7 +85,7 @@ public class TimeStampedFieldHermiteInterpolator<KK extends CalculusFieldElement
      * {@inheritDoc}
      * <p>
      * As this implementation of interpolation is polynomial, it should be used only with small samples (about 10-20 points)
-     * in order to avoid <a href="http://en.wikipedia.org/wiki/Runge%27s_phenomenon">Runge's phenomenon</a> and numerical
+     * in order to avoid <a href="https://en.wikipedia.org/wiki/Runge%27s_phenomenon">Runge's phenomenon</a> and numerical
      * problems (including NaN appearing).
      */
     @Override

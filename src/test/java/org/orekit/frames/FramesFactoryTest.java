@@ -577,7 +577,7 @@ public class FramesFactoryTest {
                                                                             e.getX(), e.getY(), e.getXRate(), e.getYRate(),
                                                                             e.getDdPsi(), e.getDdEps(),
                                                                             e.getDx(), e.getDy(),
-                                                                            e.getITRFType(), e.getDate())).
+                                                                            e.getITRFType(), e.getDate(), e.getEopDataType())).
                                                       collect(Collectors.toList()),
                                                       baseEOP.isSimpleEop());
         final Frame modifiedITRF = FramesFactory.buildUncachedITRF(modifiedEOP, TimeScalesFactory.getUTC());

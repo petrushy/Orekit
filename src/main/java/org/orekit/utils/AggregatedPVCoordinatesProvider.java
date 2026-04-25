@@ -92,6 +92,14 @@ public class AggregatedPVCoordinatesProvider implements PVCoordinatesProvider {
     }
 
     @Override
+    public Vector3D getVelocity(final AbsoluteDate date, final Frame frame) {
+        if (date.isBefore(minDate) || date.isAfter(maxDate)) {
+            throw new OrekitException(OrekitMessages.OUT_OF_RANGE_DATE, date, minDate, maxDate);
+        }
+        return pvProvMap.get(date).getVelocity(date, frame);
+    }
+
+    @Override
     public TimeStampedPVCoordinates getPVCoordinates(final AbsoluteDate date, final Frame frame) {
         if (date.isBefore(minDate) || date.isAfter(maxDate)) {
             throw new OrekitException(OrekitMessages.OUT_OF_RANGE_DATE, date, minDate, maxDate);

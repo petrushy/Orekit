@@ -32,6 +32,7 @@ import java.util.stream.Stream;
 
 import org.hamcrest.Matcher;
 import org.hamcrest.MatcherAssert;
+import org.hamcrest.Matchers;
 import org.hipparchus.CalculusFieldElement;
 import org.hipparchus.Field;
 import org.hipparchus.geometry.euclidean.threed.FieldVector3D;
@@ -56,6 +57,7 @@ import org.junit.jupiter.api.Test;
 import org.orekit.OrekitMatchers;
 import org.orekit.Utils;
 import org.orekit.attitudes.AttitudeProvider;
+import org.orekit.attitudes.AttitudeProviderModifier;
 import org.orekit.attitudes.FrameAlignedProvider;
 import org.orekit.attitudes.LofOffset;
 import org.orekit.bodies.CelestialBody;
@@ -86,11 +88,13 @@ import org.orekit.orbits.OrbitType;
 import org.orekit.orbits.PositionAngleType;
 import org.orekit.propagation.*;
 import org.orekit.propagation.events.AltitudeDetector;
+import org.orekit.propagation.events.ApsideDetector;
 import org.orekit.propagation.events.DateDetector;
 import org.orekit.propagation.events.EventDetector;
 import org.orekit.propagation.events.FieldEventDetector;
 import org.orekit.propagation.events.LatitudeCrossingDetector;
 import org.orekit.propagation.events.NodeDetector;
+import org.orekit.propagation.events.handlers.CountAndContinue;
 import org.orekit.propagation.events.handlers.EventHandler;
 import org.orekit.propagation.numerical.NumericalPropagator;
 import org.orekit.propagation.semianalytical.dsst.forces.AbstractGaussianContribution;
@@ -182,7 +186,8 @@ public class DSSTPropagatorTest {
 
         // The purpose is not verifying propagated values, but to check that no exception occurred
         Assertions.assertEquals(0.0, propagated.getDate().durationFrom(orbitEpoch.shiftedBy(20.0 * Constants.JULIAN_DAY)), Double.MIN_VALUE);
-        Assertions.assertEquals(4.216464862956647E7, propagated.getOrbit().getA(), Double.MIN_VALUE);
+        MatcherAssert.assertThat( propagated.getOrbit().getA(),
+                Matchers.closeTo(4.216464862956647E7, 5e-7));
 
     }
 
@@ -1048,6 +1053,50 @@ public class DSSTPropagatorTest {
 
     }
 
+
+    @Test
+    public void testIssue1907() {
+        // Spacecraft state
+        final SpacecraftState state = getLEOState();
+
+        // Body frame
+        final Frame itrf = FramesFactory .getITRF(IERSConventions.IERS_2010, true);
+
+        // Earth
+        final UnnormalizedSphericalHarmonicsProvider provider = GravityFieldFactory.getUnnormalizedProvider(4, 4);
+
+        // Detectors
+        final List<EventDetector> events = new ArrayList<>();
+        events.add(new ApsideDetector(state.getOrbit()).withHandler(new ApsideHandlerWithResetState()));
+
+        // Force models
+        final List<DSSTForceModel> forceModels = new ArrayList<>();
+        forceModels.add(new DSSTZonal(provider));
+        forceModels.add(new DSSTTesseral(itrf, Constants.WGS84_EARTH_ANGULAR_VELOCITY, provider));
+
+        // Set up DSST propagator
+        final double[][] tol = ToleranceProvider.getDefaultToleranceProvider(10.).getTolerances(state.getOrbit(), OrbitType.EQUINOCTIAL);
+        final ODEIntegrator integrator = new DormandPrince54Integrator(60.0, 3600.0, tol[0], tol[1]);
+        final DSSTPropagator propagator = new DSSTPropagator(integrator, PropagationType.OSCULATING);
+        for (DSSTForceModel force : forceModels) {
+            propagator.addForceModel(force);
+        }
+        for (EventDetector event : events) {
+            propagator.addEventDetector(event);
+        }
+        propagator.setInitialState(state);
+
+        // Propagation does not throw any exception
+        Assertions.assertDoesNotThrow(() -> propagator.propagate(state.getDate().shiftedBy(3600)));
+    }
+
+    public class ApsideHandlerWithResetState implements EventHandler {
+        @Override
+        public Action eventOccurred(SpacecraftState s, EventDetector detector, boolean increasing) {
+            return Action.RESET_STATE;
+        }
+    }
+
     @Test
     public void testIssue613() {
         // Spacecraft state
@@ -1757,4 +1806,42 @@ public class DSSTPropagatorTest {
         return propagator.propagate(new AbsoluteDate(initialDate, 1800.));
     }
 
+    @Test
+    void testIssue1788() {
+        // GIVEN
+        final ClassicalRungeKuttaIntegrator integrator = new ClassicalRungeKuttaIntegrator(1000);
+        final CountAndContinue countAndContinue = new CountAndContinue();
+        final KeplerianOrbit orbit = new KeplerianOrbit(42166000.0, 0.00028, FastMath.toRadians(0.05), FastMath.toRadians(66.0),
+                FastMath.toRadians(270.0), FastMath.toRadians(11.94), PositionAngleType.MEAN,
+                FramesFactory.getGCRF(), AbsoluteDate.ARBITRARY_EPOCH, Constants.WGS84_EARTH_MU);
+        final SpacecraftState initialState = new SpacecraftState(orbit);
+        final double timeOfFlight = 1e4;
+        final DSSTPropagator propagator = new DSSTPropagator(integrator, PropagationType.OSCULATING,
+                new TestAttitudeProvider(countAndContinue, initialState.getDate().shiftedBy(timeOfFlight/2)));
+        propagator.setInitialState(initialState);
+        // WHEN
+        propagator.propagate(initialState.getDate().shiftedBy(timeOfFlight));
+        // THEN
+        Assertions.assertEquals(1, countAndContinue.getCount());
+    }
+
+    private static class TestAttitudeProvider implements AttitudeProviderModifier {
+
+        private final DateDetector detector;
+
+        TestAttitudeProvider(final CountAndContinue countingHandler,
+                             final AbsoluteDate date) {
+            this.detector = new DateDetector(date).withHandler(countingHandler);
+        }
+
+        @Override
+        public Stream<EventDetector> getEventDetectors() {
+            return Stream.of(detector);
+        }
+
+        @Override
+        public AttitudeProvider getUnderlyingAttitudeProvider() {
+            return new FrameAlignedProvider(FramesFactory.getEME2000());
+        }
+    }
 }

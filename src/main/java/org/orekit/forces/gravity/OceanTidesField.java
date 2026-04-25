@@ -30,7 +30,7 @@ import org.orekit.time.TimeVectorFunction;
 /** Gravity field corresponding to ocean tides.
  * <p>
  * This ocean tides force model implementation corresponds to the method described
- * in <a href="http://www.iers.org/nn_11216/IERS/EN/Publications/TechnicalNotes/tn36.html">
+ * in <a href="https://www.iers.org/nn_11216/IERS/EN/Publications/TechnicalNotes/tn36.html">
  * IERS conventions (2010)</a>, chapter 6, section 6.3.
  * </p>
  * <p>

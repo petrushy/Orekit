@@ -24,7 +24,7 @@ import org.hipparchus.CalculusFieldElement;
  * <p>The {@link UTCScale UTC} and  {@link TAIScale TAI} time scales are two
  * scales offset with respect to each other. The {@link TAIScale TAI} scale is
  * continuous whereas the {@link UTCScale UTC} includes some discontinuity when
- * leap seconds are introduced by the <a href="http://www.iers.org/">International
+ * leap seconds are introduced by the <a href="https://www.iers.org/">International
  * Earth Rotation Service</a> (IERS).</p>
  * <p>This class represents the offset between the two scales that is
  * valid between two leap seconds occurrences. It handles both the linear offsets

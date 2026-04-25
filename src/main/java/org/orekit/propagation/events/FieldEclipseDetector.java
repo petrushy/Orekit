@@ -184,7 +184,7 @@ public class FieldEclipseDetector<T extends CalculusFieldElement<T>> extends Fie
         final OccultationEngine.FieldOccultationAngles<T> angles = occultationEngine.angles(s);
         return totalEclipse ?
                angles.getSeparation().subtract(angles.getLimbRadius()).add(angles.getOccultedApparentRadius().add(margin)) :
-               angles.getSeparation().subtract(angles.getLimbRadius()).subtract(angles.getOccultedApparentRadius().add(margin));
+               angles.getSeparation().subtract(angles.getLimbRadius()).subtract(angles.getOccultedApparentRadius()).add(margin);
     }
 
 }

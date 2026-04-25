@@ -226,7 +226,7 @@ public enum OrekitMessages implements Localizable {
     NON_EXISTENT_MONTH("non-existent month {0}"),
 
     /** NON_EXISTENT_YEAR_MONTH_DAY. */
-    NON_EXISTENT_YEAR_MONTH_DAY("non-existent date {0}-{1}-{2}"),
+    NON_EXISTENT_YEAR_MONTH_DAY("non-existent date {0,number,0000}-{1,number,00}-{2,number,00}"),
 
     /** NON_EXISTENT_WEEK_DATE. */
     NON_EXISTENT_WEEK_DATE("non-existent week date {0}-W{1}-{2}"),
@@ -986,7 +986,13 @@ public enum OrekitMessages implements Localizable {
     INCONSISTENT_STATE_DIMENSIONS("state vector (dimension {0}) and covariance (dimension {1}) are inconsistent"),
 
     /** EXPUNGED_SPAN. */
-    EXPUNGED_SPAN("data at date {0} has already been automatically expunged");
+    EXPUNGED_SPAN("data at date {0} has already been automatically expunged"),
+
+    /** LINE_NEVER_CROSSES_ALTITUDE. */
+    LINE_NEVER_CROSSES_ALTITUDE("line never crosses altitude {0}"),
+
+    /** BODY_SHAPE_MUST_BE_A_ONE_AXIS_ELLIPSOID. */
+    BODY_SHAPE_MUST_BE_A_ONE_AXIS_ELLIPSOID("body shape must be a one-axis ellipsoid");
 
     /** Base name of the resource bundle in classpath. */
     private static final String RESOURCE_BASE_NAME = "assets/org/orekit/localization/OrekitMessages";

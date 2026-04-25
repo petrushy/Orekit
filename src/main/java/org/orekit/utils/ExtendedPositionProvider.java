@@ -20,6 +20,8 @@ package org.orekit.utils;
 import org.hipparchus.CalculusFieldElement;
 import org.hipparchus.Field;
 import org.hipparchus.analysis.differentiation.FieldUnivariateDerivative2;
+import org.hipparchus.analysis.differentiation.UnivariateDerivative1;
+import org.hipparchus.analysis.differentiation.UnivariateDerivative1Field;
 import org.hipparchus.analysis.differentiation.UnivariateDerivative2;
 import org.hipparchus.analysis.differentiation.UnivariateDerivative2Field;
 import org.hipparchus.geometry.euclidean.threed.FieldVector3D;
@@ -43,6 +45,17 @@ public interface ExtendedPositionProvider extends PVCoordinatesProvider {
      * @return position
      */
     <T extends CalculusFieldElement<T>> FieldVector3D<T> getPosition(FieldAbsoluteDate<T> date, Frame frame);
+
+    /** {@inheritDoc} */
+    @Override
+    default Vector3D getVelocity(final AbsoluteDate date, final Frame frame) {
+        final UnivariateDerivative1Field ud1Field = UnivariateDerivative1Field.getInstance();
+        final UnivariateDerivative1 ud1Shift = new UnivariateDerivative1(0., 1.);
+        final FieldAbsoluteDate<UnivariateDerivative1> fieldDate = new FieldAbsoluteDate<>(ud1Field, date).shiftedBy(ud1Shift);
+        final FieldVector3D<UnivariateDerivative1> ud1Position = getPosition(fieldDate, frame);
+        return new Vector3D(ud1Position.getX().getFirstDerivative(), ud1Position.getY().getFirstDerivative(),
+                ud1Position.getZ().getFirstDerivative());
+    }
 
     /** {@inheritDoc} */
     @Override

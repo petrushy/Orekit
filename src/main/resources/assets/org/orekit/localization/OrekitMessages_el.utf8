@@ -947,3 +947,9 @@ INCONSISTENT_STATE_DIMENSIONS=
 
 # data at date {0} has already been automatically expunged
 EXPUNGED_SPAN=
+
+# line never crosses altitude {0}
+LINE_NEVER_CROSSES_ALTITUDE=
+
+# body shape must be a one-axis ellipsoid
+BODY_SHAPE_MUST_BE_A_ONE_AXIS_ELLIPSOID=

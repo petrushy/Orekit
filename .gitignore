@@ -9,6 +9,6 @@ target
 /lib
 *.class
 .idea/
-orekit.iml
+*.iml
 hs_err_pid*
 replay_pid*

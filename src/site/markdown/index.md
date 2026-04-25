@@ -2,9 +2,9 @@
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
   You may obtain a copy of the License at
-  
+
     http://www.apache.org/licenses/LICENSE-2.0
-  
+
   Unless required by applicable law or agreed to in writing, software
   distributed under the License is distributed on an "AS IS" BASIS,
   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -202,7 +202,7 @@
     * exporting of attitude ephemeris in CCSDS AEM and ACM file format
 
   * Orbit determination
-  
+
     * batch least squares fitting
         * optimizers choice (Levenberg-Marquardt or Gauss-Newton)
         * decomposition algorithms choice (QR, LU, SVD, Cholesky)
@@ -296,7 +296,7 @@
     * decoding of GPS navigation messages
 
   * Orbit file handling
-  
+
     * loading and writing of SP3 orbit files (from version a to d, including extension to a few inertial frames)
     * splicing and interpolation of SP3 files
     * loading and writing of CCSDS Orbit Data Messages (OPM, OEM, OMM and OCM types are supported, in both KVN and XML formats, standalone or in combined NDM)
@@ -306,7 +306,7 @@
     * exporting of ephemeris in STK format
 
   * Earth models
-  
+
     * atmospheric models (DTM2000, Jacchia-Bowman 2006, Jacchia-Bowman 2008, NRL MSISE 2000, Harris-Priester and simple exponential models), and Marshall Solar Activity Future Estimation, optionally with lift component
     * support for CSSI space weather data
     * support for SOLFSMY and DTC data for JB2008 atmospheric model
@@ -337,7 +337,7 @@
 
     * loading and writing of CCSDS Conjunction Data Messages (CDM in both KVN and XML formats)
     * 2D probability of collision computing methods assuming short term encounter and spherical bodies:
-      
+
       * Chan 1997
       * Alfriend 1999
       * Alfriend 1999 (maximum version)
@@ -391,22 +391,23 @@ interoperability in space systems.
 
 ## Maintained library
 
-Orekit has been in development since 2002 inside [CS GROUP](https://www.csgroup.eu/)
-and is still used and maintained by its
-experts and an open community. It is ruled by a meritocratic governance
-model and the Project Management Committee involves actors from
-industry (CS, Thales Alenia Space, Applied Defense Solutions), research
-(Naval Research Laboratory), agencies (European Space Operations Centre,
-European Space Research and Technology Centre) and academics (University
-at Buffalo, Institut National Supérieur de l'Aéronautique et de l'Espace - Sup'Aéro).
+Orekit has been in development since 2002 inside [CS GROUP](https://www.cs-soprasteria.com/en/)
+and is still used and maintained by its experts and an open community. It is
+ruled by a meritocratic governance model and the Project Management Committee
+involves actors from industry (CS, Thales Alenia Space, Applied Defense
+Solutions), research (Naval Research Laboratory), agencies (European Space
+Operations Centre, European Space Research and Technology Centre) and
+academics (University at Buffalo, Institut National Supérieur de
+l'Aéronautique et de l'Espace - Sup'Aéro).
 
-Orekit has already been successfully used during the real time monitoring of the rendez-vous
-phase between the Automated Transfer Vehicle (ATV) and the International Space Station (ISS)
-by the Centre National d'Études Spatiales (CNES, the French space agency) and European Space
-Agency (ESA).
+Orekit has already been successfully used during the real time monitoring of
+the rendez-vous phase between the Automated Transfer Vehicle (ATV) and the
+International Space Station (ISS) by the Centre National d'Études Spatiales
+(CNES, the French space agency) and European Space Agency (ESA).
 
-Orekit has been selected in early 2011 by CNES to be the basis of its next generation space
-flight dynamics systems, including operational systems, study systems and mission analysis
-systems.
+Orekit has been selected in early 2011 by CNES to be the basis of its next
+generation space flight dynamics systems, including operational systems, study
+systems and mission analysis systems.
 
-It has been used in numerous studies and for operational systems among the world.
+It has been used in numerous studies and for operational systems among the
+world.

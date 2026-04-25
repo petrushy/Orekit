@@ -449,6 +449,12 @@ public class TopocentricFrame extends Frame implements ExtendedPositionProvider 
 
     /** {@inheritDoc} */
     @Override
+    public Vector3D getVelocity(final AbsoluteDate date, final Frame frame) {
+        return getKinematicTransformTo(frame, date).transformOnlyPV(PVCoordinates.ZERO).getVelocity();
+    }
+
+    /** {@inheritDoc} */
+    @Override
     public TimeStampedPVCoordinates getPVCoordinates(final AbsoluteDate date, final Frame frame) {
         return getTransformTo(frame, date).transformPVCoordinates(new TimeStampedPVCoordinates(date,
                 Vector3D.ZERO,

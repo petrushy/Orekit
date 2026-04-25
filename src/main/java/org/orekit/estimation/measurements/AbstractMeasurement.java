@@ -30,11 +30,11 @@ import org.orekit.propagation.SpacecraftState;
 import org.orekit.time.AbsoluteDate;
 import org.orekit.time.FieldAbsoluteDate;
 import org.orekit.utils.Constants;
+import org.orekit.utils.AbsolutePVCoordinates;
+import org.orekit.utils.FieldAbsolutePVCoordinates;
 import org.orekit.utils.FieldPVCoordinatesProvider;
 import org.orekit.utils.PVCoordinatesProvider;
 import org.orekit.utils.ParameterDriver;
-import org.orekit.utils.FieldShiftingPVCoordinatesProvider;
-import org.orekit.utils.ShiftingPVCoordinatesProvider;
 import org.orekit.utils.TimeStampedFieldPVCoordinates;
 import org.orekit.utils.TimeStampedPVCoordinates;
 
@@ -299,7 +299,7 @@ public abstract class AbstractMeasurement<T extends ObservedMeasurement<T>> impl
                                                              final Vector3D receiverPosition,
                                                              final AbsoluteDate signalArrivalDate,
                                                              final Frame frame) {
-        return signalTimeOfFlightAdjustableEmitter(new ShiftingPVCoordinatesProvider(adjustableEmitterPV, frame),
+        return signalTimeOfFlightAdjustableEmitter(new AbsolutePVCoordinates(frame, adjustableEmitterPV),
                                                    adjustableEmitterPV.getDate(),
                                                    receiverPosition, signalArrivalDate,
                                                    frame);
@@ -357,7 +357,7 @@ public abstract class AbstractMeasurement<T extends ObservedMeasurement<T>> impl
                                                               final AbsoluteDate approxReceptionDate,
                                                               final Frame frame) {
         return signalTimeOfFlightAdjustableReceiver(emitterPosition, emissionDate,
-                                                    new ShiftingPVCoordinatesProvider(adjustableReceiverPV, frame),
+                                                    (PVCoordinatesProvider) new AbsolutePVCoordinates(frame, adjustableReceiverPV),
                                                     approxReceptionDate, frame);
     }
 
@@ -411,8 +411,7 @@ public abstract class AbstractMeasurement<T extends ObservedMeasurement<T>> impl
                                                                                             final FieldVector3D<T> receiverPosition,
                                                                                             final FieldAbsoluteDate<T> signalArrivalDate,
                                                                                             final Frame frame) {
-        return signalTimeOfFlightAdjustableEmitter(new FieldShiftingPVCoordinatesProvider<>(adjustableEmitterPV,
-                                                                                            frame),
+        return signalTimeOfFlightAdjustableEmitter(new FieldAbsolutePVCoordinates<>(frame, adjustableEmitterPV),
                                                    adjustableEmitterPV.getDate(),
                                                    receiverPosition, signalArrivalDate,
                                                    frame);
@@ -474,7 +473,7 @@ public abstract class AbstractMeasurement<T extends ObservedMeasurement<T>> impl
                                                                                              final FieldAbsoluteDate<T> approxReceptionDate,
                                                                                              final Frame frame) {
         return signalTimeOfFlightAdjustableReceiver(emitterPosition, emissionDate,
-                                                    new FieldShiftingPVCoordinatesProvider<>(adjustableReceiverPV, frame),
+                                                    (FieldPVCoordinatesProvider<T>) new FieldAbsolutePVCoordinates<>(frame, adjustableReceiverPV),
                                                     approxReceptionDate, frame);
     }
 

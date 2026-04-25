@@ -947,3 +947,9 @@ INCONSISTENT_STATE_DIMENSIONS=les tailles du vecteur d''état (dimension {0}) et
 
 # data at date {0} has already been automatically expunged
 EXPUNGED_SPAN=_SPAN=les données à la date {0} ont déjà été effacées automatiquement
+
+# line never crosses altitude {0}
+LINE_NEVER_CROSSES_ALTITUDE=la ligne ne franchit jamais l''altitude {0}
+
+# body shape must be a one-axis ellipsoid
+BODY_SHAPE_MUST_BE_A_ONE_AXIS_ELLIPSOID=le corps devrait être un ellipsoïde à axe de symétrie

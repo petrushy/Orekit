@@ -545,7 +545,7 @@ public class PVCoordinates implements TimeShiftable<PVCoordinates>, Blendable<PV
      * angular momentum} and is computed by ω = p &times; v / ||p||²
      *
      * @return the angular velocity vector
-     * @see <a href="http://en.wikipedia.org/wiki/Angular_velocity">Angular Velocity on
+     * @see <a href="https://en.wikipedia.org/wiki/Angular_velocity">Angular Velocity on
      *      Wikipedia</a>
      */
     public Vector3D getAngularVelocity() {

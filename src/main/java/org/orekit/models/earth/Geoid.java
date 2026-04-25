@@ -90,13 +90,13 @@ import org.orekit.utils.TimeStampedPVCoordinates;
  *
  * <ol> <li>Dru A. Smith. There is no such thing as "The" EGM96 geoid: Subtle
  * points on the use of a global geopotential model. IGeS Bulletin No. 8:17-28,
- * 1998. <a href= "http://www.ngs.noaa.gov/PUBS_LIB/EGM96_GEOID_PAPER/egm96_geoid_paper.html"
- * >http://www.ngs.noaa.gov/PUBS_LIB/EGM96_GEOID_PAPER/egm96_geoid_paper.html</a></li>
+ * 1998. <a href="https://www.ngs.noaa.gov/PUBS_LIB/EGM96_GEOID_PAPER/egm96_geoid_paper.html"
+ * >https://www.ngs.noaa.gov/PUBS_LIB/EGM96_GEOID_PAPER/egm96_geoid_paper.html</a></li>
  *
  * <li> Martin Losch, Verena Seufer. How to Compute Geoid Undulations (Geoid
  * Height Relative to a Given Reference Ellipsoid) from Spherical Harmonic
  * Coefficients for Satellite Altimetry Applications. , 2003. <a
- * href="http://mitgcm.org/~mlosch/geoidcookbook.pdf">mitgcm.org/~mlosch/geoidcookbook.pdf</a>
+ * href="https://mitgcm.org/~mlosch/geoidcookbook.pdf">mitgcm.org/~mlosch/geoidcookbook.pdf</a>
  * </li>
  *
  * <li>Weikko A. Heiskanen, Helmut Moritz. Physical Geodesy. W. H. Freeman and
@@ -206,7 +206,7 @@ public class Geoid implements EarthShape {
      * @return the undulation in m, positive means the geoid is higher than the
      * ellipsoid.
      * @see Geoid
-     * @see <a href="http://en.wikipedia.org/wiki/Geoid">Geoid on Wikipedia</a>
+     * @see <a href="https://en.wikipedia.org/wiki/Geoid">Geoid on Wikipedia</a>
      */
     public double getUndulation(final double geodeticLatitude,
                                 final double longitude,
@@ -544,7 +544,7 @@ public class Geoid implements EarthShape {
      * longitude are both geodetic and defined with respect to the {@link
      * #getEllipsoid() reference ellipsoid}.
      * @see #transform(GeodeticPoint)
-     * @see <a href="http://en.wikipedia.org/wiki/Orthometric_height">Orthometric_height</a>
+     * @see <a href="https://en.wikipedia.org/wiki/Orthometric_height">Orthometric_height</a>
      */
     @Override
     public GeodeticPoint transform(final Vector3D point, final Frame frame,
@@ -573,7 +573,7 @@ public class Geoid implements EarthShape {
      * longitude are both geodetic and defined with respect to the {@link
      * #getEllipsoid() reference ellipsoid}.
      * @see #transform(GeodeticPoint)
-     * @see <a href="http://en.wikipedia.org/wiki/Orthometric_height">Orthometric_height</a>
+     * @see <a href="https://en.wikipedia.org/wiki/Orthometric_height">Orthometric_height</a>
      */
     @Override
     public <T extends CalculusFieldElement<T>> FieldGeodeticPoint<T> transform(final FieldVector3D<T> point, final Frame frame,

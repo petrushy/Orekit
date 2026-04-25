@@ -174,6 +174,12 @@ public class RinexObservationWriterTest {
 
     @DefaultDataContext
     @Test
+    public void testRoundTripUPC() throws IOException {
+        doTestRoundTrip("gnss/filtering/UPC33510.08O_trunc", 0.0);
+    }
+
+    @DefaultDataContext
+    @Test
     public void testContinuationPhaseShift() throws IOException {
         doTestRoundTrip("rinex/continuation-phase-shift.23o", 0.0);
     }

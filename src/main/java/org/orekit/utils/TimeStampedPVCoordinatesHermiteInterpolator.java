@@ -28,7 +28,7 @@ import java.util.stream.Stream;
  * Class using a Hermite interpolator to interpolate time stamped position-velocity-acceleration coordinates.
  * <p>
  * As this implementation of interpolation is polynomial, it should be used only with small number of interpolation points
- * (about 10-20 points) in order to avoid <a href="http://en.wikipedia.org/wiki/Runge%27s_phenomenon">Runge's phenomenon</a>
+ * (about 10-20 points) in order to avoid <a href="https://en.wikipedia.org/wiki/Runge%27s_phenomenon">Runge's phenomenon</a>
  * and numerical problems (including NaN appearing).
  *
  * @author Luc Maisonobe
@@ -49,7 +49,7 @@ public class TimeStampedPVCoordinatesHermiteInterpolator extends AbstractTimeInt
      *     <li>Use of position and both time derivatives for attitude interpolation</li>
      * </ul>
      * As this implementation of interpolation is polynomial, it should be used only with small number of interpolation
-     * points (about 10-20 points) in order to avoid <a href="http://en.wikipedia.org/wiki/Runge%27s_phenomenon">Runge's
+     * points (about 10-20 points) in order to avoid <a href="https://en.wikipedia.org/wiki/Runge%27s_phenomenon">Runge's
      * phenomenon</a> and numerical problems (including NaN appearing).
      */
     public TimeStampedPVCoordinatesHermiteInterpolator() {
@@ -63,7 +63,7 @@ public class TimeStampedPVCoordinatesHermiteInterpolator extends AbstractTimeInt
      *     <li>Use of position and both time derivatives for attitude interpolation</li>
      * </ul>
      * As this implementation of interpolation is polynomial, it should be used only with small number of interpolation
-     * points (about 10-20 points) in order to avoid <a href="http://en.wikipedia.org/wiki/Runge%27s_phenomenon">Runge's
+     * points (about 10-20 points) in order to avoid <a href="https://en.wikipedia.org/wiki/Runge%27s_phenomenon">Runge's
      * phenomenon</a> and numerical problems (including NaN appearing).
      *
      * @param interpolationPoints number of interpolation points
@@ -78,7 +78,7 @@ public class TimeStampedPVCoordinatesHermiteInterpolator extends AbstractTimeInt
      *     <li>Default extrapolation threshold value ({@code DEFAULT_EXTRAPOLATION_THRESHOLD_SEC} s)</li>
      * </ul>
      * As this implementation of interpolation is polynomial, it should be used only with small number of interpolation
-     * points (about 10-20 points) in order to avoid <a href="http://en.wikipedia.org/wiki/Runge%27s_phenomenon">Runge's
+     * points (about 10-20 points) in order to avoid <a href="https://en.wikipedia.org/wiki/Runge%27s_phenomenon">Runge's
      * phenomenon</a> and numerical problems (including NaN appearing).
      *
      * @param interpolationPoints number of interpolation points
@@ -94,7 +94,7 @@ public class TimeStampedPVCoordinatesHermiteInterpolator extends AbstractTimeInt
      * Constructor.
      * <p>
      * As this implementation of interpolation is polynomial, it should be used only with small number of interpolation
-     * points (about 10-20 points) in order to avoid <a href="http://en.wikipedia.org/wiki/Runge%27s_phenomenon">Runge's
+     * points (about 10-20 points) in order to avoid <a href="https://en.wikipedia.org/wiki/Runge%27s_phenomenon">Runge's
      * phenomenon</a> and numerical problems (including NaN appearing).
      *
      * @param interpolationPoints number of interpolation points

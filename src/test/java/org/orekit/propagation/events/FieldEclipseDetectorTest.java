@@ -30,14 +30,18 @@ import org.hipparchus.util.FastMath;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.Mockito;
 import org.orekit.Utils;
+import org.orekit.bodies.AnalyticalSolarPositionProvider;
 import org.orekit.bodies.CelestialBody;
 import org.orekit.bodies.CelestialBodyFactory;
 import org.orekit.bodies.OneAxisEllipsoid;
 import org.orekit.errors.OrekitException;
 import org.orekit.errors.OrekitMessages;
 import org.orekit.frames.FramesFactory;
+import org.orekit.models.earth.ReferenceEllipsoid;
 import org.orekit.orbits.FieldCartesianOrbit;
 import org.orekit.orbits.FieldEquinoctialOrbit;
 import org.orekit.orbits.FieldOrbit;
@@ -49,6 +53,7 @@ import org.orekit.propagation.numerical.FieldNumericalPropagator;
 import org.orekit.time.AbsoluteDate;
 import org.orekit.time.FieldAbsoluteDate;
 import org.orekit.time.TimeScalesFactory;
+import org.orekit.utils.Constants;
 import org.orekit.utils.FieldPVCoordinates;
 import org.orekit.utils.IERSConventions;
 import org.orekit.utils.OccultationEngine;
@@ -99,6 +104,32 @@ public class FieldEclipseDetectorTest {
     @Test
     public void testTooSmallMaxIterationCount() {
         testTooSmallMaxIterationCount(Binary64Field.getInstance());
+    }
+
+    @ParameterizedTest
+    @ValueSource(booleans = {true, false})
+    void testVersusNonField(final boolean totalEclipse) {
+        // GIVEN
+        final Binary64Field field = Binary64Field.getInstance();
+        final Binary64 zero = field.getZero();
+        final FieldVector3D<Binary64> position = new FieldVector3D<>(zero.add(-6142438.668), zero.add(3492467.560), zero.add(-25767.25680));
+        final FieldVector3D<Binary64> velocity = new FieldVector3D<>(zero.add(505.8479685), zero.add(942.7809215), zero.add(7435.922231));
+        FieldAbsoluteDate<Binary64> date = new FieldAbsoluteDate<>(field, 1969, 7, 28, 4, 0, 0.0, TimeScalesFactory.getTT());
+        final FieldOrbit<Binary64> orbit = new FieldEquinoctialOrbit<>(new FieldPVCoordinates<>(position, velocity),
+                FramesFactory.getGCRF(), date, zero.add(mu));
+        FieldSpacecraftState<Binary64> state = new FieldSpacecraftState<>(orbit);
+        final OccultationEngine engine = new OccultationEngine(new AnalyticalSolarPositionProvider(),
+                Constants.SUN_RADIUS, ReferenceEllipsoid.getWgs84(FramesFactory.getGTOD(true)));
+        final Binary64 margin = new Binary64(1e-8);
+        FieldEclipseDetector<Binary64> fieldDetector = new FieldEclipseDetector<>(field, engine).withMargin(margin);
+        fieldDetector = totalEclipse ? fieldDetector.withUmbra() : fieldDetector.withPenumbra();
+        // WHEN
+        final Binary64 fieldG = fieldDetector.g(state);
+        // THEN
+        EclipseDetector detector = new EclipseDetector(engine).withMargin(margin.getReal());
+        detector = totalEclipse ? detector.withUmbra() : detector.withPenumbra();
+        final double g = detector.g(state.toSpacecraftState());
+        Assertions.assertEquals(g, fieldG.getReal());
     }
 
     @Test

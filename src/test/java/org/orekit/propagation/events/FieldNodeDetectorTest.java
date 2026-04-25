@@ -18,6 +18,7 @@ package org.orekit.propagation.events;
 
 import org.hipparchus.CalculusFieldElement;
 import org.hipparchus.Field;
+import org.hipparchus.util.Binary64;
 import org.hipparchus.util.Binary64Field;
 import org.hipparchus.util.FastMath;
 import org.junit.jupiter.api.Assertions;
@@ -33,6 +34,7 @@ import org.orekit.propagation.FieldEphemerisGenerator;
 import org.orekit.propagation.FieldSpacecraftState;
 import org.orekit.propagation.analytical.FieldKeplerianPropagator;
 import org.orekit.propagation.events.handlers.FieldContinueOnEvent;
+import org.orekit.propagation.events.handlers.FieldCountAndContinue;
 import org.orekit.time.FieldAbsoluteDate;
 import org.orekit.time.TimeScalesFactory;
 import org.orekit.utils.Constants;
@@ -93,6 +95,24 @@ public class FieldNodeDetectorTest {
         Assertions.assertEquals(2, logger1.getLoggedEvents().size());
         Assertions.assertEquals(2, logger2.getLoggedEvents().size());
 
+    }
+
+    @Test
+    void testIssue642() {
+        // GIVEN
+        final Frame frame = FramesFactory.getEME2000();
+        final Binary64Field field = Binary64Field.getInstance();
+        final FieldNodeDetector<Binary64> fieldNodeDetector = new FieldNodeDetector<>(field, frame);
+        final FieldKeplerianOrbit<Binary64> fieldOrbit = new FieldKeplerianOrbit<>(new Binary64(-1e7),
+                new Binary64(1.2), Binary64.ONE, Binary64.ZERO, Binary64.ZERO, Binary64.ONE.negate(), PositionAngleType.MEAN,
+                frame, FieldAbsoluteDate.getArbitraryEpoch(field), new Binary64(Constants.WGS84_EARTH_MU));
+        final FieldKeplerianPropagator<Binary64> propagator = new FieldKeplerianPropagator<>(fieldOrbit);
+        final FieldCountAndContinue<Binary64> countAndContinue = new FieldCountAndContinue<>(0);
+        propagator.addEventDetector(fieldNodeDetector.withHandler(countAndContinue));
+        // WHEN
+        propagator.propagate(fieldOrbit.getDate().shiftedBy(1e6));
+        // THEN
+        Assertions.assertNotEquals(0, countAndContinue.getCount());
     }
 
     private <T extends CalculusFieldElement<T>>void doTestIssue158(Field<T> field) {

@@ -214,12 +214,12 @@ public class FieldDateDetector<T extends CalculusFieldElement<T>> extends FieldA
                 eventDateList.add(new FieldEventDate<>(target, increasing));
             } else {
                 throw new OrekitIllegalArgumentException(OrekitMessages.EVENT_DATE_TOO_CLOSE,
-                                                         target,
-                                                         firstDate,
-                                                         lastDate,
+                                                         target.toAbsoluteDate(),
+                                                         firstDate.toAbsoluteDate(),
+                                                         lastDate.toAbsoluteDate(),
                                                          minGap,
-                                                         firstDate.durationFrom(target),
-                                                         target.durationFrom(lastDate));
+                                                         firstDate.durationFrom(target).getReal(),
+                                                         target.durationFrom(lastDate).getReal());
             }
         }
     }

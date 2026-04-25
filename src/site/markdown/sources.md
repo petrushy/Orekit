@@ -31,7 +31,7 @@ main branch.
 
 ## Development version
 
-The development of the Orekit project is done using the [Git](http://git-scm.com/)
+The development of the Orekit project is done using the [Git](https://git-scm.com)
 source code control system. Orekit Git main repository is available online. The
 latest developments are in the develop branch. This is the one you want to retrieve
 if you need the latest feature before they are published in an official release.

@@ -52,21 +52,28 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
 import org.mockito.Mockito;
 import org.orekit.OrekitMatchers;
+import org.orekit.TestUtils;
 import org.orekit.Utils;
 import org.orekit.attitudes.FrameAlignedProvider;
 import org.orekit.bodies.CelestialBodyFactory;
 import org.orekit.bodies.OneAxisEllipsoid;
 import org.orekit.errors.OrekitException;
+import org.orekit.errors.OrekitIllegalArgumentException;
 import org.orekit.errors.OrekitMessages;
 import org.orekit.forces.ForceModel;
+import org.orekit.forces.ForceModelModifier;
 import org.orekit.forces.drag.DragForce;
 import org.orekit.forces.drag.IsotropicDrag;
 import org.orekit.forces.gravity.HolmesFeatherstoneAttractionModel;
+import org.orekit.forces.gravity.NewtonianAttraction;
 import org.orekit.forces.gravity.ThirdBodyAttraction;
 import org.orekit.forces.gravity.potential.GRGSFormatReader;
 import org.orekit.forces.gravity.potential.GravityFieldFactory;
 import org.orekit.forces.gravity.potential.NormalizedSphericalHarmonicsProvider;
 import org.orekit.forces.gravity.potential.SHMFormatReader;
+import org.orekit.forces.maneuvers.Maneuver;
+import org.orekit.forces.maneuvers.propulsion.BasicConstantThrustPropulsionModel;
+import org.orekit.forces.maneuvers.trigger.TimeIntervalsManeuverTrigger;
 import org.orekit.forces.radiation.IsotropicRadiationSingleCoefficient;
 import org.orekit.forces.radiation.SolarRadiationPressure;
 import org.orekit.frames.Frame;
@@ -88,13 +95,46 @@ import org.orekit.time.DateComponents;
 import org.orekit.time.FieldAbsoluteDate;
 import org.orekit.time.FieldTimeStamped;
 import org.orekit.time.TimeComponents;
+import org.orekit.time.TimeInterval;
 import org.orekit.time.TimeScale;
 import org.orekit.time.TimeScalesFactory;
+import org.orekit.time.UTCScale;
 import org.orekit.utils.*;
 
 public class FieldNumericalPropagatorTest {
 
     private double               mu;
+
+    // This test highlights the fix of: https://gitlab.orekit.org/orekit/orekit/-/issues/1808
+    @Test
+    void testPropagationEndCoincidingWithManeuverThrustEndForIssue1808() {
+        final Field<Binary64> field = Binary64Field.getInstance();
+        final Binary64 zero = field.getZero();
+        final UTCScale utc = TimeScalesFactory.getUTC();
+        // Initialize spacecraft
+        final FieldAbsoluteDate<Binary64> orbitEpoch = new FieldAbsoluteDate<>(field, 2025, 6, 25, 14, 30, 32.965, utc);
+        final FieldCartesianOrbit<Binary64> cartesian = new FieldCartesianOrbit<>(new FieldPVCoordinates<>(new FieldVector3D<>(zero.add(1897711.783316963),
+                                                                                                                               zero.add(4938498.102677712),
+                                                                                                                               zero.add(-4414426.470208112)),
+                                                                                                           new FieldVector3D<>(zero.add(-525.3256319053179),
+                                                                                                                               zero.add(-4937.568767036118),
+                                                                                                                               zero.add(-5754.938592063509))),
+                                                                                  FramesFactory.getTOD(false), orbitEpoch, zero.add(Constants.WGS84_EARTH_MU));
+        // Maneuver
+        final FieldAbsoluteDate<Binary64> maneuverStart = new FieldAbsoluteDate<>(field, 2025, 6, 25, 14, 54, 53.247, utc);
+        final FieldAbsoluteDate<Binary64> maneuverEnd = maneuverStart.shiftedBy(720.0);
+
+        // Initialize propagator
+        final FieldNumericalPropagator<Binary64> numerical = new FieldNumericalPropagator<>(field, new ClassicalRungeKuttaFieldIntegrator<>(field, zero.add(60.0)));
+        numerical.addForceModel(new Maneuver(null,
+                                             TimeIntervalsManeuverTrigger.of(TimeInterval.of(maneuverStart.toAbsoluteDate(), maneuverEnd.toAbsoluteDate())),
+                                             new BasicConstantThrustPropulsionModel(0.02, 1160, Vector3D.PLUS_I, "tangential")));
+        numerical.setInitialState(new FieldSpacecraftState<>(cartesian));
+
+        // Propagate
+        final FieldAbsoluteDate<Binary64> propagationStart = new FieldAbsoluteDate<>(field, 2025, 6, 25, 10, 23, 17.009, utc);
+        Assertions.assertNotNull(numerical.propagate(propagationStart, maneuverEnd));
+    }
 
     @Test
     void testIssue1032() {
@@ -1703,6 +1743,47 @@ public class FieldNumericalPropagatorTest {
     private <T extends CalculusFieldElement<T>> void doTestShiftEquinoctialMeanWithDerivatives(final Field<T> field) {
         doTestShift(createEllipticOrbit(field), OrbitType.EQUINOCTIAL, PositionAngleType.MEAN, true,
                     1.14, 9.1, 140.3, 1066.7, 3306.9);
+    }
+
+    @Test
+    void testNegativeMassException() {
+        // GIVEN
+        final Binary64Field field = Binary64Field.getInstance();
+        final FieldODEIntegrator<Binary64> fieldODEIntegrator = new ClassicalRungeKuttaFieldIntegrator<>(field, Binary64.ONE);
+        final FieldNumericalPropagator<Binary64> fieldNumericalPropagator = new FieldNumericalPropagator<>(field, fieldODEIntegrator);
+        final FieldSpacecraftState<Binary64> fieldState = new FieldSpacecraftState<>(field,
+                new SpacecraftState(TestUtils.getDefaultOrbit(AbsoluteDate.ARBITRARY_EPOCH))).withMass(Binary64.ONE.negate());
+        fieldNumericalPropagator.setInitialState(fieldState);
+        // WHEN & THEN
+        Assertions.assertThrows(OrekitException.class,
+                () -> fieldNumericalPropagator.propagate(fieldState.getDate().shiftedBy(1)));
+    }
+
+    @Test
+    void testNegativeMassRateException() {
+        // GIVEN
+        final Binary64Field field = Binary64Field.getInstance();
+        final FieldODEIntegrator<Binary64> fieldODEIntegrator = new ClassicalRungeKuttaFieldIntegrator<>(field, Binary64.ONE);
+        final FieldNumericalPropagator<Binary64> fieldNumericalPropagator = new FieldNumericalPropagator<>(field, fieldODEIntegrator);
+        fieldNumericalPropagator.addForceModel(new TestNegativeMassRateForce());
+        final FieldAbstractIntegratedPropagator.MainStateEquations<Binary64> main = fieldNumericalPropagator.getMainStateEquations(fieldODEIntegrator);
+        final FieldSpacecraftState<Binary64> fieldState = new FieldSpacecraftState<>(field,
+                new SpacecraftState(TestUtils.getDefaultOrbit(AbsoluteDate.ARBITRARY_EPOCH)));
+        // WHEN & THEN
+        Assertions.assertThrows(OrekitIllegalArgumentException.class, () -> main.computeDerivatives(fieldState));
+    }
+
+    private static class TestNegativeMassRateForce implements ForceModelModifier {
+
+        @Override
+        public ForceModel getUnderlyingModel() {
+            return new NewtonianAttraction(Constants.EGM96_EARTH_MU);
+        }
+
+        @Override
+        public <T extends CalculusFieldElement<T>> void addContribution(FieldSpacecraftState<T> s, FieldTimeDerivativesEquations<T> adder) {
+            adder.addMassDerivative(s.getMass().getField().getOne());
+        }
     }
 
     @Test

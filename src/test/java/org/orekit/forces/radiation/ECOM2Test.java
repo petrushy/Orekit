@@ -35,6 +35,7 @@ import org.orekit.attitudes.Attitude;
 import org.orekit.attitudes.AttitudeProvider;
 import org.orekit.bodies.CelestialBodyFactory;
 import org.orekit.bodies.OneAxisEllipsoid;
+import org.orekit.data.DataContext;
 import org.orekit.errors.OrekitException;
 import org.orekit.forces.AbstractForceModelTest;
 import org.orekit.forces.ForceModel;
@@ -127,8 +128,7 @@ public class ECOM2Test extends AbstractForceModelTest {
           return array;
     }
 
-    private void fillJacobianModelColumn(double[][] jacobian, int column,
-                                         OrbitType orbitType, PositionAngleType angleType, double h,
+    private void fillJacobianModelColumn(double[][] jacobian, int column, double h,
                                          Vector3D sM4h, Vector3D sM3h,
                                          Vector3D sM2h, Vector3D sM1h,
                                          Vector3D sP1h, Vector3D sP2h,
@@ -166,13 +166,13 @@ public class ECOM2Test extends AbstractForceModelTest {
         //Build Orbit and spacecraft state
         final Field<DerivativeStructure>                field   = x.getField();
         final DerivativeStructure                       one     = field.getOne();
-        final FieldVector3D<DerivativeStructure>        pos     = new FieldVector3D<DerivativeStructure>(x, y, z);
-        final FieldVector3D<DerivativeStructure>        vel     = new FieldVector3D<DerivativeStructure>(xDot, yDot, zDot);
-        final FieldPVCoordinates<DerivativeStructure>   dsPV    = new FieldPVCoordinates<DerivativeStructure>(pos, vel);
+        final FieldVector3D<DerivativeStructure>        pos     = new FieldVector3D<>(x, y, z);
+        final FieldVector3D<DerivativeStructure>        vel     = new FieldVector3D<>(xDot, yDot, zDot);
+        final FieldPVCoordinates<DerivativeStructure>   dsPV    = new FieldPVCoordinates<>(pos, vel);
         final FieldAbsoluteDate<DerivativeStructure>    dsDate  = new FieldAbsoluteDate<>(field, new AbsoluteDate(2003, 2, 13, 2, 31, 30, TimeScalesFactory.getUTC()));
         final DerivativeStructure                       mu      = one.multiply(Constants.EGM96_EARTH_MU);
-        final FieldOrbit<DerivativeStructure>           dsOrbit = new FieldCartesianOrbit<DerivativeStructure>(dsPV, FramesFactory.getEME2000(), dsDate, mu);
-        final FieldSpacecraftState<DerivativeStructure> dsState = new FieldSpacecraftState<DerivativeStructure>(dsOrbit);
+        final FieldOrbit<DerivativeStructure>           dsOrbit = new FieldCartesianOrbit<>(dsPV, FramesFactory.getEME2000(), dsDate, mu);
+        final FieldSpacecraftState<DerivativeStructure> dsState = new FieldSpacecraftState<>(dsOrbit);
 
         //Build the forceModel
         final ECOM2 forceModel = new ECOM2(2, 2, 1e-7, CelestialBodyFactory.getSun(), Constants.EGM96_EARTH_EQUATORIAL_RADIUS);
@@ -226,7 +226,7 @@ public class ECOM2Test extends AbstractForceModelTest {
             propagator.resetInitialState(shiftState(state, orbitType, angleType, 4 * steps[i], i));
             SpacecraftState sP4h = propagator.propagate(state.getDate());
             Vector3D accP4 = forceModel.acceleration(sP4h, forceModel.getParameters()); 
-            fillJacobianModelColumn(refDeriv, i, orbitType, angleType, steps[i],
+            fillJacobianModelColumn(refDeriv, i, steps[i],
                                accM4, accM3, accM2, accM1,
                                accP1, accP2, accP3, accP4);
         }
@@ -411,7 +411,7 @@ public class ECOM2Test extends AbstractForceModelTest {
     void testJacobianVsFiniteDifferences() {
 
         // initialization
-        AbsoluteDate date = new AbsoluteDate(new DateComponents(2003, 03, 01),
+        AbsoluteDate date = new AbsoluteDate(new DateComponents(2003, 3, 1),
                                              new TimeComponents(13, 59, 27.816),
                                              TimeScalesFactory.getUTC());
         double i     = FastMath.toRadians(98.7);
@@ -433,7 +433,7 @@ public class ECOM2Test extends AbstractForceModelTest {
     void testJacobianVsFiniteDifferencesGradient() {
 
         // initialization
-        AbsoluteDate date = new AbsoluteDate(new DateComponents(2003, 03, 01),
+        AbsoluteDate date = new AbsoluteDate(new DateComponents(2003, 3, 1),
                                              new TimeComponents(13, 59, 27.816),
                                              TimeScalesFactory.getUTC());
         double i     = FastMath.toRadians(98.7);
@@ -532,8 +532,25 @@ public class ECOM2Test extends AbstractForceModelTest {
 
     }
 
+    @Test
+    void testNonRegression() {
+        // Initialization
+        final AbsoluteDate date = new AbsoluteDate(new DateComponents(2003, 3, 1), new TimeComponents(13, 59, 27.816), TimeScalesFactory.getUTC());
+        final Orbit orbit = new KeplerianOrbit(7201009.7124401, 1e-3, FastMath.toRadians(98.7) , FastMath.toRadians(93.0),
+                                               FastMath.toRadians(15.0 * 22.5), 0, PositionAngleType.MEAN, FramesFactory.getEME2000(), date,
+                                               Constants.EIGEN5C_EARTH_MU);
+        final ECOM2 forceModel = new ECOM2(2, 2, 1e-7, CelestialBodyFactory.getSun(), Constants.EGM96_EARTH_EQUATORIAL_RADIUS, DataContext.getDefault().getFrames());
+        // Action
+        Vector3D acceleration = forceModel.acceleration(new SpacecraftState(orbit), forceModel.getParameters(date));
+        // Verify
+        Assertions.assertEquals(6.02110E-8, acceleration.getX(), 1.0e-13);
+        Assertions.assertEquals(-9.97979E-8, acceleration.getY(), 1.0e-13);
+        Assertions.assertEquals(-1.773535E-7, acceleration.getZ(), 1.0e-13);
+    }
+
     private static class SolarStepHandler implements OrekitFixedStepHandler {
 
+        @Override
         public void handleStep(SpacecraftState currentState) {
             final double dex = currentState.getOrbit().getEquinoctialEx() - 0.01071166;
             final double dey = currentState.getOrbit().getEquinoctialEy() - 0.00654848;

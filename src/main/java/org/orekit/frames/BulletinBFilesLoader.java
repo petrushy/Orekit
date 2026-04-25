@@ -63,7 +63,7 @@ import org.orekit.utils.units.UnitsConverter;
  * href="ftp://ftp.iers.org/products/eop/bulletinb/format_2009/">
  *  FTP site</a>. They are also available with exactly the same content
  * (but a different naming convention) from <a
- * href="http://hpiers.obspm.fr/eoppc/bul/bulb_new/">Paris-Meudon
+ * href="https://hpiers.obspm.fr/eoppc/bul/bulb_new/">Paris-Meudon
  * observatory site</a>.
  * </p>
  * <p>

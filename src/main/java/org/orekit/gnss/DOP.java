@@ -25,7 +25,7 @@ import org.orekit.time.AbsoluteDate;
  *
  * @author Pascal Parraud
  * @since 8.0
- * @see <a href="http://en.wikipedia.org/wiki/Dilution_of_precision_%28GPS%29">Dilution of precision</a>
+ * @see <a href="https://en.wikipedia.org/wiki/Dilution_of_precision_%28GPS%29">Dilution of precision</a>
  *
  */
 public class DOP {

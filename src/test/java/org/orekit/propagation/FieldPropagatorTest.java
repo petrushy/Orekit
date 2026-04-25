@@ -55,6 +55,20 @@ class FieldPropagatorTest {
     }
 
     @Test
+    void testGetVelocity() {
+        // GIVEN
+        final TestFieldPropagator testPropagator = new TestFieldPropagator();
+        final AbsoluteDate date = AbsoluteDate.ARBITRARY_EPOCH;
+        final FieldAbsoluteDate<Complex> fieldDate = new FieldAbsoluteDate<>(ComplexField.getInstance(), date);
+        final Frame frame = FramesFactory.getGCRF();
+        // WHEN
+        final FieldVector3D<Complex> actualVelocity = testPropagator.getVelocity(fieldDate, frame);
+        // THEN
+        final FieldPVCoordinates<Complex> expectedState = testPropagator.propagate(fieldDate).getPVCoordinates(frame);
+        Assertions.assertEquals(expectedState.getVelocity().toVector3D(), actualVelocity.toVector3D());
+    }
+
+    @Test
     void testGetPVCoordinates() {
         // GIVEN
         final TestFieldPropagator testPropagator = new TestFieldPropagator();
@@ -83,6 +97,7 @@ class FieldPropagatorTest {
                 .thenReturn(fieldPVCoordinates);
         Mockito.when(mockedFieldSpacecraftState.getPosition(Mockito.any(Frame.class)))
                 .thenReturn(fieldPVCoordinates.getPosition());
+        Mockito.when(mockedFieldSpacecraftState.getVelocity()).thenReturn(fieldPVCoordinates.getVelocity());
         return mockedFieldSpacecraftState;
     }
 
@@ -155,7 +170,7 @@ class FieldPropagatorTest {
 
         @Override
         public Frame getFrame() {
-            return null;
+            return FramesFactory.getGCRF();
         }
 
         @Override

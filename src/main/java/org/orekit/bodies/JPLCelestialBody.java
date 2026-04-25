@@ -28,15 +28,19 @@ import org.hipparchus.util.Precision;
 import org.orekit.frames.FieldStaticTransform;
 import org.orekit.frames.FieldTransform;
 import org.orekit.frames.Frame;
+import org.orekit.frames.KinematicTransform;
 import org.orekit.frames.StaticTransform;
 import org.orekit.frames.Transform;
 import org.orekit.frames.TransformProvider;
 import org.orekit.time.AbsoluteDate;
 import org.orekit.time.FieldAbsoluteDate;
+import org.orekit.time.TimeOffset;
 import org.orekit.utils.FieldPVCoordinates;
 import org.orekit.utils.PVCoordinates;
 import org.orekit.utils.TimeStampedFieldPVCoordinates;
 import org.orekit.utils.TimeStampedPVCoordinates;
+
+import java.util.concurrent.TimeUnit;
 
 /** Implementation of the {@link CelestialBody} interface using JPL or INPOP ephemerides.
  * @author Luc Maisonobe
@@ -101,6 +105,7 @@ class JPLCelestialBody implements CelestialBody {
     }
 
     /** {@inheritDoc} */
+    @Override
     public TimeStampedPVCoordinates getPVCoordinates(final AbsoluteDate date, final Frame frame) {
 
         // apply the scale factor to raw position-velocity
@@ -121,6 +126,7 @@ class JPLCelestialBody implements CelestialBody {
      * @param <T> type of the field elements
      * @return time-stamped position/velocity of the body (m and m/s)
      */
+    @Override
     public <T extends CalculusFieldElement<T>> TimeStampedFieldPVCoordinates<T> getPVCoordinates(final FieldAbsoluteDate<T> date,
                                                                                                  final Frame frame) {
 
@@ -133,6 +139,22 @@ class JPLCelestialBody implements CelestialBody {
 
         // convert to requested frame
         return transform.transformPVCoordinates(scaledPV);
+
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public Vector3D getVelocity(final AbsoluteDate date, final Frame frame) {
+
+        // apply the scale factor to raw position-velocity
+        final PVCoordinates rawPV    = rawPVProvider.getRawPV(date);
+        final TimeStampedPVCoordinates scaledPV = new TimeStampedPVCoordinates(date, scale, rawPV);
+
+        // the raw PV are relative to the parent of the body centered inertially oriented frame
+        final KinematicTransform transform = getInertiallyOrientedFrame().getParent().getKinematicTransformTo(frame, date);
+
+        // convert to requested frame
+        return transform.transformOnlyPV(scaledPV).getVelocity();
 
     }
 
@@ -329,23 +351,25 @@ class JPLCelestialBody implements CelestialBody {
 
                 /** {@inheritDoc} */
                 public Transform getTransform(final AbsoluteDate date) {
-                    final double dt = 10.0;
+                    final TimeOffset dt = new TimeOffset(10, TimeUnit.SECONDS);
                     final double w0 = iauPole.getPrimeMeridianAngle(date);
                     final double w1 = iauPole.getPrimeMeridianAngle(date.shiftedBy(dt));
                     return new Transform(date,
                             new Rotation(Vector3D.PLUS_K, w0, RotationConvention.FRAME_TRANSFORM),
-                            new Vector3D((w1 - w0) / dt, Vector3D.PLUS_K));
+                            new Vector3D((w1 - w0) / dt.toDouble(), Vector3D.PLUS_K));
                 }
 
                 /** {@inheritDoc} */
                 public <T extends CalculusFieldElement<T>> FieldTransform<T> getTransform(final FieldAbsoluteDate<T> date) {
-                    final double dt = 10.0;
+                    final TimeOffset dt = new TimeOffset(10, TimeUnit.SECONDS);
                     final T w0 = iauPole.getPrimeMeridianAngle(date);
                     final T w1 = iauPole.getPrimeMeridianAngle(date.shiftedBy(dt));
                     return new FieldTransform<>(date,
                             new FieldRotation<>(FieldVector3D.getPlusK(date.getField()), w0,
                                     RotationConvention.FRAME_TRANSFORM),
-                            new FieldVector3D<>(w1.subtract(w0).divide(dt), Vector3D.PLUS_K));
+                            new FieldVector3D<>(
+                                    w1.subtract(w0).divide(dt.toDouble()),
+                                    Vector3D.PLUS_K));
                 }
 
             }, frameName == null ? name + BODY_FRAME_SUFFIX : frameName, false);

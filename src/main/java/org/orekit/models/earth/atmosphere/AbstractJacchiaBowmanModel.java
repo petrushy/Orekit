@@ -418,7 +418,7 @@ public abstract class AbstractJacchiaBowmanModel extends AbstractSunInfluencedAt
                                                                    final T satLon, final T satLat, final T satAlt) {
 
         if (satAlt.getReal() < ALT_MIN) {
-            throw new OrekitException(OrekitMessages.ALTITUDE_BELOW_ALLOWED_THRESHOLD, satAlt, ALT_MIN);
+            throw new OrekitException(OrekitMessages.ALTITUDE_BELOW_ALLOWED_THRESHOLD, satAlt.getReal(), ALT_MIN);
         }
 
         final AbsoluteDate dateR = date.toAbsoluteDate();

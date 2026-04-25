@@ -47,8 +47,8 @@ import org.orekit.time.DateTimeComponents;
  * longitude with values that are not contained in the stream.
  * </p>
  * <p>
- * The coefficients are obtained from <a href="http://vmf.geo.tuwien.ac.at/trop_products/GRID/">Vienna Mapping Functions Open Access Data</a>.
- * Find more on the files at the <a href="http://vmf.geo.tuwien.ac.at/readme.txt">VMF Model Documentation</a>.
+ * The coefficients are obtained from <a href="https://vmf.geo.tuwien.ac.at/trop_products/GRID/">Vienna Mapping Functions Open Access Data</a>.
+ * Find more on the files at the <a href="https://vmf.geo.tuwien.ac.at/">VMF Model Documentation</a>.
  * <p>
  * The files have to be extracted to UTF-8 text files before being read by this loader.
  * <p>
@@ -67,7 +67,7 @@ import org.orekit.time.DateTimeComponents;
  * ! Epoch:              2018 11 19 18 00  0.0
  * ! Scale_factor:       1.e+00
  * ! Range/resolution:   -90 90 0 360 2 2.5
- * ! Comment:            http://vmf.geo.tuwien.ac.at/trop_products/GRID/2.5x2/VMF1/VMF1_OP/
+ * ! Comment:            https://vmf.geo.tuwien.ac.at/trop_products/GRID/2.5x2/VMF1/VMF1_OP/
  *  90.0   0.0 0.00116059  0.00055318  2.3043  0.0096
  *  90.0   2.5 0.00116059  0.00055318  2.3043  0.0096
  *  90.0   5.0 0.00116059  0.00055318  2.3043  0.0096

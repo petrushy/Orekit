@@ -37,7 +37,9 @@ public class EOPHistoryTest {
     @Test
     public void testRegular() {
         AbsoluteDate date = new AbsoluteDate(2004, 1, 4, TimeScalesFactory.getUTC());
-        double dt = FramesFactory.getEOPHistory(IERSConventions.IERS_2010, true).getUT1MinusUTC(date);
+        EOPHistory eopHistory = FramesFactory.getEOPHistory(IERSConventions.IERS_2010, true);
+        double dt = eopHistory.getUT1MinusUTC(date);
+        Assertions.assertTrue(EopDataType.UNKNOWN.equals(eopHistory.getEopDataType(date)));
         Assertions.assertEquals(-0.3906070, dt, 1.0e-10);
     }
 
@@ -49,10 +51,12 @@ public class EOPHistoryTest {
             AbsoluteDate date = endDate.shiftedBy(t);
             double dt = history.getUT1MinusUTC(date);
             if (t <= 0) {
+                Assertions.assertTrue(EopDataType.UNKNOWN.equals(history.getEopDataType(date)));
                 Assertions.assertTrue(dt < 0.29236);
                 Assertions.assertTrue(dt > 0.29233);
             } else {
                 // no more data after end date
+                Assertions.assertTrue(EopDataType.UNKNOWN.equals(history.getEopDataType(date)));
                 Assertions.assertEquals(0.0, dt, 1.0e-10);
             }
         }

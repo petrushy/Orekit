@@ -54,6 +54,7 @@ import org.orekit.propagation.sampling.OrekitStepHandler;
 import org.orekit.propagation.sampling.OrekitStepInterpolator;
 import org.orekit.time.AbsoluteDate;
 import org.orekit.utils.DataDictionary;
+import org.orekit.utils.DoubleArrayDictionary;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -502,6 +503,12 @@ public abstract class AbstractIntegratedPropagator extends AbstractPropagator {
         // nothing to do by default
     }
 
+    @Override
+    public void clearMatricesComputation() {
+        secondaryOffsets.clear();
+        super.clearMatricesComputation();
+    }
+
     /** Propagation with or without event detection.
      * @param tEnd target date to which orbit should be propagated
      * @param forceResetAtEnd flag to force resetting state and date after integration
@@ -858,6 +865,7 @@ public abstract class AbstractIntegratedPropagator extends AbstractPropagator {
 
             // gather the derivatives from all additional equations, taking care of dependencies
             final double[] secondaryDot = new double[combinedDimension];
+            final DoubleArrayDictionary derivativesDictionary = new DoubleArrayDictionary();
             int yieldCount = 0;
             while (!pending.isEmpty()) {
                 final AdditionalDerivativesProvider provider = pending.remove();
@@ -880,7 +888,8 @@ public abstract class AbstractIntegratedPropagator extends AbstractPropagator {
                     final double[]            additionalPart = derivatives.getAdditionalDerivatives();
                     final double[]            mainPart       = derivatives.getMainStateDerivativesIncrements();
                     System.arraycopy(additionalPart, 0, secondaryDot, offset, dimension);
-                    updated = updated.addAdditionalStateDerivative(name, additionalPart);
+                    derivativesDictionary.put(name, additionalPart);
+                    updated = updated.withAdditionalStatesDerivatives(derivativesDictionary);
                     if (mainPart != null) {
                         // this equation does change the main state derivatives
                         for (int i = 0; i < mainPart.length; ++i) {
@@ -905,16 +914,17 @@ public abstract class AbstractIntegratedPropagator extends AbstractPropagator {
         private SpacecraftState convert(final double t, final double[] primary,
                                         final double[] primaryDot, final double[] secondary) {
 
-            SpacecraftState initialState = stateMapper.mapArrayToState(t, primary, primaryDot, PropagationType.MEAN);
+            final SpacecraftState initialState = stateMapper.mapArrayToState(t, primary, primaryDot, PropagationType.MEAN);
 
+            final DataDictionary additionalStateDictionary = new DataDictionary();
             for (final AdditionalDerivativesProvider provider : additionalDerivativesProviders) {
                 final String name      = provider.getName();
                 final int    offset    = secondaryOffsets.get(name);
                 final int    dimension = provider.getDimension();
-                initialState = initialState.addAdditionalData(name, Arrays.copyOfRange(secondary, offset, offset + dimension));
+                additionalStateDictionary.put(name, Arrays.copyOfRange(secondary, offset, offset + dimension));
             }
 
-            return updateAdditionalData(initialState);
+            return updateAdditionalData(initialState.withAdditionalData(additionalStateDictionary));
 
         }
 
@@ -979,7 +989,7 @@ public abstract class AbstractIntegratedPropagator extends AbstractPropagator {
         /** {@inheritDoc} */
         @Override
         public void reset(final ODEStateAndDerivative intermediateState, final double finalTime) {
-            detector.reset(convertToOrekitWithAdditional(intermediateState), stateMapper.mapDoubleToDate(finalTime));
+            detector.reset(convertToOrekitForEventFunction(intermediateState), stateMapper.mapDoubleToDate(finalTime));
             this.lastT = Double.NaN;
             this.lastG = Double.NaN;
         }

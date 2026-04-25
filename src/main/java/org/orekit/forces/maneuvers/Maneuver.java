@@ -306,7 +306,7 @@ public class Maneuver implements ForceModel {
 
         // Then attitude override' drivers if defined
         if (attitudeOverride != null) {
-            drivers.addAll(attitudeOverride.getParametersDrivers());
+            drivers.addAll(drivers.size(), attitudeOverride.getParametersDrivers());
         }
 
         // Return full drivers' array

@@ -442,7 +442,8 @@ public class CdmParser extends AbstractConstituentParser<CdmHeader, Cdm, CdmPars
         // and 1 in the middle for object 1 metadata and one further for object 2 metadata. That
         // is why this special syntax was used and initializes the relative metadata COMMENT once
         // at the beginning as relative metadata is not a comment container
-        if (COMMENT.equals(token.getName()) && doRelativeMetadata ) {
+        final String tokenName = token.getName();  // may be null
+        if (COMMENT.equals(tokenName) && doRelativeMetadata ) {
             if (token.getType() == TokenType.ENTRY) {
                 relativeMetadata.addComment(token.getContentAsNormalizedString());
                 return true;
@@ -450,21 +451,32 @@ public class CdmParser extends AbstractConstituentParser<CdmHeader, Cdm, CdmPars
         }
         doRelativeMetadata = false;
 
+        // null check here to avoid NPE later
+        if (tokenName == null) {
+            return false;
+        }
+        // try...catch structured so that process(...) is not in the try block.
+        // Needed so that IAE indicates enum lookup failure.
+        final CdmRelativeMetadataKey cdmRelativeMetadataKey;
         try {
-            return token.getName() != null &&
-                   CdmRelativeMetadataKey.valueOf(token.getName()).process(token, context, relativeMetadata);
+            cdmRelativeMetadataKey = CdmRelativeMetadataKey.valueOf(tokenName);
         } catch (IllegalArgumentException iaeM) {
+            final MetadataKey metadataKey;
             try {
-                return MetadataKey.valueOf(token.getName()).process(token, context, metadata);
+                metadataKey = MetadataKey.valueOf(tokenName);
             } catch (IllegalArgumentException iaeD) {
+                final CdmMetadataKey cdmMetadataKey;
                 try {
-                    return CdmMetadataKey.valueOf(token.getName()).process(token, context, metadata);
+                    cdmMetadataKey = CdmMetadataKey.valueOf(tokenName);
                 } catch (IllegalArgumentException iaeC) {
                     // token has not been recognized
                     return false;
                 }
+                return cdmMetadataKey.process(token, context, metadata);
             }
+            return metadataKey.process(token, context, metadata);
         }
+        return cdmRelativeMetadataKey.process(token, context, relativeMetadata);
     }
 
     /** Process one XML data substructure token.

@@ -35,9 +35,9 @@ import org.orekit.utils.OrekitConfiguration;
  * <p>
  * The data are retrieved through space weather files offered by AGI/CSSI on the AGI
  * <a href="https://ftp.agi.com/pub/DynamicEarthData/SpaceWeather-All-v1.2.txt">FTP</a> as
- * well as on the CelesTrack <a href="http://celestrak.com/SpaceData/">website</a>. These files are updated several times a
+ * well as on the CelesTrack <a href="https://celestrak.org/SpaceData/">website</a>. These files are updated several times a
  * day by using several sources mentioned in the
- * <a href="http://celestrak.com/SpaceData/SpaceWx-format.php">Celestrak space
+ * <a href="https://celestrak.org/SpaceData/SpaceWx-format.php">Celestrak space
  * weather data documentation</a>.
  * </p>
  *

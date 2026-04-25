@@ -28,16 +28,16 @@ Orekit in their projects.
 
 ## Building with Maven 3
 
-[Maven](http://maven.apache.org/) is a build tool that goes far beyond
-simply compiling and packaging a product. It is also able to resolve
-dependencies (including downloading the appropriate versions from the public
-repositories), to run automated tests, to launch various checking tools and
-to create a web site for a project. It runs on any platform supporting Java.
+[Maven](https://maven.apache.org) is a build tool that goes far beyond simply
+compiling and packaging a product. It is also able to resolve dependencies
+(including downloading the appropriate versions from the public repositories),
+to run automated tests, to launch various checking tools and to create a web
+site for a project. It runs on any platform supporting Java.
 
 For systems not providing maven as a package, maven can be
-[downloaded](http://maven.apache.org/download.cgi) from its site at the
-Apache Software Foundation. This site also explains the
-installation procedure.
+[downloaded](https://maven.apache.org/download.cgi) from its site at the
+Apache Software Foundation. This site also explains the installation
+procedure.
 
 As with all maven enabled projects, building official released versions of
 Orekit is straightforward (see below for the special case of development versions),
@@ -75,8 +75,8 @@ the previous commands, you can delete the cloned folder if you want. You can the
 attempt again the mvn command at Orekit level, this time it should succeed as the
 necessary artifact is now locally available.
 
-If you need to configure a proxy server for dependencies retrieval, see
-the [Guide to using proxies](http://maven.apache.org/guides/mini/guide-proxies.html)
+If you need to configure a proxy server for dependencies retrieval, see the
+[Guide to using proxies](https://maven.apache.org/guides/mini/guide-proxies.html)
 page at the maven site.
 
 If you already use maven for your own projects (or simply eclipse, see
@@ -86,18 +86,18 @@ with the following command:
     mvn install
 
 For other commands like generating the site, or generating the
-[checkstyle](http://checkstyle.sourceforge.net/),
+[checkstyle](https://checkstyle.sourceforge.io/),
 [spotbugs](https://spotbugs.github.io/) or
-[jacoco](http://www.eclemma.org/jacoco/) reports, see the maven
-plugins documentation at [maven site](http://maven.apache.org/plugins/index.html).
+[jacoco](https://www.eclemma.org/jacoco/) reports, see the maven plugins
+documentation at [maven site](https://maven.apache.org/plugins/index.html).
 
 ## Building with Eclipse
 
-[Eclipse](http://www.eclipse.org/) is a very rich Integrated Development
+[Eclipse](https://www.eclipse.org/) is a very rich Integrated Development
 Environment (IDE). It is a huge product and not a simple build tool.
 
 For systems not providing eclipse as a package, it can be downloaded from its
-site at the [Eclipse Foundation](http://www.eclipse.org/downloads/).
+site at the [Eclipse Foundation](https://www.eclipse.org/downloads/).
 
 The simplest way to use Orekit with Eclipse is to follow these steps:
 

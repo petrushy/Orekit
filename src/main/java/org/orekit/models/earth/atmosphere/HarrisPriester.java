@@ -326,7 +326,7 @@ public class HarrisPriester extends AbstractSunInfluencedAtmosphere {
         final T posAlt = getHeight(posInEarth);
         // Check for height boundaries
         if (posAlt.getReal() < getMinAlt()) {
-            throw new OrekitException(OrekitMessages.ALTITUDE_BELOW_ALLOWED_THRESHOLD, posAlt, getMinAlt());
+            throw new OrekitException(OrekitMessages.ALTITUDE_BELOW_ALLOWED_THRESHOLD, posAlt.getReal(), getMinAlt());
         }
         if (posAlt.getReal() > getMaxAlt()) {
             return zero;

@@ -263,7 +263,7 @@ public class FixedPointConverter implements OsculatingToMeanConverter {
         // Sanity check
         if (osculating.getA().getReal() < theory.getReferenceRadius()) {
             throw new OrekitException(OrekitMessages.TRAJECTORY_INSIDE_BRILLOUIN_SPHERE,
-                                           osculating.getA());
+                                           osculating.getA().getReal());
         }
 
         // Get field

@@ -874,7 +874,7 @@ public class FieldDSSTPropagator<T extends CalculusFieldElement<T>> extends Fiel
 
             final T mass = elements[6];
             if (mass.getReal() <= 0.0) {
-                throw new OrekitException(OrekitMessages.NOT_POSITIVE_SPACECRAFT_MASS, mass);
+                throw new OrekitException(OrekitMessages.NOT_POSITIVE_SPACECRAFT_MASS, mass.getReal());
             }
 
             final FieldOrbit<T> orbit       = OrbitType.EQUINOCTIAL.mapArrayToOrbit(elements, yDot, PositionAngleType.MEAN, date, getMu(), getFrame());
@@ -965,7 +965,8 @@ public class FieldDSSTPropagator<T extends CalculusFieldElement<T>> extends Fiel
         Main(final FieldODEIntegrator<T> integrator) {
             yDot = MathArrays.buildArray(field, 7);
 
-            // Setup event detectors for each force model
+            // Setup event detectors from attitude provider and each force model
+            getAttitudeProvider().getFieldEventDetectors(field).forEach(eventDetector -> setUpEventDetector(integrator, eventDetector));
             forceModels.forEach(dsstForceModel -> dsstForceModel.getFieldEventDetectors(field).
                                 forEach(eventDetector -> setUpEventDetector(integrator, eventDetector)));
         }
@@ -1098,7 +1099,7 @@ public class FieldDSSTPropagator<T extends CalculusFieldElement<T>> extends Fiel
         /** {@inheritDoc} */
         @SuppressWarnings("unchecked")
         @Override
-        public void handleStep(final FieldODEStateInterpolator<T> interpolator) {
+        public void updateOnStep(final FieldODEStateInterpolator<T> interpolator) {
 
             // Get the grid points to compute
             final T[] interpolationPoints =
@@ -1124,6 +1125,13 @@ public class FieldDSSTPropagator<T extends CalculusFieldElement<T>> extends Fiel
             }
 
         }
+
+        /** {@inheritDoc} */
+        @Override
+        public void handleStep(final FieldODEStateInterpolator<T> interpolator) {
+
+        }
+
     }
 
 }

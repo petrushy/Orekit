@@ -29,7 +29,7 @@ import org.orekit.utils.LoveNumbers;
 /** Gravity field corresponding to solid tides.
  * <p>
  * This solid tides force model implementation corresponds to the method described
- * in <a href="http://www.iers.org/nn_11216/IERS/EN/Publications/TechnicalNotes/tn36.html">
+ * in <a href="https://www.iers.org/nn_11216/IERS/EN/Publications/TechnicalNotes/tn36.html">
  * IERS conventions (2010)</a>, chapter 6, section 6.2.
  * </p>
  * <p>

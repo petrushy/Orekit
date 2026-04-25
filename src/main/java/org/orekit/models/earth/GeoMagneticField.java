@@ -33,8 +33,8 @@ import org.orekit.utils.Constants;
  * Geophysical Data Center, NOAA, as part of the WMM 2010 software release
  * (WMM_SubLibrary.c)
  * </p>
- * @see <a href="http://www.ngdc.noaa.gov/geomag/WMM/DoDWMM.shtml">World Magnetic Model Overview</a>
- * @see <a href="http://www.ngdc.noaa.gov/geomag/WMM/soft.shtml">WMM Software Downloads</a>
+ * @see <a href="https://www.ngdc.noaa.gov/geomag/WMM/DoDWMM.shtml">World Magnetic Model Overview</a>
+ * @see <a href="https://www.ngdc.noaa.gov/geomag/WMM/soft.shtml">WMM Software Downloads</a>
  * @author Thomas Neidhart
  */
 public class GeoMagneticField {

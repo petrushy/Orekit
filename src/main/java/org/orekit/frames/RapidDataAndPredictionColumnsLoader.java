@@ -73,7 +73,7 @@ class RapidDataAndPredictionColumnsLoader extends AbstractEopLoader
     private static final String  MJD_FIELD                    = "\\p{Blank}+(\\p{Digit}+)(?:\\.00*)";
 
     /** Field for separator parsing. */
-    private static final String  SEPARATOR                    = "\\p{Blank}*[IP]";
+    private static final String  SEPARATOR                    = "\\p{Blank}*([IP])";
 
     /** Field for real parsing. */
     private static final String  REAL_FIELD                   = "\\p{Blank}*(-?\\p{Digit}*\\.\\p{Digit}*)";
@@ -253,6 +253,9 @@ class RapidDataAndPredictionColumnsLoader extends AbstractEopLoader
                                                   lineNumber, name, line);
                     }
 
+                    // EOP data type is unknown until data is parsed
+                    EopDataType eopDataType = EopDataType.UNKNOWN;
+
                     // parse the pole part
                     final double x;
                     final double y;
@@ -265,8 +268,9 @@ class RapidDataAndPredictionColumnsLoader extends AbstractEopLoader
                         } else {
                             final Matcher poleAMatcher = POLE_PATTERN_A.matcher(polePartA);
                             if (poleAMatcher.matches()) {
-                                x = UnitsConverter.ARC_SECONDS_TO_RADIANS.convert(Double.parseDouble(poleAMatcher.group(1)));
-                                y = UnitsConverter.ARC_SECONDS_TO_RADIANS.convert(Double.parseDouble(poleAMatcher.group(3)));
+                                x = UnitsConverter.ARC_SECONDS_TO_RADIANS.convert(Double.parseDouble(poleAMatcher.group(2)));
+                                y = UnitsConverter.ARC_SECONDS_TO_RADIANS.convert(Double.parseDouble(poleAMatcher.group(4)));
+                                eopDataType = getEopDataType(poleAMatcher);
                             } else {
                                 throw new OrekitException(OrekitMessages.UNABLE_TO_PARSE_LINE_IN_FILE,
                                                           lineNumber, name, line);
@@ -277,6 +281,7 @@ class RapidDataAndPredictionColumnsLoader extends AbstractEopLoader
                         if (poleBMatcher.matches()) {
                             x = UnitsConverter.ARC_SECONDS_TO_RADIANS.convert(Double.parseDouble(poleBMatcher.group(1)));
                             y = UnitsConverter.ARC_SECONDS_TO_RADIANS.convert(Double.parseDouble(poleBMatcher.group(2)));
+                            eopDataType = EopDataType.FINAL;
                         } else {
                             throw new OrekitException(OrekitMessages.UNABLE_TO_PARSE_LINE_IN_FILE,
                                                       lineNumber, name, line);
@@ -293,7 +298,8 @@ class RapidDataAndPredictionColumnsLoader extends AbstractEopLoader
                         } else {
                             final Matcher ut1utcAMatcher = UT1_UTC_PATTERN_A.matcher(ut1utcPartA);
                             if (ut1utcAMatcher.matches()) {
-                                dtu1 = Double.parseDouble(ut1utcAMatcher.group(1));
+                                dtu1 = Double.parseDouble(ut1utcAMatcher.group(2));
+                                eopDataType = updateEopDataTypeIfUnknown(eopDataType, () -> getEopDataType(ut1utcAMatcher));
                             } else {
                                 throw new OrekitException(OrekitMessages.UNABLE_TO_PARSE_LINE_IN_FILE,
                                                           lineNumber, name, line);
@@ -303,6 +309,7 @@ class RapidDataAndPredictionColumnsLoader extends AbstractEopLoader
                         final Matcher ut1utcBMatcher = UT1_UTC_PATTERN_B.matcher(ut1utcPartB);
                         if (ut1utcBMatcher.matches()) {
                             dtu1 = Double.parseDouble(ut1utcBMatcher.group(1));
+                            eopDataType = updateEopDataTypeIfUnknown(eopDataType, () -> EopDataType.FINAL);
                         } else {
                             throw new OrekitException(OrekitMessages.UNABLE_TO_PARSE_LINE_IN_FILE,
                                                       lineNumber, name, line);
@@ -341,17 +348,18 @@ class RapidDataAndPredictionColumnsLoader extends AbstractEopLoader
                             if (nutationAMatcher.matches()) {
                                 if (isNonRotatingOrigin) {
                                     nro = new double[] {
-                                        UnitsConverter.MILLI_ARC_SECONDS_TO_RADIANS.convert(Double.parseDouble(nutationAMatcher.group(1))),
-                                        UnitsConverter.MILLI_ARC_SECONDS_TO_RADIANS.convert(Double.parseDouble(nutationAMatcher.group(3)))
+                                        UnitsConverter.MILLI_ARC_SECONDS_TO_RADIANS.convert(Double.parseDouble(nutationAMatcher.group(2))),
+                                        UnitsConverter.MILLI_ARC_SECONDS_TO_RADIANS.convert(Double.parseDouble(nutationAMatcher.group(4)))
                                     };
                                     equinox = getConverter().toEquinox(mjdDate, nro[0], nro[1]);
                                 } else {
                                     equinox = new double[] {
-                                        UnitsConverter.MILLI_ARC_SECONDS_TO_RADIANS.convert(Double.parseDouble(nutationAMatcher.group(1))),
-                                        UnitsConverter.MILLI_ARC_SECONDS_TO_RADIANS.convert(Double.parseDouble(nutationAMatcher.group(3)))
+                                        UnitsConverter.MILLI_ARC_SECONDS_TO_RADIANS.convert(Double.parseDouble(nutationAMatcher.group(2))),
+                                        UnitsConverter.MILLI_ARC_SECONDS_TO_RADIANS.convert(Double.parseDouble(nutationAMatcher.group(4)))
                                     };
                                     nro = getConverter().toNonRotating(mjdDate, equinox[0], equinox[1]);
                                 }
+                                eopDataType = updateEopDataTypeIfUnknown(eopDataType, () -> getEopDataType(nutationAMatcher));
                             } else {
                                 throw new OrekitException(OrekitMessages.UNABLE_TO_PARSE_LINE_IN_FILE,
                                                           lineNumber, name, line);
@@ -373,6 +381,7 @@ class RapidDataAndPredictionColumnsLoader extends AbstractEopLoader
                                 };
                                 nro = getConverter().toNonRotating(mjdDate, equinox[0], equinox[1]);
                             }
+                            eopDataType = updateEopDataTypeIfUnknown(eopDataType, () -> EopDataType.FINAL);
                         } else {
                             throw new OrekitException(OrekitMessages.UNABLE_TO_PARSE_LINE_IN_FILE,
                                                       lineNumber, name, line);
@@ -385,7 +394,7 @@ class RapidDataAndPredictionColumnsLoader extends AbstractEopLoader
                     }
                     history.add(new EOPEntry(mjd, dtu1, lod, x, y, Double.NaN, Double.NaN,
                                              equinox[0], equinox[1], nro[0], nro[1],
-                                             configuration.getVersion(), mjdDate));
+                                             configuration.getVersion(), mjdDate, eopDataType));
 
                 }
 
@@ -394,6 +403,27 @@ class RapidDataAndPredictionColumnsLoader extends AbstractEopLoader
             return history;
         }
 
+        /** Get EOP data type depending on SEPARATOR.
+         * @param matcher matcher from String parsing
+         * @return EOP data type
+         * @since 13.1.1
+         */
+        private EopDataType getEopDataType(final Matcher matcher) {
+            if (matcher.group(1).equals("P")) {
+                return EopDataType.PREDICTED;
+            } else {
+                return EopDataType.RAPID;
+            }
+        }
+
+        /** Updates the EOP data type if unknown.
+         * @param data EOP data type
+         * @param supplier supplier for new value
+         * @return the updated EOP data type
+         */
+        private EopDataType updateEopDataTypeIfUnknown(final EopDataType data, final Supplier<EopDataType> supplier) {
+            return data == EopDataType.UNKNOWN ? supplier.get() : data;
+        }
     }
 
     /** Get a part of a line.

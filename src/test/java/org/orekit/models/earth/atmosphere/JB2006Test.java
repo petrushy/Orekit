@@ -159,7 +159,7 @@ class JB2006Test {
             Assertions.fail("an exception should have been thrown");
         } catch (OrekitException oe) {
             Assertions.assertEquals(OrekitMessages.ALTITUDE_BELOW_ALLOWED_THRESHOLD, oe.getSpecifier());
-            Assertions.assertEquals(89999.0, ((Binary64) oe.getParts()[0]).getReal(), 1.0e-15);
+            Assertions.assertEquals(89999.0, (Double) oe.getParts()[0], 1.0e-15);
             Assertions.assertEquals(90000.0, (Double) oe.getParts()[1], 1.0e-15);
         }
 

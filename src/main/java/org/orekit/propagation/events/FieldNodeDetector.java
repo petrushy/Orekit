@@ -17,6 +17,7 @@
 package org.orekit.propagation.events;
 
 import org.hipparchus.CalculusFieldElement;
+import org.hipparchus.Field;
 import org.hipparchus.ode.events.Action;
 import org.hipparchus.util.FastMath;
 import org.hipparchus.util.MathUtils;
@@ -28,6 +29,7 @@ import org.orekit.orbits.OrbitType;
 import org.orekit.orbits.PositionAngleType;
 import org.orekit.propagation.FieldSpacecraftState;
 import org.orekit.propagation.events.handlers.FieldEventHandler;
+import org.orekit.propagation.events.handlers.FieldStopOnEvent;
 import org.orekit.propagation.events.handlers.FieldStopOnIncreasing;
 import org.orekit.propagation.events.intervals.FieldAdaptableInterval;
 
@@ -52,6 +54,18 @@ public class FieldNodeDetector<T extends CalculusFieldElement<T>> extends FieldA
 
     /** Frame in which the equator is defined. */
     private final Frame frame;
+
+    /** Build a new instance with default detection settings and stopping handler.
+     * @param field field
+     * @param frame frame in which the equator is defined (typical
+     * values are {@link org.orekit.frames.FramesFactory#getEME2000() EME<sub>2000</sub>} or
+     * {@link org.orekit.frames.FramesFactory#getITRF(org.orekit.utils.IERSConventions, boolean) ITRF})
+     * @since 13.1.2
+     */
+    public FieldNodeDetector(final Field<T> field, final Frame frame) {
+        this(new FieldEventDetectionSettings<>(field, EventDetectionSettings.getDefaultEventDetectionSettings()),
+                new FieldStopOnEvent<>(), frame);
+    }
 
     /** Build a new instance.
      * <p>The orbit is used only to set an upper bound for the max check interval

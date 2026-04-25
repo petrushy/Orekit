@@ -93,7 +93,8 @@ public class ObservableSpecificSignalBias {
      * @return minimum valid date for the observation pair
      */
     public AbsoluteDate getMinimumValidDateForObservation(final ObservationType obs) {
-        return getTimeSpanMap(obs).getFirstTransition().getDate();
+        final TimeSpanMap.Transition<Double> transition = getTimeSpanMap(obs).getFirstTransition();
+        return transition == null ? AbsoluteDate.PAST_INFINITY : transition.getDate();
     }
 
     /** Get the maximum valid date for a given observation type.
@@ -101,7 +102,8 @@ public class ObservableSpecificSignalBias {
      * @return maximum valid date for the observation pair
      */
     public AbsoluteDate getMaximumValidDateForObservation(final ObservationType obs) {
-        return getTimeSpanMap(obs).getLastTransition().getDate();
+        final TimeSpanMap.Transition<Double> transition = getTimeSpanMap(obs).getLastTransition();
+        return transition == null ? AbsoluteDate.FUTURE_INFINITY : transition.getDate();
     }
 
     /** Get the TimeSpanMap object for a given observation type,
@@ -110,7 +112,7 @@ public class ObservableSpecificSignalBias {
      * @param obs observation type
      * @return the time span map for a given observation code pair
      */
-    private TimeSpanMap<Double> getTimeSpanMap(final ObservationType obs) {
+    public TimeSpanMap<Double> getTimeSpanMap(final ObservationType obs) {
         return biases.get(obs);
     }
 

@@ -307,7 +307,7 @@ public class MarshallSolarActivityFutureEstimation
     /**
      * The Kp index is derived from the Ap index.
      * <p>The method used is explained on <a
-     * href="http://www.ngdc.noaa.gov/stp/GEOMAG/kp_ap.html"> NOAA website.</a> as follows:</p>
+     * href="https://www.ngdc.noaa.gov/stp/GEOMAG/kp_ap.html"> NOAA website.</a> as follows:</p>
      * <p>The scale is 0 to 9 expressed in thirds of a unit, e.g. 5- is 4 2/3,
      * 5 is 5 and 5+ is 5 1/3. The ap (equivalent range) index is derived from the Kp index as follows:</p>
      * <table border="1">

@@ -42,7 +42,7 @@ import java.util.TreeSet;
  * The data are retrieved through space weather files offered by CSSI/AGI. The data can be retrieved on the AGI
  * <a href="ftp://ftp.agi.com/pub/DynamicEarthData/SpaceWeather-All-v1.2.txt">
  * FTP</a>. This file is updated several times a day by using several sources mentioned in the <a
- * href="http://celestrak.com/SpaceData/SpaceWx-format.php"> Celestrak space weather data documentation</a>.
+ * href="https://celestrak.org/SpaceData/SpaceWx-format.php"> Celestrak space weather data documentation</a>.
  * </p>
  *
  * @author Clément Jonglez
