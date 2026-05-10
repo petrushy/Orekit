@@ -15,7 +15,7 @@ Orekit is a low-level Java library for space flight dynamics, providing orbital 
 ## Development Workflows
 - **Build System**: Maven-based. Use `mvn package` for releases, `mvn install` for local repo. For development versions, build Hipparchus first (`git clone https://github.com/Hipparchus-Math/hipparchus.git; cd hipparchus; mvn install`).
 - **Version Control**: Git with git-flow: develop on `develop` branch, create feature branches, merge with `--no-ff`. Release branches from `develop`, bugfix branches from `main`.
-- **Testing**: Extensive unit tests with JUnit 5 and Mockito. Aim for >80% line coverage (enforced via Jacoco). Tests include validation against references and non-regression checks with tight tolerances.
+- **Testing**: Extensive unit tests with JUnit 5 and Mockito. Target high coverage (target: 90%+ line coverage, minimum acceptable: 80%). Jacoco enforces coverage constraints in CI. Tests include validation against references and non-regression checks with tight tolerances.
 - **Code Quality**: Run `mvn checkstyle:check` (no star imports, final parameters, 4-space indent, no trailing whitespace, no `System.out.println`). Run `mvn spotbugs:check` to fix all warnings. All code must pass these checks.
 - **CI/CD**: GitLab CI with parallel test execution. High coverage requirements: 100% class, 95% method, 90% instruction, 85% branch/line.
 
@@ -36,6 +36,7 @@ Orekit is a low-level Java library for space flight dynamics, providing orbital 
 - **Frames**: Extensive hierarchy (`FramesFactory.getGCRF()`, `FramesFactory.getEME2000()`). Handle IERS data transparently.
 - **Attitude**: Laws like `NadirPointing`, `YawCompensation`. Extensible via `AttitudeProvider`.
 - **Estimation**: Batch least squares, Kalman filters. Measurements like `Range`, `AzimuthElevation`.
+- **Python Wrapper Classes**: Every public interface and abstract class requires a `PythonXXX` wrapper for JCC integration. Follow rules in `PYTHON_WRAPPER_PROCESS.md`: include JCC template block, declare interface/abstract methods as `native`, mirror superclass constructors for abstract classes, preserve exact signatures.
 
 ## Dependencies
 - **Hipparchus**: Core math library (geometry, ODE solvers, optimization). Hidden from users but used extensively.
@@ -43,10 +44,15 @@ Orekit is a low-level Java library for space flight dynamics, providing orbital 
 - **External Data**: Download Orekit data archive or clone `https://gitlab.orekit.org/orekit/orekit-data`. Load via `DirectoryCrawler`.
 
 ## Common Tasks
-- Check that there are python wrapper classes for all Abstract and Interface java classes. If not, create them and add wrapper template code
-- Verify that the JCC template code is correct for each PythonXXX wrapper class
+- **Python Wrapper Validation**: Use validation scripts in `python_wrapper_validation/`:
+  - `interfaces_validation.py`: Checks if all public interfaces have corresponding `PythonXXX` implementations
+  - `jcc_template_validation.py`: Verifies JCC template blocks are present in wrapper classes
+  - `validate_native_classes.py`: Ensures all `@Override` methods in Python wrappers are declared `public native`
+  - Run from `python_wrapper_validation/` directory: `python interfaces_validation.py` etc.
+- **Wrapper Class Creation**: New public interface or abstract class? Create a `PythonXXX` wrapper following `PYTHON_WRAPPER_PROCESS.md`
 
 ## References
+- [Python Wrapper Process](PYTHON_WRAPPER_PROCESS.md)
 - [Overview](src/main/java/org/orekit/overview.html)
 - [Building](src/site/markdown/building.md)
 - [Contributing](src/site/markdown/contributing.md)
