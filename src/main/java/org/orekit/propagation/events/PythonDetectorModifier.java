@@ -16,9 +16,18 @@
  */
 
 // this file was created by SSC 2025 and is largely a derived work from
-// the original java interface by Romain Serra and Luc Maisonobe
+// the original java interface by Romain Serra and Luc Maisonobe.
+// Expanded in 2026 to expose every interface method as native, so Python
+// subclasses can selectively override any of them (DetectorModifier is a
+// "wrap-and-override" interface and that pattern requires every default
+// method to be re-declared as native here — JCC otherwise dispatches the
+// default at the JVM level and the Python override is invisible).
 
 package org.orekit.propagation.events;
+
+import org.orekit.propagation.SpacecraftState;
+import org.orekit.propagation.events.handlers.EventHandler;
+import org.orekit.time.AbsoluteDate;
 
 public class PythonDetectorModifier implements DetectorModifier {
 
@@ -47,4 +56,32 @@ public class PythonDetectorModifier implements DetectorModifier {
     /** {@inheritDoc} */
     @Override
     public native EventDetector getDetector();
+
+    /** {@inheritDoc} */
+    @Override
+    public native void init(SpacecraftState s0, AbsoluteDate t);
+
+    /** {@inheritDoc} */
+    @Override
+    public native void reset(SpacecraftState state, AbsoluteDate target);
+
+    /** {@inheritDoc} */
+    @Override
+    public native boolean dependsOnTimeOnly();
+
+    /** {@inheritDoc} */
+    @Override
+    public native double g(SpacecraftState s);
+
+    /** {@inheritDoc} */
+    @Override
+    public native EventHandler getHandler();
+
+    /** {@inheritDoc} */
+    @Override
+    public native void finish(SpacecraftState state);
+
+    /** {@inheritDoc} */
+    @Override
+    public native EventDetectionSettings getDetectionSettings();
 }

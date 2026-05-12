@@ -15,17 +15,28 @@
  * limitations under the License.
  */
 // this file was created by SCC 2019 and is largely a derived work from the
-// original java class/interface
+// original java class/interface.
+// Expanded in 2026 to expose every default method declared on
+// AttitudeProviderModifier as native — see PythonDetectorModifier for the
+// rationale (Modifier-family bridges must re-declare default methods as
+// native so Python overrides take effect).
 
 package org.orekit.attitudes;
 
 
 import org.hipparchus.CalculusFieldElement;
+import org.hipparchus.Field;
 import org.orekit.frames.Frame;
+import org.orekit.propagation.events.EventDetector;
+import org.orekit.propagation.events.FieldEventDetector;
 import org.orekit.time.AbsoluteDate;
 import org.orekit.time.FieldAbsoluteDate;
 import org.orekit.utils.FieldPVCoordinatesProvider;
+import org.orekit.utils.ParameterDriver;
 import org.orekit.utils.PVCoordinatesProvider;
+
+import java.util.List;
+import java.util.stream.Stream;
 
 public class PythonAttitudeProviderModifier  implements AttitudeProviderModifier {
 
@@ -65,4 +76,16 @@ public class PythonAttitudeProviderModifier  implements AttitudeProviderModifier
     /** {@inheritDoc} */
     @Override
     public native <T extends CalculusFieldElement<T>> FieldAttitude<T> getAttitude(FieldPVCoordinatesProvider<T> pvProv, FieldAbsoluteDate<T> date, Frame frame);
+
+    /** {@inheritDoc} */
+    @Override
+    public native Stream<EventDetector> getEventDetectors(List<ParameterDriver> parameterDrivers);
+
+    /** {@inheritDoc} */
+    @Override
+    public native <T extends CalculusFieldElement<T>> Stream<FieldEventDetector<T>> getFieldEventDetectors(Field<T> field, List<ParameterDriver> parameterDrivers);
+
+    /** {@inheritDoc} */
+    @Override
+    public native List<ParameterDriver> getParametersDrivers();
 }

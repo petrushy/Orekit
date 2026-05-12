@@ -16,11 +16,17 @@
  */
 
 // this file was created by SSC 2025 and is largely a derived work from
-// the original java interface by Luc Maisonobe and Romain Serra
+// the original java interface by Luc Maisonobe and Romain Serra.
+// Expanded in 2026 to expose every interface method as native — see
+// PythonDetectorModifier for the rationale (Modifier-family bridges must
+// re-declare default methods as native so Python overrides take effect).
 
 package org.orekit.propagation.events;
 
 import org.hipparchus.CalculusFieldElement;
+import org.orekit.propagation.FieldSpacecraftState;
+import org.orekit.propagation.events.handlers.FieldEventHandler;
+import org.orekit.time.FieldAbsoluteDate;
 
 public class PythonFieldDetectorModifier<T extends CalculusFieldElement<T>> implements FieldDetectorModifier<T> {
 
@@ -49,4 +55,32 @@ public class PythonFieldDetectorModifier<T extends CalculusFieldElement<T>> impl
     /** {@inheritDoc} */
     @Override
     public native FieldEventDetector<T> getDetector();
+
+    /** {@inheritDoc} */
+    @Override
+    public native void init(FieldSpacecraftState<T> s0, FieldAbsoluteDate<T> t);
+
+    /** {@inheritDoc} */
+    @Override
+    public native void reset(FieldSpacecraftState<T> state, FieldAbsoluteDate<T> target);
+
+    /** {@inheritDoc} */
+    @Override
+    public native boolean dependsOnTimeOnly();
+
+    /** {@inheritDoc} */
+    @Override
+    public native T g(FieldSpacecraftState<T> s);
+
+    /** {@inheritDoc} */
+    @Override
+    public native FieldEventHandler<T> getHandler();
+
+    /** {@inheritDoc} */
+    @Override
+    public native void finish(FieldSpacecraftState<T> state);
+
+    /** {@inheritDoc} */
+    @Override
+    public native FieldEventDetectionSettings<T> getDetectionSettings();
 }
