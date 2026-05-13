@@ -1,5 +1,14 @@
+// Expanded in 2026 to expose every default method declared on
+// StaticTransform as native, so Python subclasses can override
+// transformPosition / transformVector / transformLine / getStaticInverse
+// rather than dispatching through the interface defaults that only call
+// the abstract translation/rotation primitives.
+
 package org.orekit.frames;
 
+import org.hipparchus.CalculusFieldElement;
+import org.hipparchus.geometry.euclidean.threed.FieldVector3D;
+import org.hipparchus.geometry.euclidean.threed.Line;
 import org.hipparchus.geometry.euclidean.threed.Rotation;
 import org.hipparchus.geometry.euclidean.threed.Vector3D;
 import org.orekit.time.AbsoluteDate;
@@ -68,4 +77,28 @@ public class PythonStaticTransform implements StaticTransform {
      */
     @Override
     public native AbsoluteDate getDate();
+
+    /** {@inheritDoc} */
+    @Override
+    public native Vector3D transformPosition(Vector3D position);
+
+    /** {@inheritDoc} */
+    @Override
+    public native <T extends CalculusFieldElement<T>> FieldVector3D<T> transformPosition(FieldVector3D<T> position);
+
+    /** {@inheritDoc} */
+    @Override
+    public native Vector3D transformVector(Vector3D vector);
+
+    /** {@inheritDoc} */
+    @Override
+    public native <T extends CalculusFieldElement<T>> FieldVector3D<T> transformVector(FieldVector3D<T> vector);
+
+    /** {@inheritDoc} */
+    @Override
+    public native Line transformLine(Line line);
+
+    /** {@inheritDoc} */
+    @Override
+    public native StaticTransform getStaticInverse();
 }

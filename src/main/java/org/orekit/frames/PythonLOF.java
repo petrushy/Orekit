@@ -1,3 +1,8 @@
+// Expanded in 2026 to expose every default method declared on LOF as
+// native, so Python subclasses can override the higher-level helpers
+// (rotationFromLOF, transformFromLOF, transformFromInertial, isQuasiInertial).
+// See PythonDetectorModifier for the broader rationale.
+
 package org.orekit.frames;
 
 import org.hipparchus.CalculusFieldElement;
@@ -31,4 +36,32 @@ public class PythonLOF implements LOF {
 
     @Override
     public native String getName();
+
+    /** {@inheritDoc} */
+    @Override
+    public native <T extends CalculusFieldElement<T>> FieldRotation<T> rotationFromLOF(Field<T> field, LOF fromLOF, FieldAbsoluteDate<T> date, FieldPVCoordinates<T> pv);
+
+    /** {@inheritDoc} */
+    @Override
+    public native <T extends CalculusFieldElement<T>> FieldTransform<T> transformFromLOF(LOF fromLOF, FieldAbsoluteDate<T> date, FieldPVCoordinates<T> pv);
+
+    /** {@inheritDoc} */
+    @Override
+    public native <T extends CalculusFieldElement<T>> FieldTransform<T> transformFromInertial(FieldAbsoluteDate<T> date, FieldPVCoordinates<T> pv);
+
+    /** {@inheritDoc} */
+    @Override
+    public native Rotation rotationFromLOF(LOF fromLOF, AbsoluteDate date, PVCoordinates pv);
+
+    /** {@inheritDoc} */
+    @Override
+    public native Transform transformFromLOF(LOF fromLOF, AbsoluteDate date, PVCoordinates pv);
+
+    /** {@inheritDoc} */
+    @Override
+    public native Transform transformFromInertial(AbsoluteDate date, PVCoordinates pv);
+
+    /** {@inheritDoc} */
+    @Override
+    public native boolean isQuasiInertial();
 }

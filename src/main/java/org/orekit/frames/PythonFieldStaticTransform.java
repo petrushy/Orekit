@@ -16,14 +16,21 @@
  */
 
 // This file was created by SSC and updated by SSC in 2023 and is largely a derived work from the
-// original java class/interface that it inherits/implements
+// original java class/interface that it inherits/implements.
+// Expanded in 2026 to expose every default method declared on
+// FieldStaticTransform as native — see PythonStaticTransform / PythonDetectorModifier
+// for the broader rationale.
 
 package org.orekit.frames;
 
 import org.hipparchus.CalculusFieldElement;
+import org.hipparchus.geometry.euclidean.threed.FieldLine;
 import org.hipparchus.geometry.euclidean.threed.FieldRotation;
 import org.hipparchus.geometry.euclidean.threed.FieldVector3D;
+import org.hipparchus.geometry.euclidean.threed.Line;
+import org.hipparchus.geometry.euclidean.threed.Vector3D;
 import org.orekit.time.AbsoluteDate;
+import org.orekit.time.FieldAbsoluteDate;
 
 public class PythonFieldStaticTransform<T extends CalculusFieldElement<T>> implements FieldStaticTransform<T> {
 
@@ -49,4 +56,36 @@ public class PythonFieldStaticTransform<T extends CalculusFieldElement<T>> imple
 
     @Override
     public native AbsoluteDate getDate();
+
+    /** {@inheritDoc} */
+    @Override
+    public native FieldVector3D<T> transformPosition(Vector3D position);
+
+    /** {@inheritDoc} */
+    @Override
+    public native FieldVector3D<T> transformPosition(FieldVector3D<T> position);
+
+    /** {@inheritDoc} */
+    @Override
+    public native FieldVector3D<T> transformVector(Vector3D vector);
+
+    /** {@inheritDoc} */
+    @Override
+    public native FieldVector3D<T> transformVector(FieldVector3D<T> vector);
+
+    /** {@inheritDoc} */
+    @Override
+    public native FieldLine<T> transformLine(Line line);
+
+    /** {@inheritDoc} */
+    @Override
+    public native FieldLine<T> transformLine(FieldLine<T> line);
+
+    /** {@inheritDoc} */
+    @Override
+    public native FieldAbsoluteDate<T> getFieldDate();
+
+    /** {@inheritDoc} */
+    @Override
+    public native FieldStaticTransform<T> getStaticInverse();
 }

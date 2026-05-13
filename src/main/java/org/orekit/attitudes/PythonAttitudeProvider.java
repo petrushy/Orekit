@@ -15,18 +15,33 @@
  * limitations under the License.
  */
 // this file was created by SCC 2018 and is largely a derived work from the
-// original java class
+// original java class.
+// Expanded in 2026 to expose every default method declared on
+// AttitudeProvider as native, so Python subclasses can override
+// getAttitudeRotation, getEventDetectors and parameter-driver methods.
+// See PythonDetectorModifier for the broader rationale.
 
 
 package org.orekit.attitudes;
 
 
 import org.hipparchus.CalculusFieldElement;
+import org.hipparchus.Field;
+import org.hipparchus.geometry.euclidean.threed.FieldRotation;
+import org.hipparchus.geometry.euclidean.threed.Rotation;
 import org.orekit.frames.Frame;
+import org.orekit.propagation.FieldSpacecraftState;
+import org.orekit.propagation.SpacecraftState;
+import org.orekit.propagation.events.EventDetector;
+import org.orekit.propagation.events.FieldEventDetector;
 import org.orekit.time.AbsoluteDate;
 import org.orekit.time.FieldAbsoluteDate;
 import org.orekit.utils.FieldPVCoordinatesProvider;
+import org.orekit.utils.ParameterDriver;
 import org.orekit.utils.PVCoordinatesProvider;
+
+import java.util.List;
+import java.util.stream.Stream;
 
 public class PythonAttitudeProvider implements AttitudeProvider {
 
@@ -62,4 +77,32 @@ public class PythonAttitudeProvider implements AttitudeProvider {
     /** {@inheritDoc} */
     @Override
     public native <T extends CalculusFieldElement<T>> FieldAttitude<T> getAttitude(FieldPVCoordinatesProvider<T> pvProv, FieldAbsoluteDate<T> date, Frame frame);
+
+    /** {@inheritDoc} */
+    @Override
+    public native Rotation getAttitudeRotation(PVCoordinatesProvider pvProv, AbsoluteDate date, Frame frame);
+
+    /** {@inheritDoc} */
+    @Override
+    public native <T extends CalculusFieldElement<T>> FieldRotation<T> getAttitudeRotation(FieldPVCoordinatesProvider<T> pvProv, FieldAbsoluteDate<T> date, Frame frame);
+
+    /** {@inheritDoc} */
+    @Override
+    public native Rotation getAttitudeRotation(SpacecraftState state, double[] parameters);
+
+    /** {@inheritDoc} */
+    @Override
+    public native <T extends CalculusFieldElement<T>> FieldRotation<T> getAttitudeRotation(FieldSpacecraftState<T> state, T[] parameters);
+
+    /** {@inheritDoc} */
+    @Override
+    public native Stream<EventDetector> getEventDetectors();
+
+    /** {@inheritDoc} */
+    @Override
+    public native <T extends CalculusFieldElement<T>> Stream<FieldEventDetector<T>> getFieldEventDetectors(Field<T> field);
+
+    /** {@inheritDoc} */
+    @Override
+    public native List<ParameterDriver> getParametersDrivers();
 }
